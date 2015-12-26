@@ -29,8 +29,8 @@
 		
 			// default values
 		min = 0.0;
-		max = 1.0;
-		minimumRangeLength = 0.0;
+		max = 100.0;
+		minimumRangeLength = 1.0;
 				
 		backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, SLIDER_HEIGHT)];
 		backgroundImageView.contentMode = UIViewContentModeScaleToFill;

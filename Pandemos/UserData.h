@@ -26,6 +26,7 @@
 @property (strong, nonatomic) NSString *location;
 
 @property (strong, nonatomic) NSString *photoID;
+@property (strong, nonatomic) NSURL *photoURL;
 @property (strong, nonatomic) NSData *photosData;
 
 

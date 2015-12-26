@@ -12,6 +12,4 @@
 
 @interface PFLoginViewController : ViewController
 
-@property (strong, nonatomic) PFUser *pfUser;
-
 @end

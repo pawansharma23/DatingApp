@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		260799071C29CB4600B364C8 /* RangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 260799061C29CB4600B364C8 /* RangeSlider.m */; };
+		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		268BA08B1C1DB53F0054414E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
 		268BA08E1C1DB53F0054414E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08D1C1DB53F0054414E /* AppDelegate.m */; };
 		268BA0911C1DB53F0054414E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0901C1DB53F0054414E /* ViewController.m */; };
@@ -46,6 +47,7 @@
 		06C994192A4EB211C11A44D2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		260799051C29CB4600B364C8 /* RangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeSlider.h; sourceTree = "<group>"; };
 		260799061C29CB4600B364C8 /* RangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RangeSlider.m; sourceTree = "<group>"; };
+		260799081C2B1C3500B364C8 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		268BA0861C1DB53F0054414E /* Pandemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pandemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		268BA08A1C1DB53F0054414E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		268BA08C1C1DB53F0054414E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */,
 				B6D0576735DD6374DE9CF23F /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -209,6 +212,7 @@
 		282E72BB57D54B2C001EC42F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				260799081C2B1C3500B364C8 /* MessageUI.framework */,
 				F2E7EAF390F8A69E1F0F90DF /* libPods.a */,
 			);
 			name = Frameworks;

@@ -105,7 +105,7 @@
 
 #pragma mark - UIActionSheetDelegate
 
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+- (void)actionSheet:(UIAlertController *)prefferedStyleActionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
   if (buttonIndex == 0) {
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
