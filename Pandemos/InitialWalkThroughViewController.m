@@ -19,6 +19,7 @@
 #import <FBSDKGraphRequestConnection.h>
 #import "UserData.h"
 #import "CVCell.h"
+#import "AFNetworking.h"
 
 @interface InitialWalkThroughViewController ()
 <UICollectionViewDataSource,
@@ -27,19 +28,34 @@ UICollectionViewDelegateFlowLayout>
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+//deprecated user image with array
 @property (strong, nonatomic) NSMutableArray *pictureArray;
 @property (strong, nonatomic) NSArray *picArray;
 @property (strong, nonatomic) NSMutableArray *selectedPictures;
 @property (strong, nonatomic) NSMutableArray *secondSelectedPictures;
+//user images
+@property (strong, nonatomic) NSData *imageDataGlob;
+@property (strong, nonatomic) NSString  *imageIDGlobal;
+@property (strong, nonatomic) NSURL  *imageURL;
+@property (strong, nonatomic) NSString *nextPageURLString;
+@property (strong, nonatomic) NSString *previousPageURLString;
+
 
 
 //likes
 @property (strong, nonatomic) NSMutableArray *likeArray;
 @property (strong, nonatomic) NSMutableArray *secondLikeArray;
-
-
-
 @property (strong, nonatomic) NSArray *dataArray;
+
+//image properties
+@property (strong, nonatomic) NSString *imageSource1;
+@property (strong, nonatomic) NSString *imageSource2;
+@property (strong, nonatomic) NSString *imageSource3;
+@property (strong, nonatomic) NSString *imageSource4;
+@property (strong, nonatomic) NSString *imageSource5;
+@property (strong, nonatomic) NSString *imageSource6;
+
+//view properties
 @property (weak, nonatomic) IBOutlet UILabel *locationlabel;
 @property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
 @property (weak, nonatomic) IBOutlet UISlider *milesSlider;
@@ -48,6 +64,8 @@ UICollectionViewDelegateFlowLayout>
 @property (weak, nonatomic) IBOutlet UIButton *bothSexesButton;
 @property (weak, nonatomic) IBOutlet UISwitch *publicProfileSwitch;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
+@property (weak, nonatomic) IBOutlet UIButton *previousButton;
+@property (weak, nonatomic) IBOutlet UIButton *nextButton;
 
 
 @end
@@ -57,6 +75,15 @@ UICollectionViewDelegateFlowLayout>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    NSLog(@"hellllllo");
+
+
+
+
+    self.navigationItem.title = @"Initial Setup";
+
+
+
     self.automaticallyAdjustsScrollViewInsets = NO;
 
 
@@ -64,14 +91,15 @@ UICollectionViewDelegateFlowLayout>
     self.selectedPictures = [NSMutableArray new];
 
     self.currentUser = [PFUser currentUser];
-    self.navigationItem.title = @"Initial Setup";
+    NSLog(@"current user: %@", self.currentUser);
+
 
     //grab the facebook data
     [self _loadData];
     [self _loadUserImages];
 
     //collectionView layout
-    self.collectionView.backgroundColor = [UIColor grayColor];
+    //self.collectionView.backgroundColor = [UIColor grayColor];
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
@@ -80,7 +108,7 @@ UICollectionViewDelegateFlowLayout>
     //from CLLocation object
     //self.currentLocation
     self.locationlabel.text = @"West Des Moines, IA";
-
+    //suggestion segue for user "about me"
     UIButton *suggestions = [[UIButton alloc]init];
     [suggestions setTitle:@"help with description" forState:UIControlStateNormal];
     [self.textField addSubview:suggestions];
@@ -100,6 +128,7 @@ UICollectionViewDelegateFlowLayout>
             self.milesAwayLabel.text = milesAwayStr;
             //sex pref presets
             NSString *sexPref = [[objects firstObject] objectForKey:@"gender"];
+            NSLog(@"user sex is: %@", sexPref);
                     if ([sexPref containsString:@"male"]) {
                         self.womensInterestButton.backgroundColor = [UIColor blueColor];
                     } else if ([sexPref containsString:@"female"]){
@@ -107,27 +136,41 @@ UICollectionViewDelegateFlowLayout>
                     } else {
                         NSLog(@"no data for sex pref");
                     }
-
-
         }
+        NSString *name = [[objects firstObject] objectForKey:@"firstName"];
+
+        NSLog(@"user name from parse: %@", name);
+
     }];
 
     //M Sex Pref Button setup round edges etc.
-    self.mensInterestButton.layer.cornerRadius = 10;
+    self.mensInterestButton.layer.cornerRadius = 15;
     self.mensInterestButton.clipsToBounds = YES;
-    [self.mensInterestButton.layer setBorderWidth:2.0];
+    [self.mensInterestButton.layer setBorderWidth:1.0];
     [self.mensInterestButton.layer setBorderColor:[UIColor greenColor].CGColor];
     //F
-    self.womensInterestButton.layer.cornerRadius = 10;
+    self.womensInterestButton.layer.cornerRadius = 15;
     self.womensInterestButton.clipsToBounds = YES;
-    [self.womensInterestButton.layer setBorderWidth:2.0];
+    [self.womensInterestButton.layer setBorderWidth:1.0];
     [self.womensInterestButton.layer setBorderColor:[UIColor greenColor].CGColor];
     //Both
-    self.bothSexesButton.layer.cornerRadius = 10;
+    self.bothSexesButton.layer.cornerRadius = 15;
     self.bothSexesButton.clipsToBounds = YES;
-    [self.bothSexesButton.layer setBorderWidth:2.0];
+    [self.bothSexesButton.layer setBorderWidth:1.0];
     [self.bothSexesButton.layer setBorderColor:[UIColor greenColor].CGColor];
 
+    self.previousButton.hidden = YES;
+
+}
+
+
+-(void)viewDidAppear:(BOOL)animated{
+
+    UIScrollView *scrollView;
+    UIView *contentView;
+    [scrollView addSubview:contentView];
+    scrollView.contentSize = contentView.frame.size;
+    [scrollView setScrollEnabled:YES];
 }
 
 #pragma mark -- miles away range
@@ -159,7 +202,6 @@ UICollectionViewDelegateFlowLayout>
         self.bothSexesButton.backgroundColor = [UIColor whiteColor];
     }
 }
-
 //Womens
 - (IBAction)womenInterestButton:(UIButton *)sender {
     self.womensInterestButton.backgroundColor = [UIColor blueColor];
@@ -179,7 +221,7 @@ UICollectionViewDelegateFlowLayout>
 //Both
 - (IBAction)bothSexesInterestButton:(UIButton *)sender {
     self.bothSexesButton.backgroundColor = [UIColor blueColor];
-    [self.currentUser setObject:@"Both" forKey:@"sexPref"];
+    [self.currentUser setObject:@"MF" forKey:@"sexPref"];
     [self.currentUser saveInBackground];
     if ([sender isSelected]) {
         [sender setSelected:NO];
@@ -192,17 +234,7 @@ UICollectionViewDelegateFlowLayout>
         self.womensInterestButton.backgroundColor = [UIColor whiteColor];
     }
 }
-
-#pragma mark -- public profile switch
-- (IBAction)onPublicProfileSwitch:(UISwitch *)sender {
-    if ([sender isOn]) {
-    [self.currentUser setObject:@"private" forKey:@"publicProfile"];
-    [self.currentUser saveInBackground];
-    } else{
-        [self.currentUser setObject:@"public" forKey:@"publicProfile"];
-        [self.currentUser saveInBackground];
-    }
-}
+#pragma mark -- collectionView delegate Methods
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.pictureArray.count;
@@ -212,77 +244,167 @@ UICollectionViewDelegateFlowLayout>
 
     static NSString *cellIdentifier = @"cvCell";
     CVCell *cell = (CVCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    //NSLog(@"from inside cellforrow: %@", [self.pictureArray firstObject]);
     UserData *userData = [self.pictureArray objectAtIndex:indexPath.row];
     cell.bookImage.image = [UIImage imageWithData:userData.photosData];
-    cell.selectedBackgroundView.backgroundColor = [UIColor blueColor];
 
     return cell;
-    
 }
-
+//didSelectItemAtIndexPath
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
+    //highlight selected cell... not working
+    UICollectionViewCell* cell = [collectionView  cellForItemAtIndexPath:indexPath];
+    cell.backgroundColor = [UIColor blueColor];
+
     NSString *selectedImage = [self.pictureArray objectAtIndex:indexPath.row];
     [self.selectedPictures addObject:selectedImage];
-    NSLog(@"selected pic %@", selectedImage);
-    //UserData *user = [UserData new];
-    NSLog(@"user image array %@", self.selectedPictures);
-    //NSLog(@"user image ID: %@", user.photoID);
-
-    self.secondSelectedPictures = [[NSMutableArray alloc]initWithCapacity:[self.selectedPictures count]];
-
-   // NSLog(@"second selected pics: %@", self.secondSelectedPictures);
 
     for (UserData *photoId in self.selectedPictures) {
+        //image url string
+        NSString *photos = photoId.photoID;
+        // getting the full image url(from FB) from the ID and saving it in Parse
+        NSString *graphPath = [NSString stringWithFormat:@"//%@", photos];
+        FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:graphPath parameters:@{@"fields": @"images"}HTTPMethod:@"GET"];
+        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                              id result,
+                                              NSError *error) {
+            if (!error) {
+               // NSLog(@"results: %@", result);
+                //save image URL Strings to Parse
+                NSArray *images = result[@"images"];
+                NSDictionary *imageDict = [images firstObject];
+                NSString *imageSource = imageDict[@"source"];
 
-        //ID String
-        //NSString *photos = photoId.photoID;
-        //NSLog(@"photoids: %@", photos);
-//        NSArray *imageArray = [self.secondSelectedPictures addObject:photoId];
+                if (!self.imageSource1) {
+                    self.imageSource1 = imageSource;
+                    [self.currentUser setObject:imageSource forKey:@"image1"];
+                    [self.currentUser saveInBackground];
+                    NSLog(@"first saved in image1 %@", imageSource);
 
-        //grab image data and convert to nsData object then save nsdata object in Parse
-        //            NSLog(@"results: %@", result);
-        //            NSArray *images = result[@"images"];
-        //            NSDictionary *imageDict = [images firstObject];
-        //            NSString *imageSource = imageDict[@"source"];
-        //            NSLog(@"source: %@", imageSource);
-        //            NSURL *url = [NSURL URLWithString:imageSource];
-        //            NSData *data = [NSData dataWithContentsOfURL:url];
-        //            self.userImage.image = [UIImage imageWithData:data];
-        //also the saving the nsdata object but is it for the 100x100 or the original which we need
-        NSData *photoData = photoId.photosData;
-        NSLog(@"photoids: %@", photoData);
-       // NSURL *urlObie = photoId.photoURL;
 
-        //[self.secondSelectedPictures addObject:photos];
+                } else if (self.imageSource1 && !self.imageSource2){
+                    NSLog(@"2nd Saved %@", imageSource);
+                    self.imageSource2 = imageSource;
+                    [self.currentUser setObject:imageSource forKey:@"image2"];
+                    [self.currentUser saveInBackground];
+                    //3
+                } else if(self.imageSource1 && self.imageSource2 && !self.imageSource3){
+                    NSLog(@"3rd Saved %@", imageSource);
+                    self.imageSource3 = imageSource;
+                    [self.currentUser setObject:imageSource forKey:@"image3"];
+                    [self.currentUser saveInBackground];
+                    //4
+                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && !self.imageSource4){
+                    NSLog(@"4th Saved %@", imageSource);
+                    self.imageSource4 = imageSource;
+                    [self.currentUser setObject:imageSource forKey:@"image4"];
+                    [self.currentUser saveInBackground];
+                    //5
+                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && !self.imageSource5){
+                    NSLog(@"5th Saved %@", imageSource);
+                    self.imageSource5 = imageSource;
+                    [self.currentUser setObject:imageSource forKey:@"image5"];
+                    [self.currentUser saveInBackground];
+                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && self.imageSource5 && !self.imageSource6){
+                    NSLog(@"6th Saved %@", imageSource);
+                    self.imageSource6 = imageSource;
+                    [self.currentUser setObject:imageSource forKey:@"image6"];
+                    [self.currentUser saveInBackground];
+                } else{
+                    NSLog(@"all images are filled");
+                }
 
-        [self.secondSelectedPictures addObject:photoData];
-        //[self.secondSelectedPictures addObject:urlObie];
+            } else {
+                NSLog(@"error: %@", error);
+                }
+        }];
+    }
+}
+//highlighting selected collectioView Cell... not working
+-(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath{
 
-    [self.currentUser setObject:self.secondSelectedPictures forKey:@"selectedUserImages"];
-    [self.currentUser saveInBackground];
+    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    cell.backgroundColor = [UIColor blueColor];
+}
+
+
+- (IBAction)onNextPage:(UIButton *)sender {
+
+    self.previousButton.hidden = NO;
+    [self onNextPrevPage:self.nextPageURLString];
+}
+
+- (IBAction)onPreviousPage:(UIButton *)sender {
+
+    [self onNextPrevPage:self.previousPageURLString];
+}
+
+
+
+#pragma mark -- push notifications
+- (IBAction)pushNotificationsOnOff:(UISwitch *)sender {
+
+    if ([sender isOn]) {
+        NSLog(@"push notifs are on");
+    } else {
+        NSLog(@"push notifs are off");
     }
 
-
 }
-//layout buffer delegate methods
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+#pragma mark -- helpers
+#pragma mark -- previous/next page
+-(void)onNextPrevPage:(NSString *)pageURLString {
 
-    return CGSizeMake(100, 100);
+    NSURL *URL = [NSURL URLWithString:pageURLString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    NSURLSessionDataTask *dTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, NSData *data , NSError * _Nullable error) {
+
+        if (!response) {
+            NSLog(@"error: %@", error);
+        } else{
+            //remove the current images from the collectionview array
+            [self.pictureArray removeAllObjects];
+            NSDictionary *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            NSArray *dataFromJSON = objects[@"data"];
+
+            //get next and previous urls
+            NSDictionary *paging = objects[@"paging"];
+            NSLog(@"objects: %@", objects);
+            //store em globally
+            self.nextPageURLString = paging[@"next"];
+            self.previousPageURLString = paging[@"previous"];
+
+            //arrange image array
+            NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:dataFromJSON];
+            NSArray *uniqueArray = [orderedSet array];
+            //run loop to get images data
+            for (NSDictionary *imageData in uniqueArray) {
+                NSString *picURLString = imageData[@"picture"];
+                //image conversion to NSData and stored in UserData object
+                NSURL *mainPicURL = [NSURL URLWithString:picURLString];
+                NSData *mainPicData = [NSData dataWithContentsOfURL:mainPicURL];
+                // NSString *updatedTime = imageData[@"updated_time"];
+                UserData *userD = [UserData new];
+                userD.photosData = mainPicData;
+
+                [self.pictureArray addObject:userD];
+                [self.collectionView reloadData];
+                //pops cursor to the top of the collectionView
+                [self.collectionView setContentOffset:CGPointZero animated:YES];
+            }
+        }
+    }];
+    
+    [dTask resume];
 }
-
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
-
-    return UIEdgeInsetsMake(5, 5, 5, 5);
-}
-
-
 
 #pragma mark -- facebook profile data load
 - (void)_loadData {
 
     //make FB Graph API request for applicable free data
-    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"id, name, about, birthday, gender, bio, education, is_verified, locale, first_name, work, location, likes, images"} HTTPMethod:@"GET"];
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"id, name, about, birthday, gender, bio, education, is_verified, locale, first_name, work, location, likes"} HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
         if (!error) {
             //dictionary of data returned from FB
@@ -308,7 +430,6 @@ UICollectionViewDelegateFlowLayout>
 
             UserData *locUser = [UserData new];
 
-
             //likes array saved in parse as an array
             NSDictionary *likes = userData[@"likes"];
             NSArray *likeArray = likes[@"data"];
@@ -320,43 +441,14 @@ UICollectionViewDelegateFlowLayout>
                 NSArray *likes = [like objectForKey:@"name"];
                 [self.secondLikeArray addObject:likes];
 
-                NSLog(@"new shit %@", self.secondLikeArray);
+                NSLog(@"like array: %@", self.secondLikeArray);
                 [self.currentUser setObject:self.secondLikeArray forKey:@"likes"];
                 [_currentUser saveInBackground];
             }
 
-
             locUser.fullName = fullName;
             locUser.firstName = firstName;
             locUser.birthdayString = birthdayStr;
-
-            //also getting the full image NSData object and passing it Parse
-//            NSString *graphPath = [NSString stringWithFormat:@"//%@", self.leadImage];
-//            NSString *path = @"/10153744912065061";
-//            NSLog(@"print this out: %@", self.leadImage);
-//            FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
-//                                          initWithGraphPath:graphPath
-//                                          parameters:@{@"fields": @"id, images"}
-//                                          HTTPMethod:@"GET"];
-//            [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
-//                                                  id result,
-//                                                  NSError *error) {
-//                if (!error) {
-//                    NSLog(@"results: %@", result);
-//                    NSArray *images = result[@"images"];
-//                    NSDictionary *imageDict = [images firstObject];
-//                    NSString *imageSource = imageDict[@"source"];
-//                    NSLog(@"source: %@", imageSource);
-//                    NSURL *url = [NSURL URLWithString:imageSource];
-//                    NSData *data = [NSData dataWithContentsOfURL:url];
-//                    self.userImage.image = [UIImage imageWithData:data];
-//                    //            for (NSString *imageSrc in imageDict) {
-//                    //                NSLog(@"orignial pic: %@", [imageSrc containsString:o.jpg]);
-//                    //            }
-//                } else {
-//                    NSLog(@"error: %@", error);
-//                }
-//            }];
 
             //save users data from FB to Parse
             [self.currentUser setObject:fullName forKey:@"fullName"];
@@ -370,6 +462,8 @@ UICollectionViewDelegateFlowLayout>
 
             [_currentUser saveInBackground];
 
+        } else {
+            NSLog(@"getting facebook data: %@", error);
         }
     }];
 
@@ -378,19 +472,19 @@ UICollectionViewDelegateFlowLayout>
 #pragma mark -- facebook Image data load
 -(void)_loadUserImages{
     //now get images from user's facebook account and display them for user to sift through
-    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/photos" parameters:@{@"fields": @"picture, updated_time"} HTTPMethod:@"GET"];
-    //{@"type": @"tagged, uploaded"} HTTPMethod:@"GET"];
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/photos/uploaded" parameters:@{@"fields": @"picture, updated_time"} HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
                                           id result,
                                           NSError *error) {
         if (!error) {
-        NSLog(@"all the data %@", result);
+        NSLog(@"image data %@", result);
             NSArray *dataArr = result[@"data"];
+            //next/previous page results
             NSDictionary *paging = result[@"paging"];
-            NSDictionary *cursors = paging[@"cursors"];
-            NSString *after = cursors[@"after"];
-            NSLog(@"paging after id: %@", after);
-
+            self.nextPageURLString = paging[@"next"];
+            if (paging[@"next"] == nil) {
+                self.nextButton.hidden = YES;
+            }
 
             NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:dataArr];
             NSArray *uniqueArray = [orderedSet array];
@@ -400,7 +494,7 @@ UICollectionViewDelegateFlowLayout>
                 //image id and 100X100 thumbnail of image from "picture" field above the nsdata object is for the 100x100 image
                 NSString *pictureIds = imageData[@"id"];
                 NSString *pictureURL = imageData[@"picture"];
-                NSString *updatedtime = imageData[@"updated_time"];
+               // NSString *updatedtime = imageData[@"updated_time"];
                 //image conversion
                 NSURL *mainPicURL = [NSURL URLWithString:pictureURL];
                 NSData *mainPicData = [NSData dataWithContentsOfURL:mainPicURL];
@@ -409,36 +503,83 @@ UICollectionViewDelegateFlowLayout>
                 userD.photoID = pictureIds;
                 userD.photosData = mainPicData;
                 userD.photoURL = mainPicURL;
+                NSLog(@"pic ids: %@", pictureIds);
+//                NSArray *picArray = [NSArray arrayWithObject:mainPicData];
+//                NSSortDescriptor *sorter = [[NSSortDescriptor alloc]initWithKey:updatedtime ascending:YES];
+//                NSArray *sortDesc = [NSArray arrayWithObject:sorter];
+//
+//                self.picArray = [picArray sortedArrayUsingDescriptors:sortDesc];
 
-                NSArray *picArray = [NSArray arrayWithObject:mainPicData];
-                NSSortDescriptor *sorter = [[NSSortDescriptor alloc]initWithKey:updatedtime ascending:YES];
-                NSArray *sortDesc = [NSArray arrayWithObject:sorter];
-
-                self.picArray = [picArray sortedArrayUsingDescriptors:sortDesc];
                 [self.pictureArray addObject:userD];
 
-
-                NSLog(@"facebook id from source: %@", pictureIds);
-
+               // NSLog(@"facebook id from source: %@", pictureIds);
 
                 [self.collectionView reloadData];
-                //NSLog(@"ids %@, urls: %@", pictureIds, pictureURL);
-                //NSLog(@"self.picture array: %@", self.pictureArray);
 
             }
-
-
+        } else{
+            NSLog(@"error getting faceboko images: %@", error);
         }
     }];
 }
 
--(NSData *)convertURLToData:(NSURL *)url{
 
-    NSURL *imageURL = url;
-    NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
-    
-    return imageData;
-}
+
+
+//old next page data
+//NSURL *URL = [NSURL URLWithString:self.nextPageURLString];
+//NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+//NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+//AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+//
+//manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+//NSURLSessionDataTask *dTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, NSData *data , NSError * _Nullable error) {
+//
+//    if (!response) {
+//        NSLog(@"error: %@", error);
+//    } else{
+//        [self.pictureArray removeAllObjects];
+//
+//        NSDictionary *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+//        NSArray *dataFromJSON = objects[@"data"];
+//        NSDictionary *paging = objects[@"paging"];
+//        NSLog(@"objects: %@", objects);
+//
+//        NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:dataFromJSON];
+//        NSArray *uniqueArray = [orderedSet array];
+//
+//        for (NSDictionary *imageData in uniqueArray) {
+//            NSString *picURLString = imageData[@"picture"];
+//
+//            //image conversion to NSData and stored in UserData object
+//            NSURL *mainPicURL = [NSURL URLWithString:picURLString];
+//            NSData *mainPicData = [NSData dataWithContentsOfURL:mainPicURL];
+//            // NSString *updatedTime = imageData[@"updated_time"];
+//            UserData *userD = [UserData new];
+//            userD.photosData = mainPicData;
+//
+//            [self.pictureArray addObject:userD];
+//
+//            [self.collectionView reloadData];
+//            [self.collectionView setContentOffset:CGPointZero animated:YES];
+//
+//
+//        }
+//
+//        self.nextPageURLString = paging[@"next"];
+//        self.previousPageURLString = paging[@"previous"];
+//    }
+//
+//}];
+//
+//[dTask resume];
+
+
 
 
 @end
+
+
+
+
+

@@ -49,6 +49,7 @@
     [super viewDidLoad];
 
     self.currentUser = [PFUser currentUser];
+    
     self.navigationItem.title = @"Settings";
     //profile change info added to left side of nav bar
     UIBarButtonItem *leftSideBB = [[UIBarButtonItem alloc]initWithTitle:@"Update Profile" style:UIBarButtonItemStylePlain target:self action:@selector(segueToProfileView)];
@@ -170,12 +171,7 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 
-    if(!_currentUser) {
-        NSLog(@"No pf user: %@", _currentUser);
-        [self performSegueWithIdentifier:@"LoggedOut" sender:self];
-    } else{
-        NSLog(@"user is logged in: %@", _currentUser);
-    }
+
 }
 
 

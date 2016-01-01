@@ -18,8 +18,6 @@
 
 @interface ViewController : UIViewController
 
-@property (strong, nonatomic) PFUser *pfUser;
-
 
 @end
 

@@ -16,6 +16,8 @@
 
 @interface PFLoginViewController ()
 
+@property (strong, nonatomic) PFUser *currentUser;
+
 
 @end
 
@@ -23,6 +25,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+
+    self.currentUser = [PFUser currentUser];
+    NSLog(@"from pfloginview current user: %@", self.currentUser);
+    
 }
 
 
@@ -43,7 +50,7 @@
         } else {
             NSLog(@"User logged in through Facebook!");
 
-            self.pfUser = user;
+            self.currentUser = user;
 //                //PFUser *currentuser = user;
 //            NSLog(@"user stuff: %@", user.username);
 //            NSLog(@"current user: %@", [PFUser currentUser]);
@@ -57,15 +64,15 @@
     
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    //check idenifier if more than one
-    ViewController *vc = segue.destinationViewController;
-
-    if ([segue.identifier isEqualToString:@"LoggedIn"]) {
-  //      [segue.destinationViewController setHidesBottomBarWhenPushed:YES];
-        vc.pfUser = self.pfUser;
-    }
-}
+//-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+//    //check idenifier if more than one
+//    ViewController *vc = segue.destinationViewController;
+//
+//    if ([segue.identifier isEqualToString:@"LoggedIn"]) {
+//  //      [segue.destinationViewController setHidesBottomBarWhenPushed:YES];
+//        vc.pfUser = self.pfUser;
+//    }
+//}
 
 
 @end
