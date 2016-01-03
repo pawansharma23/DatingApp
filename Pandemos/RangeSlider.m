@@ -56,11 +56,11 @@
 - (void)setupSliders {
 	
 	minSlider = [[UIImageView alloc] initWithFrame:CGRectMake(min*self.frame.size.width, (SLIDER_HEIGHT-self.frame.size.height)/2.0, self.frame.size.height, self.frame.size.height)];
-	minSlider.backgroundColor = [UIColor whiteColor];
+	minSlider.backgroundColor = [UIColor blueColor];
 	minSlider.contentMode = UIViewContentModeScaleToFill;
 	
 	maxSlider = [[UIImageView alloc] initWithFrame:CGRectMake(max*(self.frame.size.width-self.frame.size.height), (SLIDER_HEIGHT-self.frame.size.height)/2.0, self.frame.size.height, self.frame.size.height)];
-	maxSlider.backgroundColor = [UIColor whiteColor];
+	maxSlider.backgroundColor = [UIColor greenColor];
 	maxSlider.contentMode = UIViewContentModeScaleToFill;
 	
 	[self addSubview:minSlider];
@@ -69,12 +69,12 @@
 }
 
 - (void)setMinThumbImage:(UIImage *)image {
-	minSlider.backgroundColor = [UIColor clearColor];
+	minSlider.backgroundColor = [UIColor redColor];
 	minSlider.image = image;	
 }
 
 - (void)setMaxThumbImage:(UIImage *)image {
-	maxSlider.backgroundColor = [UIColor clearColor];
+	maxSlider.backgroundColor = [UIColor blackColor];
 	maxSlider.image = image;	
 }
 

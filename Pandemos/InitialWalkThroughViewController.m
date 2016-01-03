@@ -20,11 +20,16 @@
 #import "UserData.h"
 #import "CVCell.h"
 #import "AFNetworking.h"
+#import "RangeSlider.h"
+#import <CoreLocation/CoreLocation.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+
 
 @interface InitialWalkThroughViewController ()
 <UICollectionViewDataSource,
 UICollectionViewDelegate,
-UICollectionViewDelegateFlowLayout>
+UICollectionViewDelegateFlowLayout,
+CLLocationManagerDelegate>
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
@@ -41,7 +46,7 @@ UICollectionViewDelegateFlowLayout>
 @property (strong, nonatomic) NSString *previousPageURLString;
 
 
-
+@property (strong, nonatomic) NSString *userGender;
 //likes
 @property (strong, nonatomic) NSMutableArray *likeArray;
 @property (strong, nonatomic) NSMutableArray *secondLikeArray;
@@ -67,6 +72,15 @@ UICollectionViewDelegateFlowLayout>
 @property (weak, nonatomic) IBOutlet UIButton *previousButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 
+@property (weak, nonatomic) IBOutlet UISlider *minAgeSlider;
+@property (weak, nonatomic) IBOutlet UISlider *maxAgeSlider;
+@property (weak, nonatomic) IBOutlet UILabel *minAgeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
+
+@property (strong, nonatomic) CLLocationManager *locationManager;
+@property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
+
+
 
 @end
 
@@ -75,14 +89,10 @@ UICollectionViewDelegateFlowLayout>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    NSLog(@"hellllllo");
 
 
-
-
-    self.navigationItem.title = @"Initial Setup";
-
-
+    self.navigationItem.title = @"Setup";
+    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:56.0/255.0 green:193.0/255.0 blue:255.0/255.0 alpha:1.0];
 
     self.automaticallyAdjustsScrollViewInsets = NO;
 
@@ -90,8 +100,6 @@ UICollectionViewDelegateFlowLayout>
     self.pictureArray = [NSMutableArray new];
     self.selectedPictures = [NSMutableArray new];
 
-    self.currentUser = [PFUser currentUser];
-    NSLog(@"current user: %@", self.currentUser);
 
 
     //grab the facebook data
@@ -106,8 +114,30 @@ UICollectionViewDelegateFlowLayout>
     [self.collectionView setCollectionViewLayout:flowLayout];
 
     //from CLLocation object
-    //self.currentLocation
-    self.locationlabel.text = @"West Des Moines, IA";
+
+    //location object
+    self.locationManager = [CLLocationManager new];
+    self.locationManager.delegate = self;
+
+    //request permission and update locaiton
+    [self.locationManager requestWhenInUseAuthorization];
+    [self.locationManager startUpdatingLocation];
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+
+    double latitude = self.locationManager.location.coordinate.latitude;
+    double longitude = self.locationManager.location.coordinate.longitude;
+    NSLog(@"view did load lat: %f & long: %f", latitude, longitude);
+
+    //save lat and long in a PFGeoCode Object and save to User in Parse
+    self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
+    [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+    [self.currentUser saveInBackground];
+    //PFGeoPoint *geocodeParse = [self.currentUser objectForKey:@"GeoCode"];
+    NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
+
+
+
+
     //suggestion segue for user "about me"
     UIButton *suggestions = [[UIButton alloc]init];
     [suggestions setTitle:@"help with description" forState:UIControlStateNormal];
@@ -117,31 +147,16 @@ UICollectionViewDelegateFlowLayout>
 
 
 
-    //set miles away slider from Parse
-    PFQuery *query = [PFUser query];
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if(!error){
-            CGFloat strFloat = (CGFloat)[[[objects firstObject] objectForKey:@"milesAway"] floatValue];
 
-            self.milesSlider.value = strFloat;
-            NSString *milesAwayStr = [NSString stringWithFormat:@"Show results within %.f miles of here", strFloat];
-            self.milesAwayLabel.text = milesAwayStr;
-            //sex pref presets
-            NSString *sexPref = [[objects firstObject] objectForKey:@"gender"];
-            NSLog(@"user sex is: %@", sexPref);
-                    if ([sexPref containsString:@"male"]) {
-                        self.womensInterestButton.backgroundColor = [UIColor blueColor];
-                    } else if ([sexPref containsString:@"female"]){
-                        self.mensInterestButton.backgroundColor = [UIColor blueColor];
-                    } else {
-                        NSLog(@"no data for sex pref");
-                    }
-        }
-        NSString *name = [[objects firstObject] objectForKey:@"firstName"];
 
-        NSLog(@"user name from parse: %@", name);
 
-    }];
+    //min max Range Slider custom slider class
+//    RangeSlider *rangeSlider = [[RangeSlider alloc]initWithFrame:CGRectMake(20, 475, 300, 31)];
+//    [self.view addSubview:rangeSlider];
+//    UIButton *localButton = self.mensInterestButton;
+//    [self.view addConstraint:[NSLayoutConstraint constraintsWithVisualFormat:@"V:-[rangeSlider]-" options:NSLayoutFormatAlignAllCenterX metrics:nil views:rangeSlider]];
+
+
 
     //M Sex Pref Button setup round edges etc.
     self.mensInterestButton.layer.cornerRadius = 15;
@@ -161,18 +176,75 @@ UICollectionViewDelegateFlowLayout>
 
     self.previousButton.hidden = YES;
 
+    //set age slider values
+    NSString *minAge = [NSString stringWithFormat:@"Minimum Age: 18"];
+    self.minAgeLabel.text = minAge;
+    NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: 62"];
+    self.maxAgeLabel.text = maxAge;
+
 }
 
 
 -(void)viewDidAppear:(BOOL)animated{
 
-    UIScrollView *scrollView;
-    UIView *contentView;
-    [scrollView addSubview:contentView];
-    scrollView.contentSize = contentView.frame.size;
-    [scrollView setScrollEnabled:YES];
+    //set sex Pref as opposite of user sex
+    NSLog(@"user sex is: %@", self.userGender);
+
+    if ([self.userGender isEqualToString:@"male"]) {
+        self.womensInterestButton.backgroundColor = [UIColor blueColor];
+        //save to Parse
+        [self.currentUser setObject:@"female" forKey:@"sexPref"];
+        [self.currentUser saveInBackground];
+
+    } else if ([self.userGender isEqualToString:@"female"]){
+        self.mensInterestButton.backgroundColor = [UIColor blueColor];
+        //save to Parse
+        [self.currentUser setObject:@"male" forKey:@"sexPref"];
+        [self.currentUser saveInBackground];
+    } else {
+        NSLog(@"no data for sex pref");
+    }
+
+
+    NSLog(@"curent user from ViewDidAppear: %@", self.currentUser);
 }
 
+#pragma mark -- CLLocation delegate methods
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
+    NSLog(@"didUpdateLocations Delegate Method");
+        //current location
+        CLLocation *currentLocation = [locations firstObject];
+        NSLog(@"array of cuurent locations: %@", locations);
+        double latitude = self.locationManager.location.coordinate.latitude;
+        double longitude = self.locationManager.location.coordinate.longitude;
+
+        [self.locationManager stopUpdatingLocation];
+
+        NSString *latitudeStr = [NSString stringWithFormat:@"%f", latitude];
+        NSString *longStr = [NSString stringWithFormat:@"%f", longitude];
+    
+        //save location in latitude and longitude
+        [self.currentUser setObject:latitudeStr forKey:@"latitude"];
+        [self.currentUser setObject:longStr forKey:@"longitude"];
+        [self.currentUser saveInBackground];
+
+        //get city and location from a CLPlacemark object
+        CLGeocoder *geoCoder = [CLGeocoder new];
+        [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"error: %@", error);
+            } else {
+                CLPlacemark *placemark = [placemarks firstObject];
+                NSString *city = placemark.locality;
+                NSDictionary *stateDict = placemark.addressDictionary;
+                NSString *state = stateDict[@"State"];
+                self.locationlabel.text = [NSString stringWithFormat:@"%@, %@", city, state];
+            }
+        }];
+    
+
+    
+}
 #pragma mark -- miles away range
 - (IBAction)sliderValueChanged:(UISlider *)sender {
 
@@ -188,13 +260,16 @@ UICollectionViewDelegateFlowLayout>
 #pragma mark -- sex preference buttons
 //Sex Preference buttons and saving to parse on selection, also deselecting the other two
 - (IBAction)menInterestButton:(UIButton *)sender {
+    //when buton pressed change effect on button and save to Parse
     self.mensInterestButton.backgroundColor = [UIColor blueColor];
-    [self.currentUser setObject:@"M" forKey:@"sexPref"];
+    [self.currentUser setObject:@"male" forKey:@"sexPref"];
     [self.currentUser saveInBackground];
+
     if ([sender isSelected]) {
         [sender setSelected:NO];
         self.mensInterestButton.backgroundColor = [UIColor whiteColor];
     } else{
+        //change other two buttons to delected
         [sender setSelected:YES];
         [self.womensInterestButton setSelected:NO];
         [self.bothSexesButton setSelected:NO];
@@ -204,9 +279,11 @@ UICollectionViewDelegateFlowLayout>
 }
 //Womens
 - (IBAction)womenInterestButton:(UIButton *)sender {
+    //when buton pressed change effect on button and save to Parse
     self.womensInterestButton.backgroundColor = [UIColor blueColor];
-    [self.currentUser setObject:@"F" forKey:@"sexPref"];
+    [self.currentUser setObject:@"female" forKey:@"sexPref"];
     [self.currentUser saveInBackground];
+    //View effects for all three buttons change on selection
     if ([sender isSelected]) {
         [sender setSelected:NO];
         self.womensInterestButton.backgroundColor = [UIColor whiteColor];
@@ -220,9 +297,11 @@ UICollectionViewDelegateFlowLayout>
 }
 //Both
 - (IBAction)bothSexesInterestButton:(UIButton *)sender {
+    //when buton pressed change effect on button and save to Parse
     self.bothSexesButton.backgroundColor = [UIColor blueColor];
-    [self.currentUser setObject:@"MF" forKey:@"sexPref"];
+    [self.currentUser setObject:@"male female" forKey:@"sexPref"];
     [self.currentUser saveInBackground];
+    //View effects for all three buttons change on selection
     if ([sender isSelected]) {
         [sender setSelected:NO];
         self.bothSexesButton.backgroundColor = [UIColor whiteColor];
@@ -233,6 +312,26 @@ UICollectionViewDelegateFlowLayout>
         self.mensInterestButton.backgroundColor = [UIColor whiteColor];
         self.womensInterestButton.backgroundColor = [UIColor whiteColor];
     }
+}
+#pragma mark -- age min and max sliders
+- (IBAction)minSliderChange:(UISlider *)sender {
+    //number to label convert
+    NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
+    NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
+    self.minAgeLabel.text = minAge;
+    //save to Parse
+    [self.currentUser setObject:minAge forKey:@"minAge"];
+    [self.currentUser saveInBackground];
+}
+//Max
+- (IBAction)maxSliderChange:(UISlider *)sender {
+    //number to label convert
+    NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
+    NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %@", maxAgeStr];
+    self.maxAgeLabel.text = maxAge;
+    //save to Parse
+    [self.currentUser setObject:maxAge forKey:@"maxAge"];
+    [self.currentUser saveInBackground];
 }
 #pragma mark -- collectionView delegate Methods
 
@@ -249,7 +348,7 @@ UICollectionViewDelegateFlowLayout>
 
     return cell;
 }
-//didSelectItemAtIndexPath
+//save selected images to array and save to Parse
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
     //highlight selected cell... not working
     UICollectionViewCell* cell = [collectionView  cellForItemAtIndexPath:indexPath];
@@ -403,6 +502,9 @@ UICollectionViewDelegateFlowLayout>
 #pragma mark -- facebook profile data load
 - (void)_loadData {
 
+    self.currentUser = [PFUser currentUser];
+    NSLog(@"current user from Data load: %@", self.currentUser);
+
     //make FB Graph API request for applicable free data
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"id, name, about, birthday, gender, bio, education, is_verified, locale, first_name, work, location, likes"} HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
@@ -411,13 +513,14 @@ UICollectionViewDelegateFlowLayout>
             NSDictionary *userData = (NSDictionary *)result;
              NSLog(@"dictionary of results: %@", userData);
             
-            //Parse through the data and save needed bits to Parse backend
+            //Parse through the data and save needed bits to Parse backend & to local for Gender
             NSString *facebookID = userData[@"id"];
-            //BOOL isVerified = userData[@"is_verified"];
             NSString *fullName = userData[@"name"];
             NSString *firstName = userData[@"first_name"];
             NSString *birthdayStr = userData[@"birthday"];
             NSString *gender = userData[@"gender"];
+            self.userGender = gender;
+
             NSString *location = userData[@"location"][@"name"];
             //work array
             NSArray *workArray = userData[@"work"];
@@ -431,8 +534,14 @@ UICollectionViewDelegateFlowLayout>
             UserData *locUser = [UserData new];
 
             //likes array saved in parse as an array
+
             NSDictionary *likes = userData[@"likes"];
+            NSLog(@"likes?: %@", likes);
+            if (likes) {
+
+
             NSArray *likeArray = likes[@"data"];
+            NSLog(@"facebook likes: %@", likeArray);
 
             self.secondLikeArray = [[NSMutableArray alloc] initWithCapacity:[likeArray count]];
 
@@ -441,29 +550,49 @@ UICollectionViewDelegateFlowLayout>
                 NSArray *likes = [like objectForKey:@"name"];
                 [self.secondLikeArray addObject:likes];
 
-                NSLog(@"like array: %@", self.secondLikeArray);
                 [self.currentUser setObject:self.secondLikeArray forKey:@"likes"];
                 [_currentUser saveInBackground];
             }
+
+                } else{
+                    NSLog(@"no likes nil: %@", self.secondLikeArray);
+                }
 
             locUser.fullName = fullName;
             locUser.firstName = firstName;
             locUser.birthdayString = birthdayStr;
 
             //save users data from FB to Parse
-            [self.currentUser setObject:fullName forKey:@"fullName"];
-            [self.currentUser setObject:firstName forKey:@"firstName"];
-            [self.currentUser setObject:facebookID forKey:@"faceID"];
-            [self.currentUser setObject:birthdayStr forKey:@"birthday"];
-            [self.currentUser setObject:gender forKey:@"gender"];
-            [self.currentUser setObject:location forKey:@"facebookLocation"];
-            [self.currentUser setObject:placeOfWork forKey:@"work"];
-            [self.currentUser setObject:school forKey:@"scool"];
+            if (fullName){
+                [self.currentUser setObject:fullName forKey:@"fullName"];
+            }
+            if (firstName) {
+                [self.currentUser setObject:firstName forKey:@"firstName"];
+            }
+            if (facebookID) {
+                [self.currentUser setObject:facebookID forKey:@"faceID"];
+            }
+            if (birthdayStr) {
+                [self.currentUser setObject:birthdayStr forKey:@"birthday"];
+            }
+            if (gender) {
+                [self.currentUser setObject:gender forKey:@"gender"];
+            }
+            if (location) {
+                NSLog(@"facebook location: %@", location);
+                [self.currentUser setObject:location forKey:@"facebookLocation"];
+            }
+            if (placeOfWork) {
+                [self.currentUser setObject:placeOfWork forKey:@"work"];
+            }
+            if (school) {
+                [self.currentUser setObject:school forKey:@"scool"];
+            }
 
             [_currentUser saveInBackground];
 
         } else {
-            NSLog(@"getting facebook data: %@", error);
+            NSLog(@"facebook data error: %@", error);
         }
     }];
 
@@ -471,6 +600,10 @@ UICollectionViewDelegateFlowLayout>
 
 #pragma mark -- facebook Image data load
 -(void)_loadUserImages{
+
+    self.currentUser = [PFUser currentUser];
+    NSLog(@"current user from Load User Images: %@", self.currentUser);
+
     //now get images from user's facebook account and display them for user to sift through
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/photos/uploaded" parameters:@{@"fields": @"picture, updated_time"} HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
@@ -481,45 +614,44 @@ UICollectionViewDelegateFlowLayout>
             NSArray *dataArr = result[@"data"];
             //next/previous page results
             NSDictionary *paging = result[@"paging"];
-            self.nextPageURLString = paging[@"next"];
             if (paging[@"next"] == nil) {
                 self.nextButton.hidden = YES;
             }
+            if (dataArr) {
+                self.nextPageURLString = paging[@"next"];
 
-            NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:dataArr];
-            NSArray *uniqueArray = [orderedSet array];
+                NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:dataArr];
+                NSArray *uniqueArray = [orderedSet array];
 
-            for (NSDictionary *imageData in uniqueArray) {
+                for (NSDictionary *imageData in uniqueArray) {
 
-                //image id and 100X100 thumbnail of image from "picture" field above the nsdata object is for the 100x100 image
-                NSString *pictureIds = imageData[@"id"];
-                NSString *pictureURL = imageData[@"picture"];
-               // NSString *updatedtime = imageData[@"updated_time"];
-                //image conversion
-                NSURL *mainPicURL = [NSURL URLWithString:pictureURL];
-                NSData *mainPicData = [NSData dataWithContentsOfURL:mainPicURL];
+                    //image id and 100X100 thumbnail of image from "picture" field above the nsdata object is for the 100x100 image
+                    NSString *pictureIds = imageData[@"id"];
+                    NSString *pictureURL = imageData[@"picture"];
+                   // NSString *updatedtime = imageData[@"updated_time"];
+                    //image conversion
+                    NSURL *mainPicURL = [NSURL URLWithString:pictureURL];
+                    NSData *mainPicData = [NSData dataWithContentsOfURL:mainPicURL];
 
-                UserData *userD = [UserData new];
-                userD.photoID = pictureIds;
-                userD.photosData = mainPicData;
-                userD.photoURL = mainPicURL;
-                NSLog(@"pic ids: %@", pictureIds);
-//                NSArray *picArray = [NSArray arrayWithObject:mainPicData];
-//                NSSortDescriptor *sorter = [[NSSortDescriptor alloc]initWithKey:updatedtime ascending:YES];
-//                NSArray *sortDesc = [NSArray arrayWithObject:sorter];
-//
-//                self.picArray = [picArray sortedArrayUsingDescriptors:sortDesc];
+                    UserData *userD = [UserData new];
+                    userD.photoID = pictureIds;
+                    userD.photosData = mainPicData;
+                    userD.photoURL = mainPicURL;
+                    NSLog(@"pic ids: %@", pictureIds);
 
-                [self.pictureArray addObject:userD];
+                    [self.pictureArray addObject:userD];
+                    [self.collectionView reloadData];
 
-               // NSLog(@"facebook id from source: %@", pictureIds);
-
-                [self.collectionView reloadData];
-
+                }
+            } else{
+                NSLog(@"no images");
             }
+
         } else{
             NSLog(@"error getting faceboko images: %@", error);
         }
+
+
     }];
 }
 

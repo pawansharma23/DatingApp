@@ -27,9 +27,9 @@
     [super viewDidLoad];
 
 
-    self.currentUser = [PFUser currentUser];
-    NSLog(@"from pfloginview current user: %@", self.currentUser);
-    
+//    self.currentUser = [PFUser currentUser];
+//    NSLog(@"from pfloginview current user: %@", self.currentUser);
+//    
 }
 
 
