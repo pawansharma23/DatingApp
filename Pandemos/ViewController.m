@@ -27,34 +27,34 @@
 UIGestureRecognizerDelegate,
 UINavigationControllerDelegate,
 CLLocationManagerDelegate>
-
+//View elemets
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *greenButton;
 @property (weak, nonatomic) IBOutlet UIButton *redButton;
 @property (weak, nonatomic) IBOutlet UILabel *nameAndAge;
 @property (weak, nonatomic) IBOutlet UILabel *jobLabel;
 @property (weak, nonatomic) IBOutlet UILabel *educationLabel;
-
+@property (weak, nonatomic) IBOutlet UIView *userInfoView;
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (strong, nonatomic) NSString *leadImage;
 @property (strong, nonatomic) NSData *leadImageData;
 @property (strong, nonatomic) NSMutableArray *imageArray;
-
+//location Properties
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) CLGeocoder *geoCoded;
-
-
-
 //Matching Engine Identifiers
 @property (strong, nonatomic) NSString *userSexPref;
 @property (strong, nonatomic) NSString *minAge;
 @property (strong, nonatomic) NSString *maxAge;
-@property (strong, nonatomic) NSString *milesFromUserLocation;
+@property int milesFromUserLocation;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
+@property long count;
 
-
+//passed Objects array to the stack of users
+@property (strong, nonatomic) NSArray *objectsArray;
+@property long matchedUsersCount;
 
 
 
@@ -67,38 +67,28 @@ CLLocationManagerDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.currentUser = [PFUser currentUser];
+    NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+    NSLog(@"current user VDL: %@", fullName);
+
+    self.count = 1;
+    self.matchedUsersCount = 1;
     self.imageArray = [NSMutableArray new];
-    self.navigationItem.title = @"Lhfmf";
-//    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:198.0/255.0 green:91.0/255.0 blue:255.0/255.0 alpha:1.0];
-    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:198.0/255.0 green:71.0/255.0 blue:255.0/255.0 alpha:1.0];
+    self.navigationItem.title = @"FmF";
+
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:255.0/255.0 green:84.0/255.0 blue:95.0/255.0 alpha:1.0];
+
  // picture instead of Title   self.navigationItem.titleView = [UIImage imageNamed:imagename];
 
 
+    //location object
+    self.locationManager = [CLLocationManager new];
+    self.locationManager.delegate = self;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //for display just as a placeholder until matching engine works
-//    NSString *firstNameOfUserUsing = [self.currentUser objectForKey:@"firstName"];
-//    NSString *job = [self.currentUser objectForKey:@"work"];
-//    NSString *school = [self.currentUser objectForKey:@"scool"];
-//    NSString *bday = [self.currentUser objectForKey:@"birthday"];
-//    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@",firstNameOfUserUsing, [self ageString:bday]];
-//    self.jobLabel.text = job;
-//    self.educationLabel.text = school;
-//
-
-
+    //request permission and update locaiton
+    [self.locationManager requestWhenInUseAuthorization];
+    [self.locationManager startUpdatingLocation];
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
 
 
 
@@ -106,9 +96,13 @@ CLLocationManagerDelegate>
     //other view elements setup
     self.greenButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
     self.redButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
-    self.userImage.layer.cornerRadius = 5;
+    //main image round edges
+    self.userImage.layer.cornerRadius = 8;
+    self.userImage.clipsToBounds = YES;
 
-    //swipe gestures
+    [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
+
+    //swipe gestures-- up
     [self.userImage setUserInteractionEnabled:YES];
     UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureUp:)];
     [swipeGestureUp setDelegate:self];
@@ -119,79 +113,53 @@ CLLocationManagerDelegate>
     [swipeGestureDown setDelegate:self];
     swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
     [self.userImage addGestureRecognizer:swipeGestureDown];
-
-}
-
-
-
-
-#pragma mark -- CLLocation delegate methods
--(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
-    NSLog(@"did update locations ");
-//    CLLocation *currentLocation = [locations firstObject];
-//
-//    NSLog(@"array of cuurent locations: %@", locations);
-//    double latitude = self.locationManager.location.coordinate.latitude;
-//    double longitude = self.locationManager.location.coordinate.longitude;
-//
-//    NSLog(@"lat: %f", latitude);
-//    NSLog(@"long: %f", longitude);
-    [self.locationManager stopUpdatingLocation];
-//    NSString *latitudeStr = [NSString stringWithFormat:@"%f", latitude];
-//    NSString *longStr = [NSString stringWithFormat:@"%f", longitude];
-//
-//    //save location in latitude and longitude
-//    [self.currentUser setObject:latitudeStr forKey:@"latitude"];
-//    [self.currentUser setObject:longStr forKey:@"longitude"];
-//    [self.currentUser saveInBackground];
-//
-//    CLGeocoder *geoCoder = [CLGeocoder new];
-//    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-//        if (error) {
-//            NSLog(@"error: %@", error);
-//        } else {
-//            CLPlacemark *placemark = [placemarks firstObject];
-//            NSLog(@"placemark city: %@", placemark.locality);
-//        }
-//    }];
-
+    //right
+    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(onSwipeRight:)];
+    [swipeRight setDelegate:self];
+    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.userImage addGestureRecognizer:swipeRight];
+    //left
+    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(onSwipeLeft:)];
+    [swipeLeft setDelegate:self];
+    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.userImage addGestureRecognizer:swipeLeft];
 
 
 }
 
--(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
-    NSLog(@"location manager failed: %@", error);
-}
+
+
+
 
 -(void)viewDidAppear:(BOOL)animated{
-
+    NSLog(@"current user view did appear %@", self.currentUser);
     if (!self.currentUser) {
-        
+        NSLog(@"no user currently logged in");
         //[self performSegueWithIdentifier:@"NoUser" sender:nil];
     } else {
+        //get the current users data
         self.currentUser = [PFUser currentUser];
-        NSLog(@"current user: %@", self.currentUser);
-
-        //for matching: SexPref min and max age user is intersted in and Location of user/miles around user
+        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+        //NSString *age = [self.currentUser objectForKey:@"userAge"];
+        NSString *sex = [self.currentUser objectForKey:@"gender"];
+        PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
         NSString *sexPref = [self.currentUser objectForKey:@"sexPref"];
 
 
+        //for matching: SexPref min and max age user is intersted in and Location of user/miles around user
         self.userSexPref = sexPref;
+
         self.minAge = [self.currentUser objectForKey:@"minAge"];
         self.maxAge = [self.currentUser objectForKey:@"maxAge"];
-        self.milesFromUserLocation = [self.currentUser objectForKey:@"milesAway"];
-
-
-
+        NSString *milesFromUserLoc = [self.currentUser objectForKey:@"milesAway"];
+        self.milesFromUserLocation = [milesFromUserLoc intValue];
         //update users age everytime they signin and re-save that age in Parse for matching purpposes
         NSString *userBirthday = [self.currentUser objectForKey:@"birthday"];
+        NSLog(@"user bDay: %@", userBirthday);
         NSString *age = [self ageString:userBirthday];
         [self.currentUser setObject:age forKey:@"userAge"];
 
-        NSLog(@"user Sex Pref: %@\nuser min age Pref: %@\nmax Age: %@\ndistance away:%@\nAge: %@", self.userSexPref, self.minAge, self.maxAge, self.milesFromUserLocation, age);
-
-
-
+        NSLog(@"current user VDA: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@", fullName, age, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge);
 
 
 
@@ -206,13 +174,17 @@ CLLocationManagerDelegate>
 
     double latitude = self.locationManager.location.coordinate.latitude;
     double longitude = self.locationManager.location.coordinate.longitude;
-    NSLog(@"view did load lat: %f & long: %f", latitude, longitude);
+    NSLog(@"view did appear: %f & long: %f", latitude, longitude);
 
     //save lat and long in a PFGeoCode Object and save to User in Parse
     self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
     [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+        NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
+        //save age and location objects
     [self.currentUser saveInBackground];
-    //PFGeoPoint *geocodeParse = [self.currentUser objectForKey:@"GeoCode"];
+
+
+        //PFGeoPoint *geocodeParse = [self.currentUser objectForKey:@"GeoCode"];
     NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
 
 
@@ -220,129 +192,178 @@ CLLocationManagerDelegate>
 
 
 
-    //image download and conversion
-    NSString * imagesStr1 = [self.currentUser objectForKey:@"image1"];
-    //    NSString * imagesStr2 = [self.currentUser objectForKey:@"image2"];
-    //    NSString * imagesStr3 = [self.currentUser objectForKey:@"image3"];
-    //    NSString * imagesStr4 = [self.currentUser objectForKey:@"image4"];
-    //    NSString * imagesStr5 = [self.currentUser objectForKey:@"image5"];
-    //    NSString * imagesStr6 = [self.currentUser objectForKey:@"image6"];
-
-    //image display
-    NSURL *imageURL = [NSURL URLWithString:imagesStr1];
-    NSData *dataOb = [NSData dataWithContentsOfURL:imageURL];
-    self.userImage.image = [UIImage imageWithData:dataOb];
-    //    [self.imageArray addObject:imagesStr1];
-    //
-    //    if (imagesStr2) {
-    //        [self.imageArray addObject:imagesStr2];
-    //    }if (imagesStr3) {
-    //        [self.imageArray addObject:imagesStr3];
-    //    } if (imagesStr4) {
-    //        [self.imageArray addObject:imagesStr4];
-    //    } if (imagesStr5) {
-    //        [self.imageArray addObject:imagesStr5];
-    //    } if (imagesStr6) {
-    //        [self.imageArray addObject:imagesStr6];
-    //    }
-    //    NSLog(@"local image array: %@", self.imageArray);
-    
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //Matching Engine
     PFQuery *query = [PFUser query];
     //check to only add users that meet criterion of above current user
-    if ([self.userSexPref containsString:@"male female"]) {
 
+
+        //Both sexes
+        if ([self.userSexPref containsString:@"male female"]) {
+        //Preference for Both Sexes
         [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if(!error){
             NSLog(@"pfquery-- user objects: %zd", [objects count]);
+            [self checkAndGetImages:objects user:0];
+        } else{
+            NSLog(@"error: %@", error);
         }
   }];
 
-        } else if ([self.userSexPref isEqualToString:@"male"]){
 
+        //Preference for Males
+        } else if ([self.userSexPref isEqualToString:@"male"]){
+            //set up query constraints
             [query whereKey:@"gender" hasPrefix:@"m"];
+            //[query whereKey:@"ageMin" greaterThanOrEqualTo:self.minAge];
+            //[query whereKey:@"ageMax" lessThanOrEqualTo:self.maxAge];
+            //NSLog(@"Male Pref Between: %@ and %@", self.minAge, self.maxAge);
+            //[query whereKey:@"GeoCode" nearGeoPoint:self.pfGeoCoded withinMiles:self.milesFromUserLocation];
+
+            //run query
             [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
                 if (!error) {
-                    NSLog(@"m query return: %zd", [objects count]);
+                    long objectCount = [objects count];
+                    NSLog(@"male pref query: %zd results", objectCount);
+                    self.objectsArray = objects;
+                    //first item display
+                    if (objectCount == 1) {
+
+                        [self checkAndGetImages:objects user:0];
+                        [self checkAndGetUserData:objects user:0];
+                    } else if (objectCount == 2){
+                        [self checkAndGetImages:objects user:0];
+                        [self checkAndGetUserData:objects user:0];
+
+                    } else if (objectCount == 3){
+                        [self checkAndGetImages:objects user:0];
+                        [self checkAndGetUserData:objects user:0];
+                    }
+                } else{
+                    NSLog(@"error: %@", error);
                 }
             }];
 
+
+
+            //Preference for Females
             } else{
                 [query whereKey:@"gender" hasPrefix:@"f"];
                 [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
                     if (!error) {
-                        NSLog(@"f query return: %zd", [objects count]);
+                        NSLog(@"female pref query: %zd results", [objects count]);
+                        [self checkAndGetImages:objects user:0];
+                        [self checkAndGetUserData:objects user:0];
+
                     }
                 }];
             }
-
-
-
-
+        }
     }
+
+#pragma mark -- CLLocation delegate methods
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
+    CLLocation *currentLocation = [locations firstObject];
+    NSLog(@"did update locations fist object: %@", currentLocation);
+
+    [self.locationManager stopUpdatingLocation];
+
 }
 
+-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
+    NSLog(@"location manager failed: %@", error);
+}
+
+
+#pragma mark -- Swipe Gestures
 - (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender {
 
-    if (sender.direction == UISwipeGestureRecognizerDirectionUp){
-        NSLog(@"up swipe");
-        //int listOfImages = (self.imageArray < 0) ? ([self.imageArray count] -1):listOfImages % [self.imageArray count];
-        //self.userImage.image = [UIImage imageWithData:[self.imageArray objectAtIndex:listOfImages]];
+    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+    if (direction == UISwipeGestureRecognizerDirectionUp) {
+        NSLog(@"swipe up");
+        //add animation
+        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+            if (self.count == self.imageArray.count - 1 ) {
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                NSLog(@"last image");
 
-    } else{
-        NSLog(@"no swipe?");
+            } else{
+                self.count++;
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+            }
+        } completion:^(BOOL finished) {
+            NSLog(@"animated");
+        }];
+
     }
-//    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-//    switch (direction) {
-//        case UISwipeGestureRecognizerDirectionUp:
-//            NSLog(@"next image");
-////            listOfImages++;
-//            break;
-//        case UISwipeGestureRecognizerDirectionDown:
-//  //          listOfImages--;
-//            NSLog(@"last image or top");
-//            break;
-//        default:
-//            break;
-//    }
-//    listOfImages = (listOfImages < 0) ? ([images count] -1):listOfImages % [images count];
-//    imageView.image = [UIImage imageNamed:[images objectAtIndex:listOfImages]];
-
-    //action on swipe up
-   // NSLog(@"swiped Up");
-
-
 }
 
 
 - (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender {
 
-    if (sender.direction == UISwipeGestureRecognizerDirectionDown){
-        NSLog(@"down swipe");
-    } else{
-        NSLog(@"no swipe?");
+    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+    if (direction == UISwipeGestureRecognizerDirectionDown) {
+        NSLog(@"swipe down");
+        //add animation
+        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
+            if (self.count == self.imageArray.count - self.imageArray.count) {
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                NSLog(@"first image");
+
+            } else{
+                self.count--;
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+            }
+        } completion:^(BOOL finished) {
+            NSLog(@"animated");
+        }];
+
+
     }
+
+
 }
+- (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender {
+
+    NSLog(@"swipe right");
+    //change relational data to accepted throw a notification to user skip to next user
+
+    //    PFUser *userObject2 = [self.objectsArray objectAtIndex:1];
+//    NSLog(@"second match: %@", userObject2);
+
+    if (self.matchedUsersCount == self.objectsArray.count - 1) {
+        NSLog(@"last match in queue");
+
+        [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.matchedUsersCount]]];
+
+    } else{
+        
+        self.matchedUsersCount++;
+        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.matchedUsersCount]]];
+        NSLog(@"this is returning: %@", self.objectsArray);
+    }
+
+//    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+//        if (self.count == self.imageArray.count - 1 ) {
+//            self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+//            NSLog(@"last image");
+//
+//        } else{
+//            self.count++;
+//            self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+//        }
+//    } completion:^(BOOL finished) {
+//        NSLog(@"animated");
+//    }];
+
+}
+
+- (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender {
+    NSLog(@"swipe Left");
+}
+
 
 - (IBAction)onYesButton:(UIButton *)sender {
 }
@@ -354,6 +375,46 @@ CLLocationManagerDelegate>
 }
 
 #pragma mark -- helpers
+
+-(void)checkAndGetImages:(NSArray *)pfObjects user:(NSUInteger) userNumber    {
+    PFUser *userForImages =  [pfObjects objectAtIndex:userNumber];
+    NSString *image1 = [userForImages objectForKey:@"image1"];
+    NSString *image2 = [userForImages objectForKey:@"image2"];
+    NSString *image3 = [userForImages objectForKey:@"image3"];
+    NSString *image4 = [userForImages objectForKey:@"image4"];
+    NSString *image5 = [userForImages objectForKey:@"image5"];
+    NSString *image6 = [userForImages objectForKey:@"image6"];
+
+    if (image1) {
+        [self.imageArray addObject:image1];
+        self.userImage.image = [UIImage imageWithData:[self imageData:image1]];
+    }if (image2) {
+        [self.imageArray addObject:image2];
+    } if (image3) {
+        [self.imageArray addObject:image3];
+    } if (image4) {
+        [self.imageArray addObject:image4];
+    } if (image5) {
+        [self.imageArray addObject:image5];
+    } if (image6) {
+        [self.imageArray addObject:image6];
+    }
+}
+
+-(void)checkAndGetUserData:(NSArray *)pfObjects user:(NSUInteger)userNumber{
+    PFUser *userForData = [pfObjects objectAtIndex:userNumber];
+    NSString *firstName = [userForData objectForKey:@"firstName"];
+    NSString *work = [userForData objectForKey:@"work"];
+    NSString *school = [userForData objectForKey:@"scool"];
+    NSString *bday = [userForData objectForKey:@"birthday"];
+//    NSString *userDesc = [userForData objectForKey:@"desc"];
+
+    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", firstName, [self ageString:bday]];
+    self.educationLabel.text = school;
+    self.jobLabel.text = work;
+
+}
+
 -(NSString *)ageString:(NSString *)bDayString   {
 
     NSString *bday = bDayString;
@@ -363,38 +424,76 @@ CLLocationManagerDelegate>
     NSDate *birthdayDate = [formatter dateFromString:bday];
     NSDate *nowDate = [NSDate date];
     [formatter stringFromDate:nowDate];
-    NSString *nowString = [NSString stringWithFormat:@"%@", nowDate];
-    NSLog(@"current date string: %@", nowString);
+    //NSString *nowString = [NSString stringWithFormat:@"%@", nowDate];
+    //NSLog(@"current date string: %@", nowString);
     NSDateComponents *ageCom = [[NSCalendar currentCalendar]components:NSCalendarUnitYear fromDate:birthdayDate toDate:nowDate options:0];
     NSInteger ageInt = [ageCom year];
     NSString *ageString = [NSString stringWithFormat:@"%zd", ageInt];
     return ageString;
 }
 
+-(NSData *)imageData:(NSString *)imageString{
+    NSURL *url = [NSURL URLWithString:imageString];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    return data;
+}
+
+
 
 //old code
 
-//name and age, location off birthday object
-//[query whereKey:bday greaterThan:<#(nonnull id)#>]
-//    [query whereKey:@"location" nearGeoPoint:PFGEOPoint object withinMiles:milesAwayObject];
-//    PFQuery *queryClass = [PFQuery queryWithClassName:@"User"];
 
-
-
-//            NSString *age1 = [[objects objectAtIndex:0]objectForKey:@"birthday"];
-//            NSString *age2 = [[objects objectAtIndex:1]objectForKey:@"birthday"];
-//            NSLog(@"age:%@", [self ageString:age]);
-//            NSLog(@"age:%@", [self ageString:age2]);
-
+//did update location delegate method
+//    double latitude = self.locationManager.location.coordinate.latitude;
+//    double longitude = self.locationManager.location.coordinate.longitude;
+//    NSLog(@"view did load lat: %f & long: %f", latitude, longitude);
 //
-//            NSString *latitude = [[objects firstObject]objectForKey:@"latitude"];
-//            NSString *longitude = [[objects firstObject]objectForKey:@"longitude"];
-//            double lat = [latitude doubleValue];
-//            double longDouble = [longitude doubleValue];
-//            for (PFUser *userKeys in objects) {
-//                NSLog(@"user: %@", userKeys.objectId);
-//                NSLog(@"sexPref: %@", userKeys.sexPref);
-//            }
+//    //save lat and long in a PFGeoCode Object and save to User in Parse
+//    self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
+//    [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+//    [self.currentUser saveInBackground];
+//    NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
+//
+//    //get city and state of local location object
+//    CLGeocoder *geoCoder = [CLGeocoder new];
+//    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+//        if (error) {
+//            NSLog(@"error: %@", error);
+//        } else {
+//            CLPlacemark *placemark = [placemarks firstObject];
+//            NSLog(@"placemark city: %@", placemark.locality);
+//        }
+//    }];
+//
+//
+
+
+
+//if (sender.direction == UISwipeGestureRecognizerDirectionUp){
+//    NSLog(@"swiped up");
+//    //swipe up with animations
+//    //[UIView transitionFromView:self.view toView:self.userImage duration:0.5 options:UIViewAnimationOptionTransitionFlipFromBottom completion:^(BOOL finished) {
+//    //display image
+//
+//
+//    self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:1]]];
+//
+//    [self.imageArray removeObjectAtIndex:0];
+//
+//    NSLog(@"array size: %lu", [self.imageArray count]);
+//
+//    if ([self.imageArray count] < 2) {
+//        NSLog(@"Only one image Left");
+//    }
+//
+//
+//
+//
+//
+//
+//} else{
+//    NSLog(@"no swipe?");
+//}
 @end
 
 

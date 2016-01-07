@@ -196,6 +196,8 @@
 			children = (
 				268BA10C1C25AFE10054414E /* UserData.h */,
 				268BA10D1C25AFE10054414E /* UserData.m */,
+				268BA1141C2737170054414E /* CVCell.h */,
+				268BA1151C2737170054414E /* CVCell.m */,
 				260799051C29CB4600B364C8 /* RangeSlider.h */,
 				260799061C29CB4600B364C8 /* RangeSlider.m */,
 			);
@@ -205,8 +207,6 @@
 		268BA1131C26EFBD0054414E /* Initial Setup */ = {
 			isa = PBXGroup;
 			children = (
-				268BA1141C2737170054414E /* CVCell.h */,
-				268BA1151C2737170054414E /* CVCell.m */,
 				268BA1101C26EFA70054414E /* InitialWalkThroughViewController.h */,
 				268BA1111C26EFA70054414E /* InitialWalkThroughViewController.m */,
 				268BA0C31C21BDF10054414E /* PFLoginViewController.h */,

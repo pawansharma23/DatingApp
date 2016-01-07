@@ -138,10 +138,10 @@
             self.educationLabel.text = school;
 
             //userImages
-            NSArray *userImages = [[objects firstObject] objectForKey:@"selectedUserImages"];
-            //NSString *imageStr = user.photoID;
-            NSLog(@"user images: %@", userImages);
-
+            NSString *image1 = [[objects firstObject] objectForKey:@"image1"];
+            NSString *image2 = [[objects firstObject] objectForKey:@"image2"];
+            NSLog(@"image1: %@", image1);
+            NSLog(@"image2:%@", image2);
         }
     }];
 
@@ -277,9 +277,30 @@
 
 - (IBAction)logOutButton:(UIButton *)sender {
 
-    [PFUser logOut];
-    [self performSegueWithIdentifier:@"LoggedOut" sender:self];
+    if (sender.isSelected) {
+        self.logoutButton.backgroundColor = [UIColor colorWithRed:56.0/255.0 green:193.0/255.0 blue:255.0/255.0 alpha:1.0];
 
+    }
+    [PFUser logOut];
+
+
+    //nothing works to unlink the facebok account
+    //[PFFacebookUtils unlinkUserInBackground:self.currentUser];
+
+//    [PFFacebookUtils unlinkUserInBackground:[PFUser currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
+//        if (error) {
+//            NSLog(@"error unlinking: %@", error);
+//        } else{
+//            NSLog(@"logged out, no user: %@", self.currentUser);
+//        }
+//    }];
+//
+//    NSLog(@"current user: after %@", self.currentUser);
+
+
+
+
+    //[self performSegueWithIdentifier:@"LoggedOut" sender:self];
 }
 
 

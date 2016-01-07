@@ -96,7 +96,6 @@ CLLocationManagerDelegate>
 
     self.automaticallyAdjustsScrollViewInsets = NO;
 
-
     self.pictureArray = [NSMutableArray new];
     self.selectedPictures = [NSMutableArray new];
 
@@ -112,8 +111,6 @@ CLLocationManagerDelegate>
     [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
     [self.collectionView setCollectionViewLayout:flowLayout];
-
-    //from CLLocation object
 
     //location object
     self.locationManager = [CLLocationManager new];
@@ -131,11 +128,9 @@ CLLocationManagerDelegate>
     //save lat and long in a PFGeoCode Object and save to User in Parse
     self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
     [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+
     [self.currentUser saveInBackground];
-    //PFGeoPoint *geocodeParse = [self.currentUser objectForKey:@"GeoCode"];
-    NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
-
-
+    NSLog(@"saved PFGeoCode: %@", self.pfGeoCoded);
 
 
     //suggestion segue for user "about me"
@@ -144,11 +139,6 @@ CLLocationManagerDelegate>
     [self.textField addSubview:suggestions];
    // [self.textField addConstraint:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[suggestions]-|"
      //                                                                     options:NSLayoutAttributeLeading metrics:nil views:NSDictionaryOfVariableBindings(suggestions)]];
-
-
-
-
-
 
     //min max Range Slider custom slider class
 //    RangeSlider *rangeSlider = [[RangeSlider alloc]initWithFrame:CGRectMake(20, 475, 300, 31)];
@@ -175,12 +165,26 @@ CLLocationManagerDelegate>
     [self.bothSexesButton.layer setBorderColor:[UIColor greenColor].CGColor];
 
     self.previousButton.hidden = YES;
+    //distance away slider initial
+    NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
+    NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
+    self.milesAwayLabel.text = milesAway;
+    [self.currentUser setObject:milesAwayStr forKey:@"milesAway"];
 
     //set age slider values
     NSString *minAge = [NSString stringWithFormat:@"Minimum Age: 18"];
     self.minAgeLabel.text = minAge;
+    NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
+    [self.currentUser setObject:minAgeStr forKey:@"minAge"];
+    [self.currentUser saveInBackground];
+    //Max
     NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: 62"];
     self.maxAgeLabel.text = maxAge;
+    NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
+    [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
+
+
+    [self.currentUser saveInBackground];
 
 }
 
@@ -205,8 +209,6 @@ CLLocationManagerDelegate>
         NSLog(@"no data for sex pref");
     }
 
-
-    NSLog(@"curent user from ViewDidAppear: %@", self.currentUser);
 }
 
 #pragma mark -- CLLocation delegate methods
@@ -245,7 +247,7 @@ CLLocationManagerDelegate>
 
     
 }
-#pragma mark -- miles away range
+#pragma mark -- Distance Away Slider
 - (IBAction)sliderValueChanged:(UISlider *)sender {
 
         NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
@@ -257,61 +259,76 @@ CLLocationManagerDelegate>
 
 }
 
-#pragma mark -- sex preference buttons
+#pragma mark -- Sex preference buttons
 //Sex Preference buttons and saving to parse on selection, also deselecting the other two
-- (IBAction)menInterestButton:(UIButton *)sender {
-    //when buton pressed change effect on button and save to Parse
-    self.mensInterestButton.backgroundColor = [UIColor blueColor];
-    [self.currentUser setObject:@"male" forKey:@"sexPref"];
-    [self.currentUser saveInBackground];
+//Sender is the only thing that has been omitted in the helper method, grouping it with the global object
 
-    if ([sender isSelected]) {
-        [sender setSelected:NO];
-        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
-    } else{
-        //change other two buttons to delected
-        [sender setSelected:YES];
-        [self.womensInterestButton setSelected:NO];
-        [self.bothSexesButton setSelected:NO];
-        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
-        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
-    }
+- (IBAction)menInterestButton:(UIButton *)sender {
+
+    [self changeButtonState:self.mensInterestButton sexString:@"male" otherButton1:self.womensInterestButton otherButton2:self.bothSexesButton];
+
+
+
+//    //when buton pressed change effect on button and save to Parse
+//    self.mensInterestButton.backgroundColor = [UIColor blueColor];
+//    [self.currentUser setObject:@"male" forKey:@"sexPref"];
+//    [self.currentUser saveInBackground];
+//
+//    if ([sender isSelected]) {
+//        [sender setSelected:NO];
+//        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
+//    } else{
+//        //change other two buttons to delected
+//        [sender setSelected:YES];
+//        [self.womensInterestButton setSelected:NO];
+//        [self.bothSexesButton setSelected:NO];
+//        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
+//        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
+//    }
 }
 //Womens
 - (IBAction)womenInterestButton:(UIButton *)sender {
-    //when buton pressed change effect on button and save to Parse
-    self.womensInterestButton.backgroundColor = [UIColor blueColor];
-    [self.currentUser setObject:@"female" forKey:@"sexPref"];
-    [self.currentUser saveInBackground];
-    //View effects for all three buttons change on selection
-    if ([sender isSelected]) {
-        [sender setSelected:NO];
-        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
-    } else{
-        [sender setSelected:YES];
-        [self.mensInterestButton setSelected:NO];
-        [self.bothSexesButton setSelected:NO];
-        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
-        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
-    }
+
+    [self changeButtonState:self.womensInterestButton sexString:@"female" otherButton1:self.mensInterestButton otherButton2:self.bothSexesButton];
+
+
+
+    //    //when buton pressed change effect on button and save to Parse
+//    self.womensInterestButton.backgroundColor = [UIColor blueColor];
+//    [self.currentUser setObject:@"female" forKey:@"sexPref"];
+//    [self.currentUser saveInBackground];
+//    //View effects for all three buttons change on selection
+//    if ([sender isSelected]) {
+//        [sender setSelected:NO];
+//        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
+//    } else{
+//        [sender setSelected:YES];
+//        [self.mensInterestButton setSelected:NO];
+//        [self.bothSexesButton setSelected:NO];
+//        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
+//        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
+//    }
 }
 //Both
 - (IBAction)bothSexesInterestButton:(UIButton *)sender {
-    //when buton pressed change effect on button and save to Parse
-    self.bothSexesButton.backgroundColor = [UIColor blueColor];
-    [self.currentUser setObject:@"male female" forKey:@"sexPref"];
-    [self.currentUser saveInBackground];
-    //View effects for all three buttons change on selection
-    if ([sender isSelected]) {
-        [sender setSelected:NO];
-        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
-    } else{
-        [sender setSelected:YES];
-        [self.mensInterestButton setSelected:NO];
-        [self.womensInterestButton setSelected:NO];
-        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
-        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
-    }
+
+    [self changeButtonState:self.bothSexesButton sexString:@"male female" otherButton1:self.mensInterestButton otherButton2:self.womensInterestButton];
+
+//    //when buton pressed change effect on button and save to Parse
+//    self.bothSexesButton.backgroundColor = [UIColor blueColor];
+//    [self.currentUser setObject:@"male female" forKey:@"sexPref"];
+//    [self.currentUser saveInBackground];
+//    //View effects for all three buttons change on selection
+//    if ([sender isSelected]) {
+//        [sender setSelected:NO];
+//        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
+//    } else{
+//        [sender setSelected:YES];
+//        [self.mensInterestButton setSelected:NO];
+//        [self.womensInterestButton setSelected:NO];
+//        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
+//        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
+//    }
 }
 #pragma mark -- age min and max sliders
 - (IBAction)minSliderChange:(UISlider *)sender {
@@ -320,8 +337,9 @@ CLLocationManagerDelegate>
     NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
     self.minAgeLabel.text = minAge;
     //save to Parse
-    [self.currentUser setObject:minAge forKey:@"minAge"];
+    [self.currentUser setObject:minAgeStr forKey:@"minAge"];
     [self.currentUser saveInBackground];
+    NSLog(@"change min age to: %@", minAge);
 }
 //Max
 - (IBAction)maxSliderChange:(UISlider *)sender {
@@ -330,11 +348,13 @@ CLLocationManagerDelegate>
     NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %@", maxAgeStr];
     self.maxAgeLabel.text = maxAge;
     //save to Parse
-    [self.currentUser setObject:maxAge forKey:@"maxAge"];
+    [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
     [self.currentUser saveInBackground];
+    NSLog(@"change min age to: %@", maxAge);
 }
-#pragma mark -- collectionView delegate Methods
 
+
+#pragma mark -- collectionView delegate Methods
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.pictureArray.count;
 }
@@ -377,8 +397,7 @@ CLLocationManagerDelegate>
                     self.imageSource1 = imageSource;
                     [self.currentUser setObject:imageSource forKey:@"image1"];
                     [self.currentUser saveInBackground];
-                    NSLog(@"first saved in image1 %@", imageSource);
-
+                    NSLog(@"1st saved in image1 %@", imageSource);
 
                 } else if (self.imageSource1 && !self.imageSource2){
                     NSLog(@"2nd Saved %@", imageSource);
@@ -403,6 +422,7 @@ CLLocationManagerDelegate>
                     self.imageSource5 = imageSource;
                     [self.currentUser setObject:imageSource forKey:@"image5"];
                     [self.currentUser saveInBackground];
+                    //6
                 } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && self.imageSource5 && !self.imageSource6){
                     NSLog(@"6th Saved %@", imageSource);
                     self.imageSource6 = imageSource;
@@ -450,7 +470,6 @@ CLLocationManagerDelegate>
 
 }
 #pragma mark -- helpers
-#pragma mark -- previous/next page
 -(void)onNextPrevPage:(NSString *)pageURLString {
 
     NSURL *URL = [NSURL URLWithString:pageURLString];
@@ -499,7 +518,6 @@ CLLocationManagerDelegate>
     [dTask resume];
 }
 
-#pragma mark -- facebook profile data load
 - (void)_loadData {
 
     self.currentUser = [PFUser currentUser];
@@ -511,8 +529,7 @@ CLLocationManagerDelegate>
         if (!error) {
             //dictionary of data returned from FB
             NSDictionary *userData = (NSDictionary *)result;
-             NSLog(@"dictionary of results: %@", userData);
-            
+
             //Parse through the data and save needed bits to Parse backend & to local for Gender
             NSString *facebookID = userData[@"id"];
             NSString *fullName = userData[@"name"];
@@ -534,14 +551,10 @@ CLLocationManagerDelegate>
             UserData *locUser = [UserData new];
 
             //likes array saved in parse as an array
-
             NSDictionary *likes = userData[@"likes"];
-            NSLog(@"likes?: %@", likes);
+
             if (likes) {
-
-
             NSArray *likeArray = likes[@"data"];
-            NSLog(@"facebook likes: %@", likeArray);
 
             self.secondLikeArray = [[NSMutableArray alloc] initWithCapacity:[likeArray count]];
 
@@ -555,7 +568,7 @@ CLLocationManagerDelegate>
             }
 
                 } else{
-                    NSLog(@"no likes nil: %@", self.secondLikeArray);
+                    NSLog(@"no likes: %@", self.secondLikeArray);
                 }
 
             locUser.fullName = fullName;
@@ -579,7 +592,6 @@ CLLocationManagerDelegate>
                 [self.currentUser setObject:gender forKey:@"gender"];
             }
             if (location) {
-                NSLog(@"facebook location: %@", location);
                 [self.currentUser setObject:location forKey:@"facebookLocation"];
             }
             if (placeOfWork) {
@@ -590,6 +602,7 @@ CLLocationManagerDelegate>
             }
 
             [_currentUser saveInBackground];
+            NSLog(@"saved facebook user data: 1)%@\n2)%@\n3)%@\n4)%@\n5)%@\n6)%@\n7)%@\n8)%@\n", fullName, firstName, facebookID, birthdayStr, gender, location, placeOfWork, school);
 
         } else {
             NSLog(@"facebook data error: %@", error);
@@ -598,7 +611,6 @@ CLLocationManagerDelegate>
 
 }
 
-#pragma mark -- facebook Image data load
 -(void)_loadUserImages{
 
     self.currentUser = [PFUser currentUser];
@@ -610,7 +622,7 @@ CLLocationManagerDelegate>
                                           id result,
                                           NSError *error) {
         if (!error) {
-        NSLog(@"image data %@", result);
+        //NSLog(@"image data %@", result);
             NSArray *dataArr = result[@"data"];
             //next/previous page results
             NSDictionary *paging = result[@"paging"];
@@ -637,7 +649,7 @@ CLLocationManagerDelegate>
                     userD.photoID = pictureIds;
                     userD.photosData = mainPicData;
                     userD.photoURL = mainPicURL;
-                    NSLog(@"pic ids: %@", pictureIds);
+                    NSLog(@"pic ids loaded: %@", pictureIds);
 
                     [self.pictureArray addObject:userD];
                     [self.collectionView reloadData];
@@ -656,6 +668,23 @@ CLLocationManagerDelegate>
 }
 
 
+-(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2    {
+    button.backgroundColor = [UIColor blueColor];
+    [self.currentUser setObject:sex forKey:@"sexPref"];
+    [self.currentUser saveInBackground];
+
+    if ([button isSelected]) {
+        [button setSelected:NO];
+        button.backgroundColor = [UIColor whiteColor];
+    } else{
+        //change other two buttons to delected
+        [button setSelected:YES];
+        [b1 setSelected:NO];
+        [b2 setSelected:NO];
+        b1.backgroundColor = [UIColor whiteColor];
+        b2.backgroundColor = [UIColor whiteColor];
+    }
+}
 
 
 //old next page data

@@ -29,6 +29,12 @@
 @property (strong, nonatomic) NSURL *photoURL;
 @property (strong, nonatomic) NSData *photosData;
 
+@property (strong, nonatomic) NSString *image1;
+@property (strong, nonatomic) NSString *image2;
+@property (strong, nonatomic) NSString *image3;
+
+
+
 
 //Dios specific data
 @property (strong, nonatomic) NSString *aboutMe;//user description
