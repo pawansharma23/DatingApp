@@ -102,6 +102,12 @@
                                     <constraint firstItem="FcC-Q3-yZP" firstAttribute="top" secondItem="3vw-AH-Izn" secondAttribute="bottom" constant="2" id="ztk-TE-94U"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nbh-I4-sbC">
+                                <rect key="frame" x="289" y="539" width="22" height="22"/>
+                                <connections>
+                                    <segue destination="ZfB-PD-3YE" kind="show" id="Rop-v2-dfr"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -134,9 +140,9 @@
                                 <segue destination="7rR-vI-Hse" kind="show" id="82N-Ia-4B2"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="SetUp temp Button" id="LFs-Do-q6O">
+                        <barButtonItem key="rightBarButtonItem" title="Matches" id="LFs-Do-q6O">
                             <connections>
-                                <segue destination="ZfB-PD-3YE" kind="show" identifier="NoUser" id="LSu-Rv-v7A"/>
+                                <segue destination="ngk-sG-UQd" kind="show" id="nwI-E6-2KU"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -451,6 +457,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vg7-ay-Sw1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="463" y="1768"/>
+        </scene>
+        <!--Messaging View Controller-->
+        <scene sceneID="4OO-fA-dL3">
+            <objects>
+                <viewController id="ngk-sG-UQd" customClass="MessagingViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="tdB-9H-dlp"/>
+                        <viewControllerLayoutGuide type="bottom" id="bui-Nl-yQm"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="OU7-gb-vMZ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gE5-Ov-2Tt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1179" y="-315"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="ljb-An-xxD">
@@ -801,7 +825,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Tq-9J-QuR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1866" y="401"/>
+            <point key="canvasLocation" x="1874" y="401"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3DC-MW-R5R">
@@ -826,6 +850,6 @@
         <image name="loginFB" width="288" height="62"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="HBu-Qa-kR8"/>
+        <segue reference="sqJ-2N-hSO"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -25,6 +25,7 @@
 		268BA1161C2737170054414E /* CVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA1151C2737170054414E /* CVCell.m */; };
 		26C1E3D61C3194B10020349A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D51C3194B10020349A /* CoreLocation.framework */; };
 		26C1E3D81C31AB590020349A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D71C31AB590020349A /* MobileCoreServices.framework */; };
+		26E3DB8D1C3F4EC700699FA5 /* MessagingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */; };
 		B6D0576735DD6374DE9CF23F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E7EAF390F8A69E1F0F90DF /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +81,8 @@
 		268BA1151C2737170054414E /* CVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCell.m; sourceTree = "<group>"; };
 		26C1E3D51C3194B10020349A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagingViewController.h; sourceTree = "<group>"; };
+		26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagingViewController.m; sourceTree = "<group>"; };
 		B2B739D58087A908AFCE74CE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		F2E7EAF390F8A69E1F0F90DF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -181,6 +184,8 @@
 		268BA10B1C25A8F00054414E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */,
+				26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */,
 				268BA1081C25A8D60054414E /* PreferencesViewController.h */,
 				268BA1091C25A8D60054414E /* PreferencesViewController.m */,
 				268BA1051C25A86C0054414E /* ProfileViewController.h */,
@@ -420,6 +425,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				260799071C29CB4600B364C8 /* RangeSlider.m in Sources */,
+				26E3DB8D1C3F4EC700699FA5 /* MessagingViewController.m in Sources */,
 				268BA0C51C21BDF10054414E /* PFLoginViewController.m in Sources */,
 				268BA0911C1DB53F0054414E /* ViewController.m in Sources */,
 				268BA10E1C25AFE10054414E /* UserData.m in Sources */,

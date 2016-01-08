@@ -69,10 +69,10 @@ CLLocationManagerDelegate>
 
     self.currentUser = [PFUser currentUser];
     NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-    NSLog(@"current user VDL: %@", fullName);
+    //NSLog(@"current user VDL: %@", fullName);
 
     self.count = 1;
-    self.matchedUsersCount = 1;
+    self.matchedUsersCount = 0;
     self.imageArray = [NSMutableArray new];
     self.navigationItem.title = @"FmF";
 
@@ -92,15 +92,17 @@ CLLocationManagerDelegate>
 
 
 
-
     //other view elements setup
     self.greenButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
     self.redButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
+    self.greenButton.layer.cornerRadius = 20;
+    self.redButton.layer.cornerRadius = 20;
     //main image round edges
     self.userImage.layer.cornerRadius = 8;
     self.userImage.clipsToBounds = YES;
 
     [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
+    self.userInfoView.layer.cornerRadius = 10;
 
     //swipe gestures-- up
     [self.userImage setUserInteractionEnabled:YES];
@@ -132,7 +134,7 @@ CLLocationManagerDelegate>
 
 
 -(void)viewDidAppear:(BOOL)animated{
-    NSLog(@"current user view did appear %@", self.currentUser);
+    //NSLog(@"current user view did appear %@", self.currentUser);
     if (!self.currentUser) {
         NSLog(@"no user currently logged in");
         //[self performSegueWithIdentifier:@"NoUser" sender:nil];
@@ -155,11 +157,14 @@ CLLocationManagerDelegate>
         self.milesFromUserLocation = [milesFromUserLoc intValue];
         //update users age everytime they signin and re-save that age in Parse for matching purpposes
         NSString *userBirthday = [self.currentUser objectForKey:@"birthday"];
-        NSLog(@"user bDay: %@", userBirthday);
+       // NSLog(@"user bDay: %@", userBirthday);
         NSString *age = [self ageString:userBirthday];
         [self.currentUser setObject:age forKey:@"userAge"];
 
-        NSLog(@"current user VDA: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@", fullName, age, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge);
+        //relation
+        PFRelation *rela = [self.currentUser objectForKey:@"matchNotConfirmed"];
+
+        NSLog(@"current user VDA: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, age, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
 
 
 
@@ -227,18 +232,28 @@ CLLocationManagerDelegate>
                     long objectCount = [objects count];
                     NSLog(@"male pref query: %zd results", objectCount);
                     self.objectsArray = objects;
-                    //first item display
+
                     if (objectCount == 1) {
 
                         [self checkAndGetImages:objects user:0];
                         [self checkAndGetUserData:objects user:0];
                     } else if (objectCount == 2){
+
                         [self checkAndGetImages:objects user:0];
                         [self checkAndGetUserData:objects user:0];
+
+                        PFUser *user1 =  [objects objectAtIndex:0];
+                        PFUser *user2 =  [objects objectAtIndex:1];
+                        NSLog(@"matches: %@\n%@\n", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
 
                     } else if (objectCount == 3){
                         [self checkAndGetImages:objects user:0];
                         [self checkAndGetUserData:objects user:0];
+
+                        PFUser *user1 =  [objects objectAtIndex:0];
+                        PFUser *user2 =  [objects objectAtIndex:1];
+                        PFUser *user3 =  [objects objectAtIndex:2];
+                        NSLog(@"matches: %@\n%@\n%@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], [user3 objectForKey:@"fullName"]);
                     }
                 } else{
                     NSLog(@"error: %@", error);
@@ -277,6 +292,7 @@ CLLocationManagerDelegate>
 
 
 #pragma mark -- Swipe Gestures
+//SwipeUp
 - (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender {
 
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
@@ -285,21 +301,21 @@ CLLocationManagerDelegate>
         //add animation
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
             if (self.count == self.imageArray.count - 1 ) {
+
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"last image");
 
             } else{
+
                 self.count++;
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
             }
         } completion:^(BOOL finished) {
-            NSLog(@"animated");
         }];
-
     }
 }
 
-
+//SwipeDown
 - (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender {
 
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
@@ -318,46 +334,65 @@ CLLocationManagerDelegate>
         } completion:^(BOOL finished) {
             NSLog(@"animated");
         }];
-
-
     }
-
-
 }
+
+
+
+
+
+//Swipe Right or Left
 - (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender {
 
     NSLog(@"swipe right");
-    //change relational data to accepted throw a notification to user skip to next user
+    self.count = 0;
+    [self.imageArray removeAllObjects];
 
-    //    PFUser *userObject2 = [self.objectsArray objectAtIndex:1];
-//    NSLog(@"second match: %@", userObject2);
+    //set change relational data to accepted throw a notification to user skip to next user
+    //clear out the array that the up and down swipe access and put in methods to access them reset the data to the second item in the array that feeds the data
 
     if (self.matchedUsersCount == self.objectsArray.count - 1) {
         NSLog(@"last match in queue");
 
         [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.matchedUsersCount]]];
+        [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.matchedUsersCount]]];
+
+        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
+        PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
+        [matchWithoutConfirm addObject:currentMatchUser];
+        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+        NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
+        NSLog(@"It's Match: %@ and %@",fullName, fullNameOfCurrentMatch);
+
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"error: %@", error);
+            }
+        }];
+
 
     } else{
-        
+
         self.matchedUsersCount++;
-        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.matchedUsersCount]]];
-        NSLog(@"this is returning: %@", self.objectsArray);
+        [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+        [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+
+        //assign a relationship between current user and swiped right user
+        //it's doing the next user though
+        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
+        PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
+        [matchWithoutConfirm addObject:currentMatchUser];
+        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+        NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
+        NSLog(@"It's Match: %@ and %@",fullName, fullNameOfCurrentMatch);
+
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"error: %@", error);
+            }
+        }];
     }
-
-//    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
-//        if (self.count == self.imageArray.count - 1 ) {
-//            self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-//            NSLog(@"last image");
-//
-//        } else{
-//            self.count++;
-//            self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-//        }
-//    } completion:^(BOOL finished) {
-//        NSLog(@"animated");
-//    }];
-
 }
 
 - (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender {
@@ -412,6 +447,8 @@ CLLocationManagerDelegate>
     self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", firstName, [self ageString:bday]];
     self.educationLabel.text = school;
     self.jobLabel.text = work;
+
+    NSLog(@"%@\n%@\n%@", firstName, school, work);
 
 }
 
