@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface UserData : NSObject
 //from FB public profile data
@@ -41,7 +42,8 @@
 @property (strong, nonatomic) NSString *username;
 
 
-
++(UIColor *)rubyRed;
++(UIColor *)uclaBlue;
 
 
 @end

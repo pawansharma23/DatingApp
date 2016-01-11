@@ -21,12 +21,17 @@
 #import "UserData.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "MessagingViewController.h"
+#import <MessageUI/MessageUI.h>
+
 
 
 @interface ViewController ()<FBSDKGraphRequestConnectionDelegate,
 UIGestureRecognizerDelegate,
 UINavigationControllerDelegate,
-CLLocationManagerDelegate>
+CLLocationManagerDelegate,
+MFMailComposeViewControllerDelegate>
+
 //View elemets
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *greenButton;
@@ -35,11 +40,23 @@ CLLocationManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *jobLabel;
 @property (weak, nonatomic) IBOutlet UILabel *educationLabel;
 @property (weak, nonatomic) IBOutlet UIView *userInfoView;
+@property (weak, nonatomic) IBOutlet UIButton *image1Indicator;
+@property (weak, nonatomic) IBOutlet UIButton *image2Indicator;
+@property (weak, nonatomic) IBOutlet UIButton *image3Indicator;
+@property (weak, nonatomic) IBOutlet UIButton *image4Indicator;
+@property (weak, nonatomic) IBOutlet UIButton *image5Indicator;
+@property (weak, nonatomic) IBOutlet UIButton *image6Indicator;
+@property (weak, nonatomic) IBOutlet UIView *fullDescView;
+@property (weak, nonatomic) IBOutlet UILabel *fullDescNameAndAge;
+@property (weak, nonatomic) IBOutlet UILabel *fullAboutMe;
+@property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (strong, nonatomic) NSString *leadImage;
 @property (strong, nonatomic) NSData *leadImageData;
 @property (strong, nonatomic) NSMutableArray *imageArray;
+@property (strong, nonatomic) NSString *nameAndAgeGlobal;
+
 //location Properties
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
@@ -69,16 +86,16 @@ CLLocationManagerDelegate>
 
     self.currentUser = [PFUser currentUser];
     NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-    //NSLog(@"current user VDL: %@", fullName);
+    NSLog(@"current user VDL: %@", fullName);
+
+    self.fullDescView.hidden = YES;
 
     self.count = 1;
     self.matchedUsersCount = 0;
     self.imageArray = [NSMutableArray new];
-    self.navigationItem.title = @"FmF";
-
-    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:255.0/255.0 green:84.0/255.0 blue:95.0/255.0 alpha:1.0];
-
- // picture instead of Title   self.navigationItem.titleView = [UIImage imageNamed:imagename];
+    self.navigationItem.title = @"Fmf";
+    self.navigationController.navigationBar.barTintColor = [UserData rubyRed];
+    [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
 
     //location object
@@ -91,8 +108,16 @@ CLLocationManagerDelegate>
     self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
 
 
-
     //other view elements setup
+    [self setUpButtons:self.image1Indicator];
+    [self setUpButtons:self.image2Indicator];
+    [self setUpButtons:self.image3Indicator];
+    [self setUpButtons:self.image4Indicator];
+    [self setUpButtons:self.image5Indicator];
+    [self setUpButtons:self.image6Indicator];
+
+    [self currentImage:self.count];
+
     self.greenButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
     self.redButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
     self.greenButton.layer.cornerRadius = 20;
@@ -164,7 +189,7 @@ CLLocationManagerDelegate>
         //relation
         PFRelation *rela = [self.currentUser objectForKey:@"matchNotConfirmed"];
 
-        NSLog(@"current user VDA: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, age, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
+        NSLog(@"current user View Controller: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, age, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
 
 
 
@@ -179,18 +204,18 @@ CLLocationManagerDelegate>
 
     double latitude = self.locationManager.location.coordinate.latitude;
     double longitude = self.locationManager.location.coordinate.longitude;
-    NSLog(@"view did appear: %f & long: %f", latitude, longitude);
+    //NSLog(@"view did appear: %f & long: %f", latitude, longitude);
 
     //save lat and long in a PFGeoCode Object and save to User in Parse
     self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
     [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
-        NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
+        //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
         //save age and location objects
     [self.currentUser saveInBackground];
 
 
         //PFGeoPoint *geocodeParse = [self.currentUser objectForKey:@"GeoCode"];
-    NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
+    //NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
 
 
 
@@ -209,7 +234,7 @@ CLLocationManagerDelegate>
         //Preference for Both Sexes
         [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if(!error){
-            NSLog(@"pfquery-- user objects: %zd", [objects count]);
+            //NSLog(@"pfquery-- user objects: %zd", [objects count]);
             [self checkAndGetImages:objects user:0];
         } else{
             NSLog(@"error: %@", error);
@@ -230,7 +255,7 @@ CLLocationManagerDelegate>
             [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
                 if (!error) {
                     long objectCount = [objects count];
-                    NSLog(@"male pref query: %zd results", objectCount);
+                   // NSLog(@"male pref query: %zd results", objectCount);
                     self.objectsArray = objects;
 
                     if (objectCount == 1) {
@@ -287,7 +312,7 @@ CLLocationManagerDelegate>
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
-    NSLog(@"location manager failed: %@", error);
+    //NSLog(@"location manager failed: %@", error);
 }
 
 
@@ -304,11 +329,17 @@ CLLocationManagerDelegate>
 
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"last image");
+                [self currentImage:self.count];
+
+                [self lastObjectCallDesciptionView];
 
             } else{
 
                 self.count++;
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                [self currentImage:self.count];
+                self.fullDescView.hidden = YES;
+
             }
         } completion:^(BOOL finished) {
         }];
@@ -321,15 +352,25 @@ CLLocationManagerDelegate>
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionDown) {
         NSLog(@"swipe down");
-        //add animation
+
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
             if (self.count == self.imageArray.count - self.imageArray.count) {
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"first image");
+                NSLog(@"count: %zd", self.count);
+                [self currentImage:self.count];
+
+                self.fullDescView.hidden = YES;
 
             } else{
+
                 self.count--;
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                [self currentImage:self.count];
+                NSLog(@"count: %zd", self.count);
+
+                self.fullDescView.hidden = YES;
+
             }
         } completion:^(BOOL finished) {
             NSLog(@"animated");
@@ -345,25 +386,24 @@ CLLocationManagerDelegate>
 - (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender {
 
     NSLog(@"swipe right");
-    self.count = 0;
+    self.count = 1;
     [self.imageArray removeAllObjects];
 
-    //set change relational data to accepted throw a notification to user skip to next user
-    //clear out the array that the up and down swipe access and put in methods to access them reset the data to the second item in the array that feeds the data
-
+    //Set relational data to accepted throw a notification to user skip to next user
     if (self.matchedUsersCount == self.objectsArray.count - 1) {
-        NSLog(@"last match in queue");
 
+        NSLog(@"last match in queue");
+        //bring up the new user Data
         [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
         [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
-//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.matchedUsersCount]]];
 
+        //match the user in Parse
         PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
         PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
         [matchWithoutConfirm addObject:currentMatchUser];
         NSString *fullName = [self.currentUser objectForKey:@"fullName"];
         NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-        NSLog(@"It's Match: %@ and %@",fullName, fullNameOfCurrentMatch);
+        NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
 
         [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if (error) {
@@ -373,30 +413,57 @@ CLLocationManagerDelegate>
 
 
     } else{
+            //view elements, shows next user
+            self.matchedUsersCount++;
+            [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+            [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
 
-        self.matchedUsersCount++;
-        [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-        [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+            //assign a relationship between current user and swiped right user
+            PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
+            PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
+            [matchWithoutConfirm addObject:currentMatchUser];
+            //for logging purposes
+            NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+            NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
+            NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
 
-        //assign a relationship between current user and swiped right user
-        //it's doing the next user though
-        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
-        PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
-        [matchWithoutConfirm addObject:currentMatchUser];
-        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-        NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-        NSLog(@"It's Match: %@ and %@",fullName, fullNameOfCurrentMatch);
+            //[self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 
-        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (error) {
-                NSLog(@"error: %@", error);
-            }
-        }];
+            //email approval
+            [self sendEmailForApproval];
+            
+            //if (error) {
+              //  NSLog(@"error saving relation: %@", error);
+           // }
+        //}];
     }
 }
 
 - (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender {
-    NSLog(@"swipe Left");
+
+    NSLog(@"swipe Left, no match");
+    self.matchedUsersCount++;
+    [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+    [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+
+    //save rejected relationship on Parse
+    PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
+    PFRelation *noMatch = [self.currentUser relationForKey:@"NoMatch"];
+    [noMatch addObject:currentMatchUser];
+    //for logging
+    NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+    NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
+    NSLog(@"No Match between: %@ and %@",fullName, fullNameOfCurrentMatch);
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+        }
+    }];
+
+
+
+
 }
 
 
@@ -409,8 +476,24 @@ CLLocationManagerDelegate>
 - (IBAction)onXButton:(UIButton *)sender {
 }
 
-#pragma mark -- helpers
 
+
+#pragma mark -- Segue Methods
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if ([segue.identifier isEqualToString:@"Messages"]) {
+        NSLog(@"messages iden");
+        MessagingViewController *mvc = segue.destinationViewController;
+
+        mvc.pfUser = self.currentUser;
+
+    } else if ([segue.identifier isEqualToString:@"Settings"])  {
+
+        ProfileViewController *pvc = segue.destinationViewController;
+        pvc.userFromViewController = self.currentUser;
+    }
+}
+
+#pragma mark -- helpers
 -(void)checkAndGetImages:(NSArray *)pfObjects user:(NSUInteger) userNumber    {
     PFUser *userForImages =  [pfObjects objectAtIndex:userNumber];
     NSString *image1 = [userForImages objectForKey:@"image1"];
@@ -445,10 +528,11 @@ CLLocationManagerDelegate>
 //    NSString *userDesc = [userForData objectForKey:@"desc"];
 
     self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", firstName, [self ageString:bday]];
+    self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %@", firstName, [self ageString:bday]];
     self.educationLabel.text = school;
     self.jobLabel.text = work;
 
-    NSLog(@"%@\n%@\n%@", firstName, school, work);
+    //NSLog(@"%@\n%@\n%@", firstName, school, work);
 
 }
 
@@ -475,9 +559,120 @@ CLLocationManagerDelegate>
     return data;
 }
 
+-(void)currentImage:(long)matchedCount{
+    switch (matchedCount) {
+        case 1:
+            self.image1Indicator.backgroundColor = [UserData rubyRed];
+            self.image2Indicator.backgroundColor = nil;
+            self.image3Indicator.backgroundColor = nil;
+            self.image4Indicator.backgroundColor = nil;
+            self.image5Indicator.backgroundColor = nil;
+            self.image6Indicator.backgroundColor = nil;
+            break;
+        case 2:
+            self.image1Indicator.backgroundColor = nil;
+            self.image2Indicator.backgroundColor = [UserData rubyRed];
+            self.image3Indicator.backgroundColor = nil;
+            self.image4Indicator.backgroundColor = nil;
+            self.image5Indicator.backgroundColor = nil;
+            self.image6Indicator.backgroundColor = nil;
+            break;
+        case 3:
+            self.image1Indicator.backgroundColor = nil;
+            self.image2Indicator.backgroundColor = nil;
+            self.image3Indicator.backgroundColor = [UserData rubyRed];
+            self.image4Indicator.backgroundColor = nil;
+            self.image5Indicator.backgroundColor = nil;
+            self.image6Indicator.backgroundColor = nil;
+            break;
+        case 4:
+            self.image1Indicator.backgroundColor = nil;
+            self.image2Indicator.backgroundColor = nil;
+            self.image3Indicator.backgroundColor = nil;
+            self.image4Indicator.backgroundColor = [UserData rubyRed];
+            self.image5Indicator.backgroundColor = nil;
+            self.image6Indicator.backgroundColor = nil;
+            break;
+        case 5:
+            self.image1Indicator.backgroundColor = nil;
+            self.image2Indicator.backgroundColor = nil;
+            self.image3Indicator.backgroundColor = nil;
+            self.image4Indicator.backgroundColor = nil;
+            self.image5Indicator.backgroundColor = [UserData rubyRed];
+            self.image6Indicator.backgroundColor = nil;
+            break;
+        case 6:
+            self.image1Indicator.backgroundColor = nil;
+            self.image2Indicator.backgroundColor = nil;
+            self.image3Indicator.backgroundColor = nil;
+            self.image4Indicator.backgroundColor = nil;
+            self.image5Indicator.backgroundColor = nil;
+            self.image6Indicator.backgroundColor = [UserData rubyRed];
+            break;
+        default:
+            NSLog(@"image beyond bounds");
+            break;
+    }
+}
+
+-(void)lastObjectCallDesciptionView{
+
+    self.fullDescView.hidden = NO;
+    self.fullDescView.layer.cornerRadius = 10;
+    self.fullAboutMe.text = @"dude, I'm cool";
+    self.fullDescNameAndAge.text = self.nameAndAgeGlobal;
+    self.fullMilesAway.text = @"2.5 miles away";
+
+}
+//round corners, change button colors
+-(void)setUpButtons:(UIButton *)button{
+
+    button.layer.cornerRadius = 15;
+    button.clipsToBounds = YES;
+    [button.layer setBorderWidth:1.0];
+    [button.layer setBorderColor:[UserData uclaBlue].CGColor];
+}
+
+-(void) sendEmailForApproval{
+
+    NSString *emailTitle = @"Feedback";
+    NSString *messageBody = @"<h1>Matched User's Name</h1>";
+    NSArray *reciepents = [NSArray arrayWithObject:@"michealsevy@gmail.com"];
+    MFMailComposeViewController *mc = [[MFMailComposeViewController alloc]init];
+    mc.mailComposeDelegate = self;
+    [mc setSubject:emailTitle];
+    [mc setMessageBody:messageBody isHTML:YES];
+    [mc setToRecipients:reciepents];
+
+    [self presentViewController:mc animated:YES completion:nil];
 
 
-//old code
+}
+
+- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    switch (result)
+    {
+        case MFMailComposeResultCancelled:
+            NSLog(@"Mail cancelled");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"Mail saved");
+            break;
+        case MFMailComposeResultSent:
+            NSLog(@"Mail sent");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
+            break;
+        default:
+            break;
+    }
+
+    // Close the Mail Interface
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+    //old code
 
 
 //did update location delegate method
@@ -506,31 +701,8 @@ CLLocationManagerDelegate>
 
 
 
-//if (sender.direction == UISwipeGestureRecognizerDirectionUp){
-//    NSLog(@"swiped up");
-//    //swipe up with animations
-//    //[UIView transitionFromView:self.view toView:self.userImage duration:0.5 options:UIViewAnimationOptionTransitionFlipFromBottom completion:^(BOOL finished) {
-//    //display image
-//
-//
-//    self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:1]]];
-//
-//    [self.imageArray removeObjectAtIndex:0];
-//
-//    NSLog(@"array size: %lu", [self.imageArray count]);
-//
-//    if ([self.imageArray count] < 2) {
-//        NSLog(@"Only one image Left");
-//    }
-//
-//
-//
-//
-//
-//
-//} else{
-//    NSLog(@"no swipe?");
-//}
+
+
 @end
 
 

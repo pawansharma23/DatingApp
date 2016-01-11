@@ -10,4 +10,6 @@
 
 @interface PreferencesViewController : ViewController
 
+@property (strong, nonatomic) NSString *image;
+
 @end

@@ -9,6 +9,7 @@
 #import "PreferencesViewController.h"
 
 @interface PreferencesViewController ()
+@property (weak, nonatomic) IBOutlet UIImageView *userImage;
 
 @end
 
@@ -16,22 +17,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    NSLog(@"image from Pref: %@", self.image);
+    self.userImage.image = [UIImage imageWithData:[self imageData:self.image]];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
-/*
-#pragma mark - Navigation
+-(NSData *)imageData:(NSString *)imageString{
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    NSURL *url = [NSURL URLWithString:imageString];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    return data;
 }
-*/
 
 @end

@@ -76,6 +76,7 @@ CLLocationManagerDelegate>
 @property (weak, nonatomic) IBOutlet UISlider *maxAgeSlider;
 @property (weak, nonatomic) IBOutlet UILabel *minAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
+@property (weak, nonatomic) IBOutlet UITextField *aboutMeTextField;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
@@ -137,34 +138,20 @@ CLLocationManagerDelegate>
     UIButton *suggestions = [[UIButton alloc]init];
     [suggestions setTitle:@"help with description" forState:UIControlStateNormal];
     [self.textField addSubview:suggestions];
-   // [self.textField addConstraint:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[suggestions]-|"
-     //                                                                     options:NSLayoutAttributeLeading metrics:nil views:NSDictionaryOfVariableBindings(suggestions)]];
-
-    //min max Range Slider custom slider class
-//    RangeSlider *rangeSlider = [[RangeSlider alloc]initWithFrame:CGRectMake(20, 475, 300, 31)];
-//    [self.view addSubview:rangeSlider];
-//    UIButton *localButton = self.mensInterestButton;
-//    [self.view addConstraint:[NSLayoutConstraint constraintsWithVisualFormat:@"V:-[rangeSlider]-" options:NSLayoutFormatAlignAllCenterX metrics:nil views:rangeSlider]];
 
 
+    
+    //save user description or about me entered
+    NSString *aboutMe = self.aboutMeTextField.text;
+    [self.currentUser setObject:aboutMe forKey:@"aboutMe"];
 
-    //M Sex Pref Button setup round edges etc.
-    self.mensInterestButton.layer.cornerRadius = 15;
-    self.mensInterestButton.clipsToBounds = YES;
-    [self.mensInterestButton.layer setBorderWidth:1.0];
-    [self.mensInterestButton.layer setBorderColor:[UIColor greenColor].CGColor];
-    //F
-    self.womensInterestButton.layer.cornerRadius = 15;
-    self.womensInterestButton.clipsToBounds = YES;
-    [self.womensInterestButton.layer setBorderWidth:1.0];
-    [self.womensInterestButton.layer setBorderColor:[UIColor greenColor].CGColor];
-    //Both
-    self.bothSexesButton.layer.cornerRadius = 15;
-    self.bothSexesButton.clipsToBounds = YES;
-    [self.bothSexesButton.layer setBorderWidth:1.0];
-    [self.bothSexesButton.layer setBorderColor:[UIColor greenColor].CGColor];
+    //setup Buttons
+    [self setUpButtons:self.mensInterestButton];
+    [self setUpButtons:self.womensInterestButton];
+    [self setUpButtons:self.bothSexesButton];
 
     self.previousButton.hidden = YES;
+
     //distance away slider initial
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
@@ -260,76 +247,25 @@ CLLocationManagerDelegate>
 }
 
 #pragma mark -- Sex preference buttons
-//Sex Preference buttons and saving to parse on selection, also deselecting the other two
 //Sender is the only thing that has been omitted in the helper method, grouping it with the global object
-
 - (IBAction)menInterestButton:(UIButton *)sender {
 
     [self changeButtonState:self.mensInterestButton sexString:@"male" otherButton1:self.womensInterestButton otherButton2:self.bothSexesButton];
-
-
-
-//    //when buton pressed change effect on button and save to Parse
-//    self.mensInterestButton.backgroundColor = [UIColor blueColor];
-//    [self.currentUser setObject:@"male" forKey:@"sexPref"];
-//    [self.currentUser saveInBackground];
-//
-//    if ([sender isSelected]) {
-//        [sender setSelected:NO];
-//        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
-//    } else{
-//        //change other two buttons to delected
-//        [sender setSelected:YES];
-//        [self.womensInterestButton setSelected:NO];
-//        [self.bothSexesButton setSelected:NO];
-//        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
-//        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
-//    }
 }
+
 //Womens
 - (IBAction)womenInterestButton:(UIButton *)sender {
 
     [self changeButtonState:self.womensInterestButton sexString:@"female" otherButton1:self.mensInterestButton otherButton2:self.bothSexesButton];
-
-
-
-    //    //when buton pressed change effect on button and save to Parse
-//    self.womensInterestButton.backgroundColor = [UIColor blueColor];
-//    [self.currentUser setObject:@"female" forKey:@"sexPref"];
-//    [self.currentUser saveInBackground];
-//    //View effects for all three buttons change on selection
-//    if ([sender isSelected]) {
-//        [sender setSelected:NO];
-//        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
-//    } else{
-//        [sender setSelected:YES];
-//        [self.mensInterestButton setSelected:NO];
-//        [self.bothSexesButton setSelected:NO];
-//        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
-//        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
-//    }
 }
+
 //Both
 - (IBAction)bothSexesInterestButton:(UIButton *)sender {
 
     [self changeButtonState:self.bothSexesButton sexString:@"male female" otherButton1:self.mensInterestButton otherButton2:self.womensInterestButton];
 
-//    //when buton pressed change effect on button and save to Parse
-//    self.bothSexesButton.backgroundColor = [UIColor blueColor];
-//    [self.currentUser setObject:@"male female" forKey:@"sexPref"];
-//    [self.currentUser saveInBackground];
-//    //View effects for all three buttons change on selection
-//    if ([sender isSelected]) {
-//        [sender setSelected:NO];
-//        self.bothSexesButton.backgroundColor = [UIColor whiteColor];
-//    } else{
-//        [sender setSelected:YES];
-//        [self.mensInterestButton setSelected:NO];
-//        [self.womensInterestButton setSelected:NO];
-//        self.mensInterestButton.backgroundColor = [UIColor whiteColor];
-//        self.womensInterestButton.backgroundColor = [UIColor whiteColor];
-//    }
 }
+
 #pragma mark -- age min and max sliders
 - (IBAction)minSliderChange:(UISlider *)sender {
     //number to label convert
@@ -371,7 +307,7 @@ CLLocationManagerDelegate>
 //save selected images to array and save to Parse
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
     //highlight selected cell... not working
-    UICollectionViewCell* cell = [collectionView  cellForItemAtIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView  cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor blueColor];
 
     NSString *selectedImage = [self.pictureArray objectAtIndex:indexPath.row];
@@ -470,6 +406,14 @@ CLLocationManagerDelegate>
 
 }
 #pragma mark -- helpers
+-(void)setUpButtons:(UIButton *)button{
+    button.layer.cornerRadius = 15;
+    button.clipsToBounds = YES;
+    [button.layer setBorderWidth:1.0];
+    [button.layer setBorderColor:[UIColor greenColor].CGColor];
+
+}
+
 -(void)onNextPrevPage:(NSString *)pageURLString {
 
     NSURL *URL = [NSURL URLWithString:pageURLString];
@@ -653,7 +597,6 @@ CLLocationManagerDelegate>
 
                     [self.pictureArray addObject:userD];
                     [self.collectionView reloadData];
-
                 }
             } else{
                 NSLog(@"no images");
@@ -669,6 +612,7 @@ CLLocationManagerDelegate>
 
 
 -(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2    {
+
     button.backgroundColor = [UIColor blueColor];
     [self.currentUser setObject:sex forKey:@"sexPref"];
     [self.currentUser saveInBackground];
