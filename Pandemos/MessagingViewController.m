@@ -54,6 +54,41 @@ UITableViewDelegate>
     }];
 }
 
+//recieve message
+//-(void)viewWillAppear:(BOOL)animated{
+//    [super viewWillAppear:animated];
+//
+//    PFQuery *query = [PFQuery queryWithClassName:@"Message"];
+//    [query whereKey:@"recipientsId" equalTo:[[PFUser currentUser] objectId]];
+//    [query orderByDescending:@"createdAt"];
+//    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error){
+//        if(error){
+//            NSLog(@"Error: %@ %@", error, [error userInfo]);
+//        } else {
+//            self.messages = objects;
+//            [self.tableView reloadData];
+//            NSLog(@"retrived %lu messages", self.messages.count);
+//        }
+//    }];
+//
+//}
+
+//send Message
+//PFObject *message = [PFObject objectWithClassName:@"Message"];
+////making association btw files and messages
+//[message setObject:file forKey:@"file"];
+//[message setObject:fileType forKey:@"fileType"];
+//[message setObject:self.recipients forKey:@"recipientsId"];
+//[message setObject:[[PFUser currentUser] objectId] forKey:@"senderId"];
+//[message setObject:[[PFUser currentUser] username] forKey:@"senderName"];
+//
+//[message saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error){
+//    if (error) {
+//      NSLog("error: %@", error);
+//
+//    } else{
+//        NSLog(@"message and file were uploaded to parse");
+//        [self reset];
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.matchesNotYetConfirmed.count;

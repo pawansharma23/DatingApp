@@ -31,6 +31,7 @@ PODS:
     - FBSDKCoreKit/arc
   - FBSDKLoginKit (4.8.0):
     - FBSDKCoreKit
+  - LXReorderableCollectionViewFlowLayout (0.1.1)
   - Parse (1.10.0):
     - Bolts/Tasks (~> 1.5)
   - ParseFacebookUtilsV4 (1.9.1):
@@ -41,6 +42,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 3.0)
+  - LXReorderableCollectionViewFlowLayout (~> 0.1.1)
   - ParseFacebookUtilsV4 (~> 1.9)
 
 SPEC CHECKSUMS:
@@ -48,6 +50,7 @@ SPEC CHECKSUMS:
   Bolts: 722ab9a4f8b50fc4ed1b9998a5a7a2b3f16d80b4
   FBSDKCoreKit: 66a935d17b6e00b6b64e604f2eb9b72c9ab7deb8
   FBSDKLoginKit: d893fcbb98d854496925e9ff73c67b896982d3c4
+  LXReorderableCollectionViewFlowLayout: c89e0f693744c5cb96718822a8455a7de99d90ea
   Parse: 90b2544822200f84b18bfacc4e8b0a3a6c3584a2
   ParseFacebookUtilsV4: eab9b4ade12f0800b4d30f6b808bca55ce17a0e9
 

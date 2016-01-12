@@ -22,13 +22,17 @@
 #import <MessageUI/MessageUI.h>
 #import "CVSettingCell.h"
 #import "PreferencesViewController.h"
+#import <LXReorderableCollectionViewFlowLayout.h>
 
 
 @interface ProfileViewController ()<MFMailComposeViewControllerDelegate,
 UICollectionViewDataSource,
 UICollectionViewDelegate,
 UITextViewDelegate,
-UIScrollViewDelegate>
+UIScrollViewDelegate,
+UICollectionViewDelegateFlowLayout,
+LXReorderableCollectionViewDelegateFlowLayout,
+LXReorderableCollectionViewDataSource>
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (strong, nonatomic) NSMutableArray *pictures;
@@ -78,10 +82,24 @@ UIScrollViewDelegate>
     NSLog(@"profile VC user: %@", self.currentUser);
 
     self.navigationItem.title = @"Settings";
+
     //profile change info added to left side of nav bar
     UIBarButtonItem *leftSideBB = [[UIBarButtonItem alloc]initWithTitle:@"Update Profile" style:UIBarButtonItemStylePlain target:self action:@selector(segueToProfileView)];
     leftSideBB.tintColor = [UIColor colorWithRed:251.0/255.0 green:73.0/255.0 blue:72.0/255.0 alpha:1.0];
     self.navigationItem.rightBarButtonItem = leftSideBB;
+
+
+    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
+    [flowlayouts setItemSize:CGSizeMake(100, 100)];
+    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
+    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
+    [self.collectionView setCollectionViewLayout:flowlayouts];
+
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+//    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+//    [flowLayout setItemSize:CGSizeMake(100, 100)];
+//    [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+//    [self.collectionView setCollectionViewLayout:flowLayout];
 
     //save the about me
     NSString *aboutMe = self.textViewAboutMe.text;
@@ -108,6 +126,7 @@ UIScrollViewDelegate>
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if(!error){
 
+
             NSString *name = [[objects firstObject]objectForKey:@"fullName"];
             NSLog(@"name from query: %@", name);
             //miles Away slider
@@ -129,7 +148,7 @@ UIScrollViewDelegate>
 
             //public profile status
             NSString *pubProf = [[objects firstObject] objectForKey:@"publicProfile"];
-            //NSLog(@"switch set to %@", pubProf);
+            NSLog(@"switch set to: %@", pubProf);
             if ([pubProf containsString:@"public"]) {
                 [self.publicProfileSwitch setOn:YES animated:YES];
             } else{
@@ -196,18 +215,40 @@ UIScrollViewDelegate>
     static NSString *cellIdentifier = @"SettingCell";
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     //UserData *userData = [self.pictures objectAtIndex:indexPath.row];
-    NSString *photoString = [self.pictures objectAtIndex:indexPath.row];
+    NSString *photoString = [self.pictures objectAtIndex:indexPath.item];
     cell.userImage.image = [UIImage imageWithData:[self imageData:photoString]];
 
     return cell;
 }
 //save selected images to array and save to Parse
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
-    //highlight selected cell... not working
-    UICollectionViewCell *cell = [collectionView  cellForItemAtIndexPath:indexPath];
-    cell.backgroundColor = [UIColor blueColor];
-    
+//-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
+//    //highlight selected cell... not working
+//    UICollectionViewCell *cell = [collectionView  cellForItemAtIndexPath:indexPath];
+//    cell.backgroundColor = [UIColor blueColor];
+//    
+//}
+
+
+-(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
+    NSString *photoString = [self.pictures objectAtIndex:fromIndexPath.item];
+    [self.pictures removeObjectAtIndex:fromIndexPath.item];
+    [self.pictures insertObject:photoString atIndex:toIndexPath.item];
+
+    [self deconstructArray:self.pictures];
 }
+
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"dragging cell begun");
+
+}
+
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"dragging has stopped");
+
+}
+
+
+
 
 #pragma mark -- View Elements
 //3) Min/Max Ages
@@ -371,19 +412,19 @@ UIScrollViewDelegate>
 
 
     //nothing works to unlink the facebok account
-    //[PFFacebookUtils unlinkUserInBackground:self.currentUser];
+   // [PFFacebookUtils unlinkUserInBackground:self.currentUser];
 
-//    [PFFacebookUtils unlinkUserInBackground:[PFUser currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
-//        if (error) {
-//            NSLog(@"error unlinking: %@", error);
-//        } else{
-//            NSLog(@"logged out, no user: %@", self.currentUser);
-//        }
-//    }];
-//
-//    NSLog(@"current user: after %@", self.currentUser);
+    [PFFacebookUtils unlinkUserInBackground:[PFUser currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error unlinking: %@", error);
+        } else{
+            NSLog(@"logged out, no user: %@", self.currentUser);
+        }
+    }];
 
-    //[self performSegueWithIdentifier:@"LoggedOut" sender:self];
+    NSLog(@"current user: after %@", self.currentUser);
+
+    [self performSegueWithIdentifier:@"LoggedOut" sender:self];
 }
 
 
@@ -431,7 +472,35 @@ UIScrollViewDelegate>
     }
 }
 
+-(void)deconstructArray:(NSMutableArray *)array {
 
+    NSString *firstImage = [array firstObject];
+    NSString *secondImage = [array objectAtIndex:1];
+    NSString *thirdImage = [array objectAtIndex:2];
+    NSString *forthImage = [array objectAtIndex:3];
+    NSString *fifthImage = [array objectAtIndex:4];
+    NSString *sixthImage = [array objectAtIndex:5];
+
+    if (firstImage) {
+        [self.currentUser setObject:firstImage forKey:@"image1"];
+        [self.currentUser saveInBackground];
+    } if (secondImage) {
+        [self.currentUser setObject:secondImage forKey:@"image2"];
+        [self.currentUser saveInBackground];
+    } if (thirdImage) {
+        [self.currentUser setObject:thirdImage forKey:@"image3"];
+        [self.currentUser saveInBackground];
+    } if (forthImage) {
+        [self.currentUser setObject:forthImage forKey:@"image4"];
+        [self.currentUser saveInBackground];
+    } if (fifthImage) {
+        [self.currentUser setObject:fifthImage forKey:@"image5"];
+        [self.currentUser saveInBackground];
+    } if (sixthImage) {
+        [self.currentUser setObject:sixthImage forKey:@"image6"];
+        [self.currentUser saveInBackground];
+    }
+}
 
 @end
 

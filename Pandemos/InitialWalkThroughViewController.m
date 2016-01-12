@@ -23,12 +23,16 @@
 #import "RangeSlider.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import <LXReorderableCollectionViewFlowLayout.h>
+#import "ChooseImageInitialViewController.h"
 
 
 @interface InitialWalkThroughViewController ()
 <UICollectionViewDataSource,
 UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout,
+LXReorderableCollectionViewDelegateFlowLayout,
+LXReorderableCollectionViewDataSource,
 CLLocationManagerDelegate>
 
 @property (strong, nonatomic) PFUser *currentUser;
@@ -67,7 +71,6 @@ CLLocationManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *mensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *womensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *bothSexesButton;
-@property (weak, nonatomic) IBOutlet UISwitch *publicProfileSwitch;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 @property (weak, nonatomic) IBOutlet UIButton *previousButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
@@ -77,9 +80,13 @@ CLLocationManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *minAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
 @property (weak, nonatomic) IBOutlet UITextField *aboutMeTextField;
+@property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
+
+@property (strong, nonatomic) NSString *selectedImage;
+
 
 
 
@@ -107,7 +114,6 @@ CLLocationManagerDelegate>
     [self _loadUserImages];
 
     //collectionView layout
-    //self.collectionView.backgroundColor = [UIColor grayColor];
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
@@ -169,6 +175,9 @@ CLLocationManagerDelegate>
     self.maxAgeLabel.text = maxAge;
     NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
     [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
+
+    //public Profile default to public
+    [self.currentUser setObject:@"public" forKey:@"publicProfile"];
 
 
     [self.currentUser saveInBackground];
@@ -328,61 +337,75 @@ CLLocationManagerDelegate>
                 NSArray *images = result[@"images"];
                 NSDictionary *imageDict = [images firstObject];
                 NSString *imageSource = imageDict[@"source"];
+                NSLog(@"image selected: %@", imageSource);
 
-                if (!self.imageSource1) {
-                    self.imageSource1 = imageSource;
-                    [self.currentUser setObject:imageSource forKey:@"image1"];
-                    [self.currentUser saveInBackground];
-                    NSLog(@"1st saved in image1 %@", imageSource);
+                self.selectedImage = imageSource;
+                [self performSegueWithIdentifier:@"chooseImage" sender:self];
 
-                } else if (self.imageSource1 && !self.imageSource2){
-                    NSLog(@"2nd Saved %@", imageSource);
-                    self.imageSource2 = imageSource;
-                    [self.currentUser setObject:imageSource forKey:@"image2"];
-                    [self.currentUser saveInBackground];
-                    //3
-                } else if(self.imageSource1 && self.imageSource2 && !self.imageSource3){
-                    NSLog(@"3rd Saved %@", imageSource);
-                    self.imageSource3 = imageSource;
-                    [self.currentUser setObject:imageSource forKey:@"image3"];
-                    [self.currentUser saveInBackground];
-                    //4
-                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && !self.imageSource4){
-                    NSLog(@"4th Saved %@", imageSource);
-                    self.imageSource4 = imageSource;
-                    [self.currentUser setObject:imageSource forKey:@"image4"];
-                    [self.currentUser saveInBackground];
-                    //5
-                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && !self.imageSource5){
-                    NSLog(@"5th Saved %@", imageSource);
-                    self.imageSource5 = imageSource;
-                    [self.currentUser setObject:imageSource forKey:@"image5"];
-                    [self.currentUser saveInBackground];
-                    //6
-                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && self.imageSource5 && !self.imageSource6){
-                    NSLog(@"6th Saved %@", imageSource);
-                    self.imageSource6 = imageSource;
-                    [self.currentUser setObject:imageSource forKey:@"image6"];
-                    [self.currentUser saveInBackground];
-                } else{
-                    NSLog(@"all images are filled");
-                }
-
+//
+//                if (!self.imageSource1) {
+//                    self.imageSource1 = imageSource;
+//                    [self.currentUser setObject:imageSource forKey:@"image1"];
+//                    [self.currentUser saveInBackground];
+//                    NSLog(@"1st saved in image1 %@", imageSource);
+//
+//                } else if (self.imageSource1 && !self.imageSource2){
+//                    NSLog(@"2nd Saved %@", imageSource);
+//                    self.imageSource2 = imageSource;
+//                    [self.currentUser setObject:imageSource forKey:@"image2"];
+//                    [self.currentUser saveInBackground];
+//                    //3
+//                } else if(self.imageSource1 && self.imageSource2 && !self.imageSource3){
+//                    NSLog(@"3rd Saved %@", imageSource);
+//                    self.imageSource3 = imageSource;
+//                    [self.currentUser setObject:imageSource forKey:@"image3"];
+//                    [self.currentUser saveInBackground];
+//                    //4
+//                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && !self.imageSource4){
+//                    NSLog(@"4th Saved %@", imageSource);
+//                    self.imageSource4 = imageSource;
+//                    [self.currentUser setObject:imageSource forKey:@"image4"];
+//                    [self.currentUser saveInBackground];
+//                    //5
+//                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && !self.imageSource5){
+//                    NSLog(@"5th Saved %@", imageSource);
+//                    self.imageSource5 = imageSource;
+//                    [self.currentUser setObject:imageSource forKey:@"image5"];
+//                    [self.currentUser saveInBackground];
+//                    //6
+//                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && self.imageSource5 && !self.imageSource6){
+//                    NSLog(@"6th Saved %@", imageSource);
+//                    self.imageSource6 = imageSource;
+//                    [self.currentUser setObject:imageSource forKey:@"image6"];
+//                    [self.currentUser saveInBackground];
+//                } else{
+//                    NSLog(@"all images are filled");
+//                }
+//
             } else {
                 NSLog(@"error: %@", error);
                 }
         }];
     }
 }
-//highlighting selected collectioView Cell... not working
--(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath{
 
-    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    cell.backgroundColor = [UIColor blueColor];
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+
+    if ([segue.identifier isEqualToString:@"chooseImage"]) {
+        NSLog(@"correct segue");
+        ChooseImageInitialViewController *cvc = segue.destinationViewController;
+        cvc.imageStr = self.selectedImage;
+        cvc.currentUser = self.currentUser;
+    }
+
+
 }
 
 
-- (IBAction)onNextPage:(UIButton *)sender {
+
+
+-(IBAction)onNextPage:(UIButton *)sender {
 
     self.previousButton.hidden = NO;
     [self onNextPrevPage:self.nextPageURLString];
@@ -465,7 +488,7 @@ CLLocationManagerDelegate>
 - (void)_loadData {
 
     self.currentUser = [PFUser currentUser];
-    NSLog(@"current user from Data load: %@", self.currentUser);
+    //NSLog(@"current user from Data load: %@", self.currentUser);
 
     //make FB Graph API request for applicable free data
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"id, name, about, birthday, gender, bio, education, is_verified, locale, first_name, work, location, likes"} HTTPMethod:@"GET"];
@@ -558,7 +581,7 @@ CLLocationManagerDelegate>
 -(void)_loadUserImages{
 
     self.currentUser = [PFUser currentUser];
-    NSLog(@"current user from Load User Images: %@", self.currentUser);
+    //NSLog(@"current user from Load User Images: %@", self.currentUser);
 
     //now get images from user's facebook account and display them for user to sift through
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/photos/uploaded" parameters:@{@"fields": @"picture, updated_time"} HTTPMethod:@"GET"];
@@ -593,8 +616,7 @@ CLLocationManagerDelegate>
                     userD.photoID = pictureIds;
                     userD.photosData = mainPicData;
                     userD.photoURL = mainPicURL;
-                    NSLog(@"pic ids loaded: %@", pictureIds);
-
+                    
                     [self.pictureArray addObject:userD];
                     [self.collectionView reloadData];
                 }
