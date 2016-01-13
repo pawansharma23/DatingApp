@@ -25,7 +25,6 @@
 #import <MessageUI/MessageUI.h>
 
 
-
 @interface ViewController ()<FBSDKGraphRequestConnectionDelegate,
 UIGestureRecognizerDelegate,
 UINavigationControllerDelegate,
@@ -101,7 +100,6 @@ MFMailComposeViewControllerDelegate>
     //location object
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
-
     //request permission and update locaiton
     [self.locationManager requestWhenInUseAuthorization];
     [self.locationManager startUpdatingLocation];
@@ -191,34 +189,19 @@ MFMailComposeViewControllerDelegate>
 
         NSLog(@"current user View Controller: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, age, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
 
+        //location
+        NSLog(@"current location VDA: %@", self.currentLocation);
 
+        double latitude = self.locationManager.location.coordinate.latitude;
+        double longitude = self.locationManager.location.coordinate.longitude;
+        //NSLog(@"view did appear: %f & long: %f", latitude, longitude);
 
-    //location object
-    self.locationManager = [CLLocationManager new];
-    self.locationManager.delegate = self;
-
-    //request permission and update locaiton
-    [self.locationManager requestWhenInUseAuthorization];
-    [self.locationManager startUpdatingLocation];
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
-
-    double latitude = self.locationManager.location.coordinate.latitude;
-    double longitude = self.locationManager.location.coordinate.longitude;
-    //NSLog(@"view did appear: %f & long: %f", latitude, longitude);
-
-    //save lat and long in a PFGeoCode Object and save to User in Parse
-    self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
-    [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
-        //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
-        //save age and location objects
-    [self.currentUser saveInBackground];
-
-
-        //PFGeoPoint *geocodeParse = [self.currentUser objectForKey:@"GeoCode"];
-    //NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
-
-
-
+        //save lat and long in a PFGeoCode Object and save to User in Parse
+        self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
+        [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+            //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
+            //save age and location objects
+        [self.currentUser saveInBackground];
 
 
 

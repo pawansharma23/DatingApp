@@ -58,8 +58,9 @@ LXReorderableCollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (weak, nonatomic) IBOutlet UITextView *textViewAboutMe;
+@property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
 
+@property (strong, nonatomic) NSString *textViewString;
 
 @end
 
@@ -68,20 +69,16 @@ LXReorderableCollectionViewDataSource>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-//    self.currentUser = [PFUser currentUser];
-//    NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-//    NSLog(@"current user(ProileVC) VDL: %@", fullName);
 
-    self.scrollView.delegate = self;
-
-    //self.currentUser = self.userFromViewController;
-    self.pictures = [NSMutableArray new];
-    self.collectionView.delegate = self;
-    self.textViewAboutMe.delegate = self;
-
+    self.currentUser = [PFUser currentUser];
     NSLog(@"profile VC user: %@", self.currentUser);
-
     self.navigationItem.title = @"Settings";
+
+    //delegation, initialization
+    self.scrollView.delegate = self;
+    self.collectionView.delegate = self;
+    self.pictures = [NSMutableArray new];
+    self.textViewAboutMe.delegate = self;
 
     //profile change info added to left side of nav bar
     UIBarButtonItem *leftSideBB = [[UIBarButtonItem alloc]initWithTitle:@"Update Profile" style:UIBarButtonItemStylePlain target:self action:@selector(segueToProfileView)];
@@ -96,15 +93,6 @@ LXReorderableCollectionViewDataSource>
     [self.collectionView setCollectionViewLayout:flowlayouts];
 
     self.collectionView.backgroundColor = [UIColor whiteColor];
-//    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-//    [flowLayout setItemSize:CGSizeMake(100, 100)];
-//    [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-//    [self.collectionView setCollectionViewLayout:flowLayout];
-
-    //save the about me
-    NSString *aboutMe = self.textViewAboutMe.text;
-    NSLog(@"about me: %@", aboutMe);
-    [self.currentUser setObject:aboutMe forKey:@"aboutMe"];
 
     //Buttons Setup
     [self setUpButton:self.menButton];
@@ -118,6 +106,9 @@ LXReorderableCollectionViewDataSource>
     self.textViewAboutMe.layer.cornerRadius = 10;
     [self.textViewAboutMe.layer setBorderWidth:1.0];
     [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
+
+    //textView
+
 
     //call Parse for User Data
     PFQuery *query = [PFUser query];
@@ -157,15 +148,22 @@ LXReorderableCollectionViewDataSource>
 
             //sex pref presets
             NSString *sexPref = [[objects firstObject] objectForKey:@"sexPref"];
-            if ([sexPref containsString:@"M"]) {
+
+            if ([sexPref isEqualToString:@"male"]) {
                 self.menButton.backgroundColor = [UIColor blueColor];
-            } else if ([sexPref containsString:@"F"]){
+            } else if ([sexPref isEqualToString:@"female"]){
                 self.womenButton.backgroundColor = [UIColor blueColor];
-            } else if ([sexPref containsString:@"Both"])  {
+            } else if ([sexPref isEqualToString:@"male female"])  {
                 self.bothButton.backgroundColor = [UIColor blueColor];
             }else{
             NSLog(@"sex pref: %@", sexPref);
             }
+
+
+            //textView output
+            NSString *textView = [[objects firstObject]objectForKey:@"aboutMe"];
+            self.textViewAboutMe.text = textView;
+
 
             //
           //  NSArray *likes = [[objects firstObject] objectForKey:@"likes"];
@@ -202,6 +200,78 @@ LXReorderableCollectionViewDataSource>
 
 
 }
+
+
+//resign keyboard when touch off textView
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    NSLog(@"touchesBegan:withEvent:");
+    [self.view endEditing:YES];
+    [super touchesBegan:touches withEvent:event];
+}
+
+//allows you to reject the editing with a negative BOOL
+//- (BOOL)textViewShouldBeginEditing:(UITextView *)textView{
+//    NSLog(@"textViewShouldBeginEditing:");
+//    return YES;
+//}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    NSLog(@"textViewDidBeginEditing");
+    //clears text set as instructions
+    [textView setText:@""];
+    textView.backgroundColor = [UIColor greenColor];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView{
+    NSLog(@"textViewDidEndEditing:");
+    textView.backgroundColor = [UIColor whiteColor];
+    NSString *aboutMeDescr = textView.text;
+    NSLog(@"save textView: %@", aboutMeDescr);
+
+    [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"cannot save: %@", error.description);
+        } else {
+            NSLog(@"saved successful: %s", succeeded ? "true" : "false");
+        }
+    }];
+
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+
+    NSCharacterSet *doneButtonCharacterSet = [NSCharacterSet newlineCharacterSet];
+    NSRange replacementTextRange = [text rangeOfCharacterFromSet:doneButtonCharacterSet];
+    NSUInteger location = replacementTextRange.location;
+
+    if (textView.text.length + text.length > 280){
+        if (location != NSNotFound){
+            [textView resignFirstResponder];
+            NSLog(@"editing: %@", text);
+        }
+        return NO;
+    }
+    else if (location != NSNotFound){
+        [textView resignFirstResponder];
+        NSLog(@"not editing");
+        NSLog(@"text from shouldChangeInRange: %@", text);
+
+
+        return NO;
+    }
+    return YES;
+}
+
+- (void)textViewDidChange:(UITextView *)textView{
+    NSLog(@"textViewDidChange:");
+
+    NSLog(@"text: %@", textView.text);
+
+
+}
+
 
 
 //1)CollectionView for User Images
@@ -259,8 +329,15 @@ LXReorderableCollectionViewDataSource>
     self.minimumAgeLabel.text = minAge;
     //save to Parse
     [self.currentUser setObject:minAgeStr forKey:@"minAge"];
-    [self.currentUser saveInBackground];
-    NSLog(@"change min age to: %@", minAge);
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error in saving min Age: %@", error);
+        } else{
+            NSLog(@"saved: %s", succeeded ? "true" : "false");
+        }
+    }];
+
 }
 - (IBAction)onMaxAgeSliderChange:(UISlider *)sender {
     //number to label convert
@@ -279,7 +356,7 @@ LXReorderableCollectionViewDataSource>
     [self changeButtonState:self.menButton sexString:@"male" otherButton1:self.womenButton otherButton2:self.bothButton];
 }
 - (IBAction)onWomensButton:(UIButton *)sender {
-    [self changeButtonState:self.womenButton sexString:@"female" otherButton1:self.menButton otherButton2:self.womenButton];
+    [self changeButtonState:self.womenButton sexString:@"female" otherButton1:self.menButton otherButton2:self.bothButton];
 }
 - (IBAction)onBothButton:(UIButton *)sender {
 
@@ -328,29 +405,6 @@ LXReorderableCollectionViewDataSource>
 //    cell.backgroundColor = [UIColor blueColor];
 //}
 
-
-
-
-
-//textView delegates
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-    if ([self.textViewAboutMe.text isEqualToString:@"placeholder text here..."]) {
-        self.textViewAboutMe.text = @"";
-        self.textViewAboutMe.textColor = [UIColor blackColor]; //optional
-    }
-    [textView becomeFirstResponder];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView
-{
-    if ([self.textViewAboutMe.text isEqualToString:@""]) {
-        self.textViewAboutMe.text = @"placeholder text here...";
-        self.textViewAboutMe.textColor = [UIColor lightGrayColor]; //optional
-        NSLog(@"about me: %@", self.textViewAboutMe.text);
-    }
-    [textView resignFirstResponder];
-}
 
 
 

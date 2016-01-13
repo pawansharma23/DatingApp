@@ -33,23 +33,38 @@ UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDataSource,
-CLLocationManagerDelegate>
+CLLocationManagerDelegate,
+UITextViewDelegate,
+UIScrollViewDelegate>
 
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) PFUser *currentUser;
+@property (weak, nonatomic) IBOutlet UITextView *textViewAboutMe;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-//deprecated user image with array
+@property (weak, nonatomic) IBOutlet UILabel *minAgeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
+@property (weak, nonatomic) IBOutlet UISlider *minAgeSlider;
+@property (weak, nonatomic) IBOutlet UISlider *maxAgeSlider;
+@property (weak, nonatomic) IBOutlet UIButton *mensInterestButton;
+@property (weak, nonatomic) IBOutlet UIButton *womensInterestButton;
+@property (weak, nonatomic) IBOutlet UIButton *bothSexesButton;
+
+@property (weak, nonatomic) IBOutlet UILabel *locationlabel;
+@property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
+@property (weak, nonatomic) IBOutlet UISlider *milesSlider;
+
+@property (weak, nonatomic) IBOutlet UIButton *previousButton;
+@property (weak, nonatomic) IBOutlet UIButton *nextButton;
+
+@property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
+
 @property (strong, nonatomic) NSMutableArray *pictureArray;
 @property (strong, nonatomic) NSArray *picArray;
 @property (strong, nonatomic) NSMutableArray *selectedPictures;
 @property (strong, nonatomic) NSMutableArray *secondSelectedPictures;
 //user images
-@property (strong, nonatomic) NSData *imageDataGlob;
-@property (strong, nonatomic) NSString  *imageIDGlobal;
-@property (strong, nonatomic) NSURL  *imageURL;
 @property (strong, nonatomic) NSString *nextPageURLString;
 @property (strong, nonatomic) NSString *previousPageURLString;
-
-
 @property (strong, nonatomic) NSString *userGender;
 //likes
 @property (strong, nonatomic) NSMutableArray *likeArray;
@@ -63,24 +78,6 @@ CLLocationManagerDelegate>
 @property (strong, nonatomic) NSString *imageSource4;
 @property (strong, nonatomic) NSString *imageSource5;
 @property (strong, nonatomic) NSString *imageSource6;
-
-//view properties
-@property (weak, nonatomic) IBOutlet UILabel *locationlabel;
-@property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
-@property (weak, nonatomic) IBOutlet UISlider *milesSlider;
-@property (weak, nonatomic) IBOutlet UIButton *mensInterestButton;
-@property (weak, nonatomic) IBOutlet UIButton *womensInterestButton;
-@property (weak, nonatomic) IBOutlet UIButton *bothSexesButton;
-@property (weak, nonatomic) IBOutlet UITextField *textField;
-@property (weak, nonatomic) IBOutlet UIButton *previousButton;
-@property (weak, nonatomic) IBOutlet UIButton *nextButton;
-
-@property (weak, nonatomic) IBOutlet UISlider *minAgeSlider;
-@property (weak, nonatomic) IBOutlet UISlider *maxAgeSlider;
-@property (weak, nonatomic) IBOutlet UILabel *minAgeLabel;
-@property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
-@property (weak, nonatomic) IBOutlet UITextField *aboutMeTextField;
-@property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
@@ -97,22 +94,28 @@ CLLocationManagerDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-
+    self.currentUser = [PFUser currentUser];
 
     self.navigationItem.title = @"Setup";
     self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:56.0/255.0 green:193.0/255.0 blue:255.0/255.0 alpha:1.0];
 
-    self.automaticallyAdjustsScrollViewInsets = NO;
+    //self.automaticallyAdjustsScrollViewInsets = NO;
 
+    //set and initialize delegates
+    self.scrollView.delegate = self;
+    self.textViewAboutMe.delegate = self;
     self.pictureArray = [NSMutableArray new];
     self.selectedPictures = [NSMutableArray new];
-
 
 
     //grab the facebook data
     [self _loadData];
     [self _loadUserImages];
 
+    //textview layout
+    self.textViewAboutMe.layer.cornerRadius = 10;
+    [self.textViewAboutMe.layer setBorderWidth:1.0];
+    [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
     //collectionView layout
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     [flowLayout setItemSize:CGSizeMake(100, 100)];
@@ -130,26 +133,12 @@ CLLocationManagerDelegate>
 
     double latitude = self.locationManager.location.coordinate.latitude;
     double longitude = self.locationManager.location.coordinate.longitude;
-    NSLog(@"view did load lat: %f & long: %f", latitude, longitude);
+   // NSLog(@"view did load lat: %f & long: %f", latitude, longitude);
 
     //save lat and long in a PFGeoCode Object and save to User in Parse
     self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
     [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
-
-    [self.currentUser saveInBackground];
     NSLog(@"saved PFGeoCode: %@", self.pfGeoCoded);
-
-
-    //suggestion segue for user "about me"
-    UIButton *suggestions = [[UIButton alloc]init];
-    [suggestions setTitle:@"help with description" forState:UIControlStateNormal];
-    [self.textField addSubview:suggestions];
-
-
-    
-    //save user description or about me entered
-    NSString *aboutMe = self.aboutMeTextField.text;
-    [self.currentUser setObject:aboutMe forKey:@"aboutMe"];
 
     //setup Buttons
     [self setUpButtons:self.mensInterestButton];
@@ -158,37 +147,38 @@ CLLocationManagerDelegate>
 
     self.previousButton.hidden = YES;
 
+    //set age slider values MIN
+    NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %.f", self.minAgeSlider.value];
+    self.minAgeLabel.text = minAge;
+    NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
+    [self.currentUser setObject:minAgeStr forKey:@"minAge"];
+    //Max
+    NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %.f", self.maxAgeSlider.value];
+    self.maxAgeLabel.text = maxAge;
+    NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
+    [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
+
     //distance away slider initial
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
     self.milesAwayLabel.text = milesAway;
     [self.currentUser setObject:milesAwayStr forKey:@"milesAway"];
 
-    //set age slider values
-    NSString *minAge = [NSString stringWithFormat:@"Minimum Age: 18"];
-    self.minAgeLabel.text = minAge;
-    NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
-    [self.currentUser setObject:minAgeStr forKey:@"minAge"];
-    [self.currentUser saveInBackground];
-    //Max
-    NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: 62"];
-    self.maxAgeLabel.text = maxAge;
-    NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
-    [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
-
     //public Profile default to public
     [self.currentUser setObject:@"public" forKey:@"publicProfile"];
 
-
-    [self.currentUser saveInBackground];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error: %@", error.description);
+        } else{
+            NSLog(@"saved: %s", succeeded ? "true" : "false");
+        }
+    }];
 
 }
 
 
 -(void)viewDidAppear:(BOOL)animated{
-
-    //set sex Pref as opposite of user sex
-    NSLog(@"user sex is: %@", self.userGender);
 
     if ([self.userGender isEqualToString:@"male"]) {
         self.womensInterestButton.backgroundColor = [UIColor blueColor];
@@ -209,7 +199,7 @@ CLLocationManagerDelegate>
 
 #pragma mark -- CLLocation delegate methods
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
-    NSLog(@"didUpdateLocations Delegate Method");
+   // NSLog(@"didUpdateLocations Delegate Method");
         //current location
         CLLocation *currentLocation = [locations firstObject];
         NSLog(@"array of cuurent locations: %@", locations);
@@ -239,10 +229,111 @@ CLLocationManagerDelegate>
                 self.locationlabel.text = [NSString stringWithFormat:@"%@, %@", city, state];
             }
         }];
-    
-
-    
 }
+
+
+- (IBAction)onEmptyImagesFromParse:(UIButton *)sender {
+
+    [self.currentUser setObject:@"" forKey:@"image1"];
+    [self.currentUser setObject:@"" forKey:@"image1"];
+    [self.currentUser setObject:@"" forKey:@"image1"];
+    [self.currentUser setObject:@"" forKey:@"image1"];
+    [self.currentUser setObject:@"" forKey:@"image1"];
+    [self.currentUser setObject:@"" forKey:@"image1"];
+
+
+    [self.currentUser saveInBackground];
+}
+
+
+//resign keyboard when touch off textView
+//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+//    NSLog(@"touchesBegan:withEvent:");
+//    [self.view endEditing:YES];
+//    [super touchesBegan:touches withEvent:event];
+//}
+
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    NSLog(@"textViewDidBeginEditing");
+    //clears text set as instructions
+    [textView setText:@""];
+    textView.backgroundColor = [UIColor greenColor];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView{
+    NSLog(@"textViewDidEndEditing:");
+    textView.backgroundColor = [UIColor whiteColor];
+    NSString *aboutMeDescr = textView.text;
+    NSLog(@"save textView: %@", aboutMeDescr);
+
+    [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"cannot save: %@", error.description);
+        } else {
+            NSLog(@"saved successful: %s", succeeded ? "true" : "false");
+        }
+    }];
+
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+
+    NSCharacterSet *doneButtonCharacterSet = [NSCharacterSet newlineCharacterSet];
+    NSRange replacementTextRange = [text rangeOfCharacterFromSet:doneButtonCharacterSet];
+    NSUInteger location = replacementTextRange.location;
+
+    if (textView.text.length + text.length > 280){
+        if (location != NSNotFound){
+            [textView resignFirstResponder];
+            NSLog(@"editing: %@", text);
+        }
+        return NO;
+    }
+    else if (location != NSNotFound){
+        [textView resignFirstResponder];
+        NSLog(@"not editing");
+        NSLog(@"text from shouldChangeInRange: %@", text);
+
+
+        return NO;
+    }
+    return YES;
+}
+
+- (void)textViewDidChange:(UITextView *)textView{
+    NSLog(@"textViewDidChange:");
+
+    NSLog(@"text: %@", textView.text);
+
+}
+
+#pragma mark -- age min and max sliders
+- (IBAction)minSliderChange:(UISlider *)sender {
+    //number to label convert
+    NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
+    NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
+    self.minAgeLabel.text = minAge;
+
+    //save to Parse
+    [self.currentUser setObject:minAgeStr forKey:@"minAge"];
+    [self.currentUser saveInBackground];
+}
+//Max
+- (IBAction)maxSliderChange:(UISlider *)sender {
+    //number to label convert
+    NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
+    NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %@", maxAgeStr];
+    self.maxAgeLabel.text = maxAge;
+
+    //save to Parse
+    [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
+    [self.currentUser saveInBackground];
+}
+
+
 #pragma mark -- Distance Away Slider
 - (IBAction)sliderValueChanged:(UISlider *)sender {
 
@@ -275,28 +366,7 @@ CLLocationManagerDelegate>
 
 }
 
-#pragma mark -- age min and max sliders
-- (IBAction)minSliderChange:(UISlider *)sender {
-    //number to label convert
-    NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
-    NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
-    self.minAgeLabel.text = minAge;
-    //save to Parse
-    [self.currentUser setObject:minAgeStr forKey:@"minAge"];
-    [self.currentUser saveInBackground];
-    NSLog(@"change min age to: %@", minAge);
-}
-//Max
-- (IBAction)maxSliderChange:(UISlider *)sender {
-    //number to label convert
-    NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
-    NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %@", maxAgeStr];
-    self.maxAgeLabel.text = maxAge;
-    //save to Parse
-    [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
-    [self.currentUser saveInBackground];
-    NSLog(@"change min age to: %@", maxAge);
-}
+
 
 
 #pragma mark -- collectionView delegate Methods
@@ -342,46 +412,6 @@ CLLocationManagerDelegate>
                 self.selectedImage = imageSource;
                 [self performSegueWithIdentifier:@"chooseImage" sender:self];
 
-//
-//                if (!self.imageSource1) {
-//                    self.imageSource1 = imageSource;
-//                    [self.currentUser setObject:imageSource forKey:@"image1"];
-//                    [self.currentUser saveInBackground];
-//                    NSLog(@"1st saved in image1 %@", imageSource);
-//
-//                } else if (self.imageSource1 && !self.imageSource2){
-//                    NSLog(@"2nd Saved %@", imageSource);
-//                    self.imageSource2 = imageSource;
-//                    [self.currentUser setObject:imageSource forKey:@"image2"];
-//                    [self.currentUser saveInBackground];
-//                    //3
-//                } else if(self.imageSource1 && self.imageSource2 && !self.imageSource3){
-//                    NSLog(@"3rd Saved %@", imageSource);
-//                    self.imageSource3 = imageSource;
-//                    [self.currentUser setObject:imageSource forKey:@"image3"];
-//                    [self.currentUser saveInBackground];
-//                    //4
-//                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && !self.imageSource4){
-//                    NSLog(@"4th Saved %@", imageSource);
-//                    self.imageSource4 = imageSource;
-//                    [self.currentUser setObject:imageSource forKey:@"image4"];
-//                    [self.currentUser saveInBackground];
-//                    //5
-//                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && !self.imageSource5){
-//                    NSLog(@"5th Saved %@", imageSource);
-//                    self.imageSource5 = imageSource;
-//                    [self.currentUser setObject:imageSource forKey:@"image5"];
-//                    [self.currentUser saveInBackground];
-//                    //6
-//                } else if (self.imageSource1 && self.imageSource2 && self.imageSource3 && self.imageSource4 && self.imageSource5 && !self.imageSource6){
-//                    NSLog(@"6th Saved %@", imageSource);
-//                    self.imageSource6 = imageSource;
-//                    [self.currentUser setObject:imageSource forKey:@"image6"];
-//                    [self.currentUser saveInBackground];
-//                } else{
-//                    NSLog(@"all images are filled");
-//                }
-//
             } else {
                 NSLog(@"error: %@", error);
                 }
@@ -393,7 +423,7 @@ CLLocationManagerDelegate>
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
 
     if ([segue.identifier isEqualToString:@"chooseImage"]) {
-        NSLog(@"correct segue");
+        //NSLog(@"correct segue");
         ChooseImageInitialViewController *cvc = segue.destinationViewController;
         cvc.imageStr = self.selectedImage;
         cvc.currentUser = self.currentUser;
@@ -426,8 +456,9 @@ CLLocationManagerDelegate>
     } else {
         NSLog(@"push notifs are off");
     }
-
 }
+
+
 #pragma mark -- helpers
 -(void)setUpButtons:(UIButton *)button{
     button.layer.cornerRadius = 15;
@@ -456,7 +487,7 @@ CLLocationManagerDelegate>
 
             //get next and previous urls
             NSDictionary *paging = objects[@"paging"];
-            NSLog(@"objects: %@", objects);
+            //NSLog(@"objects: %@", objects);
             //store em globally
             self.nextPageURLString = paging[@"next"];
             self.previousPageURLString = paging[@"previous"];
@@ -569,7 +600,7 @@ CLLocationManagerDelegate>
             }
 
             [_currentUser saveInBackground];
-            NSLog(@"saved facebook user data: 1)%@\n2)%@\n3)%@\n4)%@\n5)%@\n6)%@\n7)%@\n8)%@\n", fullName, firstName, facebookID, birthdayStr, gender, location, placeOfWork, school);
+            //NSLog(@"saved facebook user data: 1)%@\n2)%@\n3)%@\n4)%@\n5)%@\n6)%@\n7)%@\n8)%@\n", fullName, firstName, facebookID, birthdayStr, gender, location, placeOfWork, school);
 
         } else {
             NSLog(@"facebook data error: %@", error);
@@ -580,7 +611,7 @@ CLLocationManagerDelegate>
 
 -(void)_loadUserImages{
 
-    self.currentUser = [PFUser currentUser];
+    //self.currentUser = [PFUser currentUser];
     //NSLog(@"current user from Load User Images: %@", self.currentUser);
 
     //now get images from user's facebook account and display them for user to sift through
@@ -627,8 +658,6 @@ CLLocationManagerDelegate>
         } else{
             NSLog(@"error getting faceboko images: %@", error);
         }
-
-
     }];
 }
 
