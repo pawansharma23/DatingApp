@@ -74,6 +74,8 @@ LXReorderableCollectionViewDataSource>
     NSLog(@"profile VC user: %@", self.currentUser);
     self.navigationItem.title = @"Settings";
 
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
     //delegation, initialization
     self.scrollView.delegate = self;
     self.collectionView.delegate = self;
@@ -89,7 +91,9 @@ LXReorderableCollectionViewDataSource>
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
+    flowlayouts.minimumInteritemSpacing = 2;
+    flowlayouts.minimumLineSpacing = 3;
+    //flowlayouts.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
     [self.collectionView setCollectionViewLayout:flowlayouts];
 
     self.collectionView.backgroundColor = [UIColor whiteColor];
@@ -290,14 +294,6 @@ LXReorderableCollectionViewDataSource>
 
     return cell;
 }
-//save selected images to array and save to Parse
-//-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
-//    //highlight selected cell... not working
-//    UICollectionViewCell *cell = [collectionView  cellForItemAtIndexPath:indexPath];
-//    cell.backgroundColor = [UIColor blueColor];
-//    
-//}
-
 
 -(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
     NSString *photoString = [self.pictures objectAtIndex:fromIndexPath.item];
@@ -317,6 +313,20 @@ LXReorderableCollectionViewDataSource>
 
 }
 
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(LXReorderableCollectionViewFlowLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+//    return 2.0;
+//}
+//
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(LXReorderableCollectionViewFlowLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+//    return 2.0;
+//}
+//
+//// Layout: Set Edges
+//- (UIEdgeInsets)collectionView:
+//(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+//    // return UIEdgeInsetsMake(0,8,0,8);  // top, left, bottom, right
+//    return UIEdgeInsetsMake(2,0,0,2);  // top, left, bottom, right
+//}
 
 
 

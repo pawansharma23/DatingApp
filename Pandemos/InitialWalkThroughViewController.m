@@ -99,13 +99,14 @@ UIScrollViewDelegate>
     self.navigationItem.title = @"Setup";
     self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:56.0/255.0 green:193.0/255.0 blue:255.0/255.0 alpha:1.0];
 
-    //self.automaticallyAdjustsScrollViewInsets = NO;
+    self.automaticallyAdjustsScrollViewInsets = NO;
 
     //set and initialize delegates
     self.scrollView.delegate = self;
     self.textViewAboutMe.delegate = self;
     self.pictureArray = [NSMutableArray new];
     self.selectedPictures = [NSMutableArray new];
+
 
 
     //grab the facebook data
@@ -386,7 +387,7 @@ UIScrollViewDelegate>
 //save selected images to array and save to Parse
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
     //highlight selected cell... not working
-    UICollectionViewCell *cell = [collectionView  cellForItemAtIndexPath:indexPath];
+    CVCell *cell = (CVCell *)[collectionView  cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor blueColor];
 
     NSString *selectedImage = [self.pictureArray objectAtIndex:indexPath.row];

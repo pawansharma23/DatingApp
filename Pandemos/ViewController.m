@@ -17,8 +17,6 @@
 #import <FBSDKGraphRequest.h>
 #import <FBSDKGraphRequestConnection.h>
 #import "UserData.h"
-#import <Parse/Parse.h>
-#import "UserData.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessagingViewController.h"
@@ -55,6 +53,7 @@ MFMailComposeViewControllerDelegate>
 @property (strong, nonatomic) NSData *leadImageData;
 @property (strong, nonatomic) NSMutableArray *imageArray;
 @property (strong, nonatomic) NSString *nameAndAgeGlobal;
+@property (strong, nonatomic) NSDate *birthday;
 
 //location Properties
 @property (strong, nonatomic) CLLocationManager *locationManager;
@@ -84,8 +83,8 @@ MFMailComposeViewControllerDelegate>
     [super viewDidLoad];
 
     self.currentUser = [PFUser currentUser];
-    NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-    NSLog(@"current user VDL: %@", fullName);
+    //NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+    //NSLog(@"current user VDL: %@", fullName);
 
     self.fullDescView.hidden = YES;
 
@@ -162,32 +161,37 @@ MFMailComposeViewControllerDelegate>
         NSLog(@"no user currently logged in");
         //[self performSegueWithIdentifier:@"NoUser" sender:nil];
     } else {
+
         //get the current users data
-        self.currentUser = [PFUser currentUser];
         NSString *fullName = [self.currentUser objectForKey:@"fullName"];
         //NSString *age = [self.currentUser objectForKey:@"userAge"];
         NSString *sex = [self.currentUser objectForKey:@"gender"];
         PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
         NSString *sexPref = [self.currentUser objectForKey:@"sexPref"];
-
+        NSString *milesFromUserLoc = [self.currentUser objectForKey:@"milesAway"];
+        NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
 
         //for matching: SexPref min and max age user is intersted in and Location of user/miles around user
         self.userSexPref = sexPref;
-
         self.minAge = [self.currentUser objectForKey:@"minAge"];
         self.maxAge = [self.currentUser objectForKey:@"maxAge"];
-        NSString *milesFromUserLoc = [self.currentUser objectForKey:@"milesAway"];
         self.milesFromUserLocation = [milesFromUserLoc intValue];
-        //update users age everytime they signin and re-save that age in Parse for matching purpposes
-        NSString *userBirthday = [self.currentUser objectForKey:@"birthday"];
-       // NSLog(@"user bDay: %@", userBirthday);
-        NSString *age = [self ageString:userBirthday];
-        [self.currentUser setObject:age forKey:@"userAge"];
+
+
+        //update users age everytime they open app, re-save & for Matching Engine
+        NSDateFormatter *formatter = [NSDateFormatter new];
+        [formatter setDateFormat:@"MM/dd/yyyy"];
+
+        //create the NSDate object
+        self.birthday = [formatter dateFromString:birthdayStr];
+        NSUInteger age = [self ageFromBirthday:self.birthday];
+        NSString *ageStr = [NSString stringWithFormat:@"%lu", age];
+        [self.currentUser setObject:ageStr forKey:@"userAge"];
 
         //relation
         PFRelation *rela = [self.currentUser objectForKey:@"matchNotConfirmed"];
 
-        NSLog(@"current user View Controller: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, age, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
+        NSLog(@"current user: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, ageStr, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
 
         //location
         NSLog(@"current location VDA: %@", self.currentLocation);
@@ -200,8 +204,15 @@ MFMailComposeViewControllerDelegate>
         self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
         [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
             //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
-            //save age and location objects
-        [self.currentUser saveInBackground];
+
+        //save age and location objects
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"error saving current User data: %@", error.description);
+            } else{
+                NSLog(@"succeded saving user info: %s", succeeded ? "true" : "false");
+            }
+        }];
 
 
 
@@ -211,14 +222,16 @@ MFMailComposeViewControllerDelegate>
     PFQuery *query = [PFUser query];
     //check to only add users that meet criterion of above current user
 
-
         //Both sexes
         if ([self.userSexPref containsString:@"male female"]) {
         //Preference for Both Sexes
         [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if(!error){
-            //NSLog(@"pfquery-- user objects: %zd", [objects count]);
+            NSLog(@"pfquery-- user objects: %zd", [objects count]);
+            self.objectsArray = objects;
+
             [self checkAndGetImages:objects user:0];
+            [self checkAndGetUserData:objects user:0];
         } else{
             NSLog(@"error: %@", error);
         }
@@ -238,7 +251,7 @@ MFMailComposeViewControllerDelegate>
             [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
                 if (!error) {
                     long objectCount = [objects count];
-                   // NSLog(@"male pref query: %zd results", objectCount);
+                    NSLog(@"male pref query: %zd results", objectCount);
                     self.objectsArray = objects;
 
                     if (objectCount == 1) {
@@ -250,6 +263,7 @@ MFMailComposeViewControllerDelegate>
                         [self checkAndGetImages:objects user:0];
                         [self checkAndGetUserData:objects user:0];
 
+                        //for looging purposes only
                         PFUser *user1 =  [objects objectAtIndex:0];
                         PFUser *user2 =  [objects objectAtIndex:1];
                         NSLog(@"matches: %@\n%@\n", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
@@ -258,6 +272,7 @@ MFMailComposeViewControllerDelegate>
                         [self checkAndGetImages:objects user:0];
                         [self checkAndGetUserData:objects user:0];
 
+                        //for looging purposes only
                         PFUser *user1 =  [objects objectAtIndex:0];
                         PFUser *user2 =  [objects objectAtIndex:1];
                         PFUser *user3 =  [objects objectAtIndex:2];
@@ -275,10 +290,16 @@ MFMailComposeViewControllerDelegate>
                 [query whereKey:@"gender" hasPrefix:@"f"];
                 [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
                     if (!error) {
-                        NSLog(@"female pref query: %zd results", [objects count]);
+                        long objectCount = [objects count];
+                        NSLog(@"female pref query: %lu results", objectCount);
+                        self.objectsArray = objects;
+
                         [self checkAndGetImages:objects user:0];
                         [self checkAndGetUserData:objects user:0];
 
+                        PFUser *user1 =  [objects objectAtIndex:0];
+                        PFUser *user2 =  [objects objectAtIndex:1];
+                      NSLog(@"matches: %@\n%@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
                     }
                 }];
             }
@@ -314,7 +335,7 @@ MFMailComposeViewControllerDelegate>
                 NSLog(@"last image");
                 [self currentImage:self.count];
 
-                [self lastObjectCallDesciptionView];
+                [self lastImageBringUpDesciptionView];
 
             } else{
 
@@ -405,20 +426,20 @@ MFMailComposeViewControllerDelegate>
             PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
             PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
             [matchWithoutConfirm addObject:currentMatchUser];
+
             //for logging purposes
             NSString *fullName = [self.currentUser objectForKey:@"fullName"];
             NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-            NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
+            //NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
 
-            //[self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 
-            //email approval
-            [self sendEmailForApproval];
-            
-            //if (error) {
-              //  NSLog(@"error saving relation: %@", error);
-           // }
-        //}];
+            if (error) {
+                NSLog(@"error saving relation: %@", error);
+            } else{
+                NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
+            }
+        }];
     }
 }
 
@@ -464,10 +485,7 @@ MFMailComposeViewControllerDelegate>
 #pragma mark -- Segue Methods
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if ([segue.identifier isEqualToString:@"Messages"]) {
-        NSLog(@"messages iden");
-        MessagingViewController *mvc = segue.destinationViewController;
-
-        mvc.pfUser = self.currentUser;
+        NSLog(@"Messages Segue");
 
     } else if ([segue.identifier isEqualToString:@"Settings"])  {
 
@@ -478,6 +496,7 @@ MFMailComposeViewControllerDelegate>
 
 #pragma mark -- helpers
 -(void)checkAndGetImages:(NSArray *)pfObjects user:(NSUInteger) userNumber    {
+
     PFUser *userForImages =  [pfObjects objectAtIndex:userNumber];
     NSString *image1 = [userForImages objectForKey:@"image1"];
     NSString *image2 = [userForImages objectForKey:@"image2"];
@@ -503,15 +522,16 @@ MFMailComposeViewControllerDelegate>
 }
 
 -(void)checkAndGetUserData:(NSArray *)pfObjects user:(NSUInteger)userNumber{
+
     PFUser *userForData = [pfObjects objectAtIndex:userNumber];
     NSString *firstName = [userForData objectForKey:@"firstName"];
     NSString *work = [userForData objectForKey:@"work"];
     NSString *school = [userForData objectForKey:@"scool"];
     NSString *bday = [userForData objectForKey:@"birthday"];
-//    NSString *userDesc = [userForData objectForKey:@"desc"];
 
-    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", firstName, [self ageString:bday]];
-    self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %@", firstName, [self ageString:bday]];
+
+    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", firstName, [self ageFromBirthday:[self stringToNSDate:bday]]];
+    //self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %lu", firstName, [self ageFromBirthday:[self stringToNSDate:bday]]];
     self.educationLabel.text = school;
     self.jobLabel.text = work;
 
@@ -519,22 +539,22 @@ MFMailComposeViewControllerDelegate>
 
 }
 
--(NSString *)ageString:(NSString *)bDayString   {
+- (NSInteger)ageFromBirthday:(NSDate *)birthdate {
 
-    NSString *bday = bDayString;
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"MM/DD/YYY"];
+    NSDate *today = [NSDate date];
+    NSDateComponents *ageComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:birthdate toDate:today options:0];
 
-    NSDate *birthdayDate = [formatter dateFromString:bday];
-    NSDate *nowDate = [NSDate date];
-    [formatter stringFromDate:nowDate];
-    //NSString *nowString = [NSString stringWithFormat:@"%@", nowDate];
-    //NSLog(@"current date string: %@", nowString);
-    NSDateComponents *ageCom = [[NSCalendar currentCalendar]components:NSCalendarUnitYear fromDate:birthdayDate toDate:nowDate options:0];
-    NSInteger ageInt = [ageCom year];
-    NSString *ageString = [NSString stringWithFormat:@"%zd", ageInt];
-    return ageString;
+    return ageComponents.year;
 }
+
+-(NSDate *)stringToNSDate:(NSString *)dateAsAString{
+
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    [formatter setDateFormat:@"MM/dd/yyyy"];
+
+    return [formatter dateFromString:dateAsAString];
+}
+
 
 -(NSData *)imageData:(NSString *)imageString{
     NSURL *url = [NSURL URLWithString:imageString];
@@ -598,7 +618,7 @@ MFMailComposeViewControllerDelegate>
     }
 }
 
--(void)lastObjectCallDesciptionView{
+-(void)lastImageBringUpDesciptionView{
 
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
@@ -610,10 +630,11 @@ MFMailComposeViewControllerDelegate>
 //round corners, change button colors
 -(void)setUpButtons:(UIButton *)button{
 
-    button.layer.cornerRadius = 15;
+    button.layer.cornerRadius = 15.0 / 2.0f;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
     [button.layer setBorderColor:[UserData uclaBlue].CGColor];
+
 }
 
 -(void) sendEmailForApproval{
@@ -682,8 +703,31 @@ MFMailComposeViewControllerDelegate>
 //
 //
 
-
-
+    //-(NSString *)ageString:(NSString *)bDayString   {
+    //    //birthday
+    //    NSDateFormatter *formatter = [NSDateFormatter new];
+    //    [formatter setDateFormat:@"MM/DD/YYYY"];
+    //    NSDate *startDate = [formatter dateFromString:bDayString];
+    //
+    //
+    //    NSDate *endDate = [NSDate date];
+    //    NSString *endDateStr = [formatter stringFromDate:endDate];
+    //    NSLog(@"now: %@", endDateStr);
+    //    NSLog(@"bday: %@", bDayString);
+    //
+    //    NSCalendar *currentCalender = [NSCalendar currentCalendar];
+    //    NSUInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitSecond;
+    //    NSDateComponents *components = [currentCalender components:unitFlags fromDate:startDate toDate:endDate options:0];
+    //
+    //    NSInteger yearAge = [components year];
+    //    NSInteger month = [components month];
+    //    NSInteger day = [components day];
+    //
+    //    NSLog(@"year, month, day: %ld, %ld, %ld", (long)yearAge, (long)month, (long)day);
+    //
+    //    NSString *ageString = [NSString stringWithFormat:@"%lu", (long)yearAge];
+    //    return ageString;
+    //}
 
 
 @end

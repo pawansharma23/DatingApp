@@ -9,6 +9,7 @@
 #import "ChooseImageInitialViewController.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "CVImageCell.h"
+#import "UserData.h"
 
 @interface ChooseImageInitialViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -47,6 +48,7 @@ LXReorderableCollectionViewDelegateFlowLayout>
     self.collectionView.delegate = self;
     self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
     self.collectionView.layer.borderWidth = 1.0;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
 
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
@@ -54,7 +56,6 @@ LXReorderableCollectionViewDelegateFlowLayout>
     flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
     [self.collectionView setCollectionViewLayout:flowlayouts];
 
-    self.collectionView.backgroundColor = [UIColor whiteColor];
 
     //get "no data" from backend
     PFQuery *query = [PFUser query];
