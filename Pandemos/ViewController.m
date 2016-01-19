@@ -47,6 +47,12 @@ MFMailComposeViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *fullDescNameAndAge;
 @property (weak, nonatomic) IBOutlet UILabel *fullAboutMe;
 @property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
+@property (weak, nonatomic) IBOutlet UIView *matchView;
+@property (weak, nonatomic) IBOutlet UIImageView *matchedImage;
+@property (weak, nonatomic) IBOutlet UIImageView *userImageMatched;
+@property (weak, nonatomic) IBOutlet UILabel *matchedLabel;
+@property (weak, nonatomic) IBOutlet UIButton *messageButton;
+@property (weak, nonatomic) IBOutlet UIButton *keepPlayingButton;
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (strong, nonatomic) NSString *leadImage;
@@ -63,6 +69,7 @@ MFMailComposeViewControllerDelegate>
 @property (strong, nonatomic) NSString *userSexPref;
 @property (strong, nonatomic) NSString *minAge;
 @property (strong, nonatomic) NSString *maxAge;
+@property (strong, nonatomic) NSString *userImageForMatching;
 @property int milesFromUserLocation;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
 @property long count;
@@ -87,6 +94,7 @@ MFMailComposeViewControllerDelegate>
     //NSLog(@"current user VDL: %@", fullName);
 
     self.fullDescView.hidden = YES;
+    self.matchView.hidden = YES;
 
     self.count = 1;
     self.matchedUsersCount = 0;
@@ -113,6 +121,9 @@ MFMailComposeViewControllerDelegate>
     [self setUpButtons:self.image5Indicator];
     [self setUpButtons:self.image6Indicator];
 
+    [self setUpButtons:self.keepPlayingButton];
+    [self setUpButtons:self.messageButton];
+
     [self currentImage:self.count];
 
     self.greenButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
@@ -125,6 +136,9 @@ MFMailComposeViewControllerDelegate>
 
     [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
     self.userInfoView.layer.cornerRadius = 10;
+
+    //matched View Setup
+    [self matchViewSetUp:self.userImage andMatchImage:self.matchedImage];
 
     //swipe gestures-- up
     [self.userImage setUserInteractionEnabled:YES];
@@ -176,6 +190,7 @@ MFMailComposeViewControllerDelegate>
         self.minAge = [self.currentUser objectForKey:@"minAge"];
         self.maxAge = [self.currentUser objectForKey:@"maxAge"];
         self.milesFromUserLocation = [milesFromUserLoc intValue];
+        self.userImageForMatching = [self.currentUser objectForKey:@"image1"];
 
 
         //update users age everytime they open app, re-save & for Matching Engine
@@ -210,7 +225,7 @@ MFMailComposeViewControllerDelegate>
             if (error) {
                 NSLog(@"error saving current User data: %@", error.description);
             } else{
-                NSLog(@"succeded saving user info: %s", succeeded ? "true" : "false");
+                NSLog(@"succeeded saving user updated age and geoCode: %s", succeeded ? "true" : "false");
             }
         }];
 
@@ -219,8 +234,26 @@ MFMailComposeViewControllerDelegate>
 
 
         //Matching Engine
-    PFQuery *query = [PFUser query];
-    //check to only add users that meet criterion of above current user
+        PFQuery *query = [PFUser query];
+        //this is if there is a relationship, I want !relationship???
+        //PFRelation *relation = [self.currentUser relationForKey:@"matchNotConfirmed"];
+        //query = [relation query];
+
+
+
+//        {
+//            PFRelation *relation = [self relationforKey:@"myRelation"];
+//            PFQuery *query = [relation query];
+//            [query whereKey:@"objectId" equalTo:myObject.objectId];
+//            [query countObjectsInBackgroundWithBlock:^(int count, NSError *error) {
+//                completionBlock(count > 0, error);
+//            }];
+//        }
+
+        //these constraints will only show the relationship matches, I need the opposite
+//        PFRelation *relation = [[PFUser currentUser] relationForKey:@"matchNotConfirmed"];
+//        PFQuery *query = [relation query];
+        //check to only add users that meet criterion of above current user
 
         //Both sexes
         if ([self.userSexPref containsString:@"male female"]) {
@@ -292,14 +325,32 @@ MFMailComposeViewControllerDelegate>
                     if (!error) {
                         long objectCount = [objects count];
                         NSLog(@"female pref query: %lu results", objectCount);
+                        //NSLog(@"objects: %@", objects);
                         self.objectsArray = objects;
-
-                        [self checkAndGetImages:objects user:0];
-                        [self checkAndGetUserData:objects user:0];
-
-                        PFUser *user1 =  [objects objectAtIndex:0];
-                        PFUser *user2 =  [objects objectAtIndex:1];
-                      NSLog(@"matches: %@\n%@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
+                        switch (objectCount) {
+                            case 0:
+                                NSLog(@"nothing here");
+                                break;
+                            case 1:{
+                                [self checkAndGetImages:objects user:0];
+                                [self checkAndGetUserData:objects user:0];
+                                //login purpose only
+                                PFUser *user1 =  [objects objectAtIndex:0];
+                                NSLog(@"1 match: %@", [user1 objectForKey:@"fullName"]);
+                            }
+                                break;
+                            case 2:{
+                                [self checkAndGetImages:objects user:0];
+                                [self checkAndGetUserData:objects user:0];
+                                //loggin
+                                PFUser *user1 =  [objects objectAtIndex:0];
+                                PFUser *user2 =  [objects objectAtIndex:1];
+                                NSLog(@"2 matches: %@ & %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
+                            }break;
+                            default:
+                                NSLog(@"more than 2 matches");
+                                break;
+                        }
                     }
                 }];
             }
@@ -398,13 +449,17 @@ MFMailComposeViewControllerDelegate>
 
         NSLog(@"last match in queue");
         //bring up the new user Data
+
+        [self matchedView:self.objectsArray user:self.matchedUsersCount];
+
         [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
         [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
-
         //match the user in Parse
-        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
+        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
         PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
         [matchWithoutConfirm addObject:currentMatchUser];
+
+        //for logging purposes
         NSString *fullName = [self.currentUser objectForKey:@"fullName"];
         NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
         NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
@@ -417,28 +472,31 @@ MFMailComposeViewControllerDelegate>
 
 
     } else{
-            //view elements, shows next user
-            self.matchedUsersCount++;
-            [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-            [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+        //view elements, shows next user
+        self.matchedUsersCount++;
+        [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+        [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
 
-            //assign a relationship between current user and swiped right user
-            PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
-            PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
-            [matchWithoutConfirm addObject:currentMatchUser];
+        //bring up Matched View
+        [self matchedView:self.objectsArray user:self.matchedUsersCount];
 
-            //for logging purposes
-            NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-            NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-            //NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
+        //assign a relationship between current user and swiped right user
+        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
+        PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
+        [matchWithoutConfirm addObject:currentMatchUser];
 
-            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        //for logging purposes
+        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+        NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
+        NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
 
-            if (error) {
-                NSLog(@"error saving relation: %@", error);
-            } else{
-                NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
-            }
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+        if (error) {
+            NSLog(@"error saving relation: %@", error);
+        } else{
+            NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
+        }
         }];
     }
 }
@@ -469,9 +527,16 @@ MFMailComposeViewControllerDelegate>
 
 
 }
+- (IBAction)onKeepPlaying:(UIButton *)sender {
+    self.matchView.hidden = YES;
+}
 
+- (IBAction)onMessage:(UIButton *)sender {
+    [self performSegueWithIdentifier:@"Messages" sender:self];
+}
 
 - (IBAction)onYesButton:(UIButton *)sender {
+
 }
 
 
@@ -528,6 +593,9 @@ MFMailComposeViewControllerDelegate>
     NSString *work = [userForData objectForKey:@"work"];
     NSString *school = [userForData objectForKey:@"scool"];
     NSString *bday = [userForData objectForKey:@"birthday"];
+    PFRelation *rela = [userForData objectForKey:@"matchNotConfirmed"];
+    NSLog(@"relationship data: %@", rela);
+    NSLog(@"object array: %@", self.objectsArray);
 
 
     self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", firstName, [self ageFromBirthday:[self stringToNSDate:bday]]];
@@ -537,6 +605,28 @@ MFMailComposeViewControllerDelegate>
 
     //NSLog(@"%@\n%@\n%@", firstName, school, work);
 
+}
+
+-(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber {
+    self.matchView.hidden = NO;
+
+    PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber];
+    NSString *image = [userForImageAndName objectForKey:@"image1"];
+    NSString *firstName = [userForImageAndName objectForKey:@"firstName"];
+
+    self.matchedImage.image = [UIImage imageWithData:[self imageData:image]];
+    self.matchedLabel.text = firstName;
+    self.userImageMatched.image = [UIImage imageWithData:[self imageData:self.userImageForMatching]];
+
+}
+
+-(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage    {
+    self.matchView.backgroundColor = [UIColor blackColor];
+    self.matchView.alpha = 0.85;
+    self.matchView.layer.cornerRadius = 10;
+
+    userImage.layer.cornerRadius = 70.0 / 2.0f;
+    matchedImage.layer.cornerRadius = 70.0 / 2.0f;
 }
 
 - (NSInteger)ageFromBirthday:(NSDate *)birthdate {
@@ -676,9 +766,11 @@ MFMailComposeViewControllerDelegate>
     // Close the Mail Interface
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
+
+
+
+
     //old code
-
-
 //did update location delegate method
 //    double latitude = self.locationManager.location.coordinate.latitude;
 //    double longitude = self.locationManager.location.coordinate.longitude;
