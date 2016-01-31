@@ -30,6 +30,9 @@ LXReorderableCollectionViewDelegateFlowLayout>
 @property (strong, nonatomic) NSString *image5;
 @property (strong, nonatomic) NSString *image6;
 
+@property (strong, nonatomic) PFUser *currentUser;
+
+
 
 
 
@@ -40,9 +43,11 @@ LXReorderableCollectionViewDelegateFlowLayout>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.navigationItem.title = @"Choose Your Pics";
+    self.currentUser = [PFUser currentUser];
+
+    self.navigationItem.title = @"Choose Pics";
     self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:56.0/255.0 green:193.0/255.0 blue:255.0/255.0 alpha:1.0];
-    
+    NSLog(@"user image passed: %@", self.imageStr);
     self.userImage.image = [UIImage imageWithData:[self imageData:self.imageStr]];
     self.pictures = [NSMutableArray new];
     self.collectionView.delegate = self;
@@ -90,7 +95,6 @@ LXReorderableCollectionViewDelegateFlowLayout>
             [self.collectionView reloadData];
         }
     }];
-
 }
 
 
@@ -150,7 +154,7 @@ LXReorderableCollectionViewDelegateFlowLayout>
         [self.currentUser setObject:self.imageStr forKey:@"image1"];
 
         [self.currentUser saveInBackground];
-        [self.saveImage setTitle:@"Save as Image 1" forState:UIControlStateNormal];
+        [self.saveImage setTitle:@"Saved Image 1" forState:UIControlStateNormal];
 
         [self.collectionView reloadData];
 
@@ -159,20 +163,26 @@ LXReorderableCollectionViewDelegateFlowLayout>
         NSLog(@"1 occupied, 2 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image2"];
         [self.currentUser saveInBackground];
+
+        [self.saveImage setTitle:@"Saved Image 2" forState:UIControlStateNormal];
         [self.collectionView reloadData];
 
     } else if (self.image1 && self.image2 && !self.image3){
         NSLog(@"1 & 2 occ, 3 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image3"];
         [self.currentUser saveInBackground];
+        [self.saveImage setTitle:@"Saved Image 3" forState:UIControlStateNormal];
+
 
         [self.collectionView reloadData];
 
     } else if (self.image1 && self.image2 && self.image3 && !self.image4){
         NSLog(@"1, 2, 3 occ, 4 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image4"];
-
         [self.currentUser saveInBackground];
+
+        [self.saveImage setTitle:@"Saved Image 4" forState:UIControlStateNormal];
+
         [self.collectionView reloadData];
 
     } else if (self.image1 && self.image2 && self.image3 && self.image4 && !self.image5){
@@ -181,21 +191,28 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
         [self.currentUser setObject:self.imageStr forKey:@"image5"];
         [self.currentUser saveInBackground];
+        [self.saveImage setTitle:@"Saved Image 5" forState:UIControlStateNormal];
+
         [self.collectionView reloadData];
 
     } else if (self.image1 && self.image2 && self.image3 && self.image4 && self.image5 && !self.image6){
 
         NSLog(@"1, 2, 3, 4, 5 occ 6 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image6"];
-
         [self.currentUser saveInBackground];
+        [self.saveImage setTitle:@"Save as Image 6" forState:UIControlStateNormal];
+
         [self.collectionView reloadData];
         
     }else{
             NSLog(@"all images Filled");
-        [self.saveImage setTitle:@"All Full :(" forState:UIControlStateNormal];
+        [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
 
         }
+}
+
+- (IBAction)onAddMoreImages:(UIButton *)sender {
+    [self performSegueWithIdentifier:@"AddMore" sender:self];
 }
 
 

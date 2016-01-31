@@ -13,8 +13,10 @@
 #import <ParseFacebookUtilsV4.h>
 #import <Parse/PFConstants.h>
 #import "ProfileViewController.h"
+#import "UserData.h"
 
 @interface PFLoginViewController ()
+@property (weak, nonatomic) IBOutlet UIView *footerView;
 
 @property (strong, nonatomic) PFUser *currentUser;
 
@@ -26,10 +28,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-
-//    self.currentUser = [PFUser currentUser];
-//    NSLog(@"from pfloginview current user: %@", self.currentUser);
-//    
+    self.footerView.backgroundColor = [UserData facebookBlue];
 }
 
 

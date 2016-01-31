@@ -56,12 +56,15 @@ UITableViewDelegate>
         if (error) {
             NSLog(@"error in VDL: %@", error);
         }
+
+        if (objects.count == 0) {
+            NSLog(@"convo between %@ & %@ has no chats yet", userName, repName);
+        } else  {
         PFUser *chat1 = [objects objectAtIndex:0];
         NSString *text = [chat1 objectForKey:@"text"];
 
-
-    NSLog(@"convo between: %@ & %@ ID: %@\n chats:%@", userName, repName, self.recipient.objectId, text);
-
+            NSLog(@"convo between: %@ & %@ ID: %@\n chats:%@", userName, repName, self.recipient.objectId, text);
+        }
      }];
 
 

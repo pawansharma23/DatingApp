@@ -33,7 +33,7 @@ UITableViewDelegate>
 
     self.currentUser = [PFUser currentUser];
 
-    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:255.0/255.0 green:84.0/255.0 blue:95.0/255.0 alpha:1.0];
+    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
     //picture on nav bar
     self.navigationItem.title = @"Messages";
 

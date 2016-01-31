@@ -16,6 +16,5 @@
 @interface ChooseImageInitialViewController : UIViewController
 
 @property (strong, nonatomic) NSString *imageStr;
-@property (strong, nonatomic) PFUser *currentUser;
 
 @end

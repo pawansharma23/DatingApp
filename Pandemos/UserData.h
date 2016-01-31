@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#define APP_TITLE @"DoteOn"
+
 @interface UserData : NSObject
 //from FB public profile data
 @property (strong, nonatomic) NSString *fullName;
@@ -29,21 +31,32 @@
 @property (strong, nonatomic) NSString *photoID;
 @property (strong, nonatomic) NSURL *photoURL;
 @property (strong, nonatomic) NSData *photosData;
+@property (strong, nonatomic) NSString *albumId;
+@property (strong, nonatomic) NSString *realAlbumId;
 
 @property (strong, nonatomic) NSString *image1;
 @property (strong, nonatomic) NSString *image2;
 @property (strong, nonatomic) NSString *image3;
 
+@property (strong, nonatomic) NSString *nextPageURL;
 
-
-
-//Dios specific data
 @property (strong, nonatomic) NSString *aboutMe;//user description
 @property (strong, nonatomic) NSString *username;
 
-
++(UIColor *)facebookBlue;
 +(UIColor *)rubyRed;
 +(UIColor *)uclaBlue;
++(UIColor *)yellowGreen;
 
+-(void)setUpButtons:(UIButton *)button;
+-(void)changeButtonState:(UIButton *)button;
+-(void)changeOtherButton:(UIButton *)button;
+
+-(void)loadFacebookThumbnails:(UIButton *)nextButton arrayForPictures:(NSMutableArray *)picArray andCollectionView:(UICollectionView *)collection;
 
 @end
+
+
+
+
+

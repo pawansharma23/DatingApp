@@ -24,7 +24,6 @@
 #import "PreferencesViewController.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
 
-
 @interface ProfileViewController ()<MFMailComposeViewControllerDelegate,
 UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -69,10 +68,10 @@ LXReorderableCollectionViewDataSource>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-
     self.currentUser = [PFUser currentUser];
-    NSLog(@"profile VC user: %@", self.currentUser);
+    //NSLog(@"profile VC user: %@", self.currentUser);
     self.navigationItem.title = @"Settings";
+    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
 
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -82,30 +81,26 @@ LXReorderableCollectionViewDataSource>
     self.pictures = [NSMutableArray new];
     self.textViewAboutMe.delegate = self;
 
-    //profile change info added to left side of nav bar
-    UIBarButtonItem *leftSideBB = [[UIBarButtonItem alloc]initWithTitle:@"Update Profile" style:UIBarButtonItemStylePlain target:self action:@selector(segueToProfileView)];
-    leftSideBB.tintColor = [UIColor colorWithRed:251.0/255.0 green:73.0/255.0 blue:72.0/255.0 alpha:1.0];
-    self.navigationItem.rightBarButtonItem = leftSideBB;
-
-
+    //collection view
+    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
+    self.collectionView.layer.borderWidth = 1.0;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-    flowlayouts.minimumInteritemSpacing = 2;
-    flowlayouts.minimumLineSpacing = 3;
-    //flowlayouts.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
     [self.collectionView setCollectionViewLayout:flowlayouts];
-
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
     //Buttons Setup
-    [self setUpButton:self.menButton];
-    [self setUpButton:self.womenButton];
-    [self setUpButton:self.bothButton];
-    [self setUpButton:self.logoutButton];
-    [self setUpButton:self.deleteButton];
-    [self setUpButton:self.shareButton];
-    [self setUpButton:self.feedbackButton];
+    UserData *userD = [UserData new];
+    [userD setUpButtons:self.menButton];
+    [userD setUpButtons:self.womenButton];
+    [userD setUpButtons:self.bothButton];
+    [userD setUpButtons:self.logoutButton];
+    [userD setUpButtons:self.deleteButton];
+    [userD setUpButtons:self.shareButton];
+    [userD setUpButtons:self.feedbackButton];
 
     self.textViewAboutMe.layer.cornerRadius = 10;
     [self.textViewAboutMe.layer setBorderWidth:1.0];
@@ -154,11 +149,14 @@ LXReorderableCollectionViewDataSource>
             NSString *sexPref = [[objects firstObject] objectForKey:@"sexPref"];
 
             if ([sexPref isEqualToString:@"male"]) {
-                self.menButton.backgroundColor = [UIColor blueColor];
+                self.menButton.backgroundColor = [UIColor blackColor];
+                [self.menButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             } else if ([sexPref isEqualToString:@"female"]){
-                self.womenButton.backgroundColor = [UIColor blueColor];
+                self.womenButton.backgroundColor = [UIColor blackColor];
+                [self.womenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             } else if ([sexPref isEqualToString:@"male female"])  {
-                self.bothButton.backgroundColor = [UIColor blueColor];
+                self.bothButton.backgroundColor = [UIColor blackColor];
+                [self.bothButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             }else{
             NSLog(@"sex pref: %@", sexPref);
             }
@@ -206,7 +204,7 @@ LXReorderableCollectionViewDataSource>
 }
 
 
-//resign keyboard when touch off textView
+#pragma mark -- textView Editing
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     NSLog(@"touchesBegan:withEvent:");
     [self.view endEditing:YES];
@@ -278,7 +276,6 @@ LXReorderableCollectionViewDataSource>
 
 
 
-//1)CollectionView for User Images
 #pragma mark -- collectionView delegate Methods
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.pictures.count;
@@ -313,6 +310,11 @@ LXReorderableCollectionViewDataSource>
 
 }
 
+#pragma mark --other view elements
+- (IBAction)onSwapPhotsButton:(UIButton *)sender {
+    [self performSegueWithIdentifier:@"SwapImages" sender:self];
+}
+
 //- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(LXReorderableCollectionViewFlowLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 //    return 2.0;
 //}
@@ -330,7 +332,6 @@ LXReorderableCollectionViewDataSource>
 
 
 
-#pragma mark -- View Elements
 //3) Min/Max Ages
 - (IBAction)onMinAgeSliderChange:(UISlider *)sender {
     //number to label convert
@@ -461,15 +462,10 @@ LXReorderableCollectionViewDataSource>
 
 
 
--(void)segueToProfileView{
-    [self performSegueWithIdentifier:@"ProfileSegue" sender:nil];
-}
-
-
 - (IBAction)logOutButton:(UIButton *)sender {
 
     if (sender.isSelected) {
-        self.logoutButton.backgroundColor = [UIColor colorWithRed:56.0/255.0 green:193.0/255.0 blue:255.0/255.0 alpha:1.0];
+        self.logoutButton.backgroundColor = [UIColor blackColor];
 
     }
     [PFUser logOut];
@@ -497,12 +493,7 @@ LXReorderableCollectionViewDataSource>
 
 
 #pragma mark -- helpers
--(void)setUpButton:(UIButton *)button{
-    button.layer.cornerRadius = 15;
-    button.clipsToBounds = YES;
-    [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UserData rubyRed].CGColor];
-}
+
 
 -(void)borderLabel:(UILabel *)label{
     label.layer.cornerRadius = 10;
@@ -519,18 +510,22 @@ LXReorderableCollectionViewDataSource>
 
 -(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2    {
 
-    button.backgroundColor = [UIColor blueColor];
+    button.backgroundColor = [UIColor blackColor];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [self.currentUser setObject:sex forKey:@"sexPref"];
     [self.currentUser saveInBackground];
 
     if ([button isSelected]) {
         [button setSelected:NO];
-        button.backgroundColor = [UIColor whiteColor];
+        button.backgroundColor = [UIColor blackColor];
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     } else{
         //change other two buttons to delected
         [button setSelected:YES];
         [b1 setSelected:NO];
         [b2 setSelected:NO];
+        [b1 setTitleColor:[UIColor blackColor] forState: UIControlStateNormal];
+        [b2 setTitleColor:[UIColor blackColor] forState: UIControlStateNormal];
         b1.backgroundColor = [UIColor whiteColor];
         b2.backgroundColor = [UIColor whiteColor];
     }

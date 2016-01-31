@@ -22,7 +22,6 @@
 #import "MessagingViewController.h"
 #import <MessageUI/MessageUI.h>
 
-
 @interface ViewController ()<FBSDKGraphRequestConnectionDelegate,
 UIGestureRecognizerDelegate,
 UINavigationControllerDelegate,
@@ -79,9 +78,6 @@ MFMailComposeViewControllerDelegate>
 @property long matchedUsersCount;
 
 
-
-
-
 @end
 
 @implementation ViewController
@@ -99,10 +95,9 @@ MFMailComposeViewControllerDelegate>
     self.count = 1;
     self.matchedUsersCount = 0;
     self.imageArray = [NSMutableArray new];
-    self.navigationItem.title = @"Fmf";
-    self.navigationController.navigationBar.barTintColor = [UserData rubyRed];
+    self.navigationItem.title = APP_TITLE;
+    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
     [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
-
 
     //location object
     self.locationManager = [CLLocationManager new];
@@ -111,7 +106,6 @@ MFMailComposeViewControllerDelegate>
     [self.locationManager requestWhenInUseAuthorization];
     [self.locationManager startUpdatingLocation];
     self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
-
 
     //other view elements setup
     [self setUpButtons:self.image1Indicator];
@@ -138,7 +132,7 @@ MFMailComposeViewControllerDelegate>
     self.userInfoView.layer.cornerRadius = 10;
 
     //matched View Setup
-    [self matchViewSetUp:self.userImage andMatchImage:self.matchedImage];
+    [self matchViewSetUp:self.userImageMatched andMatchImage:self.matchedImage];
 
     //swipe gestures-- up
     [self.userImage setUserInteractionEnabled:YES];
@@ -236,24 +230,12 @@ MFMailComposeViewControllerDelegate>
         //Matching Engine
         PFQuery *query = [PFUser query];
         //this is if there is a relationship, I want !relationship???
+
         //PFRelation *relation = [self.currentUser relationForKey:@"matchNotConfirmed"];
         //query = [relation query];
 
-
-
-//        {
-//            PFRelation *relation = [self relationforKey:@"myRelation"];
-//            PFQuery *query = [relation query];
-//            [query whereKey:@"objectId" equalTo:myObject.objectId];
-//            [query countObjectsInBackgroundWithBlock:^(int count, NSError *error) {
-//                completionBlock(count > 0, error);
-//            }];
-//        }
-
-        //these constraints will only show the relationship matches, I need the opposite
-//        PFRelation *relation = [[PFUser currentUser] relationForKey:@"matchNotConfirmed"];
-//        PFQuery *query = [relation query];
-        //check to only add users that meet criterion of above current user
+        //[query whereKeyDoesNotExist:@"matchNotConfirmed"];
+        //gets Error code Unsupported query operator on relation field
 
         //Both sexes
         if ([self.userSexPref containsString:@"male female"]) {
@@ -378,6 +360,21 @@ MFMailComposeViewControllerDelegate>
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionUp) {
         NSLog(@"swipe up");
+
+        //Parse Mandrill cloud code send email
+        NSString *confidantEmail = [self.currentUser objectForKey:@"confidantEmail"];
+        NSLog(@"confidant email: %@", confidantEmail);
+        NSString *firstName = [self.currentUser objectForKey:@"firstName"];
+        NSLog(@"firstName of user sending email: %@", firstName);
+
+        [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": firstName} block:^(NSString *result, NSError *error) {
+            if (error) {
+                NSLog(@"error cloud js code: %@", error);
+            } else {
+                NSLog(@"result :%@", result);
+            }
+        }];
+
         //add animation
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
             if (self.count == self.imageArray.count - 1 ) {
@@ -394,7 +391,6 @@ MFMailComposeViewControllerDelegate>
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 [self currentImage:self.count];
                 self.fullDescView.hidden = YES;
-
             }
         } completion:^(BOOL finished) {
         }];
@@ -434,9 +430,6 @@ MFMailComposeViewControllerDelegate>
 }
 
 
-
-
-
 //Swipe Right or Left
 - (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender {
 
@@ -444,61 +437,76 @@ MFMailComposeViewControllerDelegate>
     self.count = 1;
     [self.imageArray removeAllObjects];
 
-    //Set relational data to accepted throw a notification to user skip to next user
-    if (self.matchedUsersCount == self.objectsArray.count - 1) {
+    [UIView transitionWithView:self.userImage duration:0.1 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
 
-        NSLog(@"last match in queue");
-        //bring up the new user Data
+        //Set relational data to accepted throw a notification to user skip to next user
+        if (self.matchedUsersCount == self.objectsArray.count - 1) {
 
-        [self matchedView:self.objectsArray user:self.matchedUsersCount];
-
-        [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-        [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
-        //match the user in Parse
-        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-        PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
-        [matchWithoutConfirm addObject:currentMatchUser];
-
-        //for logging purposes
-        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-        NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-        NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
-
-        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (error) {
-                NSLog(@"error: %@", error);
-            }
-        }];
+            NSLog(@"last match in queue");
+            //bring up the new user Data
+            [self matchedView:self.objectsArray user:self.matchedUsersCount + 1];
 
 
-    } else{
-        //view elements, shows next user
-        self.matchedUsersCount++;
-        [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-        [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+            //make a new image that takes over the
+            // [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+            // [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
 
-        //bring up Matched View
-        [self matchedView:self.objectsArray user:self.matchedUsersCount];
+            //chgange the view for matches up
+            self.userImage.image = [UIImage imageNamed:@"cupid-icon"];
+            self.userInfoView.hidden = YES;
+            self.redButton.hidden = YES;
+            self.greenButton.hidden = YES;
 
-        //assign a relationship between current user and swiped right user
-        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
-        PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
-        [matchWithoutConfirm addObject:currentMatchUser];
+            //match the user in Parse
+            PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+            PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
+            [matchWithoutConfirm addObject:currentMatchUser];
 
-        //for logging purposes
-        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-        NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-        NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
+            //for logging purposes
+            NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+            NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
+            NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
 
-        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                if (error) {
+                    NSLog(@"error: %@", error);
+                }
+            }];
+            //send the email for confirmation
+            //[PFCloud callfun]
 
-        if (error) {
-            NSLog(@"error saving relation: %@", error);
-        } else{
-            NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
+        } else {
+
+            //view elements, shows next user
+            self.matchedUsersCount++;
+            [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+            [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+
+            //bring up Matched View
+            [self matchedView:self.objectsArray user:self.matchedUsersCount];
+
+            //assign a relationship between current user and swiped right user
+            PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
+            PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
+            [matchWithoutConfirm addObject:currentMatchUser];
+
+            //for logging purposes
+            NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+            NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
+            NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
+
+            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                
+                if (error) {
+                    NSLog(@"error saving relation: %@", error);
+                } else{
+                    NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
+                }
+            }];
         }
-        }];
-    }
+    } completion:^(BOOL finished) {
+        NSLog(@"animatd");
+ }];
 }
 
 - (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender {
@@ -595,7 +603,7 @@ MFMailComposeViewControllerDelegate>
     NSString *bday = [userForData objectForKey:@"birthday"];
     PFRelation *rela = [userForData objectForKey:@"matchNotConfirmed"];
     NSLog(@"relationship data: %@", rela);
-    NSLog(@"object array: %@", self.objectsArray);
+   // NSLog(@"object array: %@", self.objectsArray);
 
 
     self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", firstName, [self ageFromBirthday:[self stringToNSDate:bday]]];
@@ -610,7 +618,7 @@ MFMailComposeViewControllerDelegate>
 -(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber {
     self.matchView.hidden = NO;
 
-    PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber];
+    PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber - 1];
     NSString *image = [userForImageAndName objectForKey:@"image1"];
     NSString *firstName = [userForImageAndName objectForKey:@"firstName"];
 
@@ -622,11 +630,15 @@ MFMailComposeViewControllerDelegate>
 
 -(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage    {
     self.matchView.backgroundColor = [UIColor blackColor];
-    self.matchView.alpha = 0.85;
-    self.matchView.layer.cornerRadius = 10;
+    self.matchView.alpha = 0.80;
 
-    userImage.layer.cornerRadius = 70.0 / 2.0f;
-    matchedImage.layer.cornerRadius = 70.0 / 2.0f;
+    userImage.layer.cornerRadius = userImage.image.size.width / 2.0f;
+    matchedImage.layer.cornerRadius = matchedImage.image.size.width / 2.0f;
+    userImage.clipsToBounds = YES;
+    matchedImage.clipsToBounds = YES;
+    [self.matchView addSubview:userImage];
+    [self.matchView addSubview:matchedImage];
+
 }
 
 - (NSInteger)ageFromBirthday:(NSDate *)birthdate {
