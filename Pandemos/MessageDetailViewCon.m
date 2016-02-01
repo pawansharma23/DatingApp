@@ -49,6 +49,9 @@ UITableViewDelegate>
     NSString *userName = [self.currentUser objectForKey:@"firstName"];
     NSString *repName = [self.recipient objectForKey:@"firstName"];
 
+    self.navigationItem.title = repName;
+    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    
     PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
     [query whereKey:@"recipientId" equalTo:self.currentUser];
     [query whereKey:@"recipientId" equalTo:self.recipient];

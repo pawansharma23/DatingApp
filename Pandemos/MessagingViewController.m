@@ -34,7 +34,6 @@ UITableViewDelegate>
     self.currentUser = [PFUser currentUser];
 
     self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
-    //picture on nav bar
     self.navigationItem.title = @"Messages";
 
     self.matchesNotYetConfirmed = [NSArray new];

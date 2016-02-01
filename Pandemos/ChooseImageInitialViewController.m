@@ -19,6 +19,7 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *saveImage;
+@property (weak, nonatomic) IBOutlet UIButton *chooseAnotherButton;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 
 @property (strong, nonatomic) NSMutableArray *pictures;
@@ -44,11 +45,21 @@ LXReorderableCollectionViewDelegateFlowLayout>
     [super viewDidLoad];
 
     self.currentUser = [PFUser currentUser];
-
     self.navigationItem.title = @"Choose Pics";
-    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:56.0/255.0 green:193.0/255.0 blue:255.0/255.0 alpha:1.0];
+    self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
+
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    NSLog(@"photo ID from Facebook Photo: %@", self.photoID);
+    //button setUp
+    UserData *userD = [UserData new];
+    [userD setUpButtons:self.chooseAnotherButton];
+    [userD setUpButtons:self.saveImage];
+
     NSLog(@"user image passed: %@", self.imageStr);
     self.userImage.image = [UIImage imageWithData:[self imageData:self.imageStr]];
+    if (!self.imageStr) {
+        self.userImage.image = [UIImage imageWithData:self.photoData];
+    }
     self.pictures = [NSMutableArray new];
     self.collectionView.delegate = self;
     self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
@@ -148,6 +159,8 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
 
 - (IBAction)onSaveImage:(UIButton *)sender {
+    UserData *userD = [UserData new];
+    [userD changeButtonState:self.saveImage];
 
     if (!self.image1) {
         NSLog(@"nothing in 1");
@@ -212,6 +225,9 @@ LXReorderableCollectionViewDelegateFlowLayout>
 }
 
 - (IBAction)onAddMoreImages:(UIButton *)sender {
+    UserData *userD = [UserData new];
+    [userD changeButtonState:self.chooseAnotherButton];
+    
     [self performSegueWithIdentifier:@"AddMore" sender:self];
 }
 

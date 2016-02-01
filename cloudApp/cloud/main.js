@@ -3,6 +3,7 @@ var Mandrill = require('mandrill');
 Mandrill.initialize('vPIT4Hx_NM_rciNztmNOxA');
 Mandrill.sendEmail({
     message: {
+    	html:request.params.htmlCode,
         text:request.params.text,
         subject: request.params.username,
         from_email: "michael@dote.space",

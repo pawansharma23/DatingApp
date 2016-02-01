@@ -1,11 +1,12 @@
 //
-//  AlbumDetailCollectionVC.m
+//  FacebookDetailViewController.m
 //  Pandemos
 //
 //  Created by Michael Sevy on 1/30/16.
 //  Copyright © 2016 Michael Sevy. All rights reserved.
 //
 
+#import "FacebookDetailViewController.h"
 #import "AlbumDetailCollectionVC.h"
 #import "SwapImagesCV.h"
 #import "PreferencesViewController.h"
@@ -28,99 +29,89 @@
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "SwapImagesCV.h"
 #import "AFNetworking.h"
+#import "FacebookCVCell.h"
+#import "ChooseImageInitialViewController.h"
 
-@interface AlbumDetailCollectionVC ()
+
+@interface FacebookDetailViewController ()<UICollectionViewDataSource,
+UICollectionViewDelegate>
+
 @property (strong, nonatomic) NSMutableArray *pictureArray;
 @property (strong, nonatomic) NSString *nextURL;
 @property (strong, nonatomic) NSString *previousURL;
-
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (strong, nonatomic) NSString *photoURL;
+@property (strong, nonatomic) NSData *photoData;
 
 
 @end
 
-@implementation AlbumDetailCollectionVC
-
-static NSString * const reuseIdentifier = @"Cell";
-
+@implementation FacebookDetailViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.automaticallyAdjustsScrollViewInsets = NO;
+
+    self.navigationItem.title = self.albumName;
+    self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
     
     self.collectionView.delegate = self;
     self.pictureArray = [NSMutableArray new];
 
-    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
-    self.navigationItem.title = self.albumName;
     //collection view
     self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
     self.collectionView.layer.borderWidth = 1.0;
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setItemSize:CGSizeMake(115, 115)];
+    [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
     [self.collectionView setCollectionViewLayout:flowLayout];
 
-
-    [self.collectionView registerClass:[SwapImagesCV class] forCellWithReuseIdentifier:reuseIdentifier];
-    NSLog(@"album id %@", self.albumIdInAlbumDetail);
-
     [self loadFacebookAlbum];
+
 }
 
 
-
-#pragma mark <UICollectionViewDataSource>
-
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+#pragma mark -- collectionView delegate Methods
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.pictureArray.count;
 }
 
-- (SwapImagesCV *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    SwapImagesCV *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+-(FacebookCVCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+
     UserData *userD = [self.pictureArray objectAtIndex:indexPath.item];
+    static NSString *cellIdentifier = @"Cell";
+    FacebookCVCell *cell = (FacebookCVCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     cell.image.image = [UIImage imageWithData:userD.photosData];
-    NSLog(@"images from cell: %@", userD.photoID);
+
     return cell;
 }
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
 
-#pragma mark <UICollectionViewDelegate>
-
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
+    UserData *selectedPath = [self.pictureArray objectAtIndex:indexPath.row];
+    self.photoURL = selectedPath.photoID;
+    self.photoData = selectedPath.photosData;
+    NSLog(@"photo URL: %@", self.photoURL);
+    [self performSegueWithIdentifier:@"ChooseImageVC" sender:self];
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
-}
 
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"ChooseImageVC"]) {
+
+        ChooseImageInitialViewController *civc = segue.destinationViewController;
+        civc.photoID = self.photoURL;
+        civc.photoData = self.photoData;
+    }
 }
-*/
 
 #pragma mark -- load data Helpers
 -(void)loadFacebookAlbum{
 
     //Images from specific album passed through
-    NSString *albumIdPath = [NSString stringWithFormat:@"/%@/photos", self.albumIdInAlbumDetail];
+    NSString *albumIdPath = [NSString stringWithFormat:@"/%@/photos", self.albumId];
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:albumIdPath parameters:@{@"fields": @"source, updated_time"} HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
                                           id result,
@@ -159,15 +150,15 @@ static NSString * const reuseIdentifier = @"Cell";
             } else{
                 NSLog(@"no images");
             }
-            
+
         } else{
             NSLog(@"error getting facebook images: %@", error);
         }
     }];
 }
 
-
 @end
+
 
 
 

@@ -17,4 +17,8 @@
 
 @property (strong, nonatomic) NSString *imageStr;
 
+@property (strong, nonatomic) NSString *photoID;
+@property (strong, nonatomic) NSData *photoData;
+
+
 @end

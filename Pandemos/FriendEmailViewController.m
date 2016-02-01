@@ -8,6 +8,7 @@
 
 #import "FriendEmailViewController.h"
 #import <Parse/Parse.h>
+#import "UserData.h"
 
 @interface FriendEmailViewController ()<UITextFieldDelegate>
 
@@ -20,6 +21,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.navigationItem.title = @"Confidant";
+    self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
 
     self.emailTextField.delegate = self;
     self.currentUser = [PFUser currentUser];
@@ -36,7 +40,7 @@
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
 
    NSString *email = [self.emailTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if ([email length] == 0) {
+    if ([email length] == 0 || [email rangeOfString:@"@"].location == NSNotFound) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Make sure you enter a Username, Password, and Email Address" preferredStyle:UIAlertControllerStyleAlert];
 
         UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -52,6 +56,7 @@
             if (!error) {
 
             NSLog(@"saved: %@ %s", self.emailTextField.text, succeeded ? "true" : "false");
+                [self performSegueWithIdentifier:@"ConfidantToHome" sender:self];
             }else{
                 NSLog(@"error: %@", error);
             }

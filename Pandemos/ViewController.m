@@ -89,15 +89,24 @@ MFMailComposeViewControllerDelegate>
     //NSString *fullName = [self.currentUser objectForKey:@"fullName"];
     //NSLog(@"current user VDL: %@", fullName);
 
+    self.navigationItem.title = APP_TITLE;
+    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
+
+    NSShadow *shadow = [[NSShadow alloc] init];
+    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
+    shadow.shadowOffset = CGSizeMake(0, 1);
+    [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                           [UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0], NSForegroundColorAttributeName,
+                                                           shadow, NSShadowAttributeName,
+                                                           [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
+
     self.fullDescView.hidden = YES;
     self.matchView.hidden = YES;
 
     self.count = 1;
     self.matchedUsersCount = 0;
     self.imageArray = [NSMutableArray new];
-    self.navigationItem.title = APP_TITLE;
-    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
-    [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
     //location object
     self.locationManager = [CLLocationManager new];
@@ -114,9 +123,9 @@ MFMailComposeViewControllerDelegate>
     [self setUpButtons:self.image4Indicator];
     [self setUpButtons:self.image5Indicator];
     [self setUpButtons:self.image6Indicator];
-
-    [self setUpButtons:self.keepPlayingButton];
-    [self setUpButtons:self.messageButton];
+    UserData *userD = [UserData new];
+    [userD setUpButtons:self.keepPlayingButton];
+    [userD setUpButtons:self.messageButton];
 
     [self currentImage:self.count];
 
@@ -194,7 +203,7 @@ MFMailComposeViewControllerDelegate>
         //create the NSDate object
         self.birthday = [formatter dateFromString:birthdayStr];
         NSUInteger age = [self ageFromBirthday:self.birthday];
-        NSString *ageStr = [NSString stringWithFormat:@"%lu", age];
+        NSString *ageStr = [NSString stringWithFormat:@"%lu", (unsigned long)age];
         [self.currentUser setObject:ageStr forKey:@"userAge"];
 
         //relation
@@ -229,12 +238,25 @@ MFMailComposeViewControllerDelegate>
 
         //Matching Engine
         PFQuery *query = [PFUser query];
+        //turn the relation into a PFQuery and then use whereKeyDoesNotExist XXXXXX
+//        PFRelation *relationSHipper = [self.currentUser objectForKey:@"matchNotConfirmed"];
+//        PFQuery *relaQuery = [relationSHipper query];
+//        [relaQuery whereKeyDoesNotExist:@"matchNotConfirmed"];
+
+// this is what is being saved when user swipes right or left
+//        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+//        PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
+//        [matchWithoutConfirm addObject:currentMatchUser];
+//query for
+//        PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
+//        [query whereKey:@"recipientId" equalTo:self.currentUser];
+//        [query whereKey:@"recipientId" equalTo:self.recipient];
+    //    [query whereKey:@"matchNotConfirmed" containsString:@"User"];
+
         //this is if there is a relationship, I want !relationship???
 
-        //PFRelation *relation = [self.currentUser relationForKey:@"matchNotConfirmed"];
-        //query = [relation query];
-
-        //[query whereKeyDoesNotExist:@"matchNotConfirmed"];
+        PFRelation *relation = [self.currentUser relationForKey:@"matchNotConfirmed"];
+        query = [relation query];
         //gets Error code Unsupported query operator on relation field
 
         //Both sexes
@@ -307,7 +329,7 @@ MFMailComposeViewControllerDelegate>
                     if (!error) {
                         long objectCount = [objects count];
                         NSLog(@"female pref query: %lu results", objectCount);
-                        //NSLog(@"objects: %@", objects);
+                        NSLog(@"objects: %@", objects);
                         self.objectsArray = objects;
                         switch (objectCount) {
                             case 0:
@@ -322,12 +344,15 @@ MFMailComposeViewControllerDelegate>
                             }
                                 break;
                             case 2:{
+
+
                                 [self checkAndGetImages:objects user:0];
                                 [self checkAndGetUserData:objects user:0];
                                 //loggin
                                 PFUser *user1 =  [objects objectAtIndex:0];
                                 PFUser *user2 =  [objects objectAtIndex:1];
                                 NSLog(@"2 matches: %@ & %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
+
                             }break;
                             default:
                                 NSLog(@"more than 2 matches");
@@ -360,21 +385,34 @@ MFMailComposeViewControllerDelegate>
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionUp) {
         NSLog(@"swipe up");
+        //current match name
+        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+        NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
 
         //Parse Mandrill cloud code send email
         NSString *confidantEmail = [self.currentUser objectForKey:@"confidantEmail"];
         NSLog(@"confidant email: %@", confidantEmail);
-        NSString *firstName = [self.currentUser objectForKey:@"firstName"];
-        NSLog(@"firstName of user sending email: %@", firstName);
+        NSString *firstNameOfUser = [self.currentUser objectForKey:@"firstName"];
+        NSString *userNeedsHelp = [NSString stringWithFormat:@"%@ needs your approval", firstNameOfUser];
 
-        [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": firstName} block:^(NSString *result, NSError *error) {
+
+        PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+        PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
+        [approvedRela addObject:approvedMatchUser];
+
+        NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/%@", approvedRela];
+        NSString *cssButton = [NSString stringWithFormat:@"button"];
+
+        NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, firstNameOFMatch, firstNameOfUser];
+
+        [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": userNeedsHelp, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
             if (error) {
                 NSLog(@"error cloud js code: %@", error);
             } else {
                 NSLog(@"result :%@", result);
             }
         }];
-
+//<p>Example HTML content</p>
         //add animation
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
             if (self.count == self.imageArray.count - 1 ) {
@@ -603,10 +641,12 @@ MFMailComposeViewControllerDelegate>
     NSString *bday = [userForData objectForKey:@"birthday"];
     PFRelation *rela = [userForData objectForKey:@"matchNotConfirmed"];
     NSLog(@"relationship data: %@", rela);
-   // NSLog(@"object array: %@", self.objectsArray);
+//
+    NSLog(@"%@",[rela query]);
+//    PFQuery *relaQuery = [rela query];
 
 
-    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", firstName, [self ageFromBirthday:[self stringToNSDate:bday]]];
+    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", firstName, (long)[self ageFromBirthday:[self stringToNSDate:bday]]];
     //self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %lu", firstName, [self ageFromBirthday:[self stringToNSDate:bday]]];
     self.educationLabel.text = school;
     self.jobLabel.text = work;
@@ -731,7 +771,6 @@ MFMailComposeViewControllerDelegate>
 }
 //round corners, change button colors
 -(void)setUpButtons:(UIButton *)button{
-
     button.layer.cornerRadius = 15.0 / 2.0f;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
@@ -805,34 +844,6 @@ MFMailComposeViewControllerDelegate>
 //        }
 //    }];
 //
-//
-
-    //-(NSString *)ageString:(NSString *)bDayString   {
-    //    //birthday
-    //    NSDateFormatter *formatter = [NSDateFormatter new];
-    //    [formatter setDateFormat:@"MM/DD/YYYY"];
-    //    NSDate *startDate = [formatter dateFromString:bDayString];
-    //
-    //
-    //    NSDate *endDate = [NSDate date];
-    //    NSString *endDateStr = [formatter stringFromDate:endDate];
-    //    NSLog(@"now: %@", endDateStr);
-    //    NSLog(@"bday: %@", bDayString);
-    //
-    //    NSCalendar *currentCalender = [NSCalendar currentCalendar];
-    //    NSUInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitSecond;
-    //    NSDateComponents *components = [currentCalender components:unitFlags fromDate:startDate toDate:endDate options:0];
-    //
-    //    NSInteger yearAge = [components year];
-    //    NSInteger month = [components month];
-    //    NSInteger day = [components day];
-    //
-    //    NSLog(@"year, month, day: %ld, %ld, %ld", (long)yearAge, (long)month, (long)day);
-    //
-    //    NSString *ageString = [NSString stringWithFormat:@"%lu", (long)yearAge];
-    //    return ageString;
-    //}
-
 
 @end
 

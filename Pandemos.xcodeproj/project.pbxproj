@@ -14,6 +14,10 @@
 		266451561C5D424300D98136 /* SwapImagesCV.m in Sources */ = {isa = PBXBuildFile; fileRef = 266451551C5D424300D98136 /* SwapImagesCV.m */; };
 		266451591C5D78CB00D98136 /* AlbumCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266451581C5D78CB00D98136 /* AlbumCustomCell.m */; };
 		2664515C1C5D7E2900D98136 /* AlbumDetailCollectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2664515B1C5D7E2900D98136 /* AlbumDetailCollectionVC.m */; };
+		266F23E21C5DA1B300A34C0B /* FacebookAlbumsTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23E11C5DA1B300A34C0B /* FacebookAlbumsTableVC.m */; };
+		266F23E51C5DA24F00A34C0B /* FacebookTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23E41C5DA24F00A34C0B /* FacebookTableViewCell.m */; };
+		266F23E81C5DA75A00A34C0B /* FacebookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23E71C5DA75A00A34C0B /* FacebookDetailViewController.m */; };
+		266F23EB1C5DB3DF00A34C0B /* FacebookCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23EA1C5DB3DF00A34C0B /* FacebookCVCell.m */; };
 		2688C23F1C51D44800F100AA /* FriendEmailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2688C23E1C51D44800F100AA /* FriendEmailViewController.m */; };
 		268BA08B1C1DB53F0054414E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
 		268BA08E1C1DB53F0054414E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08D1C1DB53F0054414E /* AppDelegate.m */; };
@@ -74,6 +78,14 @@
 		266451581C5D78CB00D98136 /* AlbumCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumCustomCell.m; sourceTree = "<group>"; };
 		2664515A1C5D7E2900D98136 /* AlbumDetailCollectionVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailCollectionVC.h; sourceTree = "<group>"; };
 		2664515B1C5D7E2900D98136 /* AlbumDetailCollectionVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailCollectionVC.m; sourceTree = "<group>"; };
+		266F23E01C5DA1B300A34C0B /* FacebookAlbumsTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumsTableVC.h; sourceTree = "<group>"; };
+		266F23E11C5DA1B300A34C0B /* FacebookAlbumsTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAlbumsTableVC.m; sourceTree = "<group>"; };
+		266F23E31C5DA24F00A34C0B /* FacebookTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookTableViewCell.h; sourceTree = "<group>"; };
+		266F23E41C5DA24F00A34C0B /* FacebookTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookTableViewCell.m; sourceTree = "<group>"; };
+		266F23E61C5DA75A00A34C0B /* FacebookDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookDetailViewController.h; sourceTree = "<group>"; };
+		266F23E71C5DA75A00A34C0B /* FacebookDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookDetailViewController.m; sourceTree = "<group>"; };
+		266F23E91C5DB3DF00A34C0B /* FacebookCVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookCVCell.h; sourceTree = "<group>"; };
+		266F23EA1C5DB3DF00A34C0B /* FacebookCVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookCVCell.m; sourceTree = "<group>"; };
 		2688C23D1C51D44800F100AA /* FriendEmailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendEmailViewController.h; sourceTree = "<group>"; };
 		2688C23E1C51D44800F100AA /* FriendEmailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendEmailViewController.m; sourceTree = "<group>"; };
 		268BA0861C1DB53F0054414E /* Pandemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pandemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -244,6 +256,10 @@
 			children = (
 				268BA10C1C25AFE10054414E /* UserData.h */,
 				268BA10D1C25AFE10054414E /* UserData.m */,
+				266F23E91C5DB3DF00A34C0B /* FacebookCVCell.h */,
+				266F23EA1C5DB3DF00A34C0B /* FacebookCVCell.m */,
+				266F23E31C5DA24F00A34C0B /* FacebookTableViewCell.h */,
+				266F23E41C5DA24F00A34C0B /* FacebookTableViewCell.m */,
 				26DBD0421C47FDDC00944300 /* MessageDetailCell.h */,
 				26DBD0431C47FDDC00944300 /* MessageDetailCell.m */,
 				26DBD03C1C4747B700944300 /* MessagingCell.h */,
@@ -273,6 +289,10 @@
 				2688C23E1C51D44800F100AA /* FriendEmailViewController.m */,
 				26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */,
 				26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */,
+				266F23E61C5DA75A00A34C0B /* FacebookDetailViewController.h */,
+				266F23E71C5DA75A00A34C0B /* FacebookDetailViewController.m */,
+				266F23E01C5DA1B300A34C0B /* FacebookAlbumsTableVC.h */,
+				266F23E11C5DA1B300A34C0B /* FacebookAlbumsTableVC.m */,
 				2664514E1C5D007B00D98136 /* AddMoreImagesViewController.h */,
 				2664514F1C5D007B00D98136 /* AddMoreImagesViewController.m */,
 				26EE239C1C4446AB006F328E /* ChooseImageInitialViewController.h */,
@@ -495,6 +515,7 @@
 				26E3DB8D1C3F4EC700699FA5 /* MessagingViewController.m in Sources */,
 				26EE239E1C4446AB006F328E /* ChooseImageInitialViewController.m in Sources */,
 				2664515C1C5D7E2900D98136 /* AlbumDetailCollectionVC.m in Sources */,
+				266F23EB1C5DB3DF00A34C0B /* FacebookCVCell.m in Sources */,
 				26DBD0411C4748F700944300 /* MessageDetailViewCon.m in Sources */,
 				268BA0C51C21BDF10054414E /* PFLoginViewController.m in Sources */,
 				26DBD03E1C4747B700944300 /* MessagingCell.m in Sources */,
@@ -504,11 +525,14 @@
 				268BA08E1C1DB53F0054414E /* AppDelegate.m in Sources */,
 				2688C23F1C51D44800F100AA /* FriendEmailViewController.m in Sources */,
 				26EE23A11C453F47006F328E /* CVImageCell.m in Sources */,
+				266F23E21C5DA1B300A34C0B /* FacebookAlbumsTableVC.m in Sources */,
 				266451501C5D007B00D98136 /* AddMoreImagesViewController.m in Sources */,
 				268BA10A1C25A8D60054414E /* PreferencesViewController.m in Sources */,
 				268BA1161C2737170054414E /* CVCell.m in Sources */,
+				266F23E51C5DA24F00A34C0B /* FacebookTableViewCell.m in Sources */,
 				268BA08B1C1DB53F0054414E /* main.m in Sources */,
 				266451561C5D424300D98136 /* SwapImagesCV.m in Sources */,
+				266F23E81C5DA75A00A34C0B /* FacebookDetailViewController.m in Sources */,
 				268BA1121C26EFA70054414E /* InitialWalkThroughViewController.m in Sources */,
 				26C6B3711C5A88FE00F9EB72 /* SuggestionsViewController.m in Sources */,
 				268BA1071C25A86C0054414E /* ProfileViewController.m in Sources */,

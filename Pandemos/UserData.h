@@ -27,12 +27,13 @@
 @property (strong, nonatomic) NSString *hometown;
 @property (strong, nonatomic) NSString *educationHistory;
 @property (strong, nonatomic) NSString *location;
-
+//facebook user pictures
 @property (strong, nonatomic) NSString *photoID;
 @property (strong, nonatomic) NSURL *photoURL;
 @property (strong, nonatomic) NSData *photosData;
 @property (strong, nonatomic) NSString *albumId;
 @property (strong, nonatomic) NSString *realAlbumId;
+@property (strong, nonatomic) NSString *imageCount;
 
 @property (strong, nonatomic) NSString *image1;
 @property (strong, nonatomic) NSString *image2;

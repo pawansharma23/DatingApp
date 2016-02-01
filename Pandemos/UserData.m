@@ -25,9 +25,9 @@
 #import "ChooseImageInitialViewController.h"
 #import "SuggestionsViewController.h"
 
-
+#define FONT HELVETICA NEUE
 @implementation UserData
-
+//unique colors
 +(UIColor *)rubyRed {
     return [UIColor colorWithRed:255.0/255.0 green:84.0/255.0 blue:95.0/255.0 alpha:1.0];
 }
@@ -40,27 +40,28 @@
 +(UIColor *)facebookBlue{
     return [UIColor colorWithRed:59.0/255.0 green:89.0/255.0 blue:152.0/255.0 alpha:1.0];
 }
+//navBar
+
+
 -(void)setUpButtons:(UIButton *)button{
     button.layer.cornerRadius = 15;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
     [button.layer setBorderColor:[UIColor blackColor].CGColor];
-    //[button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 
 
 -(void)changeButtonState:(UIButton *)button {
     [button setHighlighted:YES];
     button.backgroundColor = [UIColor blackColor];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [button setTitleColor:[UserData yellowGreen] forState:UIControlStateNormal];
 
 }
 
 -(void)changeOtherButton:(UIButton *)button{
     [button setHighlighted:NO];
     button.backgroundColor = [UIColor whiteColor];
-    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
 }
 
 

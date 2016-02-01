@@ -1,11 +1,13 @@
 //
-//  PreferencesViewController.m
+//  FacebookAlbumsTableVC.m
 //  Pandemos
 //
-//  Created by Michael Sevy on 12/19/15.
-//  Copyright © 2015 Michael Sevy. All rights reserved.
+//  Created by Michael Sevy on 1/30/16.
+//  Copyright © 2016 Michael Sevy. All rights reserved.
 //
 
+#import "FacebookAlbumsTableVC.h"
+#import "FacebookTableViewCell.h"
 #import "PreferencesViewController.h"
 #import "ProfileViewController.h"
 #import <Foundation/Foundation.h>
@@ -28,47 +30,38 @@
 #import "AFNetworking.h"
 #import "AlbumCustomCell.h"
 #import "AlbumDetailCollectionVC.h"
+#import "FacebookDetailViewController.h"
 
-@interface PreferencesViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface FacebookAlbumsTableVC ()
 
 @property (strong, nonatomic) NSMutableArray *pictureArray;
-@property (strong, nonatomic) NSString *nextURL;
-@property (strong, nonatomic) NSString *albumId;
 @property (strong, nonatomic) NSString *albumName;
-
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-
+@property (strong, nonatomic) NSString *albumId;
 
 @end
 
-@implementation PreferencesViewController
+@implementation FacebookAlbumsTableVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.pictureArray = [NSMutableArray new];
-    self.tableView.delegate = self;
     
-    self.navigationItem.title = @"Change Pics";
+    self.navigationItem.title = @"Facebook Albums";
     self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
-
-    self.automaticallyAdjustsScrollViewInsets = NO;
-
-}
-
--(void)viewDidAppear:(BOOL)animated {
+    
+    self.tableView.delegate = self;
+    self.pictureArray = [NSMutableArray new];
     [self loadFacebookAlbumList];
-
+    
 }
-
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.pictureArray.count;
 }
 
--(AlbumCustomCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    AlbumCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CustomCell"];
+-(FacebookTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    FacebookTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     UserData *userD = [self.pictureArray objectAtIndex:indexPath.row];
-    cell.albumNames.text = userD.albumId;
+    cell.albumTitleLabel.text = userD.albumId;
     cell.albumCountLabel.text = userD.imageCount;
     cell.albumImage.layer.cornerRadius = 9;
     cell.albumImage.image = [UIImage imageWithData:userD.photosData];
@@ -76,24 +69,58 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+
     UserData *selectedPath = [self.pictureArray objectAtIndex:indexPath.row];
     self.albumId = selectedPath.realAlbumId;
     self.albumName = selectedPath.albumId;
     NSLog(@"album path selected to push on %@", self.albumId);
-    [self performSegueWithIdentifier:@"AlbumDetail" sender:self];
+    [self performSegueWithIdentifier:@"FacebookDetail" sender:self];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"AlbumDetail"]) {
+    if ([segue.identifier isEqualToString:@"FacebookDetail"]) {
         NSLog(@"segueing: this: %@", self.albumId);
 
-        AlbumDetailCollectionVC *advc = segue.destinationViewController;
-        advc.albumIdInAlbumDetail = self.albumId;
-        advc.albumName = self.albumName;
+        FacebookDetailViewController *fdvc = segue.destinationViewController;
+        fdvc.albumId = self.albumId;
+        fdvc.albumName = self.albumName;
     }
 }
 
 
+/*
+// Override to support conditional editing of the table view.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+*/
+
+/*
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }   
+}
+*/
+
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+}
+*/
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
 
 #pragma mark -- load Data helpers
 -(void)loadFacebookAlbumList{
@@ -104,7 +131,7 @@
                                           id result,
                                           NSError *error) {
         if (!error) {
-            //NSLog(@"image data %@", result);
+             NSLog(@"image data %@", result);
             NSArray *dataArr = result[@"data"];
             //next/previous page results
             NSDictionary *paging = result[@"paging"];
@@ -121,20 +148,20 @@
 
                     //image id and 100X100 thumbnail of image from "picture" field above the nsdata object is for the 100x100 image
                     NSString *realAlbumId = imageData[@"id"];
-                    NSNumber *albumCount = imageData[@"count"];
-                    NSString *albumCountStr = [NSString stringWithFormat:@"%@", albumCount];
                     NSString *name = imageData[@"name"];
+                    NSNumber *countForImages = imageData[@"count"];
+                    NSString *countForImageStr = [NSString stringWithFormat:@"%@", countForImages];
                     NSDictionary *picture = imageData[@"picture"];
                     NSDictionary *data = picture[@"data"];
                     NSString *pictureURL = data[@"url"];
-                    NSLog(@"URLs: %@", pictureURL);
+                    NSLog(@"URLs: %@ & count: %@", pictureURL, countForImages);
                     // NSString *updatedtime = imageData[@"updated_time"];
                     //image conversion
                     NSURL *mainPicURL = [NSURL URLWithString:pictureURL];
                     NSData *mainPicData = [NSData dataWithContentsOfURL:mainPicURL];
 
                     UserData *userD = [UserData new];
-                    userD.imageCount = albumCountStr;
+                    userD.imageCount = countForImageStr;
                     userD.albumId = name;
                     userD.realAlbumId = realAlbumId;
                     userD.photosData = mainPicData;
@@ -153,17 +180,5 @@
     }];
 }
 
--(NSData *)imageData:(NSString *)imageString{
-
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
-}
 
 @end
-
-
-
-
-
-

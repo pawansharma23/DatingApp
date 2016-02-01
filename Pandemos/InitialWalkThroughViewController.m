@@ -36,27 +36,33 @@ LXReorderableCollectionViewDataSource,
 CLLocationManagerDelegate,
 UITextViewDelegate,
 UIScrollViewDelegate>
-
+//Misc View Outlets
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UITextView *textViewAboutMe;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (weak, nonatomic) IBOutlet UILabel *minAgeLabel;
-@property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
+//sliders
 @property (weak, nonatomic) IBOutlet UISlider *minAgeSlider;
 @property (weak, nonatomic) IBOutlet UISlider *maxAgeSlider;
+@property (weak, nonatomic) IBOutlet UISlider *milesSlider;
+//labels
+@property (weak, nonatomic) IBOutlet UILabel *minAgeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationlabel;
+@property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
+//buttons
+@property (weak, nonatomic) IBOutlet UIButton *previousButton;
+@property (weak, nonatomic) IBOutlet UIButton *nextButton;
+@property (weak, nonatomic) IBOutlet UIButton *facebookAlbumBUtton;
+
 @property (weak, nonatomic) IBOutlet UIButton *mensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *womensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *bothSexesButton;
-
-@property (weak, nonatomic) IBOutlet UILabel *locationlabel;
-@property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
-@property (weak, nonatomic) IBOutlet UISlider *milesSlider;
-
-@property (weak, nonatomic) IBOutlet UIButton *previousButton;
-@property (weak, nonatomic) IBOutlet UIButton *nextButton;
+@property (weak, nonatomic) IBOutlet UIButton *suggestionsButton;
+@property (weak, nonatomic) IBOutlet UIButton *continueButton;
+@property (weak, nonatomic) IBOutlet UIButton *emptyImageButton;
 
 @property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
-@property (weak, nonatomic) IBOutlet UIButton *suggestionsButton;
+@property (weak, nonatomic) IBOutlet UILabel *notValidImageLabel;
 
 @property (strong, nonatomic) NSMutableArray *pictureArray;
 @property (strong, nonatomic) NSArray *picArray;
@@ -121,6 +127,8 @@ UIScrollViewDelegate>
     [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
     [self.collectionView setCollectionViewLayout:flowLayout];
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+
 
     //location object
     self.locationManager = [CLLocationManager new];
@@ -145,7 +153,10 @@ UIScrollViewDelegate>
     [userD setUpButtons:self.womensInterestButton];
     [userD setUpButtons:self.bothSexesButton];
     [userD setUpButtons:self.suggestionsButton];
+    [userD setUpButtons:self.emptyImageButton];
+    [userD setUpButtons:self.continueButton];
 
+    self.notValidImageLabel.hidden = YES;
 
     //set age slider values MIN
     NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %.f", self.minAgeSlider.value];
@@ -166,7 +177,7 @@ UIScrollViewDelegate>
 
     //public Profile default to public
     [self.currentUser setObject:@"public" forKey:@"publicProfile"];
-
+    //save default data
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if (error) {
             NSLog(@"error: %@", error.description);
@@ -182,14 +193,12 @@ UIScrollViewDelegate>
     //sexPref Buttons
     if ([self.userGender isEqualToString:@"male"]) {
         self.womensInterestButton.backgroundColor = [UIColor blackColor];
-        self.womensInterestButton.titleLabel.textColor = [UIColor whiteColor];
         //save to Parse
         [self.currentUser setObject:@"female" forKey:@"sexPref"];
         [self.currentUser saveInBackground];
 
     } else if ([self.userGender isEqualToString:@"female"]){
         self.mensInterestButton.backgroundColor = [UIColor blackColor];
-        self.womensInterestButton.titleLabel.textColor = [UIColor whiteColor];
         //save to Parse
         [self.currentUser setObject:@"male" forKey:@"sexPref"];
         [self.currentUser saveInBackground];
@@ -436,7 +445,10 @@ UIScrollViewDelegate>
                 [self performSegueWithIdentifier:@"ChooseImage" sender:self];
 
             } else {
-                NSLog(@"error on image: %@", error);
+                self.notValidImageLabel.hidden = NO;
+                self.nextButton.hidden = YES;
+                self.previousButton.hidden = YES;
+                self.facebookAlbumBUtton.hidden = NO;
                 }
         }];
     }
@@ -469,6 +481,9 @@ UIScrollViewDelegate>
     [self onNextPrevPage:self.previousPageURLString];
 }
 
+- (IBAction)onFacebookAlbums:(UIButton *)sender {
+    [self performSegueWithIdentifier:@"FacebookAlbumsTable" sender:self];
+}
 
 
 #pragma mark -- push notifications
@@ -483,28 +498,6 @@ UIScrollViewDelegate>
 
 
 #pragma mark -- load data
-
-//-(void)getNextPageURL{
-//    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/photos/uploaded" parameters:@{@"fields": @"picture, updated_time"} HTTPMethod:@"GET"];
-//    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-//        if (!error) {
-//            NSArray *dataArr = result[@"data"];
-//            NSDictionary *paging = result[@"paging"];
-//            if (paging[@"next"] == nil) {
-//                self.nextButton.hidden = YES;
-//                NSLog(@"only one page of image results");
-//            }
-//            if (dataArr) {
-//                self.nextPageURLString = paging[@"next"];
-//                NSLog(@"next page: %@", self.nextPageURLString);
-//            } else{
-//                NSLog(@"no images");
-//            }
-//        } else{
-//            NSLog(@"error getting facebook images: %@", error);
-//        }
-//    }];
-//}
 -(void)loadFacebookThumbnails{
 
     //now get images from user's facebook account and display them for user to sift through
@@ -646,7 +639,7 @@ UIScrollViewDelegate>
 }
 
 
-#pragma mark -- NextPage
+#pragma mark -- Next/Previous Page
 -(void)onNextPrevPage:(NSString *)pageURLString {
     NSURL *URL = [NSURL URLWithString:pageURLString];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];

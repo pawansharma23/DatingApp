@@ -72,8 +72,9 @@ LXReorderableCollectionViewDataSource>
     //NSLog(@"profile VC user: %@", self.currentUser);
     self.navigationItem.title = @"Settings";
     self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    
 
-    self.automaticallyAdjustsScrollViewInsets = NO;
+    //self.automaticallyAdjustsScrollViewInsets = NO;
     
     //delegation, initialization
     self.scrollView.delegate = self;
@@ -285,7 +286,6 @@ LXReorderableCollectionViewDataSource>
 
     static NSString *cellIdentifier = @"SettingCell";
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    //UserData *userData = [self.pictures objectAtIndex:indexPath.row];
     NSString *photoString = [self.pictures objectAtIndex:indexPath.item];
     cell.userImage.image = [UIImage imageWithData:[self imageData:photoString]];
 
@@ -314,22 +314,6 @@ LXReorderableCollectionViewDataSource>
 - (IBAction)onSwapPhotsButton:(UIButton *)sender {
     [self performSegueWithIdentifier:@"SwapImages" sender:self];
 }
-
-//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(LXReorderableCollectionViewFlowLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-//    return 2.0;
-//}
-//
-//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(LXReorderableCollectionViewFlowLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-//    return 2.0;
-//}
-//
-//// Layout: Set Edges
-//- (UIEdgeInsets)collectionView:
-//(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-//    // return UIEdgeInsetsMake(0,8,0,8);  // top, left, bottom, right
-//    return UIEdgeInsetsMake(2,0,0,2);  // top, left, bottom, right
-//}
-
 
 
 //3) Min/Max Ages
@@ -370,7 +354,6 @@ LXReorderableCollectionViewDataSource>
     [self changeButtonState:self.womenButton sexString:@"female" otherButton1:self.menButton otherButton2:self.bothButton];
 }
 - (IBAction)onBothButton:(UIButton *)sender {
-
     [self changeButtonState:self.bothButton sexString:@"male female" otherButton1:self.menButton otherButton2:self.womenButton];
 }
 
@@ -396,27 +379,10 @@ LXReorderableCollectionViewDataSource>
         [self.currentUser saveInBackground];
     }
 }
-
+//uncomment to Segue Data
 //-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(CVSettingCell *)cell {
-//
-////
-////    NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
-//    NSString *imageSelected = [self.pictures objectAtIndex:indexPath.row];
-////
-//    PreferencesViewController *prefVC = segue.destinationViewController;
-//    prefVC.image = imageSelected;
-//
+
 //}
-
-
-//highlighting selected collectioView Cell... not working
-//-(void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath{
-//
-//    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-//    cell.backgroundColor = [UIColor blueColor];
-//}
-
-
 
 
 
