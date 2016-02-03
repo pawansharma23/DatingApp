@@ -31,7 +31,8 @@ UITextViewDelegate,
 UIScrollViewDelegate,
 UICollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDelegateFlowLayout,
-LXReorderableCollectionViewDataSource>
+LXReorderableCollectionViewDataSource,
+UIPopoverPresentationControllerDelegate>
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (strong, nonatomic) NSMutableArray *pictures;
@@ -72,10 +73,18 @@ LXReorderableCollectionViewDataSource>
     //NSLog(@"profile VC user: %@", self.currentUser);
     self.navigationItem.title = @"Settings";
     self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
-    
+
+    //UIBarButtonItem *previewYourProfile = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(segueAction)];
+    //self.navigationController.navigationItem.rightBarButtonItem = previewYourProfile;
+    //self.navigationController.navigationItem.rightBarButtonItem.title = @"this is it";
+
+    //UIBarButtonItem *newButton = [[UIBarButtonItem alloc] initWithTitle:@"Preview" style:UIBarButtonItemStylePlain target:self action:@selector(segueAction)];
+    //self.navigationItem.rightBarButtonItem = newButton;
+    UIBarButtonItem *newest = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(segueAction)];
+    self.navigationItem.rightBarButtonItem = newest;
 
     //self.automaticallyAdjustsScrollViewInsets = NO;
-    
+
     //delegation, initialization
     self.scrollView.delegate = self;
     self.collectionView.delegate = self;
@@ -527,6 +536,9 @@ LXReorderableCollectionViewDataSource>
     }
 }
 
+-(void)segueAction{
+    [self performSegueWithIdentifier:@"PreviewSegue" sender:self];
+}
 @end
 
 

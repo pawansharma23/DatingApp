@@ -18,6 +18,7 @@
 		266F23E51C5DA24F00A34C0B /* FacebookTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23E41C5DA24F00A34C0B /* FacebookTableViewCell.m */; };
 		266F23E81C5DA75A00A34C0B /* FacebookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23E71C5DA75A00A34C0B /* FacebookDetailViewController.m */; };
 		266F23EB1C5DB3DF00A34C0B /* FacebookCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23EA1C5DB3DF00A34C0B /* FacebookCVCell.m */; };
+		266F23EE1C60498300A34C0B /* PreviewUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23ED1C60498300A34C0B /* PreviewUserProfileVC.m */; };
 		2688C23F1C51D44800F100AA /* FriendEmailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2688C23E1C51D44800F100AA /* FriendEmailViewController.m */; };
 		268BA08B1C1DB53F0054414E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
 		268BA08E1C1DB53F0054414E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08D1C1DB53F0054414E /* AppDelegate.m */; };
@@ -86,6 +87,8 @@
 		266F23E71C5DA75A00A34C0B /* FacebookDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookDetailViewController.m; sourceTree = "<group>"; };
 		266F23E91C5DB3DF00A34C0B /* FacebookCVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookCVCell.h; sourceTree = "<group>"; };
 		266F23EA1C5DB3DF00A34C0B /* FacebookCVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookCVCell.m; sourceTree = "<group>"; };
+		266F23EC1C60498200A34C0B /* PreviewUserProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewUserProfileVC.h; sourceTree = "<group>"; };
+		266F23ED1C60498300A34C0B /* PreviewUserProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewUserProfileVC.m; sourceTree = "<group>"; };
 		2688C23D1C51D44800F100AA /* FriendEmailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendEmailViewController.h; sourceTree = "<group>"; };
 		2688C23E1C51D44800F100AA /* FriendEmailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendEmailViewController.m; sourceTree = "<group>"; };
 		268BA0861C1DB53F0054414E /* Pandemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pandemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,6 +244,8 @@
 				26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */,
 				2664515A1C5D7E2900D98136 /* AlbumDetailCollectionVC.h */,
 				2664515B1C5D7E2900D98136 /* AlbumDetailCollectionVC.m */,
+				266F23EC1C60498200A34C0B /* PreviewUserProfileVC.h */,
+				266F23ED1C60498300A34C0B /* PreviewUserProfileVC.m */,
 				268BA1081C25A8D60054414E /* PreferencesViewController.h */,
 				268BA1091C25A8D60054414E /* PreferencesViewController.m */,
 				268BA1051C25A86C0054414E /* ProfileViewController.h */,
@@ -532,6 +537,7 @@
 				266F23E51C5DA24F00A34C0B /* FacebookTableViewCell.m in Sources */,
 				268BA08B1C1DB53F0054414E /* main.m in Sources */,
 				266451561C5D424300D98136 /* SwapImagesCV.m in Sources */,
+				266F23EE1C60498300A34C0B /* PreviewUserProfileVC.m in Sources */,
 				266F23E81C5DA75A00A34C0B /* FacebookDetailViewController.m in Sources */,
 				268BA1121C26EFA70054414E /* InitialWalkThroughViewController.m in Sources */,
 				26C6B3711C5A88FE00F9EB72 /* SuggestionsViewController.m in Sources */,

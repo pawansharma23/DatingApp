@@ -111,10 +111,15 @@ MFMailComposeViewControllerDelegate>
     //location object
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
+
     //request permission and update locaiton
     [self.locationManager requestWhenInUseAuthorization];
     [self.locationManager startUpdatingLocation];
     self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    CLLocation *currentlocal = [self.locationManager location];
+    self.currentLocation = currentlocal;
+    NSLog(@"location: lat: %f & long: %f", self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude);
+
 
     //other view elements setup
     [self setUpButtons:self.image1Indicator];
@@ -211,16 +216,19 @@ MFMailComposeViewControllerDelegate>
 
         NSLog(@"current user: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, ageStr, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
 
-        //location
-        NSLog(@"current location VDA: %@", self.currentLocation);
 
-        double latitude = self.locationManager.location.coordinate.latitude;
-        double longitude = self.locationManager.location.coordinate.longitude;
+
+       // double latitude = self.locationManager.location.coordinate.latitude;
+        //double longitude = self.locationManager.location.coordinate.longitude;
         //NSLog(@"view did appear: %f & long: %f", latitude, longitude);
 
+        //location
+        //self.currentLocation = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
+        //NSLog(@"current location ..........: %@", self.currentLocation);
+
         //save lat and long in a PFGeoCode Object and save to User in Parse
-        self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
-        [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+        //self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
+        //[self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
             //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
 
         //save age and location objects
@@ -394,15 +402,13 @@ MFMailComposeViewControllerDelegate>
         NSLog(@"confidant email: %@", confidantEmail);
         NSString *firstNameOfUser = [self.currentUser objectForKey:@"firstName"];
         NSString *userNeedsHelp = [NSString stringWithFormat:@"%@ needs your approval", firstNameOfUser];
-
-
+        //relation info for email
         PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
         PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
         [approvedRela addObject:approvedMatchUser];
 
         NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/%@", approvedRela];
         NSString *cssButton = [NSString stringWithFormat:@"button"];
-
         NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, firstNameOFMatch, firstNameOfUser];
 
         [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": userNeedsHelp, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
@@ -495,7 +501,7 @@ MFMailComposeViewControllerDelegate>
             self.redButton.hidden = YES;
             self.greenButton.hidden = YES;
 
-            //match the user in Parse
+            //save the relation to Parse
             PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
             PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
             [matchWithoutConfirm addObject:currentMatchUser];
