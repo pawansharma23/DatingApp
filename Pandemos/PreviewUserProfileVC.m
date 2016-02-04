@@ -48,6 +48,7 @@
 @property (strong, nonatomic) NSString *leadImage;
 @property (strong, nonatomic) NSData *leadImageData;
 @property (strong, nonatomic) NSMutableArray *imageArray;
+@property long imageArrayCount;
 @property (strong, nonatomic) NSString *nameAndAgeGlobal;
 @property (strong, nonatomic) NSDate *birthday;
 //location
@@ -68,8 +69,10 @@
     self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
 
     self.imageArray = [NSMutableArray new];
+    //load user Images
     [self checkAndGetYourImages];
-
+    //load proper # of indicator lights
+    [self loadProperIndicatorLights:self.imageArrayCount];
     self.fullDescView.hidden = YES;
 
     //get user info
@@ -145,25 +148,25 @@
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionUp) {
         NSLog(@"swipe up");
-
         //add animation
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
             self.count++;
 
             if (self.count < self.imageArray.count - 1) {
-
+                //display image
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                //indicator light to reflect image we are on
                 [self currentImage:self.count];
+                self.fullDescView.hidden = YES;
                 NSLog(@"count: %zd", self.count);
 
             } else if (self.count == self.imageArray.count - 1) {
 
-                self.fullDescView.hidden = YES;
+                //self.fullDescView.hidden = YES;
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-                NSLog(@"last image");
+                NSLog(@"last image, count: %zd", self.count);
                 [self currentImage:self.count];
-                NSLog(@"count: %zd", self.count);
                 [self lastImageBringUpDesciptionView];
             }
         } completion:^(BOOL finished) {
@@ -179,21 +182,24 @@
         NSLog(@"swipe down");
 
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
-            if (self.count == self.imageArray.count - self.imageArray.count) {
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-                NSLog(@"first image");
-                NSLog(@"count: %zd", self.count);
-                [self currentImage:self.count];
 
+            self.count--;
+
+            if (self.count == 0) {
+
+                NSLog(@"first image, count: %zd", self.count);
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                //indicator lights
+                [self currentImage:self.count];
+                //re-hide full view on the way back up
                 self.fullDescView.hidden = YES;
 
-            } else{
+            } else if(self.count > 0){
 
-                self.count--;
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                //indicator lights
                 [self currentImage:self.count];
                 NSLog(@"count: %zd", self.count);
-                
                 self.fullDescView.hidden = YES;
                 
             }
@@ -227,10 +233,44 @@
     } if (image6) {
         [self.imageArray addObject:image6];
     }
-
-    NSLog(@"%zd images in array",[self.imageArray count]);
+    self.imageArrayCount = [self.imageArray count];
+    NSLog(@"%zd images in array", self.imageArrayCount);
 }
 
+-(void)loadProperIndicatorLights:(int) count{
+    switch (count) {
+        case 0:
+            NSLog(@"error: No images loading");
+            break;
+        case 1:
+            self.image2Indicator.hidden = YES;
+            self.image3Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image6Indicator.hidden = YES;
+            break;
+        case 2:
+            self.image3Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image6Indicator.hidden = YES;
+            break;
+        case 3:
+            self.image4Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image6Indicator.hidden = YES;
+            break;
+        case 4:
+            self.image5Indicator.hidden = YES;
+            self.image6Indicator.hidden = YES;
+            break;
+        case 5:
+            self.image6Indicator.hidden = YES;
+            break;
+        default:
+            break;
+    }
+}
 
 - (NSInteger)ageFromBirthday:(NSDate *)birthdate {
 
@@ -254,8 +294,8 @@
     return data;
 }
 
--(void)currentImage:(long)matchedCount{
-    switch (matchedCount) {
+-(void)currentImage:(long)count{
+    switch (count) {
         case 0:
             self.image1Indicator.backgroundColor = [UserData rubyRed];
             self.image2Indicator.backgroundColor = nil;

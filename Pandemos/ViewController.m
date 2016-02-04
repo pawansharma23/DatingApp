@@ -57,6 +57,7 @@ MFMailComposeViewControllerDelegate>
 @property (strong, nonatomic) NSString *leadImage;
 @property (strong, nonatomic) NSData *leadImageData;
 @property (strong, nonatomic) NSMutableArray *imageArray;
+@property long imageArrayCount;
 @property (strong, nonatomic) NSString *nameAndAgeGlobal;
 @property (strong, nonatomic) NSDate *birthday;
 
@@ -81,7 +82,7 @@ MFMailComposeViewControllerDelegate>
 @end
 
 @implementation ViewController
-
+#pragma mark-- View Did Load
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -96,22 +97,19 @@ MFMailComposeViewControllerDelegate>
     NSShadow *shadow = [[NSShadow alloc] init];
     shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
     shadow.shadowOffset = CGSizeMake(0, 1);
-    [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
-                                                           [UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0], NSForegroundColorAttributeName,
-                                                           shadow, NSShadowAttributeName,
-                                                           [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
+    [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:[UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0], NSForegroundColorAttributeName, shadow, NSShadowAttributeName,
+        [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
 
     self.fullDescView.hidden = YES;
     self.matchView.hidden = YES;
 
-    self.count = 1;
+    self.count = 0;
     self.matchedUsersCount = 0;
     self.imageArray = [NSMutableArray new];
 
     //location object
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
-
     //request permission and update locaiton
     [self.locationManager requestWhenInUseAuthorization];
     [self.locationManager startUpdatingLocation];
@@ -119,7 +117,10 @@ MFMailComposeViewControllerDelegate>
     CLLocation *currentlocal = [self.locationManager location];
     self.currentLocation = currentlocal;
     NSLog(@"location: lat: %f & long: %f", self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude);
-
+    //save lat and long in a PFGeoCode Object and save to User in Parse
+    //self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
+    //[self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+    //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
 
     //other view elements setup
     [self setUpButtons:self.image1Indicator];
@@ -176,7 +177,7 @@ MFMailComposeViewControllerDelegate>
 
 
 
-
+#pragma mark -- View Did Appear
 -(void)viewDidAppear:(BOOL)animated{
     //NSLog(@"current user view did appear %@", self.currentUser);
     if (!self.currentUser) {
@@ -216,20 +217,6 @@ MFMailComposeViewControllerDelegate>
 
         NSLog(@"current user: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, ageStr, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
 
-
-
-       // double latitude = self.locationManager.location.coordinate.latitude;
-        //double longitude = self.locationManager.location.coordinate.longitude;
-        //NSLog(@"view did appear: %f & long: %f", latitude, longitude);
-
-        //location
-        //self.currentLocation = [[CLLocation alloc]initWithLatitude:latitude longitude:longitude];
-        //NSLog(@"current location ..........: %@", self.currentLocation);
-
-        //save lat and long in a PFGeoCode Object and save to User in Parse
-        //self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
-        //[self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
-            //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
 
         //save age and location objects
         [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -349,6 +336,8 @@ MFMailComposeViewControllerDelegate>
                                 //login purpose only
                                 PFUser *user1 =  [objects objectAtIndex:0];
                                 NSLog(@"1 match: %@", [user1 objectForKey:@"fullName"]);
+                                //get image count for indicator lights
+                                [self loadIndicatorLights:objects andUser:0];
                             }
                                 break;
                             case 2:{
@@ -359,6 +348,9 @@ MFMailComposeViewControllerDelegate>
                                 //loggin
                                 PFUser *user1 =  [objects objectAtIndex:0];
                                 PFUser *user2 =  [objects objectAtIndex:1];
+                                //get image count for indicator lights
+                                [self loadIndicatorLights:objects andUser:0];
+                                [self loadIndicatorLights:objects andUser:1];
                                 NSLog(@"2 matches: %@ & %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
 
                             }break;
@@ -375,14 +367,14 @@ MFMailComposeViewControllerDelegate>
 #pragma mark -- CLLocation delegate methods
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
     CLLocation *currentLocation = [locations firstObject];
-    NSLog(@"did update locations fist object: %@", currentLocation);
+    NSLog(@"did update locations delegate method: %@", currentLocation);
 
     [self.locationManager stopUpdatingLocation];
 
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
-    //NSLog(@"location manager failed: %@", error);
+    NSLog(@"location manager failed: %@", error);
 }
 
 
@@ -393,48 +385,26 @@ MFMailComposeViewControllerDelegate>
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionUp) {
         NSLog(@"swipe up");
-        //current match name
-        PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-        NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
 
-        //Parse Mandrill cloud code send email
-        NSString *confidantEmail = [self.currentUser objectForKey:@"confidantEmail"];
-        NSLog(@"confidant email: %@", confidantEmail);
-        NSString *firstNameOfUser = [self.currentUser objectForKey:@"firstName"];
-        NSString *userNeedsHelp = [NSString stringWithFormat:@"%@ needs your approval", firstNameOfUser];
-        //relation info for email
-        PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-        PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
-        [approvedRela addObject:approvedMatchUser];
-
-        NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/%@", approvedRela];
-        NSString *cssButton = [NSString stringWithFormat:@"button"];
-        NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, firstNameOFMatch, firstNameOfUser];
-
-        [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": userNeedsHelp, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
-            if (error) {
-                NSLog(@"error cloud js code: %@", error);
-            } else {
-                NSLog(@"result :%@", result);
-            }
-        }];
-//<p>Example HTML content</p>
         //add animation
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
-            if (self.count == self.imageArray.count - 1 ) {
+
+            self.count++;
+
+            if (self.count < self.imageArray.count - 1) {
+                //display image
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                //indicator lights reflect which image we are on
+                [self currentImage:self.count];
+
+            } else if (self.count == self.imageArray.count - 1 ){
 
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"last image");
                 [self currentImage:self.count];
-
+                //bring up/swap full Description view for small Info view
                 [self lastImageBringUpDesciptionView];
 
-            } else{
-
-                self.count++;
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-                [self currentImage:self.count];
-                self.fullDescView.hidden = YES;
             }
         } completion:^(BOOL finished) {
         }];
@@ -449,21 +419,21 @@ MFMailComposeViewControllerDelegate>
         NSLog(@"swipe down");
 
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
-            if (self.count == self.imageArray.count - self.imageArray.count) {
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-                NSLog(@"first image");
-                NSLog(@"count: %zd", self.count);
-                [self currentImage:self.count];
 
+            self.count--;
+
+            if (self.count == 0) {
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                NSLog(@"first image, count: %zd", self.count);
+                //indicator lights
+                [self currentImage:self.count];
                 self.fullDescView.hidden = YES;
 
-            } else{
+            } else if(self.count > 0){
 
-                self.count--;
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 [self currentImage:self.count];
                 NSLog(@"count: %zd", self.count);
-
                 self.fullDescView.hidden = YES;
 
             }
@@ -476,10 +446,38 @@ MFMailComposeViewControllerDelegate>
 
 //Swipe Right or Left
 - (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender {
+    //send approval email
+    PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+    NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
+
+    NSString *confidantEmail = [self.currentUser objectForKey:@"confidantEmail"];
+    NSLog(@"confidant email: %@", confidantEmail);
+    NSString *firstNameOfUser = [self.currentUser objectForKey:@"firstName"];
+    NSString *userNeedsHelp = [NSString stringWithFormat:@"%@ needs your approval", firstNameOfUser];
+    //relation info for email
+    PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+    PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
+    [approvedRela addObject:approvedMatchUser];
+
+    NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/%@", approvedRela];
+    NSString *cssButton = [NSString stringWithFormat:@"button"];
+    NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, firstNameOFMatch, firstNameOfUser];
+
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": userNeedsHelp, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
+        if (error) {
+            NSLog(@"error cloud js code: %@", error);
+        } else {
+            NSLog(@"result :%@", result);
+        }
+    }];
+
+
 
     NSLog(@"swipe right");
     self.count = 1;
     [self.imageArray removeAllObjects];
+
+
 
     [UIView transitionWithView:self.userImage duration:0.1 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
 
@@ -636,6 +634,7 @@ MFMailComposeViewControllerDelegate>
     } if (image6) {
         [self.imageArray addObject:image6];
     }
+    self.imageArrayCount = [self.imageArray count];
 }
 
 -(void)checkAndGetUserData:(NSArray *)pfObjects user:(NSUInteger)userNumber{
@@ -659,6 +658,45 @@ MFMailComposeViewControllerDelegate>
 
     //NSLog(@"%@\n%@\n%@", firstName, school, work);
 
+}
+
+-(void)loadIndicatorLights:(NSArray *)userImageArray andUser:(NSInteger)user{
+
+    PFUser *userForImages =  [userImageArray objectAtIndex:user];
+
+    NSString *image1 = [userForImages objectForKey:@"image1"];
+    NSString *image2 = [userForImages objectForKey:@"image2"];
+    NSString *image3 = [userForImages objectForKey:@"image3"];
+    NSString *image4 = [userForImages objectForKey:@"image4"];
+    NSString *image5 = [userForImages objectForKey:@"image5"];
+    NSString *image6 = [userForImages objectForKey:@"image6"];
+
+    if (image6) {
+        NSLog(@"six images in here hiding no indicator lights");
+    } else if (image5)  {
+        self.image6Indicator.hidden = YES;
+    } else if (image4){
+        self.image6Indicator.hidden = YES;
+        self.image5Indicator.hidden = YES;
+    } else if (image3){
+        self.image6Indicator.hidden = YES;
+        self.image5Indicator.hidden = YES;
+        self.image4Indicator.hidden = YES;
+    } else if (image2){
+        self.image6Indicator.hidden = YES;
+        self.image5Indicator.hidden = YES;
+        self.image4Indicator.hidden = YES;
+        self.image3Indicator.hidden = YES;
+    } else if (image1){
+        self.image6Indicator.hidden = YES;
+        self.image5Indicator.hidden = YES;
+        self.image4Indicator.hidden = YES;
+        self.image3Indicator.hidden = YES;
+        self.image2Indicator.hidden = YES;
+    } else{
+        NSLog(@"there are no images to load");
+    }
+    
 }
 
 -(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber {
@@ -712,7 +750,7 @@ MFMailComposeViewControllerDelegate>
 
 -(void)currentImage:(long)matchedCount{
     switch (matchedCount) {
-        case 1:
+        case 0:
             self.image1Indicator.backgroundColor = [UserData rubyRed];
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
@@ -720,7 +758,7 @@ MFMailComposeViewControllerDelegate>
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
             break;
-        case 2:
+        case 1:
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = [UserData rubyRed];
             self.image3Indicator.backgroundColor = nil;
@@ -728,7 +766,7 @@ MFMailComposeViewControllerDelegate>
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
             break;
-        case 3:
+        case 2:
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = [UserData rubyRed];
@@ -736,7 +774,7 @@ MFMailComposeViewControllerDelegate>
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
             break;
-        case 4:
+        case 3:
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
@@ -744,7 +782,7 @@ MFMailComposeViewControllerDelegate>
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
             break;
-        case 5:
+        case 4:
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
@@ -752,7 +790,7 @@ MFMailComposeViewControllerDelegate>
             self.image5Indicator.backgroundColor = [UserData rubyRed];
             self.image6Indicator.backgroundColor = nil;
             break;
-        case 6:
+        case 5:
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
@@ -826,7 +864,6 @@ MFMailComposeViewControllerDelegate>
 
 
 
-
     //old code
 //did update location delegate method
 //    double latitude = self.locationManager.location.coordinate.latitude;
@@ -851,6 +888,25 @@ MFMailComposeViewControllerDelegate>
 //    }];
 //
 
+
+//add animation
+//[UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+//    if (self.count == self.imageArray.count - 1 ) {
+//
+//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+//        NSLog(@"last image");
+//        [self currentImage:self.count];
+//
+//        [self lastImageBringUpDesciptionView];
+//
+//    } else{
+//
+//        self.count++;
+//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+//        [self currentImage:self.count];
+//        self.fullDescView.hidden = YES;
+//    }
+//}
 @end
 
 
