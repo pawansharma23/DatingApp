@@ -20,6 +20,6 @@
 
 @property (strong, nonatomic) PFUser *pfUser;
 @property (strong, nonatomic) PFUser *userFromViewController;
-
+@property (strong, nonatomic) NSString *cityAndState;
 
 @end

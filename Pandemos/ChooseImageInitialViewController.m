@@ -55,7 +55,7 @@ LXReorderableCollectionViewDelegateFlowLayout>
     [userD setUpButtons:self.chooseAnotherButton];
     [userD setUpButtons:self.saveImage];
 
-    NSLog(@"user image passed: %@", self.imageStr);
+    NSLog(@"user image passed url: %@", self.imageStr);
     self.userImage.image = [UIImage imageWithData:[self imageData:self.imageStr]];
     if (!self.imageStr) {
         self.userImage.image = [UIImage imageWithData:self.photoData];

@@ -72,7 +72,7 @@
     //load user Images
     [self checkAndGetYourImages];
     //load proper # of indicator lights
-    [self loadProperIndicatorLights:self.imageArrayCount];
+    [self loadProperIndicatorLights:(int)self.imageArrayCount];
     self.fullDescView.hidden = YES;
 
     //get user info
@@ -116,9 +116,8 @@
 
 #pragma mark -- CLLocation delegate methods
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
-    // NSLog(@"didUpdateLocations Delegate Method");
 
-    //current location
+    //current location .............. Works in iPhone, not in Sim
     CLLocation *currentLocation = [locations firstObject];
     NSLog(@"array of cuurent locations: %@", locations);
     //double latitude = self.locationManager.location.coordinate.latitude;

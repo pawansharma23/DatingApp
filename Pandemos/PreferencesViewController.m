@@ -37,6 +37,9 @@
 @property (strong, nonatomic) NSString *albumName;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIView *activityBackView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
 
 
 @end
@@ -54,12 +57,22 @@
 
     self.automaticallyAdjustsScrollViewInsets = NO;
 
+    self.activityBackView.alpha = .75;
+    self.activityBackView.layer.cornerRadius = 10;
+    [self.spinner startAnimating];
+
+
+    //former didAppear
+    [self.pictureArray removeAllObjects];
+    [self loadFacebookAlbumList];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
-    [self loadFacebookAlbumList];
+
 
 }
+
+
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.pictureArray.count;
@@ -151,6 +164,10 @@
             NSLog(@"error getting faceboko images: %@", error);
         }
     }];
+            [self.spinner stopAnimating];
+            self.activityBackView.hidden = YES;
+            self.loadingLabel.hidden = YES;
+            self.spinner.hidden = YES;
 }
 
 -(NSData *)imageData:(NSString *)imageString{

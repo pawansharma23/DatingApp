@@ -52,6 +52,7 @@ MFMailComposeViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *matchedLabel;
 @property (weak, nonatomic) IBOutlet UIButton *messageButton;
 @property (weak, nonatomic) IBOutlet UIButton *keepPlayingButton;
+@property (weak, nonatomic) IBOutlet UIView *activityView;
 
 @property (strong, nonatomic) PFUser *currentUser;
 @property (strong, nonatomic) NSString *leadImage;
@@ -65,13 +66,15 @@ MFMailComposeViewControllerDelegate>
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) CLGeocoder *geoCoded;
+@property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
+@property (strong, nonatomic) NSString *currentCityAndState;
+
 //Matching Engine Identifiers
 @property (strong, nonatomic) NSString *userSexPref;
 @property (strong, nonatomic) NSString *minAge;
 @property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *userImageForMatching;
 @property int milesFromUserLocation;
-@property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
 @property long count;
 
 //passed Objects array to the stack of users
@@ -94,12 +97,6 @@ MFMailComposeViewControllerDelegate>
     self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
     [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
-    NSShadow *shadow = [[NSShadow alloc] init];
-    shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
-    shadow.shadowOffset = CGSizeMake(0, 1);
-    [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:[UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0], NSForegroundColorAttributeName, shadow, NSShadowAttributeName,
-        [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
-
     self.fullDescView.hidden = YES;
     self.matchView.hidden = YES;
 
@@ -107,7 +104,7 @@ MFMailComposeViewControllerDelegate>
     self.matchedUsersCount = 0;
     self.imageArray = [NSMutableArray new];
 
-    //location object
+    //location object.......... works on iPhone, not in sim...........
     self.locationManager = [CLLocationManager new];
     self.locationManager.delegate = self;
     //request permission and update locaiton
@@ -170,8 +167,6 @@ MFMailComposeViewControllerDelegate>
     [swipeLeft setDelegate:self];
     swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
     [self.userImage addGestureRecognizer:swipeLeft];
-
-
 }
 
 
@@ -370,12 +365,28 @@ MFMailComposeViewControllerDelegate>
     NSLog(@"did update locations delegate method: %@", currentLocation);
 
     [self.locationManager stopUpdatingLocation];
+    //get city and location from a CLPlacemark object
+    CLGeocoder *geoCoder = [CLGeocoder new];
+    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+        } else {
+            CLPlacemark *placemark = [placemarks firstObject];
+            NSString *city = placemark.locality;
+            NSDictionary *stateDict = placemark.addressDictionary;
+            NSString *state = stateDict[@"State"];
+            self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
+            NSLog(@"%@", self.currentCityAndState);
+        }
+    }];
 
 }
 
 -(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
     NSLog(@"location manager failed: %@", error);
 }
+
+
 
 
 #pragma mark -- Swipe Gestures
@@ -606,6 +617,7 @@ MFMailComposeViewControllerDelegate>
 
         ProfileViewController *pvc = segue.destinationViewController;
         pvc.userFromViewController = self.currentUser;
+        pvc.cityAndState = self.currentCityAndState;
     }
 }
 
@@ -696,7 +708,8 @@ MFMailComposeViewControllerDelegate>
     } else{
         NSLog(@"there are no images to load");
     }
-    
+
+    self.activityView.hidden = YES;
 }
 
 -(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber {
@@ -907,6 +920,13 @@ MFMailComposeViewControllerDelegate>
 //        self.fullDescView.hidden = YES;
 //    }
 //}
+
+//this works for effects in the nav bar title
+//NSShadow *shadow = [[NSShadow alloc] init];
+//shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
+//shadow.shadowOffset = CGSizeMake(0, 1);
+//[[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:[UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0], NSForegroundColorAttributeName, shadow, NSShadowAttributeName,
+//                                                       [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
 @end
 
 

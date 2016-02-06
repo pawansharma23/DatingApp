@@ -43,6 +43,9 @@ UICollectionViewDelegate>
 @property (strong, nonatomic) NSString *photoURL;
 @property (strong, nonatomic) NSData *photoData;
 
+@property (weak, nonatomic) IBOutlet UIView *loadingView;
+@property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 @end
 
@@ -52,7 +55,10 @@ UICollectionViewDelegate>
     [super viewDidLoad];
 
     self.automaticallyAdjustsScrollViewInsets = NO;
-
+    [self.spinner startAnimating];
+    self.loadingView.alpha = .75;
+    self.loadingView.layer.cornerRadius = 8;
+    
     self.navigationItem.title = self.albumName;
     self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
     
@@ -73,6 +79,13 @@ UICollectionViewDelegate>
 
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:YES];
+
+        [self.spinner stopAnimating];
+        self.loadingView.hidden = YES;
+        self.loadingLabel.hidden = YES;
+}
 
 #pragma mark -- collectionView delegate Methods
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {

@@ -37,6 +37,7 @@
 @property (strong, nonatomic) NSMutableArray *pictureArray;
 @property (strong, nonatomic) NSString *albumName;
 @property (strong, nonatomic) NSString *albumId;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 @end
 
@@ -44,7 +45,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self.spinner startAnimating];
     self.navigationItem.title = @"Facebook Albums";
     self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
     
@@ -52,6 +53,11 @@
     self.pictureArray = [NSMutableArray new];
     [self loadFacebookAlbumList];
     
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:YES];
+    [self.spinner stopAnimating];
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.pictureArray.count;

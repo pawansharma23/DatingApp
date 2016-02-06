@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		260799071C29CB4600B364C8 /* RangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 260799061C29CB4600B364C8 /* RangeSlider.m */; };
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
+		260AE88A1C640BA80075A6B1 /* AddImageToProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 260AE8891C640BA80075A6B1 /* AddImageToProfileVC.m */; };
 		266451501C5D007B00D98136 /* AddMoreImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2664514F1C5D007B00D98136 /* AddMoreImagesViewController.m */; };
 		266451531C5D058C00D98136 /* AddImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266451521C5D058C00D98136 /* AddImageCell.m */; };
 		266451561C5D424300D98136 /* SwapImagesCV.m in Sources */ = {isa = PBXBuildFile; fileRef = 266451551C5D424300D98136 /* SwapImagesCV.m */; };
@@ -69,6 +70,8 @@
 		260799051C29CB4600B364C8 /* RangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeSlider.h; sourceTree = "<group>"; };
 		260799061C29CB4600B364C8 /* RangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RangeSlider.m; sourceTree = "<group>"; };
 		260799081C2B1C3500B364C8 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		260AE8881C640BA80075A6B1 /* AddImageToProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddImageToProfileVC.h; sourceTree = "<group>"; };
+		260AE8891C640BA80075A6B1 /* AddImageToProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddImageToProfileVC.m; sourceTree = "<group>"; };
 		2664514E1C5D007B00D98136 /* AddMoreImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddMoreImagesViewController.h; sourceTree = "<group>"; };
 		2664514F1C5D007B00D98136 /* AddMoreImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddMoreImagesViewController.m; sourceTree = "<group>"; };
 		266451511C5D058C00D98136 /* AddImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddImageCell.h; sourceTree = "<group>"; };
@@ -242,6 +245,8 @@
 				26DBD0401C4748F700944300 /* MessageDetailViewCon.m */,
 				26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */,
 				26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */,
+				260AE8881C640BA80075A6B1 /* AddImageToProfileVC.h */,
+				260AE8891C640BA80075A6B1 /* AddImageToProfileVC.m */,
 				2664515A1C5D7E2900D98136 /* AlbumDetailCollectionVC.h */,
 				2664515B1C5D7E2900D98136 /* AlbumDetailCollectionVC.m */,
 				266F23EC1C60498200A34C0B /* PreviewUserProfileVC.h */,
@@ -525,6 +530,7 @@
 				268BA0C51C21BDF10054414E /* PFLoginViewController.m in Sources */,
 				26DBD03E1C4747B700944300 /* MessagingCell.m in Sources */,
 				266451591C5D78CB00D98136 /* AlbumCustomCell.m in Sources */,
+				260AE88A1C640BA80075A6B1 /* AddImageToProfileVC.m in Sources */,
 				268BA0911C1DB53F0054414E /* ViewController.m in Sources */,
 				268BA10E1C25AFE10054414E /* UserData.m in Sources */,
 				268BA08E1C1DB53F0054414E /* AppDelegate.m in Sources */,

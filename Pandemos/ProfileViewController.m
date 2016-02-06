@@ -42,6 +42,7 @@ UIPopoverPresentationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *minimumAgeLabel;
 @property (weak, nonatomic) IBOutlet UISlider *minimumAgeSlider;
 @property (weak, nonatomic) IBOutlet UILabel *maximumAgeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 @property (weak, nonatomic) IBOutlet UISlider *maximumAgeSlider;
 @property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
 @property (weak, nonatomic) IBOutlet UISlider *milesAwaySlider;
@@ -59,8 +60,11 @@ UIPopoverPresentationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
+@property (weak, nonatomic) IBOutlet UIView *loadingView;
 
 @property (strong, nonatomic) NSString *textViewString;
+@property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 @end
 
@@ -73,6 +77,12 @@ UIPopoverPresentationControllerDelegate>
     //NSLog(@"profile VC user: %@", self.currentUser);
     self.navigationItem.title = @"Settings";
     self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    //retrieve and pass segue properties
+    self.locationLabel.text = self.cityAndState;
+    //loading view
+    self.loadingView.alpha = .75;
+    self.loadingView.layer.cornerRadius = 8;
+    [self.spinner startAnimating];
 
     //UIBarButtonItem *previewYourProfile = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(segueAction)];
     //self.navigationController.navigationItem.rightBarButtonItem = previewYourProfile;
@@ -83,7 +93,7 @@ UIPopoverPresentationControllerDelegate>
     UIBarButtonItem *newest = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(segueAction)];
     self.navigationItem.rightBarButtonItem = newest;
 
-    //self.automaticallyAdjustsScrollViewInsets = NO;
+    self.automaticallyAdjustsScrollViewInsets = NO;
 
     //delegation, initialization
     self.scrollView.delegate = self;
@@ -98,7 +108,7 @@ UIPopoverPresentationControllerDelegate>
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
+    flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
     [self.collectionView setCollectionViewLayout:flowlayouts];
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
@@ -185,30 +195,16 @@ UIPopoverPresentationControllerDelegate>
             self.jobLabel.text = job;
             self.educationLabel.text = school;
 
-            //userImages
-            NSString *image1 = [[objects firstObject] objectForKey:@"image1"];
-            NSString *image2 = [[objects firstObject] objectForKey:@"image2"];
-            NSString *image3 = [[objects firstObject] objectForKey:@"image3"];
-            NSString *image4 = [[objects firstObject] objectForKey:@"image4"];
-            NSString *image5 = [[objects firstObject] objectForKey:@"image5"];
-            NSString *image6 = [[objects firstObject] objectForKey:@"image6"];
-            if (image1) {
-                [self.pictures addObject:image1];
-            } if (image2) {
-                [self.pictures addObject:image2];
-            } if (image3) {
-                [self.pictures addObject:image3];
-            } if (image4) {
-                [self.pictures addObject:image4];
-            } if (image5) {
-                [self.pictures addObject:image5];
-            } if (image6) {
-                [self.pictures addObject:image6];
-            }
+            [self loadImagesFromParse:objects];
 
-            [self.collectionView reloadData];
         }
     }];
+
+
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:YES];
 
 
 }
@@ -220,12 +216,6 @@ UIPopoverPresentationControllerDelegate>
     [self.view endEditing:YES];
     [super touchesBegan:touches withEvent:event];
 }
-
-//allows you to reject the editing with a negative BOOL
-//- (BOOL)textViewShouldBeginEditing:(UITextView *)textView{
-//    NSLog(@"textViewShouldBeginEditing:");
-//    return YES;
-//}
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
     NSLog(@"textViewDidBeginEditing");
@@ -301,6 +291,10 @@ UIPopoverPresentationControllerDelegate>
     return cell;
 }
 
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionView *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section    {
+    return 5; // This is the minimum inter item spacing, can be more
+}
+
 -(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
     NSString *photoString = [self.pictures objectAtIndex:fromIndexPath.item];
     [self.pictures removeObjectAtIndex:fromIndexPath.item];
@@ -318,12 +312,12 @@ UIPopoverPresentationControllerDelegate>
     NSLog(@"dragging has stopped");
 
 }
-
-#pragma mark --other view elements
+#pragma mark -- Segue
 - (IBAction)onSwapPhotsButton:(UIButton *)sender {
     [self performSegueWithIdentifier:@"SwapImages" sender:self];
 }
 
+#pragma mark --other view elements
 
 //3) Min/Max Ages
 - (IBAction)onMinAgeSliderChange:(UISlider *)sender {
@@ -388,12 +382,6 @@ UIPopoverPresentationControllerDelegate>
         [self.currentUser saveInBackground];
     }
 }
-//uncomment to Segue Data
-//-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(CVSettingCell *)cell {
-
-//}
-
-
 
 
 //send an email with the UIMessage framework for feedback
@@ -481,6 +469,37 @@ UIPopoverPresentationControllerDelegate>
     NSURL *url = [NSURL URLWithString:imageString];
     NSData *data = [NSData dataWithContentsOfURL:url];
     return data;
+}
+
+-(void)loadImagesFromParse:(NSArray *)objectArray{
+
+    //userImages
+    NSString *image1 = [[objectArray firstObject] objectForKey:@"image1"];
+    NSString *image2 = [[objectArray firstObject] objectForKey:@"image2"];
+    NSString *image3 = [[objectArray firstObject] objectForKey:@"image3"];
+    NSString *image4 = [[objectArray firstObject] objectForKey:@"image4"];
+    NSString *image5 = [[objectArray firstObject] objectForKey:@"image5"];
+    NSString *image6 = [[objectArray firstObject] objectForKey:@"image6"];
+    if (image1) {
+        [self.pictures addObject:image1];
+    } if (image2) {
+        [self.pictures addObject:image2];
+    } if (image3) {
+        [self.pictures addObject:image3];
+    } if (image4) {
+        [self.pictures addObject:image4];
+    } if (image5) {
+        [self.pictures addObject:image5];
+    } if (image6) {
+        [self.pictures addObject:image6];
+    }
+
+    [self.collectionView reloadData];
+
+    [self.spinner stopAnimating];
+    self.loadingView.hidden = YES;
+    self.loadingLabel.hidden = YES;
+    self.spinner.hidden = YES;
 }
 
 -(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2    {

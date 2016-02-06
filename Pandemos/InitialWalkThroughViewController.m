@@ -63,6 +63,10 @@ UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
 @property (weak, nonatomic) IBOutlet UILabel *notValidImageLabel;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (weak, nonatomic) IBOutlet UIView *loadingView;
+
+@property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
 
 @property (strong, nonatomic) NSMutableArray *pictureArray;
 @property (strong, nonatomic) NSArray *picArray;
@@ -100,6 +104,9 @@ UIScrollViewDelegate>
     self.currentUser = [PFUser currentUser];
     UserData *userD = [UserData new];
 
+    [self.spinner startAnimating];
+    self.loadingView.alpha = .75;
+    self.loadingView.layer.cornerRadius = 8;
     self.navigationItem.title = @"Setup";
     self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
 
@@ -212,6 +219,11 @@ UIScrollViewDelegate>
     NSLog(@"about me: %@", aboutMeDescription);
         self.textViewAboutMe.text = aboutMeDescription;
     }
+
+    [self.spinner stopAnimating];
+    self.loadingLabel.hidden = YES;
+    self.loadingView.hidden = YES;
+    self.spinner.hidden = YES;
 }
 
 #pragma mark -- CLLocation delegate methods
@@ -422,7 +434,7 @@ UIScrollViewDelegate>
     [self.selectedPictures addObject:selectedImage];
     NSLog(@"seleceted image: %@", self.selectedImage);
 
-    //get original image from 100 x 100 thumbnail
+    //get original image from 100 x 100 thumbnail...........This Loop does nothing to get the source image, were passing on the same image as the AddImageToProfile View Controller
     for (UserData *photoId in self.selectedPictures) {
 
         NSString *photos = photoId.photoID;
@@ -545,6 +557,8 @@ UIScrollViewDelegate>
             NSLog(@"error getting faceboko images: %@", error);
         }
     }];
+
+
 }
 
 - (void)loadFacebookData {

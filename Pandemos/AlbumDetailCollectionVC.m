@@ -28,12 +28,15 @@
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "SwapImagesCV.h"
 #import "AFNetworking.h"
+#import "AddImageToProfileVC.h"
 
-@interface AlbumDetailCollectionVC ()
+
+@interface AlbumDetailCollectionVC ()<UICollectionViewDataSource, UICollectionViewDelegate>
 @property (strong, nonatomic) NSMutableArray *pictureArray;
 @property (strong, nonatomic) NSString *nextURL;
 @property (strong, nonatomic) NSString *previousURL;
-
+@property (strong, nonatomic) NSString *selectedImage;
+@property (strong, nonatomic) NSData *selectedImageData;
 
 
 @end
@@ -57,22 +60,20 @@ static NSString * const reuseIdentifier = @"Cell";
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setItemSize:CGSizeMake(115, 115)];
+    [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
     [self.collectionView setCollectionViewLayout:flowLayout];
 
 
-    [self.collectionView registerClass:[SwapImagesCV class] forCellWithReuseIdentifier:reuseIdentifier];
-    NSLog(@"album id %@", self.albumIdInAlbumDetail);
-
+   // [self.collectionView registerClass:[SwapImagesCV class]forCellWithReuseIdentifier:reuseIdentifier];
+    NSLog(@"album id %@ & album Name %@", self.albumIdInAlbumDetail, self.albumName);
+    //[self.view addSubview:self.collectionView];
     [self loadFacebookAlbum];
 }
 
 
 
-#pragma mark <UICollectionViewDataSource>
-
-
+#pragma mark -- CollectionView methods
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.pictureArray.count;
 }
@@ -81,12 +82,30 @@ static NSString * const reuseIdentifier = @"Cell";
     SwapImagesCV *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     UserData *userD = [self.pictureArray objectAtIndex:indexPath.item];
     cell.image.image = [UIImage imageWithData:userD.photosData];
-    NSLog(@"images from cell: %@", userD.photoID);
+    //NSLog(@"images from cell: %@", userD.photoID);
     return cell;
 }
 
 #pragma mark <UICollectionViewDelegate>
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
 
+    //selects the image and pushes to the next VC for full idisplay(not sure if this is the 100x100 or full image
+    UserData *selectedImage = [self.pictureArray objectAtIndex:indexPath.item];
+    self.selectedImage = selectedImage.photoID;
+    self.selectedImageData = selectedImage.photosData;
+    NSLog(@"seleceted image: %@", selectedImage.photoID);
+    [self performSegueWithIdentifier:@"AddImage" sender:self];
+
+}
+
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    AddImageToProfileVC *aitpvc = segue.destinationViewController;
+    aitpvc.imageURL = self.selectedImage;
+    aitpvc.imageData = self.selectedImageData;
+
+}
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -143,7 +162,7 @@ static NSString * const reuseIdentifier = @"Cell";
                 for (NSDictionary *imageData in uniqueArray) {
                     //get the source url
                     NSString *imageURL = imageData[@"source"];
-                    NSLog(@"URLs: %@", imageURL);
+                    //NSLog(@"URLs: %@", imageURL);
                     // NSString *updatedtime = imageData[@"updated_time"];
                     //image conversion
                     NSURL *mainPicURL = [NSURL URLWithString:imageURL];
