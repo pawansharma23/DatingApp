@@ -22,9 +22,6 @@
 #import <FBSDKGraphRequest.h>
 #import "CVCell.h"
 #import "AFNetworking.h"
-#import "RangeSlider.h"
-#import <CoreLocation/CoreLocation.h>
-#import <MobileCoreServices/MobileCoreServices.h>
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "ChooseImageInitialViewController.h"
 #import "SuggestionsViewController.h"

@@ -42,6 +42,7 @@
 		26DBD0411C4748F700944300 /* MessageDetailViewCon.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD0401C4748F700944300 /* MessageDetailViewCon.m */; };
 		26DBD0441C47FDDC00944300 /* MessageDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD0431C47FDDC00944300 /* MessageDetailCell.m */; };
 		26E3DB8D1C3F4EC700699FA5 /* MessagingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */; };
+		26EC33051C76AFF8009E821D /* FacebookData.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EC33041C76AFF8009E821D /* FacebookData.m */; };
 		26EE239B1C42BD7D006F328E /* CVSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EE239A1C42BD7D006F328E /* CVSettingCell.m */; };
 		26EE239E1C4446AB006F328E /* ChooseImageInitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EE239D1C4446AB006F328E /* ChooseImageInitialViewController.m */; };
 		26EE23A11C453F47006F328E /* CVImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EE23A01C453F47006F328E /* CVImageCell.m */; };
@@ -134,6 +135,8 @@
 		26DBD0431C47FDDC00944300 /* MessageDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageDetailCell.m; sourceTree = "<group>"; };
 		26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagingViewController.h; sourceTree = "<group>"; };
 		26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagingViewController.m; sourceTree = "<group>"; };
+		26EC33031C76AFF8009E821D /* FacebookData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookData.h; sourceTree = "<group>"; };
+		26EC33041C76AFF8009E821D /* FacebookData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookData.m; sourceTree = "<group>"; };
 		26EE23991C42BD7D006F328E /* CVSettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVSettingCell.h; sourceTree = "<group>"; };
 		26EE239A1C42BD7D006F328E /* CVSettingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVSettingCell.m; sourceTree = "<group>"; };
 		26EE239C1C4446AB006F328E /* ChooseImageInitialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseImageInitialViewController.h; sourceTree = "<group>"; };
@@ -201,9 +204,9 @@
 				268BA0921C1DB53F0054414E /* Main.storyboard */,
 				268BA08C1C1DB53F0054414E /* AppDelegate.h */,
 				268BA08D1C1DB53F0054414E /* AppDelegate.m */,
-				268BA1131C26EFBD0054414E /* Initial Setup */,
-				268BA10F1C25AFE60054414E /* Class */,
+				268BA1131C26EFBD0054414E /* Initial Setup VCs */,
 				268BA10B1C25A8F00054414E /* Controllers */,
+				268BA10F1C25AFE60054414E /* Class */,
 				268BA0951C1DB53F0054414E /* Assets.xcassets */,
 				268BA0971C1DB53F0054414E /* LaunchScreen.storyboard */,
 				268BA09A1C1DB53F0054414E /* Info.plist */,
@@ -241,22 +244,9 @@
 		268BA10B1C25A8F00054414E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				26DBD03F1C4748F700944300 /* MessageDetailViewCon.h */,
-				26DBD0401C4748F700944300 /* MessageDetailViewCon.m */,
-				26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */,
-				26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */,
-				260AE8881C640BA80075A6B1 /* AddImageToProfileVC.h */,
-				260AE8891C640BA80075A6B1 /* AddImageToProfileVC.m */,
-				2664515A1C5D7E2900D98136 /* AlbumDetailCollectionVC.h */,
-				2664515B1C5D7E2900D98136 /* AlbumDetailCollectionVC.m */,
-				266F23EC1C60498200A34C0B /* PreviewUserProfileVC.h */,
-				266F23ED1C60498300A34C0B /* PreviewUserProfileVC.m */,
-				268BA1081C25A8D60054414E /* PreferencesViewController.h */,
-				268BA1091C25A8D60054414E /* PreferencesViewController.m */,
-				268BA1051C25A86C0054414E /* ProfileViewController.h */,
-				268BA1061C25A86C0054414E /* ProfileViewController.m */,
-				268BA08F1C1DB53F0054414E /* ViewController.h */,
-				268BA0901C1DB53F0054414E /* ViewController.m */,
+				26F22BF31C6FAEFF00D86343 /* Messaging */,
+				26F22BF21C6FAEF000D86343 /* Preferences */,
+				26F22BF41C6FAF0E00D86343 /* Matches */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -266,39 +256,29 @@
 			children = (
 				268BA10C1C25AFE10054414E /* UserData.h */,
 				268BA10D1C25AFE10054414E /* UserData.m */,
-				266F23E91C5DB3DF00A34C0B /* FacebookCVCell.h */,
-				266F23EA1C5DB3DF00A34C0B /* FacebookCVCell.m */,
-				266F23E31C5DA24F00A34C0B /* FacebookTableViewCell.h */,
-				266F23E41C5DA24F00A34C0B /* FacebookTableViewCell.m */,
-				26DBD0421C47FDDC00944300 /* MessageDetailCell.h */,
-				26DBD0431C47FDDC00944300 /* MessageDetailCell.m */,
-				26DBD03C1C4747B700944300 /* MessagingCell.h */,
-				26DBD03D1C4747B700944300 /* MessagingCell.m */,
-				266451571C5D78CB00D98136 /* AlbumCustomCell.h */,
-				266451581C5D78CB00D98136 /* AlbumCustomCell.m */,
-				266451541C5D424300D98136 /* SwapImagesCV.h */,
-				266451551C5D424300D98136 /* SwapImagesCV.m */,
-				266451511C5D058C00D98136 /* AddImageCell.h */,
-				266451521C5D058C00D98136 /* AddImageCell.m */,
-				268BA1141C2737170054414E /* CVCell.h */,
-				268BA1151C2737170054414E /* CVCell.m */,
-				26EE23991C42BD7D006F328E /* CVSettingCell.h */,
-				26EE239A1C42BD7D006F328E /* CVSettingCell.m */,
-				26EE239F1C453F47006F328E /* CVImageCell.h */,
-				26EE23A01C453F47006F328E /* CVImageCell.m */,
-				260799051C29CB4600B364C8 /* RangeSlider.h */,
-				260799061C29CB4600B364C8 /* RangeSlider.m */,
+				26EC33031C76AFF8009E821D /* FacebookData.h */,
+				26EC33041C76AFF8009E821D /* FacebookData.m */,
+				26F22BEF1C6FADC200D86343 /* CollectionView Cells */,
+				26F22BF01C6FADE300D86343 /* TableView Cells */,
+				26F22BF11C6FAE2000D86343 /* Third Party Helpers */,
 			);
 			name = Class;
 			sourceTree = "<group>";
 		};
-		268BA1131C26EFBD0054414E /* Initial Setup */ = {
+		268BA1131C26EFBD0054414E /* Initial Setup VCs */ = {
 			isa = PBXGroup;
 			children = (
-				2688C23D1C51D44800F100AA /* FriendEmailViewController.h */,
-				2688C23E1C51D44800F100AA /* FriendEmailViewController.m */,
-				26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */,
-				26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */,
+				26F22BEE1C6FAD9300D86343 /* ConfidantEmail */,
+				26F22BED1C6FAD8300D86343 /* AboutMeSuggestions */,
+				26F22BEB1C6FAD2800D86343 /* MainFilters */,
+				26F22BEC1C6FAD7000D86343 /* FacebookLogin */,
+			);
+			name = "Initial Setup VCs";
+			sourceTree = "<group>";
+		};
+		26F22BEB1C6FAD2800D86343 /* MainFilters */ = {
+			isa = PBXGroup;
+			children = (
 				266F23E61C5DA75A00A34C0B /* FacebookDetailViewController.h */,
 				266F23E71C5DA75A00A34C0B /* FacebookDetailViewController.m */,
 				266F23E01C5DA1B300A34C0B /* FacebookAlbumsTableVC.h */,
@@ -309,10 +289,115 @@
 				26EE239D1C4446AB006F328E /* ChooseImageInitialViewController.m */,
 				268BA1101C26EFA70054414E /* InitialWalkThroughViewController.h */,
 				268BA1111C26EFA70054414E /* InitialWalkThroughViewController.m */,
+			);
+			name = MainFilters;
+			sourceTree = "<group>";
+		};
+		26F22BEC1C6FAD7000D86343 /* FacebookLogin */ = {
+			isa = PBXGroup;
+			children = (
 				268BA0C31C21BDF10054414E /* PFLoginViewController.h */,
 				268BA0C41C21BDF10054414E /* PFLoginViewController.m */,
 			);
-			name = "Initial Setup";
+			name = FacebookLogin;
+			sourceTree = "<group>";
+		};
+		26F22BED1C6FAD8300D86343 /* AboutMeSuggestions */ = {
+			isa = PBXGroup;
+			children = (
+				26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */,
+				26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */,
+			);
+			name = AboutMeSuggestions;
+			sourceTree = "<group>";
+		};
+		26F22BEE1C6FAD9300D86343 /* ConfidantEmail */ = {
+			isa = PBXGroup;
+			children = (
+				2688C23D1C51D44800F100AA /* FriendEmailViewController.h */,
+				2688C23E1C51D44800F100AA /* FriendEmailViewController.m */,
+			);
+			name = ConfidantEmail;
+			sourceTree = "<group>";
+		};
+		26F22BEF1C6FADC200D86343 /* CollectionView Cells */ = {
+			isa = PBXGroup;
+			children = (
+				266F23E91C5DB3DF00A34C0B /* FacebookCVCell.h */,
+				266F23EA1C5DB3DF00A34C0B /* FacebookCVCell.m */,
+				26DBD0421C47FDDC00944300 /* MessageDetailCell.h */,
+				26DBD0431C47FDDC00944300 /* MessageDetailCell.m */,
+				266451541C5D424300D98136 /* SwapImagesCV.h */,
+				266451551C5D424300D98136 /* SwapImagesCV.m */,
+				266451511C5D058C00D98136 /* AddImageCell.h */,
+				266451521C5D058C00D98136 /* AddImageCell.m */,
+				268BA1141C2737170054414E /* CVCell.h */,
+				268BA1151C2737170054414E /* CVCell.m */,
+				26EE23991C42BD7D006F328E /* CVSettingCell.h */,
+				26EE239A1C42BD7D006F328E /* CVSettingCell.m */,
+				26EE239F1C453F47006F328E /* CVImageCell.h */,
+				26EE23A01C453F47006F328E /* CVImageCell.m */,
+			);
+			name = "CollectionView Cells";
+			sourceTree = "<group>";
+		};
+		26F22BF01C6FADE300D86343 /* TableView Cells */ = {
+			isa = PBXGroup;
+			children = (
+				266F23E31C5DA24F00A34C0B /* FacebookTableViewCell.h */,
+				266F23E41C5DA24F00A34C0B /* FacebookTableViewCell.m */,
+				26DBD03C1C4747B700944300 /* MessagingCell.h */,
+				26DBD03D1C4747B700944300 /* MessagingCell.m */,
+				266451571C5D78CB00D98136 /* AlbumCustomCell.h */,
+				266451581C5D78CB00D98136 /* AlbumCustomCell.m */,
+			);
+			name = "TableView Cells";
+			sourceTree = "<group>";
+		};
+		26F22BF11C6FAE2000D86343 /* Third Party Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				260799051C29CB4600B364C8 /* RangeSlider.h */,
+				260799061C29CB4600B364C8 /* RangeSlider.m */,
+			);
+			name = "Third Party Helpers";
+			sourceTree = "<group>";
+		};
+		26F22BF21C6FAEF000D86343 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				260AE8881C640BA80075A6B1 /* AddImageToProfileVC.h */,
+				260AE8891C640BA80075A6B1 /* AddImageToProfileVC.m */,
+				2664515A1C5D7E2900D98136 /* AlbumDetailCollectionVC.h */,
+				2664515B1C5D7E2900D98136 /* AlbumDetailCollectionVC.m */,
+				266F23EC1C60498200A34C0B /* PreviewUserProfileVC.h */,
+				266F23ED1C60498300A34C0B /* PreviewUserProfileVC.m */,
+				268BA1081C25A8D60054414E /* PreferencesViewController.h */,
+				268BA1091C25A8D60054414E /* PreferencesViewController.m */,
+				268BA1051C25A86C0054414E /* ProfileViewController.h */,
+				268BA1061C25A86C0054414E /* ProfileViewController.m */,
+			);
+			name = Preferences;
+			sourceTree = "<group>";
+		};
+		26F22BF31C6FAEFF00D86343 /* Messaging */ = {
+			isa = PBXGroup;
+			children = (
+				26DBD03F1C4748F700944300 /* MessageDetailViewCon.h */,
+				26DBD0401C4748F700944300 /* MessageDetailViewCon.m */,
+				26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */,
+				26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */,
+			);
+			name = Messaging;
+			sourceTree = "<group>";
+		};
+		26F22BF41C6FAF0E00D86343 /* Matches */ = {
+			isa = PBXGroup;
+			children = (
+				268BA08F1C1DB53F0054414E /* ViewController.h */,
+				268BA0901C1DB53F0054414E /* ViewController.m */,
+			);
+			name = Matches;
 			sourceTree = "<group>";
 		};
 		282E72BB57D54B2C001EC42F /* Frameworks */ = {
@@ -527,6 +612,7 @@
 				2664515C1C5D7E2900D98136 /* AlbumDetailCollectionVC.m in Sources */,
 				266F23EB1C5DB3DF00A34C0B /* FacebookCVCell.m in Sources */,
 				26DBD0411C4748F700944300 /* MessageDetailViewCon.m in Sources */,
+				26EC33051C76AFF8009E821D /* FacebookData.m in Sources */,
 				268BA0C51C21BDF10054414E /* PFLoginViewController.m in Sources */,
 				26DBD03E1C4747B700944300 /* MessagingCell.m in Sources */,
 				266451591C5D78CB00D98136 /* AlbumCustomCell.m in Sources */,

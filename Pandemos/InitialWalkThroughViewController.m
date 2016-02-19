@@ -616,7 +616,7 @@ UIScrollViewDelegate>
 
             locUser.fullName = fullName;
             locUser.firstName = firstName;
-            locUser.birthdayString = birthdayStr;
+            locUser.birthday = birthdayStr;
 
             //save users data from FB to Parse
             if (fullName){

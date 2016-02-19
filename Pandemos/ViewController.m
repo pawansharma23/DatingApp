@@ -27,42 +27,43 @@ UIGestureRecognizerDelegate,
 UINavigationControllerDelegate,
 CLLocationManagerDelegate,
 MFMailComposeViewControllerDelegate>
-
 //View elemets
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
-@property (weak, nonatomic) IBOutlet UIButton *greenButton;
-@property (weak, nonatomic) IBOutlet UIButton *redButton;
-@property (weak, nonatomic) IBOutlet UILabel *nameAndAge;
-@property (weak, nonatomic) IBOutlet UILabel *jobLabel;
-@property (weak, nonatomic) IBOutlet UILabel *educationLabel;
-@property (weak, nonatomic) IBOutlet UIView *userInfoView;
+@property (weak, nonatomic) IBOutlet UIImageView *matchedImage;
+@property (weak, nonatomic) IBOutlet UIImageView *userImageMatched;
+
 @property (weak, nonatomic) IBOutlet UIButton *image1Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image2Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image3Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image4Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image5Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image6Indicator;
+@property (weak, nonatomic) IBOutlet UIButton *greenButton;
+@property (weak, nonatomic) IBOutlet UIButton *redButton;
+@property (weak, nonatomic) IBOutlet UIButton *messageButton;
+@property (weak, nonatomic) IBOutlet UIButton *keepPlayingButton;
+
+@property (weak, nonatomic) IBOutlet UIView *userInfoView;
 @property (weak, nonatomic) IBOutlet UIView *fullDescView;
+@property (weak, nonatomic) IBOutlet UIView *matchView;
+@property (weak, nonatomic) IBOutlet UIView *activityView;
+
+@property (weak, nonatomic) IBOutlet UILabel *nameAndAge;
+@property (weak, nonatomic) IBOutlet UILabel *jobLabel;
+@property (weak, nonatomic) IBOutlet UILabel *educationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fullDescNameAndAge;
 @property (weak, nonatomic) IBOutlet UILabel *fullAboutMe;
 @property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
-@property (weak, nonatomic) IBOutlet UIView *matchView;
-@property (weak, nonatomic) IBOutlet UIImageView *matchedImage;
-@property (weak, nonatomic) IBOutlet UIImageView *userImageMatched;
 @property (weak, nonatomic) IBOutlet UILabel *matchedLabel;
-@property (weak, nonatomic) IBOutlet UIButton *messageButton;
-@property (weak, nonatomic) IBOutlet UIButton *keepPlayingButton;
-@property (weak, nonatomic) IBOutlet UIView *activityView;
 
 @property (strong, nonatomic) PFUser *currentUser;
-@property (strong, nonatomic) NSString *leadImage;
-@property (strong, nonatomic) NSData *leadImageData;
+
 @property (strong, nonatomic) NSMutableArray *imageArray;
 @property long imageArrayCount;
 @property (strong, nonatomic) NSString *nameAndAgeGlobal;
 @property (strong, nonatomic) NSDate *birthday;
 
-//location Properties
+//location
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) CLGeocoder *geoCoded;
@@ -70,9 +71,6 @@ MFMailComposeViewControllerDelegate>
 @property (strong, nonatomic) NSString *currentCityAndState;
 
 //Matching Engine Identifiers
-@property (strong, nonatomic) NSString *userSexPref;
-@property (strong, nonatomic) NSString *minAge;
-@property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *userImageForMatching;
 @property int milesFromUserLocation;
 @property long count;
@@ -90,6 +88,9 @@ MFMailComposeViewControllerDelegate>
     [super viewDidLoad];
 
     self.currentUser = [PFUser currentUser];
+    UserData *userA = [UserData new];
+    [userA loadParse:self.currentUser];
+
     //NSString *fullName = [self.currentUser objectForKey:@"fullName"];
     //NSLog(@"current user VDL: %@", fullName);
 
@@ -126,11 +127,11 @@ MFMailComposeViewControllerDelegate>
     [self setUpButtons:self.image4Indicator];
     [self setUpButtons:self.image5Indicator];
     [self setUpButtons:self.image6Indicator];
-    UserData *userD = [UserData new];
-    [userD setUpButtons:self.keepPlayingButton];
-    [userD setUpButtons:self.messageButton];
 
-    [self currentImage:self.count];
+    [userA setUpButtons:self.keepPlayingButton];
+    [userA setUpButtons:self.messageButton];
+
+    [self currentImageLightUpIndicatorLight:self.count];
 
     self.greenButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
     self.redButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
@@ -173,45 +174,23 @@ MFMailComposeViewControllerDelegate>
 
 
 #pragma mark -- View Did Appear
--(void)viewDidAppear:(BOOL)animated{
+-(void)viewDidAppear:(BOOL)animated
+{
+
     //NSLog(@"current user view did appear %@", self.currentUser);
-    if (!self.currentUser) {
+    if (!self.currentUser)
+    {
         NSLog(@"no user currently logged in");
         //[self performSegueWithIdentifier:@"NoUser" sender:nil];
-    } else {
-
-        //get the current users data
-        NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-        //NSString *age = [self.currentUser objectForKey:@"userAge"];
-        NSString *sex = [self.currentUser objectForKey:@"gender"];
-        PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
-        NSString *sexPref = [self.currentUser objectForKey:@"sexPref"];
-        NSString *milesFromUserLoc = [self.currentUser objectForKey:@"milesAway"];
-        NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
-
-        //for matching: SexPref min and max age user is intersted in and Location of user/miles around user
-        self.userSexPref = sexPref;
-        self.minAge = [self.currentUser objectForKey:@"minAge"];
-        self.maxAge = [self.currentUser objectForKey:@"maxAge"];
-        self.milesFromUserLocation = [milesFromUserLoc intValue];
-        self.userImageForMatching = [self.currentUser objectForKey:@"image1"];
-
-
-        //update users age everytime they open app, re-save & for Matching Engine
-        NSDateFormatter *formatter = [NSDateFormatter new];
-        [formatter setDateFormat:@"MM/dd/yyyy"];
-
-        //create the NSDate object
-        self.birthday = [formatter dateFromString:birthdayStr];
-        NSUInteger age = [self ageFromBirthday:self.birthday];
-        NSString *ageStr = [NSString stringWithFormat:@"%lu", (unsigned long)age];
-        [self.currentUser setObject:ageStr forKey:@"userAge"];
+    } else
+    {
+        UserData *userA = [UserData new];
+        [userA loadUserDataFromParse:self.currentUser];
+        NSLog(@"current user name: %@", userA.fullName);
+        NSLog(@"age: %@", [userA ageFromBirthday:userA.birthday]);
 
         //relation
-        PFRelation *rela = [self.currentUser objectForKey:@"matchNotConfirmed"];
-
-        NSLog(@"current user: %@\nAge: %@\nSex: %@\nLocation: %@\nMilesRange:%zd\nInterest: %@\nMin Age Interst: %@\nMax: %@\nRelations:%@", fullName, ageStr, sex, geo, self.milesFromUserLocation, sexPref, self.minAge, self.maxAge, rela);
-
+        //PFRelation *rela = [self.currentUser objectForKey:@"matchNotConfirmed"];
 
         //save age and location objects
         [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -244,13 +223,12 @@ MFMailComposeViewControllerDelegate>
     //    [query whereKey:@"matchNotConfirmed" containsString:@"User"];
 
         //this is if there is a relationship, I want !relationship???
-
         PFRelation *relation = [self.currentUser relationForKey:@"matchNotConfirmed"];
         query = [relation query];
         //gets Error code Unsupported query operator on relation field
 
         //Both sexes
-        if ([self.userSexPref containsString:@"male female"]) {
+        if ([userA.sexPref containsString:@"male female"]) {
         //Preference for Both Sexes
         [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if(!error){
@@ -266,11 +244,11 @@ MFMailComposeViewControllerDelegate>
 
 
         //Preference for Males
-        } else if ([self.userSexPref isEqualToString:@"male"]){
+        } else if ([userA.sexPref isEqualToString:@"male"]){
             //set up query constraints
             [query whereKey:@"gender" hasPrefix:@"m"];
-            //[query whereKey:@"ageMin" greaterThanOrEqualTo:self.minAge];
-            //[query whereKey:@"ageMax" lessThanOrEqualTo:self.maxAge];
+            //[query whereKey:@"ageMin" greaterThanOrEqualTo:userA.minAge];
+            //[query whereKey:@"ageMax" lessThanOrEqualTo:userA.maxAge];
             //NSLog(@"Male Pref Between: %@ and %@", self.minAge, self.maxAge);
             //[query whereKey:@"GeoCode" nearGeoPoint:self.pfGeoCoded withinMiles:self.milesFromUserLocation];
 
@@ -317,9 +295,11 @@ MFMailComposeViewControllerDelegate>
                 [query whereKey:@"gender" hasPrefix:@"f"];
                 [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
                     if (!error) {
+
                         long objectCount = [objects count];
                         NSLog(@"female pref query: %lu results", objectCount);
-                        NSLog(@"objects: %@", objects);
+
+                        //NSLog(@"objects: %@", objects);
                         self.objectsArray = objects;
                         switch (objectCount) {
                             case 0:
@@ -337,7 +317,6 @@ MFMailComposeViewControllerDelegate>
                                 break;
                             case 2:{
 
-
                                 [self checkAndGetImages:objects user:0];
                                 [self checkAndGetUserData:objects user:0];
                                 //loggin
@@ -346,7 +325,7 @@ MFMailComposeViewControllerDelegate>
                                 //get image count for indicator lights
                                 [self loadIndicatorLights:objects andUser:0];
                                 [self loadIndicatorLights:objects andUser:1];
-                                NSLog(@"2 matches: %@ & %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
+                                NSLog(@"2 matches: %@ & %@ for %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], userA.fullName);
 
                             }break;
                             default:
@@ -376,7 +355,7 @@ MFMailComposeViewControllerDelegate>
             NSDictionary *stateDict = placemark.addressDictionary;
             NSString *state = stateDict[@"State"];
             self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
-            NSLog(@"%@", self.currentCityAndState);
+            NSLog(@"user location: %@", self.currentCityAndState);
         }
     }];
 
@@ -406,13 +385,13 @@ MFMailComposeViewControllerDelegate>
                 //display image
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 //indicator lights reflect which image we are on
-                [self currentImage:self.count];
+                [self currentImageLightUpIndicatorLight:self.count];
 
             } else if (self.count == self.imageArray.count - 1 ){
 
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"last image");
-                [self currentImage:self.count];
+                [self currentImageLightUpIndicatorLight:self.count];
                 //bring up/swap full Description view for small Info view
                 [self lastImageBringUpDesciptionView];
 
@@ -437,13 +416,13 @@ MFMailComposeViewControllerDelegate>
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"first image, count: %zd", self.count);
                 //indicator lights
-                [self currentImage:self.count];
+                [self currentImageLightUpIndicatorLight:self.count];
                 self.fullDescView.hidden = YES;
 
             } else if(self.count > 0){
 
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-                [self currentImage:self.count];
+                [self currentImageLightUpIndicatorLight:self.count];
                 NSLog(@"count: %zd", self.count);
                 self.fullDescView.hidden = YES;
 
@@ -529,7 +508,7 @@ MFMailComposeViewControllerDelegate>
             //[PFCloud callfun]
 
         } else {
-
+            UserData *user = [UserData new];
             //view elements, shows next user
             self.matchedUsersCount++;
             [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
@@ -544,16 +523,16 @@ MFMailComposeViewControllerDelegate>
             [matchWithoutConfirm addObject:currentMatchUser];
 
             //for logging purposes
-            NSString *fullName = [self.currentUser objectForKey:@"fullName"];
+            //NSString *fullName = [self.currentUser objectForKey:@"fullName"];
             NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-            NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
+            NSLog(@"It's Match Between: %@ and %@", user.fullName, fullNameOfCurrentMatch);
 
             [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                 
                 if (error) {
                     NSLog(@"error saving relation: %@", error);
                 } else{
-                    NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
+                    NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", user.fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
                 }
             }];
         }
@@ -649,7 +628,8 @@ MFMailComposeViewControllerDelegate>
     self.imageArrayCount = [self.imageArray count];
 }
 
--(void)checkAndGetUserData:(NSArray *)pfObjects user:(NSUInteger)userNumber{
+-(void)checkAndGetUserData:(NSArray *)pfObjects user:(NSUInteger)userNumber
+{
 
     PFUser *userForData = [pfObjects objectAtIndex:userNumber];
     NSString *firstName = [userForData objectForKey:@"firstName"];
@@ -670,6 +650,56 @@ MFMailComposeViewControllerDelegate>
 
     //NSLog(@"%@\n%@\n%@", firstName, school, work);
 
+}
+
+-(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber {
+    self.matchView.hidden = NO;
+
+    PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber - 1];
+    NSString *image = [userForImageAndName objectForKey:@"image1"];
+    NSString *firstName = [userForImageAndName objectForKey:@"firstName"];
+
+    self.matchedImage.image = [UIImage imageWithData:[self imageData:image]];
+    self.matchedLabel.text = firstName;
+    self.userImageMatched.image = [UIImage imageWithData:[self imageData:self.userImageForMatching]];
+
+}
+
+-(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage    {
+    self.matchView.backgroundColor = [UIColor blackColor];
+    self.matchView.alpha = 0.80;
+
+    userImage.layer.cornerRadius = userImage.image.size.width / 2.0f;
+    matchedImage.layer.cornerRadius = matchedImage.image.size.width / 2.0f;
+    userImage.clipsToBounds = YES;
+    matchedImage.clipsToBounds = YES;
+    [self.matchView addSubview:userImage];
+    [self.matchView addSubview:matchedImage];
+
+}
+
+- (NSInteger)ageFromBirthday:(NSDate *)birthdate {
+
+    NSDate *today = [NSDate date];
+    NSDateComponents *ageComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:birthdate toDate:today options:0];
+    NSLog(@"from VC: age: %zd month: %zd, day: %zd", ageComponents.year, ageComponents.month, ageComponents.day);
+    return ageComponents.year;
+
+}
+
+-(NSDate *)stringToNSDate:(NSString *)dateAsAString{
+
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    [formatter setDateFormat:@"MM/dd/yyyy"];
+
+    return [formatter dateFromString:dateAsAString];
+}
+
+
+-(NSData *)imageData:(NSString *)imageString{
+    NSURL *url = [NSURL URLWithString:imageString];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    return data;
 }
 
 -(void)loadIndicatorLights:(NSArray *)userImageArray andUser:(NSInteger)user{
@@ -712,57 +742,10 @@ MFMailComposeViewControllerDelegate>
     self.activityView.hidden = YES;
 }
 
--(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber {
-    self.matchView.hidden = NO;
-
-    PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber - 1];
-    NSString *image = [userForImageAndName objectForKey:@"image1"];
-    NSString *firstName = [userForImageAndName objectForKey:@"firstName"];
-
-    self.matchedImage.image = [UIImage imageWithData:[self imageData:image]];
-    self.matchedLabel.text = firstName;
-    self.userImageMatched.image = [UIImage imageWithData:[self imageData:self.userImageForMatching]];
-
-}
-
--(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage    {
-    self.matchView.backgroundColor = [UIColor blackColor];
-    self.matchView.alpha = 0.80;
-
-    userImage.layer.cornerRadius = userImage.image.size.width / 2.0f;
-    matchedImage.layer.cornerRadius = matchedImage.image.size.width / 2.0f;
-    userImage.clipsToBounds = YES;
-    matchedImage.clipsToBounds = YES;
-    [self.matchView addSubview:userImage];
-    [self.matchView addSubview:matchedImage];
-
-}
-
-- (NSInteger)ageFromBirthday:(NSDate *)birthdate {
-
-    NSDate *today = [NSDate date];
-    NSDateComponents *ageComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:birthdate toDate:today options:0];
-
-    return ageComponents.year;
-}
-
--(NSDate *)stringToNSDate:(NSString *)dateAsAString{
-
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"MM/dd/yyyy"];
-
-    return [formatter dateFromString:dateAsAString];
-}
-
-
--(NSData *)imageData:(NSString *)imageString{
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
-}
-
--(void)currentImage:(long)matchedCount{
-    switch (matchedCount) {
+-(void)currentImageLightUpIndicatorLight:(long)matchedCount
+{
+    switch (matchedCount)
+    {
         case 0:
             self.image1Indicator.backgroundColor = [UserData rubyRed];
             self.image2Indicator.backgroundColor = nil;
@@ -817,22 +800,23 @@ MFMailComposeViewControllerDelegate>
     }
 }
 
--(void)lastImageBringUpDesciptionView{
-
+-(void)lastImageBringUpDesciptionView
+{
+    UserData *userB = [UserData new];
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
-    self.fullAboutMe.text = @"dude, I'm cool";
-    self.fullDescNameAndAge.text = self.nameAndAgeGlobal;
-    self.fullMilesAway.text = @"2.5 miles away";
-
+    self.fullAboutMe.text = userB.aboutMe;
+    NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", userB.firstName, [userB ageFromBirthday:userB.birthday]];
+    self.fullDescNameAndAge.text = nameAndAge;
+    self.fullMilesAway.text = userB.milesAway;
 }
-//round corners, change button colors
--(void)setUpButtons:(UIButton *)button{
+
+-(void)setUpButtons:(UIButton *)button
+{
     button.layer.cornerRadius = 15.0 / 2.0f;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
     [button.layer setBorderColor:[UserData uclaBlue].CGColor];
-
 }
 
 -(void) sendEmailForApproval{
@@ -874,59 +858,6 @@ MFMailComposeViewControllerDelegate>
     // Close the Mail Interface
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
-
-
-
-    //old code
-//did update location delegate method
-//    double latitude = self.locationManager.location.coordinate.latitude;
-//    double longitude = self.locationManager.location.coordinate.longitude;
-//    NSLog(@"view did load lat: %f & long: %f", latitude, longitude);
-//
-//    //save lat and long in a PFGeoCode Object and save to User in Parse
-//    self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
-//    [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
-//    [self.currentUser saveInBackground];
-//    NSLog(@"PFGeoCode: %@", self.pfGeoCoded);
-//
-//    //get city and state of local location object
-//    CLGeocoder *geoCoder = [CLGeocoder new];
-//    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-//        if (error) {
-//            NSLog(@"error: %@", error);
-//        } else {
-//            CLPlacemark *placemark = [placemarks firstObject];
-//            NSLog(@"placemark city: %@", placemark.locality);
-//        }
-//    }];
-//
-
-
-//add animation
-//[UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
-//    if (self.count == self.imageArray.count - 1 ) {
-//
-//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-//        NSLog(@"last image");
-//        [self currentImage:self.count];
-//
-//        [self lastImageBringUpDesciptionView];
-//
-//    } else{
-//
-//        self.count++;
-//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-//        [self currentImage:self.count];
-//        self.fullDescView.hidden = YES;
-//    }
-//}
-
-//this works for effects in the nav bar title
-//NSShadow *shadow = [[NSShadow alloc] init];
-//shadow.shadowColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
-//shadow.shadowOffset = CGSizeMake(0, 1);
-//[[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:[UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0], NSForegroundColorAttributeName, shadow, NSShadowAttributeName,
-//                                                       [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:21.0], NSFontAttributeName, nil]];
 @end
 
 

@@ -107,6 +107,9 @@ UIPopoverPresentationControllerDelegate>
     self.collectionView.backgroundColor = [UIColor whiteColor];
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
+//    flowlayouts.minimumInteritemSpacing = 2;
+
+
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
     flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
     [self.collectionView setCollectionViewLayout:flowlayouts];

@@ -67,11 +67,6 @@
     [self loadFacebookAlbumList];
 }
 
--(void)viewDidAppear:(BOOL)animated {
-
-
-}
-
 
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

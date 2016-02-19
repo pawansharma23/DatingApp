@@ -7,42 +7,40 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import <Parse/PFConstants.h>
+#import <Parse/PFUser.h>
 
 #define APP_TITLE @"DoteOn"
 
 @interface UserData : NSObject
-//from FB public profile data
+//Parse User Data
+@property (strong, nonatomic) NSString *objectID;
+@property (strong, nonatomic) NSString *facebookID;
 @property (strong, nonatomic) NSString *fullName;
 @property (strong, nonatomic) NSString *firstName;
-@property (strong, nonatomic) NSString *lastName;
+@property (strong, nonatomic) NSString *birthday;
+@property (strong, nonatomic) NSString *age;
 @property (strong, nonatomic) NSString *gender;
-@property (strong, nonatomic) NSString *locale;
-@property (strong, nonatomic) NSString *timezone;
-@property (strong, nonatomic) NSString *verified;
-//Ind. FB Categories
-@property (strong, nonatomic) NSString *email;
-@property (strong, nonatomic) NSString *likes;
-@property (strong, nonatomic) NSString *birthdayString;
-@property (strong, nonatomic) NSString *hometown;
-@property (strong, nonatomic) NSString *educationHistory;
-@property (strong, nonatomic) NSString *location;
-//facebook user pictures
-@property (strong, nonatomic) NSString *photoID;
-@property (strong, nonatomic) NSURL *photoURL;
-@property (strong, nonatomic) NSData *photosData;
-@property (strong, nonatomic) NSString *albumId;
-@property (strong, nonatomic) NSString *realAlbumId;
-@property (strong, nonatomic) NSString *imageCount;
-
+@property (strong, nonatomic) NSString *sexPref;
+@property (strong, nonatomic) NSString *currentLocation;
+@property (strong, nonatomic) NSString *milesAway;
+@property int milesAwayInt;
+@property (strong, nonatomic) NSString *minAge;
+@property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *image1;
 @property (strong, nonatomic) NSString *image2;
 @property (strong, nonatomic) NSString *image3;
-
-@property (strong, nonatomic) NSString *nextPageURL;
-
-@property (strong, nonatomic) NSString *aboutMe;//user description
+@property (strong, nonatomic) NSString *image4;
+@property (strong, nonatomic) NSString *image5;
+@property (strong, nonatomic) NSString *image6;
+@property (strong, nonatomic) NSString *education;
+@property (strong, nonatomic) NSString *facebookLocation;
+@property (strong, nonatomic) NSString *facebookHometown;
+@property (strong, nonatomic) NSString *work;
+@property (strong, nonatomic) NSString *confidantEmail;
+@property (strong, nonatomic) NSString *aboutMe;
 @property (strong, nonatomic) NSString *username;
+
 
 +(UIColor *)facebookBlue;
 +(UIColor *)rubyRed;
@@ -52,9 +50,8 @@
 -(void)setUpButtons:(UIButton *)button;
 -(void)changeButtonState:(UIButton *)button;
 -(void)changeOtherButton:(UIButton *)button;
-
--(void)loadFacebookThumbnails:(UIButton *)nextButton arrayForPictures:(NSMutableArray *)picArray andCollectionView:(UICollectionView *)collection;
-
+-(NSString *)ageFromBirthday:(NSString *)birthday;
+-(void)loadUserDataFromParse:(PFUser *)user;
 @end
 
 
