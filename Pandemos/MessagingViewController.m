@@ -10,7 +10,7 @@
 #import "MessagingCell.h"
 #import "MessageDetailViewCon.h"
 #import <Parse/PFUser.h>
-
+#import "UIColor+Pandemos.h"
 
 @interface MessagingViewController ()<UITableViewDataSource,
 UITableViewDelegate>
@@ -33,7 +33,7 @@ UITableViewDelegate>
 
     self.currentUser = [PFUser currentUser];
 
-    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     self.navigationItem.title = @"Messages";
 
     self.matchesNotYetConfirmed = [NSArray new];

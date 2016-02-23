@@ -9,21 +9,25 @@
 #import "FriendEmailViewController.h"
 #import <Parse/Parse.h>
 #import "UserData.h"
+#import "UIColor+Pandemos.h"
 
-@interface FriendEmailViewController ()<UITextFieldDelegate>
+@interface FriendEmailViewController ()
+<UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *emailTextField;
+
 @property (strong, nonatomic) PFUser *currentUser;
 
 @end
 
 @implementation FriendEmailViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 
     self.navigationItem.title = @"Confidant";
-    self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
+    self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 
     self.emailTextField.delegate = self;
     self.currentUser = [PFUser currentUser];

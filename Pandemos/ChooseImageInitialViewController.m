@@ -10,8 +10,10 @@
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "CVImageCell.h"
 #import "UserData.h"
+#import "UIColor+Pandemos.h"
 
-@interface ChooseImageInitialViewController ()<UICollectionViewDataSource,
+@interface ChooseImageInitialViewController ()
+<UICollectionViewDataSource,
 UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDataSource,
@@ -46,7 +48,7 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
     self.currentUser = [PFUser currentUser];
     self.navigationItem.title = @"Choose Pics";
-    self.navigationController.navigationBar.backgroundColor = [UserData yellowGreen];
+    self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 
     self.automaticallyAdjustsScrollViewInsets = NO;
     NSLog(@"photo ID from Facebook Photo: %@", self.photoID);

@@ -14,6 +14,7 @@
 #import <Parse/PFConstants.h>
 #import "ProfileViewController.h"
 #import "UserData.h"
+#import "UIColor+Pandemos.h"
 
 @interface PFLoginViewController ()
 @property (weak, nonatomic) IBOutlet UIView *footerView;
@@ -28,7 +29,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.footerView.backgroundColor = [UserData facebookBlue];
+    self.footerView.backgroundColor = [UIColor facebookBlue];
 }
 
 

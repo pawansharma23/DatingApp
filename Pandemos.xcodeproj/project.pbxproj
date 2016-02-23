@@ -38,6 +38,8 @@
 		26C1E3D61C3194B10020349A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D51C3194B10020349A /* CoreLocation.framework */; };
 		26C1E3D81C31AB590020349A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D71C31AB590020349A /* MobileCoreServices.framework */; };
 		26C6B3711C5A88FE00F9EB72 /* SuggestionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */; };
+		26CC6A371C7CF31F000F3BAC /* UIColor+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */; };
+		26CC6A3A1C7CF3E1000F3BAC /* PotentialMatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CC6A391C7CF3E1000F3BAC /* PotentialMatch.m */; };
 		26DBD03E1C4747B700944300 /* MessagingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD03D1C4747B700944300 /* MessagingCell.m */; };
 		26DBD0411C4748F700944300 /* MessageDetailViewCon.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD0401C4748F700944300 /* MessageDetailViewCon.m */; };
 		26DBD0441C47FDDC00944300 /* MessageDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD0431C47FDDC00944300 /* MessageDetailCell.m */; };
@@ -127,6 +129,10 @@
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
 		26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuggestionsViewController.m; sourceTree = "<group>"; };
+		26CC6A351C7CF31F000F3BAC /* UIColor+Pandemos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Pandemos.h"; sourceTree = "<group>"; };
+		26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Pandemos.m"; sourceTree = "<group>"; };
+		26CC6A381C7CF3E1000F3BAC /* PotentialMatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PotentialMatch.h; sourceTree = "<group>"; };
+		26CC6A391C7CF3E1000F3BAC /* PotentialMatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PotentialMatch.m; sourceTree = "<group>"; };
 		26DBD03C1C4747B700944300 /* MessagingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagingCell.h; sourceTree = "<group>"; };
 		26DBD03D1C4747B700944300 /* MessagingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagingCell.m; sourceTree = "<group>"; };
 		26DBD03F1C4748F700944300 /* MessageDetailViewCon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDetailViewCon.h; sourceTree = "<group>"; };
@@ -210,6 +216,7 @@
 				268BA0951C1DB53F0054414E /* Assets.xcassets */,
 				268BA0971C1DB53F0054414E /* LaunchScreen.storyboard */,
 				268BA09A1C1DB53F0054414E /* Info.plist */,
+				26CC6A341C7CF2DB000F3BAC /* Helpers */,
 				268BA0891C1DB53F0054414E /* Supporting Files */,
 			);
 			path = Pandemos;
@@ -256,6 +263,8 @@
 			children = (
 				268BA10C1C25AFE10054414E /* UserData.h */,
 				268BA10D1C25AFE10054414E /* UserData.m */,
+				26CC6A381C7CF3E1000F3BAC /* PotentialMatch.h */,
+				26CC6A391C7CF3E1000F3BAC /* PotentialMatch.m */,
 				26EC33031C76AFF8009E821D /* FacebookData.h */,
 				26EC33041C76AFF8009E821D /* FacebookData.m */,
 				26F22BEF1C6FADC200D86343 /* CollectionView Cells */,
@@ -274,6 +283,15 @@
 				26F22BEC1C6FAD7000D86343 /* FacebookLogin */,
 			);
 			name = "Initial Setup VCs";
+			sourceTree = "<group>";
+		};
+		26CC6A341C7CF2DB000F3BAC /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				26CC6A351C7CF31F000F3BAC /* UIColor+Pandemos.h */,
+				26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 		26F22BEB1C6FAD2800D86343 /* MainFilters */ = {
@@ -616,6 +634,7 @@
 				268BA0C51C21BDF10054414E /* PFLoginViewController.m in Sources */,
 				26DBD03E1C4747B700944300 /* MessagingCell.m in Sources */,
 				266451591C5D78CB00D98136 /* AlbumCustomCell.m in Sources */,
+				26CC6A371C7CF31F000F3BAC /* UIColor+Pandemos.m in Sources */,
 				260AE88A1C640BA80075A6B1 /* AddImageToProfileVC.m in Sources */,
 				268BA0911C1DB53F0054414E /* ViewController.m in Sources */,
 				268BA10E1C25AFE10054414E /* UserData.m in Sources */,
@@ -631,6 +650,7 @@
 				266451561C5D424300D98136 /* SwapImagesCV.m in Sources */,
 				266F23EE1C60498300A34C0B /* PreviewUserProfileVC.m in Sources */,
 				266F23E81C5DA75A00A34C0B /* FacebookDetailViewController.m in Sources */,
+				26CC6A3A1C7CF3E1000F3BAC /* PotentialMatch.m in Sources */,
 				268BA1121C26EFA70054414E /* InitialWalkThroughViewController.m in Sources */,
 				26C6B3711C5A88FE00F9EB72 /* SuggestionsViewController.m in Sources */,
 				268BA1071C25A86C0054414E /* ProfileViewController.m in Sources */,

@@ -42,11 +42,6 @@
 @property (strong, nonatomic) NSString *username;
 
 
-+(UIColor *)facebookBlue;
-+(UIColor *)rubyRed;
-+(UIColor *)uclaBlue;
-+(UIColor *)yellowGreen;
-
 -(void)setUpButtons:(UIButton *)button;
 -(void)changeButtonState:(UIButton *)button;
 -(void)changeOtherButton:(UIButton *)button;

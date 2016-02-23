@@ -10,7 +10,7 @@
 #import "UserData.h"
 @interface AlbumDetailCollectionVC : UICollectionViewController
 
-@property (strong, nonatomic) NSString *albumIdInAlbumDetail;
+@property (strong, nonatomic) NSString *albumID;
 @property (strong, nonatomic) NSString *albumName;
 
 

@@ -8,17 +8,12 @@
 
 #import "UserData.h"
 #import <Foundation/Foundation.h>
-#import <Bolts/BFTask.h>
-#import <ParseFacebookUtilsV4.h>
 #import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
 #import <Parse/Parse.h>
-#import "AFNetworking.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <LXReorderableCollectionViewFlowLayout.h>
-#import "ChooseImageInitialViewController.h"
-#import "SuggestionsViewController.h"
+#import "UIColor+Pandemos.h"
 
 #define FONT HELVETICA NEUE
 NSString * const kParseObjectId                    = @"objectId";
@@ -49,20 +44,6 @@ NSString * const kParseAboutMe                      = @"aboutMe";
 //PFGeoPoint * const kParseGeoPoint   = @"GeoCode";
 
 @implementation UserData
-//unique colors
-+(UIColor *)rubyRed {
-    return [UIColor colorWithRed:255.0/255.0 green:84.0/255.0 blue:95.0/255.0 alpha:1.0];
-}
-+(UIColor *)uclaBlue    {
-    return [UIColor colorWithRed:50.0/255.0 green:132.0/255.0 blue:191.0/255.0 alpha:1.0];
-}
-+(UIColor *)yellowGreen {
-    return [UIColor colorWithRed:242.0/255.0 green:255.0/255.0 blue:118.0/255.0 alpha:1.0];
-}
-+(UIColor *)facebookBlue{
-    return [UIColor colorWithRed:59.0/255.0 green:89.0/255.0 blue:152.0/255.0 alpha:1.0];
-}
-
 
 -(void)setUpButtons:(UIButton *)button
 {
@@ -77,7 +58,7 @@ NSString * const kParseAboutMe                      = @"aboutMe";
 {
     [button setHighlighted:YES];
     button.backgroundColor = [UIColor blackColor];
-    [button setTitleColor:[UserData yellowGreen] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor yellowGreen] forState:UIControlStateNormal];
 }
 
 -(void)changeOtherButton:(UIButton *)button

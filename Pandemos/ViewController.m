@@ -21,6 +21,8 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessagingViewController.h"
 #import <MessageUI/MessageUI.h>
+#import "PotentialMatch.h"
+#import "UIColor+Pandemos.h"
 
 @interface ViewController ()<FBSDKGraphRequestConnectionDelegate,
 UIGestureRecognizerDelegate,
@@ -89,13 +91,10 @@ MFMailComposeViewControllerDelegate>
 
     self.currentUser = [PFUser currentUser];
     UserData *userA = [UserData new];
-    [userA loadParse:self.currentUser];
-
-    //NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-    //NSLog(@"current user VDL: %@", fullName);
+    [userA loadUserDataFromParse:self.currentUser];
 
     self.navigationItem.title = APP_TITLE;
-    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
     self.fullDescView.hidden = YES;
@@ -235,8 +234,8 @@ MFMailComposeViewControllerDelegate>
             NSLog(@"pfquery-- user objects: %zd", [objects count]);
             self.objectsArray = objects;
 
-            [self checkAndGetImages:objects user:0];
-            [self checkAndGetUserData:objects user:0];
+//            [self checkAndGetImages:objects user:0];
+//            [self checkAndGetUserData:objects user:0];
         } else{
             NSLog(@"error: %@", error);
         }
@@ -261,21 +260,22 @@ MFMailComposeViewControllerDelegate>
 
                     if (objectCount == 1) {
 
-                        [self checkAndGetImages:objects user:0];
-                        [self checkAndGetUserData:objects user:0];
+//                        [self checkAndGetImages:objects user:0];
+//                        [self checkAndGetUserData:objects user:0];
                     } else if (objectCount == 2){
-
-                        [self checkAndGetImages:objects user:0];
-                        [self checkAndGetUserData:objects user:0];
+//
+//                        [self checkAndGetImages:objects user:0];
+//                        [self checkAndGetUserData:objects user:0];
 
                         //for looging purposes only
                         PFUser *user1 =  [objects objectAtIndex:0];
                         PFUser *user2 =  [objects objectAtIndex:1];
                         NSLog(@"matches: %@\n%@\n", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
 
-                    } else if (objectCount == 3){
-                        [self checkAndGetImages:objects user:0];
-                        [self checkAndGetUserData:objects user:0];
+                    } else if (objectCount == 3)
+                    {
+//                        [self checkAndGetImages:objects user:0];
+//                        [self checkAndGetUserData:objects user:0];
 
                         //for looging purposes only
                         PFUser *user1 =  [objects objectAtIndex:0];
@@ -283,7 +283,9 @@ MFMailComposeViewControllerDelegate>
                         PFUser *user3 =  [objects objectAtIndex:2];
                         NSLog(@"matches: %@\n%@\n%@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], [user3 objectForKey:@"fullName"]);
                     }
-                } else{
+                }
+                else
+                {
                     NSLog(@"error: %@", error);
                 }
             }];
@@ -293,21 +295,25 @@ MFMailComposeViewControllerDelegate>
             //Preference for Females
             } else{
                 [query whereKey:@"gender" hasPrefix:@"f"];
-                [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-                    if (!error) {
+                [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error)
+                {
+                    if (!error)
+                    {
 
                         long objectCount = [objects count];
                         NSLog(@"female pref query: %lu results", objectCount);
 
                         //NSLog(@"objects: %@", objects);
                         self.objectsArray = objects;
-                        switch (objectCount) {
+                        switch (objectCount)
+                        {
                             case 0:
                                 NSLog(@"nothing here");
                                 break;
-                            case 1:{
-                                [self checkAndGetImages:objects user:0];
-                                [self checkAndGetUserData:objects user:0];
+                            case 1:
+                            {
+                                //[self checkAndGetImages:objects user:0];
+                                //[self checkAndGetUserData:objects user:0];
                                 //login purpose only
                                 PFUser *user1 =  [objects objectAtIndex:0];
                                 NSLog(@"1 match: %@", [user1 objectForKey:@"fullName"]);
@@ -315,19 +321,34 @@ MFMailComposeViewControllerDelegate>
                                 [self loadIndicatorLights:objects andUser:0];
                             }
                                 break;
-                            case 2:{
+                            case 2:
+                            {
+                                PotentialMatch *potMatch = [PotentialMatch new];
+                                [potMatch loadPotentialMatchImages:objects forUser:0];
+                                [potMatch loadPotentialMatchData:objects forUser:0];
 
-                                [self checkAndGetImages:objects user:0];
-                                [self checkAndGetUserData:objects user:0];
+                                NSString *imageStr = [potMatch.images objectAtIndex:0];
+                                NSLog(@"image: %@", imageStr);
+                                //view for first match
+                                self.userImage.image = [UIImage imageWithData:[self imageData:imageStr]];
+                                self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", potMatch.firstName, (long)[potMatch ageFromBirthday:potMatch.birthday]];
+                                NSLog(@"pot match bday: %@", potMatch.birthday);
+                                self.educationLabel.text = potMatch.education;
+                                self.jobLabel.text = potMatch.work;
+
+
+                                //[self checkAndGetImages:objects user:0];
+                                //[self checkAndGetUserData:objects user:0];
                                 //loggin
-                                PFUser *user1 =  [objects objectAtIndex:0];
-                                PFUser *user2 =  [objects objectAtIndex:1];
+                                //PFUser *user1 =  [objects objectAtIndex:0];
+                                //PFUser *user2 =  [objects objectAtIndex:1];
                                 //get image count for indicator lights
                                 [self loadIndicatorLights:objects andUser:0];
                                 [self loadIndicatorLights:objects andUser:1];
-                                NSLog(@"2 matches: %@ & %@ for %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], userA.fullName);
+                                //NSLog(@"2 matches: %@ & %@ for %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], userA.fullName);
 
-                            }break;
+                            }
+                                break;
                             default:
                                 NSLog(@"more than 2 matches");
                                 break;
@@ -511,8 +532,8 @@ MFMailComposeViewControllerDelegate>
             UserData *user = [UserData new];
             //view elements, shows next user
             self.matchedUsersCount++;
-            [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-            [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+//            [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+//            [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
 
             //bring up Matched View
             [self matchedView:self.objectsArray user:self.matchedUsersCount];
@@ -545,8 +566,8 @@ MFMailComposeViewControllerDelegate>
 
     NSLog(@"swipe Left, no match");
     self.matchedUsersCount++;
-    [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-    [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
+//    [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
+//    [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
 
     //save rejected relationship on Parse
     PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
@@ -601,58 +622,10 @@ MFMailComposeViewControllerDelegate>
 }
 
 #pragma mark -- helpers
--(void)checkAndGetImages:(NSArray *)pfObjects user:(NSUInteger) userNumber    {
 
-    PFUser *userForImages =  [pfObjects objectAtIndex:userNumber];
-    NSString *image1 = [userForImages objectForKey:@"image1"];
-    NSString *image2 = [userForImages objectForKey:@"image2"];
-    NSString *image3 = [userForImages objectForKey:@"image3"];
-    NSString *image4 = [userForImages objectForKey:@"image4"];
-    NSString *image5 = [userForImages objectForKey:@"image5"];
-    NSString *image6 = [userForImages objectForKey:@"image6"];
 
-    if (image1) {
-        [self.imageArray addObject:image1];
-        self.userImage.image = [UIImage imageWithData:[self imageData:image1]];
-    }if (image2) {
-        [self.imageArray addObject:image2];
-    } if (image3) {
-        [self.imageArray addObject:image3];
-    } if (image4) {
-        [self.imageArray addObject:image4];
-    } if (image5) {
-        [self.imageArray addObject:image5];
-    } if (image6) {
-        [self.imageArray addObject:image6];
-    }
-    self.imageArrayCount = [self.imageArray count];
-}
-
--(void)checkAndGetUserData:(NSArray *)pfObjects user:(NSUInteger)userNumber
+-(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber
 {
-
-    PFUser *userForData = [pfObjects objectAtIndex:userNumber];
-    NSString *firstName = [userForData objectForKey:@"firstName"];
-    NSString *work = [userForData objectForKey:@"work"];
-    NSString *school = [userForData objectForKey:@"scool"];
-    NSString *bday = [userForData objectForKey:@"birthday"];
-    PFRelation *rela = [userForData objectForKey:@"matchNotConfirmed"];
-    NSLog(@"relationship data: %@", rela);
-//
-    NSLog(@"%@",[rela query]);
-//    PFQuery *relaQuery = [rela query];
-
-
-    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", firstName, (long)[self ageFromBirthday:[self stringToNSDate:bday]]];
-    //self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %lu", firstName, [self ageFromBirthday:[self stringToNSDate:bday]]];
-    self.educationLabel.text = school;
-    self.jobLabel.text = work;
-
-    //NSLog(@"%@\n%@\n%@", firstName, school, work);
-
-}
-
--(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber {
     self.matchView.hidden = NO;
 
     PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber - 1];
@@ -665,7 +638,8 @@ MFMailComposeViewControllerDelegate>
 
 }
 
--(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage    {
+-(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage
+{
     self.matchView.backgroundColor = [UIColor blackColor];
     self.matchView.alpha = 0.80;
 
@@ -678,17 +652,9 @@ MFMailComposeViewControllerDelegate>
 
 }
 
-- (NSInteger)ageFromBirthday:(NSDate *)birthdate {
 
-    NSDate *today = [NSDate date];
-    NSDateComponents *ageComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:birthdate toDate:today options:0];
-    NSLog(@"from VC: age: %zd month: %zd, day: %zd", ageComponents.year, ageComponents.month, ageComponents.day);
-    return ageComponents.year;
-
-}
-
--(NSDate *)stringToNSDate:(NSString *)dateAsAString{
-
+-(NSDate *)stringToNSDate:(NSString *)dateAsAString
+{
     NSDateFormatter *formatter = [NSDateFormatter new];
     [formatter setDateFormat:@"MM/dd/yyyy"];
 
@@ -696,9 +662,11 @@ MFMailComposeViewControllerDelegate>
 }
 
 
--(NSData *)imageData:(NSString *)imageString{
+-(NSData *)imageData:(NSString *)imageString
+{
     NSURL *url = [NSURL URLWithString:imageString];
     NSData *data = [NSData dataWithContentsOfURL:url];
+
     return data;
 }
 
@@ -747,7 +715,7 @@ MFMailComposeViewControllerDelegate>
     switch (matchedCount)
     {
         case 0:
-            self.image1Indicator.backgroundColor = [UserData rubyRed];
+            self.image1Indicator.backgroundColor = [UIColor rubyRed];
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
@@ -756,7 +724,7 @@ MFMailComposeViewControllerDelegate>
             break;
         case 1:
             self.image1Indicator.backgroundColor = nil;
-            self.image2Indicator.backgroundColor = [UserData rubyRed];
+            self.image2Indicator.backgroundColor = [UIColor rubyRed];
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
             self.image5Indicator.backgroundColor = nil;
@@ -765,7 +733,7 @@ MFMailComposeViewControllerDelegate>
         case 2:
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
-            self.image3Indicator.backgroundColor = [UserData rubyRed];
+            self.image3Indicator.backgroundColor = [UIColor rubyRed];
             self.image4Indicator.backgroundColor = nil;
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
@@ -774,7 +742,7 @@ MFMailComposeViewControllerDelegate>
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
-            self.image4Indicator.backgroundColor = [UserData rubyRed];
+            self.image4Indicator.backgroundColor = [UIColor rubyRed];
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
             break;
@@ -783,7 +751,7 @@ MFMailComposeViewControllerDelegate>
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
-            self.image5Indicator.backgroundColor = [UserData rubyRed];
+            self.image5Indicator.backgroundColor = [UIColor rubyRed];
             self.image6Indicator.backgroundColor = nil;
             break;
         case 5:
@@ -792,7 +760,7 @@ MFMailComposeViewControllerDelegate>
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
             self.image5Indicator.backgroundColor = nil;
-            self.image6Indicator.backgroundColor = [UserData rubyRed];
+            self.image6Indicator.backgroundColor = [UIColor rubyRed];
             break;
         default:
             NSLog(@"image beyond bounds");
@@ -816,8 +784,9 @@ MFMailComposeViewControllerDelegate>
     button.layer.cornerRadius = 15.0 / 2.0f;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UserData uclaBlue].CGColor];
+    [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
 }
+
 
 -(void) sendEmailForApproval{
 

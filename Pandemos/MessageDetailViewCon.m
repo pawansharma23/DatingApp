@@ -13,8 +13,7 @@
 #import <Parse/PFUser.h>
 #import <Parse/Parse.h>
 #import "UserData.h"
-//#import "PFCollectionViewCell.h"
-//#import "PFQueryCollectionViewController.h"
+#import "UIColor+Pandemos.h"
 
 
 #define TABBAR_HEIGHT 49.0f
@@ -50,7 +49,7 @@ UITableViewDelegate>
     NSString *repName = [self.recipient objectForKey:@"firstName"];
 
     self.navigationItem.title = repName;
-    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     
     PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
     [query whereKey:@"recipientId" equalTo:self.currentUser];
@@ -72,7 +71,7 @@ UITableViewDelegate>
 
 
     self.navigationItem.title = @"Chat";
-    self.navigationController.navigationBar.backgroundColor = [UserData rubyRed];
+    self.navigationController.navigationBar.backgroundColor = [UIColor rubyRed];
     
     _textField.delegate =self;
     _textField.clearButtonMode = UITextFieldViewModeWhileEditing;

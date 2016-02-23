@@ -21,6 +21,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessagingViewController.h"
 #import <MessageUI/MessageUI.h>
+#import "UIColor+Pandemos.h"
 
 @interface PreviewUserProfileVC ()<UIGestureRecognizerDelegate>
 
@@ -66,7 +67,7 @@
     self.currentUser = [PFUser currentUser];
 
     self.navigationItem.title = @"Your Profile";
-    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
 
     self.imageArray = [NSMutableArray new];
     //load user Images
@@ -296,7 +297,7 @@
 -(void)currentImage:(long)count{
     switch (count) {
         case 0:
-            self.image1Indicator.backgroundColor = [UserData rubyRed];
+            self.image1Indicator.backgroundColor = [UIColor rubyRed];
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
@@ -305,7 +306,7 @@
             break;
         case 1:
             self.image1Indicator.backgroundColor = nil;
-            self.image2Indicator.backgroundColor = [UserData rubyRed];
+            self.image2Indicator.backgroundColor = [UIColor rubyRed];
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
             self.image5Indicator.backgroundColor = nil;
@@ -314,7 +315,7 @@
         case 2:
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
-            self.image3Indicator.backgroundColor = [UserData rubyRed];
+            self.image3Indicator.backgroundColor = [UIColor rubyRed];
             self.image4Indicator.backgroundColor = nil;
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
@@ -323,7 +324,7 @@
             self.image1Indicator.backgroundColor = nil;
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
-            self.image4Indicator.backgroundColor = [UserData rubyRed];
+            self.image4Indicator.backgroundColor = [UIColor rubyRed];
             self.image5Indicator.backgroundColor = nil;
             self.image6Indicator.backgroundColor = nil;
             break;
@@ -332,7 +333,7 @@
             self.image2Indicator.backgroundColor = nil;
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
-            self.image5Indicator.backgroundColor = [UserData rubyRed];
+            self.image5Indicator.backgroundColor = [UIColor rubyRed];
             self.image6Indicator.backgroundColor = nil;
             break;
         case 5:
@@ -341,7 +342,7 @@
             self.image3Indicator.backgroundColor = nil;
             self.image4Indicator.backgroundColor = nil;
             self.image5Indicator.backgroundColor = nil;
-            self.image6Indicator.backgroundColor = [UserData rubyRed];
+            self.image6Indicator.backgroundColor = [UIColor rubyRed];
             break;
         default:
             NSLog(@"image beyond bounds");
@@ -364,7 +365,7 @@
     button.layer.cornerRadius = 15.0 / 2.0f;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UserData uclaBlue].CGColor];
+    [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
     
 }
 

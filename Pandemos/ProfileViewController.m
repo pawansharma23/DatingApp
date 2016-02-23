@@ -23,8 +23,10 @@
 #import "CVSettingCell.h"
 #import "PreferencesViewController.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
+#import "UIColor+Pandemos.h"
 
-@interface ProfileViewController ()<MFMailComposeViewControllerDelegate,
+@interface ProfileViewController ()
+<MFMailComposeViewControllerDelegate,
 UICollectionViewDataSource,
 UICollectionViewDelegate,
 UITextViewDelegate,
@@ -76,7 +78,7 @@ UIPopoverPresentationControllerDelegate>
     self.currentUser = [PFUser currentUser];
     //NSLog(@"profile VC user: %@", self.currentUser);
     self.navigationItem.title = @"Settings";
-    self.navigationController.navigationBar.barTintColor = [UserData yellowGreen];
+    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     //retrieve and pass segue properties
     self.locationLabel.text = self.cityAndState;
     //loading view
@@ -107,8 +109,6 @@ UIPopoverPresentationControllerDelegate>
     self.collectionView.backgroundColor = [UIColor whiteColor];
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
-//    flowlayouts.minimumInteritemSpacing = 2;
-
 
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
     flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
@@ -128,9 +128,6 @@ UIPopoverPresentationControllerDelegate>
     self.textViewAboutMe.layer.cornerRadius = 10;
     [self.textViewAboutMe.layer setBorderWidth:1.0];
     [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
-
-    //textView
-
 
     //call Parse for User Data
     PFQuery *query = [PFUser query];
