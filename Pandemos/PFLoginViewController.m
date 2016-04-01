@@ -13,7 +13,7 @@
 #import <ParseFacebookUtilsV4.h>
 #import <Parse/PFConstants.h>
 #import "ProfileViewController.h"
-#import "UserData.h"
+#import "User.h"
 #import "UIColor+Pandemos.h"
 
 @interface PFLoginViewController ()
@@ -35,9 +35,8 @@
 
 
 
-- (IBAction)loginWFacebook:(UIButton *)sender {
-
-
+- (IBAction)loginWFacebook:(UIButton *)sender
+{
     // Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"public_profile", @"user_about_me", @"user_relationships", @"user_birthday", @"user_location", @"user_photos", @"user_work_history", @"user_hometown", @"user_likes", @"pages_show_list", @"user_education_history"];
 

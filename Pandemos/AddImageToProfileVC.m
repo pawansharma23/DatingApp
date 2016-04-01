@@ -8,23 +8,17 @@
 
 #import "AddImageToProfileVC.h"
 #import <Foundation/Foundation.h>
-#import <Bolts/BFTask.h>
-#import <FBSDKCoreKit/FBSDKAccessToken.h>
-#import <FBSDKLoginKit/FBSDKLoginManager.h>
-#import <ParseFacebookUtilsV4.h>
-#import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
-#import <Parse/Parse.h>
-#import <FBSDKGraphRequest.h>
-#import <FBSDKGraphRequestConnection.h>
-#import "UserData.h"
+#import "User.h"
+#import "FacebookManager.h"
+#import "Facebook.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <LXReorderableCollectionViewFlowLayout.h>
+#import "UIButton+Additions.h"
 
 @interface AddImageToProfileVC ()
+
 @property (weak, nonatomic) IBOutlet UIImageView *mainImage;
 @property (weak, nonatomic) IBOutlet UIImageView *smallImage;
-
 @property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (weak, nonatomic) IBOutlet UIView *loadingView;
@@ -32,7 +26,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *addMoreImages;
 @property (weak, nonatomic) IBOutlet UIButton *backToProfileButton;
 
-//global images
 @property (strong, nonatomic) NSString *image1;
 @property (strong, nonatomic) NSString *image2;
 @property (strong, nonatomic) NSString *image3;
@@ -48,10 +41,11 @@
 
 @implementation AddImageToProfileVC
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 
-    self.currentUser = [PFUser currentUser];
+    self.currentUser = [User currentUser];
 
     self.loadingView.alpha = .75;
     [self.spinner startAnimating];
@@ -60,44 +54,43 @@
     NSLog(@"image url: %@", self.imageURL);
 
     //buttons
-    UserData * userD = [UserData new];
-    [userD setUpButtons:self.saveImageButton];
-    [userD setUpButtons:self.addMoreImages];
-    [userD setUpButtons:self.backToProfileButton];
+    [UIButton setUpButtons:self.saveImageButton];
+    [UIButton setUpButtons:self.addMoreImages];
+    [UIButton setUpButtons:self.backToProfileButton];
 
     //get "no data" from backend
-    PFQuery *query = [PFUser query];
-
-    //this is quering the user info from the PFUser cached in sim, which is not the usr that is logged in??
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if(!error){
-
-            //userImages
-            self.image1 = [[objects firstObject] objectForKey:@"image1"];
-            self.image2 = [[objects firstObject] objectForKey:@"image2"];
-            self.image3 = [[objects firstObject] objectForKey:@"image3"];
-            self.image4 = [[objects firstObject] objectForKey:@"image4"];
-            self.image5 = [[objects firstObject] objectForKey:@"image5"];
-            self.image6 = [[objects firstObject] objectForKey:@"image6"];
-
-            if (self.image1) {
-                [self.pictures addObject:self.image1];
-            } if (self.image2) {
-                [self.pictures addObject:self.image2];
-            } if (self.image3) {
-                [self.pictures addObject:self.image3];
-            } if (self.image4) {
-                [self.pictures addObject:self.image4];
-            } if (self.image5) {
-                [self.pictures addObject:self.image5];
-            } if (self.image6) {
-                [self.pictures addObject:self.image6];
-            }
-            //NSLog(@"picture array: %@", self.pictures);
-
-           // [self.collectionView reloadData];
-        }
-    }];
+//    PFQuery *query = [PFUser query];
+//
+//    //this is quering the user info from the PFUser cached in sim, which is not the usr that is logged in??
+//    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+//        if(!error){
+//
+//            //userImages
+//            self.image1 = [[objects firstObject] objectForKey:@"image1"];
+//            self.image2 = [[objects firstObject] objectForKey:@"image2"];
+//            self.image3 = [[objects firstObject] objectForKey:@"image3"];
+//            self.image4 = [[objects firstObject] objectForKey:@"image4"];
+//            self.image5 = [[objects firstObject] objectForKey:@"image5"];
+//            self.image6 = [[objects firstObject] objectForKey:@"image6"];
+//
+//            if (self.image1) {
+//                [self.pictures addObject:self.image1];
+//            } if (self.image2) {
+//                [self.pictures addObject:self.image2];
+//            } if (self.image3) {
+//                [self.pictures addObject:self.image3];
+//            } if (self.image4) {
+//                [self.pictures addObject:self.image4];
+//            } if (self.image5) {
+//                [self.pictures addObject:self.image5];
+//            } if (self.image6) {
+//                [self.pictures addObject:self.image6];
+//            }
+//            //NSLog(@"picture array: %@", self.pictures);
+//
+//           // [self.collectionView reloadData];
+//        }
+//    }];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -109,12 +102,12 @@
     self.loadingLabel.hidden = YES;
 }
 
-- (IBAction)onSaveImage:(id)sender {
+- (IBAction)onSaveImage:(id)sender
+{
+    [UIButton changeButtonState:self.saveImageButton];
 
-    UserData *userD = [UserData new];
-    [userD changeButtonState:self.saveImageButton];
-
-    if (!self.image1) {
+    if (!self.image1)
+    {
         NSLog(@"nothing in 1");
         [self.currentUser setObject:self.imageURL forKey:@"image1"];
 
@@ -175,17 +168,16 @@
     }
 }
 
-- (IBAction)onAddMore:(id)sender {
-
-    UserData *userD = [UserData new];
-    [userD changeButtonState:self.addMoreImages];
+- (IBAction)onAddMore:(id)sender
+{
+    [UIButton changeButtonState:self.addMoreImages];
     [self.navigationController popViewControllerAnimated:YES];
 
 }
 
-- (IBAction)onProfile:(UIButton *)sender {
-    UserData *userD = [UserData new];
-    [userD changeButtonState:self.backToProfileButton];
+- (IBAction)onProfile:(UIButton *)sender
+{
+    [UIButton changeButtonState:self.backToProfileButton];
     [self performSegueWithIdentifier:@"BackToProfile" sender:self];
 }
 

@@ -8,15 +8,7 @@
 
 #import "PreviewUserProfileVC.h"
 #import <Foundation/Foundation.h>
-#import <Bolts/BFTask.h>
-#import <FBSDKCoreKit/FBSDKAccessToken.h>
-#import <FBSDKLoginKit/FBSDKLoginManager.h>
-#import <ParseFacebookUtilsV4.h>
-#import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
-#import <FBSDKGraphRequest.h>
-#import <FBSDKGraphRequestConnection.h>
-#import "UserData.h"
+#import "User.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessagingViewController.h"

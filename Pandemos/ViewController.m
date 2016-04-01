@@ -8,27 +8,21 @@
 
 #import "ViewController.h"
 #import <Foundation/Foundation.h>
-#import <Bolts/BFTask.h>
-#import <FBSDKCoreKit/FBSDKAccessToken.h>
-#import <FBSDKLoginKit/FBSDKLoginManager.h>
-#import <ParseFacebookUtilsV4.h>
-#import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
-#import <FBSDKGraphRequest.h>
-#import <FBSDKGraphRequestConnection.h>
-#import "UserData.h"
+#import "User.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessagingViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "PotentialMatch.h"
 #import "UIColor+Pandemos.h"
+#import "UIButton+Additions.h"
 
 @interface ViewController ()<FBSDKGraphRequestConnectionDelegate,
 UIGestureRecognizerDelegate,
 UINavigationControllerDelegate,
 CLLocationManagerDelegate,
 MFMailComposeViewControllerDelegate>
+
 //View elemets
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIImageView *matchedImage;
@@ -90,8 +84,8 @@ MFMailComposeViewControllerDelegate>
     [super viewDidLoad];
 
     self.currentUser = [PFUser currentUser];
-    UserData *userA = [UserData new];
-    [userA loadUserDataFromParse:self.currentUser];
+//    UserData *userA = [UserData new];
+//    [userA loadUserDataFromParse:self.currentUser];
 
     self.navigationItem.title = APP_TITLE;
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
@@ -103,6 +97,7 @@ MFMailComposeViewControllerDelegate>
     self.count = 0;
     self.matchedUsersCount = 0;
     self.imageArray = [NSMutableArray new];
+    //[self currentImageLightUpIndicatorLight:self.count];
 
     //location object.......... works on iPhone, not in sim...........
     self.locationManager = [CLLocationManager new];
@@ -113,38 +108,32 @@ MFMailComposeViewControllerDelegate>
     self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
     CLLocation *currentlocal = [self.locationManager location];
     self.currentLocation = currentlocal;
-    NSLog(@"location: lat: %f & long: %f", self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude);
+    //NSLog(@"location: lat: %f & long: %f", self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude);
     //save lat and long in a PFGeoCode Object and save to User in Parse
     //self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
     //[self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
-    //NSLog(@"saved PFGeoPoint as: %@", self.pfGeoCoded);
 
     //other view elements setup
-    [self setUpButtons:self.image1Indicator];
-    [self setUpButtons:self.image2Indicator];
-    [self setUpButtons:self.image3Indicator];
-    [self setUpButtons:self.image4Indicator];
-    [self setUpButtons:self.image5Indicator];
-    [self setUpButtons:self.image6Indicator];
-
-    [userA setUpButtons:self.keepPlayingButton];
-    [userA setUpButtons:self.messageButton];
-
-    [self currentImageLightUpIndicatorLight:self.count];
+    [UIButton setUpButtons:self.image1Indicator];
+    [UIButton setUpButtons:self.image2Indicator];
+    [UIButton setUpButtons:self.image3Indicator];
+    [UIButton setUpButtons:self.image4Indicator];
+    [UIButton setUpButtons:self.image5Indicator];
+    [UIButton setUpButtons:self.image6Indicator];
+    [UIButton setUpButtons:self.keepPlayingButton];
+    [UIButton setUpButtons:self.messageButton];
 
     self.greenButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
     self.redButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
     self.greenButton.layer.cornerRadius = 20;
     self.redButton.layer.cornerRadius = 20;
-    //main image round edges
     self.userImage.layer.cornerRadius = 8;
     self.userImage.clipsToBounds = YES;
-
     [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
     self.userInfoView.layer.cornerRadius = 10;
 
     //matched View Setup
-    [self matchViewSetUp:self.userImageMatched andMatchImage:self.matchedImage];
+    //[self matchViewSetUp:self.userImageMatched andMatchImage:self.matchedImage];
 
     //swipe gestures-- up
     [self.userImage setUserInteractionEnabled:YES];
@@ -183,13 +172,9 @@ MFMailComposeViewControllerDelegate>
         //[self performSegueWithIdentifier:@"NoUser" sender:nil];
     } else
     {
-        UserData *userA = [UserData new];
-        [userA loadUserDataFromParse:self.currentUser];
-        NSLog(@"current user name: %@", userA.fullName);
-        NSLog(@"age: %@", [userA ageFromBirthday:userA.birthday]);
-
-        //relation
-        //PFRelation *rela = [self.currentUser objectForKey:@"matchNotConfirmed"];
+//        UserData *userA = [UserData new];
+//        [userA loadUserDataFromParse:self.currentUser];
+//        NSLog(@"current user name: %@\nage: %@", userA.fullName, [userA ageFromBirthday:userA.birthday]);
 
         //save age and location objects
         [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -199,7 +184,7 @@ MFMailComposeViewControllerDelegate>
                 NSLog(@"succeeded saving user updated age and geoCode: %s", succeeded ? "true" : "false");
             }
         }];
-
+    }
 
 
 
@@ -227,156 +212,155 @@ MFMailComposeViewControllerDelegate>
         //gets Error code Unsupported query operator on relation field
 
         //Both sexes
-        if ([userA.sexPref containsString:@"male female"]) {
-        //Preference for Both Sexes
-        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if(!error){
-            NSLog(@"pfquery-- user objects: %zd", [objects count]);
-            self.objectsArray = objects;
-
-//            [self checkAndGetImages:objects user:0];
-//            [self checkAndGetUserData:objects user:0];
-        } else{
-            NSLog(@"error: %@", error);
-        }
-  }];
+//        if ([userA.sexPref containsString:@"male female"])
+//        {
+//        //Preference for Both Sexes
+//        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+//        if(!error){
+//            NSLog(@"pfquery-- user objects: %zd", [objects count]);
+//            self.objectsArray = objects;
+//
+////            [self checkAndGetImages:objects user:0];
+////            [self checkAndGetUserData:objects user:0];
+//        } else{
+//            NSLog(@"error: %@", error);
+//        }
+//  }];
 
 
         //Preference for Males
-        } else if ([userA.sexPref isEqualToString:@"male"]){
+    //}
+        //else if ([userA.sexPref isEqualToString:@"male"])
+   // {
             //set up query constraints
-            [query whereKey:@"gender" hasPrefix:@"m"];
+          //  [query whereKey:@"gender" hasPrefix:@"m"];
             //[query whereKey:@"ageMin" greaterThanOrEqualTo:userA.minAge];
             //[query whereKey:@"ageMax" lessThanOrEqualTo:userA.maxAge];
             //NSLog(@"Male Pref Between: %@ and %@", self.minAge, self.maxAge);
             //[query whereKey:@"GeoCode" nearGeoPoint:self.pfGeoCoded withinMiles:self.milesFromUserLocation];
 
             //run query
-            [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-                if (!error) {
-                    long objectCount = [objects count];
-                    NSLog(@"male pref query: %zd results", objectCount);
-                    self.objectsArray = objects;
-
-                    if (objectCount == 1) {
-
-//                        [self checkAndGetImages:objects user:0];
-//                        [self checkAndGetUserData:objects user:0];
-                    } else if (objectCount == 2){
+//            [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+//                if (!error) {
+//                    long objectCount = [objects count];
+//                    NSLog(@"male pref query: %zd results", objectCount);
+//                    self.objectsArray = objects;
 //
-//                        [self checkAndGetImages:objects user:0];
-//                        [self checkAndGetUserData:objects user:0];
-
-                        //for looging purposes only
-                        PFUser *user1 =  [objects objectAtIndex:0];
-                        PFUser *user2 =  [objects objectAtIndex:1];
-                        NSLog(@"matches: %@\n%@\n", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
-
-                    } else if (objectCount == 3)
-                    {
-//                        [self checkAndGetImages:objects user:0];
-//                        [self checkAndGetUserData:objects user:0];
-
-                        //for looging purposes only
-                        PFUser *user1 =  [objects objectAtIndex:0];
-                        PFUser *user2 =  [objects objectAtIndex:1];
-                        PFUser *user3 =  [objects objectAtIndex:2];
-                        NSLog(@"matches: %@\n%@\n%@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], [user3 objectForKey:@"fullName"]);
-                    }
-                }
-                else
-                {
-                    NSLog(@"error: %@", error);
-                }
-            }];
+//                    if (objectCount == 1) {
+//
+////                        [self checkAndGetImages:objects user:0];
+////                        [self checkAndGetUserData:objects user:0];
+//                    } else if (objectCount == 2){
+////
+////                        [self checkAndGetImages:objects user:0];
+////                        [self checkAndGetUserData:objects user:0];
+//
+//                        //for looging purposes only
+//                        PFUser *user1 =  [objects objectAtIndex:0];
+//                        PFUser *user2 =  [objects objectAtIndex:1];
+//                        NSLog(@"matches: %@\n%@\n", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"]);
+//
+//                    } else if (objectCount == 3)
+//                    {
+////                        [self checkAndGetImages:objects user:0];
+////                        [self checkAndGetUserData:objects user:0];
+//
+//                        //for looging purposes only
+//                        PFUser *user1 =  [objects objectAtIndex:0];
+//                        PFUser *user2 =  [objects objectAtIndex:1];
+//                        PFUser *user3 =  [objects objectAtIndex:2];
+//                        NSLog(@"matches: %@\n%@\n%@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], [user3 objectForKey:@"fullName"]);
+//                    }
+//                }
+//                else
+//                {
+//                    NSLog(@"error: %@", error);
+//                }
+//            }];
 
 
 
             //Preference for Females
-            } else{
-                [query whereKey:@"gender" hasPrefix:@"f"];
-                [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error)
-                {
-                    if (!error)
-                    {
-
-                        long objectCount = [objects count];
-                        NSLog(@"female pref query: %lu results", objectCount);
-
-                        //NSLog(@"objects: %@", objects);
-                        self.objectsArray = objects;
-                        switch (objectCount)
-                        {
-                            case 0:
-                                NSLog(@"nothing here");
-                                break;
-                            case 1:
-                            {
-                                //[self checkAndGetImages:objects user:0];
-                                //[self checkAndGetUserData:objects user:0];
-                                //login purpose only
-                                PFUser *user1 =  [objects objectAtIndex:0];
-                                NSLog(@"1 match: %@", [user1 objectForKey:@"fullName"]);
-                                //get image count for indicator lights
-                                [self loadIndicatorLights:objects andUser:0];
-                            }
-                                break;
-                            case 2:
-                            {
-                                PotentialMatch *potMatch = [PotentialMatch new];
-                                [potMatch loadPotentialMatchImages:objects forUser:0];
-                                [potMatch loadPotentialMatchData:objects forUser:0];
-
-                                NSString *imageStr = [potMatch.images objectAtIndex:0];
-                                NSLog(@"image: %@", imageStr);
-                                //view for first match
-                                self.userImage.image = [UIImage imageWithData:[self imageData:imageStr]];
-                                self.nameAndAge.text = [NSString stringWithFormat:@"%@, %lu", potMatch.firstName, (long)[potMatch ageFromBirthday:potMatch.birthday]];
-                                NSLog(@"pot match bday: %@", potMatch.birthday);
-                                self.educationLabel.text = potMatch.education;
-                                self.jobLabel.text = potMatch.work;
-
-
-                                //[self checkAndGetImages:objects user:0];
-                                //[self checkAndGetUserData:objects user:0];
-                                //loggin
-                                //PFUser *user1 =  [objects objectAtIndex:0];
-                                //PFUser *user2 =  [objects objectAtIndex:1];
-                                //get image count for indicator lights
-                                [self loadIndicatorLights:objects andUser:0];
-                                [self loadIndicatorLights:objects andUser:1];
-                                //NSLog(@"2 matches: %@ & %@ for %@", [user1  objectForKey:@"fullName"], [user2 objectForKey:@"fullName"], userA.fullName);
-
-                            }
-                                break;
-                            default:
-                                NSLog(@"more than 2 matches");
-                                break;
-                        }
-                    }
-                }];
-            }
-        }
+//        }
+//    else
+//    {
+////                [query whereKey:@"gender" hasPrefix:@"f"];
+//                [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error)
+//                {
+//                    if (!error)
+//                    {
+//
+//                        long objectCount = [objects count];
+//                        NSLog(@"female pref query: %lu results", objectCount);
+//
+//                        //NSLog(@"objects: %@", objects);
+//                        self.objectsArray = objects;
+//                        switch (objectCount)
+//                        {
+//                            case 0:
+//                                NSLog(@"nothing here");
+//                                break;
+//                            case 1:
+//                            {
+//                                //[self checkAndGetImages:objects user:0];
+//                                //[self checkAndGetUserData:objects user:0];
+//                                //login purpose only
+//                                PFUser *user1 =  [objects objectAtIndex:0];
+//                                NSLog(@"1 match: %@", [user1 objectForKey:@"fullName"]);
+//                                //get image count for indicator lights
+//                                [self loadIndicatorLights:objects andUser:0];
+//                            }
+//                                break;
+//                            case 2:
+//                            {
+//                                PotentialMatch *potMatch = [PotentialMatch new];
+//                                [potMatch loadPotentialMatchImages:objects forUser:0];
+//                                [potMatch loadPotentialMatchData:objects forUser:0];
+//                                NSString *imageStr = [potMatch.images objectAtIndex:0];
+//                                self.imageArray = potMatch.images;
+//                                //set views for first match
+//                                self.userImage.image = [UIImage imageWithData:[self imageData:imageStr]];
+//                                self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", potMatch.firstName, [potMatch ageFromBirthday:potMatch.birthday]];
+//                                self.educationLabel.text = potMatch.education;
+//                                self.jobLabel.text = potMatch.work;
+//                                //indicator lights
+//                                [self loadIndicatorLights:objects andUser:0];
+//
+//                                NSLog(@"two matches, first match: %@ & %@", potMatch.firstName, [UserData currentUser].firstName);
+//                            }
+//                                break;
+//                            default:
+//                                NSLog(@"more than 2 matches");
+//                                break;
+//                        }
+//                    }
+//                }];
+//            }
+//        }
     }
 
-#pragma mark -- CLLocation delegate methods
--(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
+#pragma mark -- CLLOCATION
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
+    {
     CLLocation *currentLocation = [locations firstObject];
-    NSLog(@"did update locations delegate method: %@", currentLocation);
+  //  NSLog(@"did update locations delegate method: %@", currentLocation);
 
     [self.locationManager stopUpdatingLocation];
     //get city and location from a CLPlacemark object
     CLGeocoder *geoCoder = [CLGeocoder new];
     [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-        if (error) {
+        if (error)
+        {
             NSLog(@"error: %@", error);
-        } else {
+        }
+        else
+        {
             CLPlacemark *placemark = [placemarks firstObject];
             NSString *city = placemark.locality;
             NSDictionary *stateDict = placemark.addressDictionary;
             NSString *state = stateDict[@"State"];
             self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
-            NSLog(@"user location: %@", self.currentCityAndState);
+        //    NSLog(@"user location: %@", self.currentCityAndState);
         }
     }];
 
@@ -391,31 +375,31 @@ MFMailComposeViewControllerDelegate>
 
 #pragma mark -- Swipe Gestures
 //SwipeUp
-- (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender {
-
+- (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender
+{
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionUp) {
+    if (direction == UISwipeGestureRecognizerDirectionUp)
+    {
         NSLog(@"swipe up");
-
         //add animation
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
             self.count++;
 
-            if (self.count < self.imageArray.count - 1) {
-                //display image
+            if (self.count < self.imageArray.count - 1)
+            {
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 //indicator lights reflect which image we are on
                 [self currentImageLightUpIndicatorLight:self.count];
 
-            } else if (self.count == self.imageArray.count - 1 ){
-
+            }
+            else if (self.count == self.imageArray.count - 1)
+            {
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"last image");
                 [self currentImageLightUpIndicatorLight:self.count];
-                //bring up/swap full Description view for small Info view
-                [self lastImageBringUpDesciptionView];
 
+                [self lastImageBringUpDesciptionView];
             }
         } completion:^(BOOL finished) {
         }];
@@ -423,25 +407,29 @@ MFMailComposeViewControllerDelegate>
 }
 
 //SwipeDown
-- (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender {
-
+- (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender
+{
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionDown) {
+
+    if (direction == UISwipeGestureRecognizerDirectionDown)
+    {
         NSLog(@"swipe down");
 
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
 
             self.count--;
 
-            if (self.count == 0) {
+            if (self.count == 0)
+            {
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 NSLog(@"first image, count: %zd", self.count);
                 //indicator lights
                 [self currentImageLightUpIndicatorLight:self.count];
                 self.fullDescView.hidden = YES;
 
-            } else if(self.count > 0){
-
+            }
+            else if(self.count > 0)
+            {
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
                 [self currentImageLightUpIndicatorLight:self.count];
                 NSLog(@"count: %zd", self.count);
@@ -456,8 +444,8 @@ MFMailComposeViewControllerDelegate>
 
 
 //Swipe Right or Left
-- (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender {
-    //send approval email
+- (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender
+{
     PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
     NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
 
@@ -493,7 +481,8 @@ MFMailComposeViewControllerDelegate>
     [UIView transitionWithView:self.userImage duration:0.1 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
 
         //Set relational data to accepted throw a notification to user skip to next user
-        if (self.matchedUsersCount == self.objectsArray.count - 1) {
+        if (self.matchedUsersCount == self.objectsArray.count - 1)
+        {
 
             NSLog(@"last match in queue");
             //bring up the new user Data
@@ -529,7 +518,7 @@ MFMailComposeViewControllerDelegate>
             //[PFCloud callfun]
 
         } else {
-            UserData *user = [UserData new];
+            User *user = [User new];
             //view elements, shows next user
             self.matchedUsersCount++;
 //            [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
@@ -670,44 +659,57 @@ MFMailComposeViewControllerDelegate>
     return data;
 }
 
--(void)loadIndicatorLights:(NSArray *)userImageArray andUser:(NSInteger)user{
-
-    PFUser *userForImages =  [userImageArray objectAtIndex:user];
-
-    NSString *image1 = [userForImages objectForKey:@"image1"];
-    NSString *image2 = [userForImages objectForKey:@"image2"];
-    NSString *image3 = [userForImages objectForKey:@"image3"];
-    NSString *image4 = [userForImages objectForKey:@"image4"];
-    NSString *image5 = [userForImages objectForKey:@"image5"];
-    NSString *image6 = [userForImages objectForKey:@"image6"];
-
-    if (image6) {
-        NSLog(@"six images in here hiding no indicator lights");
-    } else if (image5)  {
-        self.image6Indicator.hidden = YES;
-    } else if (image4){
-        self.image6Indicator.hidden = YES;
-        self.image5Indicator.hidden = YES;
-    } else if (image3){
-        self.image6Indicator.hidden = YES;
-        self.image5Indicator.hidden = YES;
-        self.image4Indicator.hidden = YES;
-    } else if (image2){
-        self.image6Indicator.hidden = YES;
-        self.image5Indicator.hidden = YES;
-        self.image4Indicator.hidden = YES;
-        self.image3Indicator.hidden = YES;
-    } else if (image1){
-        self.image6Indicator.hidden = YES;
-        self.image5Indicator.hidden = YES;
-        self.image4Indicator.hidden = YES;
-        self.image3Indicator.hidden = YES;
-        self.image2Indicator.hidden = YES;
-    } else{
-        NSLog(@"there are no images to load");
-    }
-
-    self.activityView.hidden = YES;
+-(void)loadIndicatorLights:(NSArray *)userImageArray andUser:(NSInteger)user
+{
+//
+//    UserData *userForImages =  [userImageArray objectAtIndex:user];
+//    NSString *image1 = [userForImages objectForKey:@"image1"];
+//    NSString *image2 = [userForImages objectForKey:@"image2"];
+//    NSString *image3 = [userForImages objectForKey:@"image3"];
+//    NSString *image4 = [userForImages objectForKey:@"image4"];
+//    NSString *image5 = [userForImages objectForKey:@"image5"];
+//    NSString *image6 = [userForImages objectForKey:@"image6"];
+//
+//    if (image6)
+//    {
+//        NSLog(@"six images in here hiding no indicator lights");
+//    }
+//    else if (image5)
+//    {
+//        self.image6Indicator.hidden = YES;
+//    }
+//    else if (image4)
+//    {
+//        self.image6Indicator.hidden = YES;
+//        self.image5Indicator.hidden = YES;
+//    }
+//    else if (image3)
+//    {
+//        self.image6Indicator.hidden = YES;
+//        self.image5Indicator.hidden = YES;
+//        self.image4Indicator.hidden = YES;
+//    }
+//    else if (image2)
+//    {
+//        self.image6Indicator.hidden = YES;
+//        self.image5Indicator.hidden = YES;
+//        self.image4Indicator.hidden = YES;
+//        self.image3Indicator.hidden = YES;
+//    }
+//    else if (image1)
+//    {
+//        self.image6Indicator.hidden = YES;
+//        self.image5Indicator.hidden = YES;
+//        self.image4Indicator.hidden = YES;
+//        self.image3Indicator.hidden = YES;
+//        self.image2Indicator.hidden = YES;
+//    }
+//    else
+//    {
+//        NSLog(@"there are no images to load");
+//    }
+//
+//    self.activityView.hidden = YES;
 }
 
 -(void)currentImageLightUpIndicatorLight:(long)matchedCount
@@ -770,7 +772,7 @@ MFMailComposeViewControllerDelegate>
 
 -(void)lastImageBringUpDesciptionView
 {
-    UserData *userB = [UserData new];
+    User *userB = [User new];
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
     self.fullAboutMe.text = userB.aboutMe;
@@ -779,17 +781,8 @@ MFMailComposeViewControllerDelegate>
     self.fullMilesAway.text = userB.milesAway;
 }
 
--(void)setUpButtons:(UIButton *)button
+-(void) sendEmailForApproval
 {
-    button.layer.cornerRadius = 15.0 / 2.0f;
-    button.clipsToBounds = YES;
-    [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
-}
-
-
--(void) sendEmailForApproval{
-
     NSString *emailTitle = @"Feedback";
     NSString *messageBody = @"<h1>Matched User's Name</h1>";
     NSArray *reciepents = [NSArray arrayWithObject:@"michealsevy@gmail.com"];

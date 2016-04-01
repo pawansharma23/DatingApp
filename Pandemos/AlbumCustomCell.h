@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface AlbumCustomCell : UITableViewCell
+
 @property (weak, nonatomic) IBOutlet UIImageView *albumImage;
 @property (weak, nonatomic) IBOutlet UILabel *albumNames;
 @property (weak, nonatomic) IBOutlet UILabel *albumCountLabel;

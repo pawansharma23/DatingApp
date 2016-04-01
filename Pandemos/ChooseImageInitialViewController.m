@@ -9,8 +9,9 @@
 #import "ChooseImageInitialViewController.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "CVImageCell.h"
-#import "UserData.h"
+#import "User.h"
 #import "UIColor+Pandemos.h"
+#import "UIButton+Additions.h"
 
 @interface ChooseImageInitialViewController ()
 <UICollectionViewDataSource,
@@ -52,14 +53,15 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
     self.automaticallyAdjustsScrollViewInsets = NO;
     NSLog(@"photo ID from Facebook Photo: %@", self.photoID);
-    //button setUp
-    UserData *userD = [UserData new];
-    [userD setUpButtons:self.chooseAnotherButton];
-    [userD setUpButtons:self.saveImage];
+
+    [UIButton setUpButtons:self.chooseAnotherButton];
+    [UIButton setUpButtons:self.saveImage];
 
     NSLog(@"user image passed url: %@", self.imageStr);
     self.userImage.image = [UIImage imageWithData:[self imageData:self.imageStr]];
-    if (!self.imageStr) {
+
+    if (!self.imageStr)
+    {
         self.userImage.image = [UIImage imageWithData:self.photoData];
     }
     self.pictures = [NSMutableArray new];
@@ -80,8 +82,8 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
     //this is quering the user info from the PFUser cached in sim, which is not the usr that is logged in??
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if(!error){
-
+        if(!error)
+        {
             //userImages
             self.image1 = [[objects firstObject] objectForKey:@"image1"];
             self.image2 = [[objects firstObject] objectForKey:@"image2"];
@@ -112,32 +114,24 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
 
 #pragma mark -- collectionView delegate Methods
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
     return self.pictures.count;
 }
 
--(CVImageCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
+-(CVImageCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *cellIdentifier = @"CVCell";
     CVImageCell *cell = (CVImageCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-
     NSString *photoString = [self.pictures objectAtIndex:indexPath.item];
     cell.cvImage.image = [UIImage imageWithData:[self imageData:photoString]];
 
     return cell;
 }
-//save selected images to array and save to Parse
-//-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath  {
-//    //highlight selected cell... not working
-//    UICollectionViewCell *cell = [collectionView  cellForItemAtIndexPath:indexPath];
-//    cell.backgroundColor = [UIColor blueColor];
-//
-//}
 
-
--(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
+-(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath
+{
     NSString *photoString = [self.pictures objectAtIndex:fromIndexPath.item];
-
     [self.pictures removeObjectAtIndex:fromIndexPath.item];
     [self.pictures insertObject:photoString atIndex:toIndexPath.item];
 
@@ -160,21 +154,21 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
 
 
-- (IBAction)onSaveImage:(UIButton *)sender {
-    UserData *userD = [UserData new];
-    [userD changeButtonState:self.saveImage];
+- (IBAction)onSaveImage:(UIButton *)sender
+{
+    [UIButton changeButtonState:self.saveImage];
 
-    if (!self.image1) {
+    if (!self.image1)
+    {
         NSLog(@"nothing in 1");
         [self.currentUser setObject:self.imageStr forKey:@"image1"];
-
         [self.currentUser saveInBackground];
         [self.saveImage setTitle:@"Saved Image 1" forState:UIControlStateNormal];
-
         [self.collectionView reloadData];
 
-    } else if (self.image1 && !self.image2) {
-
+    }
+    else if (self.image1 && !self.image2)
+    {
         NSLog(@"1 occupied, 2 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image2"];
         [self.currentUser saveInBackground];
@@ -182,26 +176,28 @@ LXReorderableCollectionViewDelegateFlowLayout>
         [self.saveImage setTitle:@"Saved Image 2" forState:UIControlStateNormal];
         [self.collectionView reloadData];
 
-    } else if (self.image1 && self.image2 && !self.image3){
+    }
+    else if (self.image1 && self.image2 && !self.image3)
+    {
         NSLog(@"1 & 2 occ, 3 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image3"];
         [self.currentUser saveInBackground];
         [self.saveImage setTitle:@"Saved Image 3" forState:UIControlStateNormal];
-
-
         [self.collectionView reloadData];
 
-    } else if (self.image1 && self.image2 && self.image3 && !self.image4){
+    }
+    else if (self.image1 && self.image2 && self.image3 && !self.image4)
+    {
         NSLog(@"1, 2, 3 occ, 4 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image4"];
         [self.currentUser saveInBackground];
-
         [self.saveImage setTitle:@"Saved Image 4" forState:UIControlStateNormal];
 
         [self.collectionView reloadData];
 
-    } else if (self.image1 && self.image2 && self.image3 && self.image4 && !self.image5){
-
+    }
+    else if (self.image1 && self.image2 && self.image3 && self.image4 && !self.image5)
+    {
         NSLog(@"1, 2, 3, 4 occ 5 empty");
 
         [self.currentUser setObject:self.imageStr forKey:@"image5"];
@@ -210,8 +206,9 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
         [self.collectionView reloadData];
 
-    } else if (self.image1 && self.image2 && self.image3 && self.image4 && self.image5 && !self.image6){
-
+    }
+    else if (self.image1 && self.image2 && self.image3 && self.image4 && self.image5 && !self.image6)
+    {
         NSLog(@"1, 2, 3, 4, 5 occ 6 empty");
         [self.currentUser setObject:self.imageStr forKey:@"image6"];
         [self.currentUser saveInBackground];
@@ -219,28 +216,29 @@ LXReorderableCollectionViewDelegateFlowLayout>
 
         [self.collectionView reloadData];
         
-    }else{
-            NSLog(@"all images Filled");
+    }
+    else
+    {
+        NSLog(@"all images Filled");
         [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
-
-        }
+    }
 }
 
-- (IBAction)onAddMoreImages:(UIButton *)sender {
-    UserData *userD = [UserData new];
-    [userD changeButtonState:self.chooseAnotherButton];
-    
+- (IBAction)onAddMoreImages:(UIButton *)sender
+{
+    [UIButton changeButtonState:self.chooseAnotherButton];
     [self performSegueWithIdentifier:@"AddMore" sender:self];
 }
 
 
-#pragma mark -- helpers
--(NSData *)imageData:(NSString *)imageString{
+#pragma mark -- HELPERS
+-(NSData *)imageData:(NSString *)imageString
+{
     NSURL *url = [NSURL URLWithString:imageString];
     NSData *data = [NSData dataWithContentsOfURL:url];
+
     return data;
 }
-
 
 -(void)deconstructArray:(NSMutableArray *)array {
 

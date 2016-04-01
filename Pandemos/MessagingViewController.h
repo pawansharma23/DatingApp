@@ -7,20 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Bolts/BFTask.h>
-#import <FBSDKCoreKit/FBSDKAccessToken.h>
-#import <FBSDKLoginKit/FBSDKLoginManager.h>
-#import <ParseFacebookUtilsV4.h>
-#import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
-#import <FBSDKGraphRequest.h>
-#import <FBSDKGraphRequestConnection.h>
-#import "UserData.h"
+#import "User.h"
 #import <Parse/Parse.h>
 
 @interface MessagingViewController : UIViewController
 
-@property (strong, nonatomic) PFUser *pfUser;
+@property (strong, nonatomic) User *pfUser;
 @property (strong, nonatomic) PFRelation *relation;
 
 @end

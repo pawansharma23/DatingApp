@@ -6,18 +6,17 @@
 //  Copyright © 2015 Michael Sevy. All rights reserved.
 //
 
-#import "UserData.h"
+#import "User.h"
 #import <Foundation/Foundation.h>
 #import <Parse/PFConstants.h>
 #import <Parse/Parse.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <LXReorderableCollectionViewFlowLayout.h>
 #import "UIColor+Pandemos.h"
 
 #define FONT HELVETICA NEUE
-NSString * const kParseObjectId                    = @"objectId";
-NSString * const kFacebookId                        =@"faceID";
+NSString * const kParseObjectId                     = @"objectId";
+NSString * const kFacebookId                        = @"faceID";
 NSString * const kParseFullName                     = @"fullName";
 NSString * const kParseFirstName                    = @"firstName";
 NSString * const kParseUserBirthday                 = @"birthday";
@@ -39,37 +38,40 @@ NSString * const kParseFacebookHometown             = @"facebookHometown";
 NSString * const kParseWork                         = @"work";
 NSString * const kParseConfidantEmail               = @"confidantEmail";
 NSString * const kParseAboutMe                      = @"aboutMe";
+//PFGeoPoint * const kParseGeoPoint                     = @"GeoCode";
+@implementation User
 
+@dynamic objectID;
+@dynamic facebookID;
+@dynamic fullName;
+@dynamic firstName;
+@dynamic birthday;
+@dynamic age;
+@dynamic gender;
+@dynamic sexPref;
+@dynamic currentLocation;
+@dynamic milesAway;
+@dynamic milesAwayInt;
+@dynamic minAge;
+@dynamic maxAge;
+@dynamic image1;
+@dynamic image2;
+@dynamic image3;
+@dynamic image4;
+@dynamic image5;
+@dynamic image6;
+@dynamic education;
+@dynamic facebookLocation;
+@dynamic facebookHometown;
+@dynamic work;
+@dynamic confidantEmail;
+@dynamic aboutMe;
+@dynamic username;
 
-//PFGeoPoint * const kParseGeoPoint   = @"GeoCode";
-
-@implementation UserData
-
--(void)setUpButtons:(UIButton *)button
++(User *)currentUser
 {
-    button.layer.cornerRadius = 15;
-    button.clipsToBounds = YES;
-    [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UIColor blackColor].CGColor];
+    return (User *)[PFUser currentUser];
 }
-
-
--(void)changeButtonState:(UIButton *)button
-{
-    [button setHighlighted:YES];
-    button.backgroundColor = [UIColor blackColor];
-    [button setTitleColor:[UIColor yellowGreen] forState:UIControlStateNormal];
-}
-
--(void)changeOtherButton:(UIButton *)button
-{
-    [button setHighlighted:NO];
-    button.backgroundColor = [UIColor whiteColor];
-    [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-}
-
-
-
 
 -(void)loadUserDataFromParse:(PFUser *)user
 {

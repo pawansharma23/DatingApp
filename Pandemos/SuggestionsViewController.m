@@ -7,7 +7,7 @@
 //
 
 #import "SuggestionsViewController.h"
-#import "UserData.h"
+#import "User.h"
 #import "InitialWalkThroughViewController.h"
 #import <Parse/PFUser.h>
 #import "UIColor+Pandemos.h"
@@ -157,8 +157,12 @@ UITableViewDelegate>
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (IBAction)closePressed:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
-#pragma mark -- helper methods
+#pragma mark -- HELPERS
 -(void)changeButtonState:(UIButton *)button
 {
     [button setHighlighted:YES];

@@ -12,7 +12,7 @@
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
 #import <Parse/Parse.h>
-#import "UserData.h"
+#import "User.h"
 #import "UIColor+Pandemos.h"
 
 

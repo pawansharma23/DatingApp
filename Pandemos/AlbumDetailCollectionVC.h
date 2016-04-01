@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UserData.h"
+#import "User.h"
 @interface AlbumDetailCollectionVC : UICollectionViewController
 
 @property (strong, nonatomic) NSString *albumID;

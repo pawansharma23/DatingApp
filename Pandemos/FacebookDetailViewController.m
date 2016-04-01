@@ -10,7 +10,7 @@
 #import "FacebookCVCell.h"
 #import "AlbumDetailCollectionVC.h"
 #import "UIColor+Pandemos.h"
-#import "FacebookData.h"
+#import "Facebook.h"
 #import "ChooseImageInitialViewController.h"
 
 @interface FacebookDetailViewController ()
@@ -54,8 +54,8 @@ UICollectionViewDelegate>
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
     [self.collectionView setCollectionViewLayout:flowLayout];
 
-    FacebookData *face = [FacebookData new];
-    [face loadFacebookAlbum:self.albumId withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
+//    FacebookData *face = [FacebookData new];
+//    [face loadFacebookAlbum:self.albumId withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
 
 }
 
@@ -68,19 +68,20 @@ UICollectionViewDelegate>
 
 -(FacebookCVCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    FacebookData *face = [self.pictureArray objectAtIndex:indexPath.item];
-    static NSString *cellIdentifier = @"Cell";
-    FacebookCVCell *cell = (FacebookCVCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    cell.image.image = [UIImage imageWithData:face.photoData];
+//    FacebookData *face = [self.pictureArray objectAtIndex:indexPath.item];
+//    static NSString *cellIdentifier = @"Cell";
+//    FacebookCVCell *cell = (FacebookCVCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+//    cell.image.image = [UIImage imageWithData:face.photoData];
+    FacebookCVCell * cell = [self.pictureArray objectAtIndex:indexPath.row];
 
     return cell;
 }
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    FacebookData *selectedPath = [self.pictureArray objectAtIndex:indexPath.row];
-    self.photoURL = selectedPath.photoID;
-    self.photoData = selectedPath.photoData;
-    NSLog(@"photo URL: %@", self.photoURL);
+    Facebook *selectedPath = [self.pictureArray objectAtIndex:indexPath.row];
+//    self.photoURL = selectedPath.photoID;
+//    self.photoData = selectedPath.photoData;
+    NSLog(@"photo URL: %@", selectedPath.photoCount);
 
     [self performSegueWithIdentifier:@"ChooseImageVC" sender:self];
 }

@@ -7,12 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Parse/PFUser.h>
-#import <Parse/Parse.h>
-
+#import "User.h"
 
 @interface MessageDetailViewCon : UIViewController
 
-@property (strong, nonatomic) PFUser *recipient;
+@property (strong, nonatomic) User *recipient;
 
 @end

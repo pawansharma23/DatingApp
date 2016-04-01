@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface FacebookTableViewCell : UITableViewCell
+
 @property (weak, nonatomic) IBOutlet UILabel *albumTitleLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *albumImage;
 @property (weak, nonatomic) IBOutlet UILabel *albumCountLabel;

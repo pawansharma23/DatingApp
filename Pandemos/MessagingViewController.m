@@ -11,16 +11,17 @@
 #import "MessageDetailViewCon.h"
 #import <Parse/PFUser.h>
 #import "UIColor+Pandemos.h"
+#import "User.h"
 
-@interface MessagingViewController ()<UITableViewDataSource,
+@interface MessagingViewController ()
+<UITableViewDataSource,
 UITableViewDelegate>
 
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
-@property (strong, nonatomic) PFUser *currentUser;
-@property (strong, nonatomic) PFUser *recipientUser;
-
+@property (strong, nonatomic) User *currentUser;
+@property (strong, nonatomic) User *recipientUser;
 @property (strong, nonatomic) NSArray *matchesNotYetConfirmed;
 
 
@@ -31,7 +32,8 @@ UITableViewDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.currentUser = [PFUser currentUser];
+
+    self.currentUser = [User currentUser];
 
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     self.navigationItem.title = @"Messages";
@@ -87,7 +89,8 @@ UITableViewDelegate>
     return self.matchesNotYetConfirmed.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     MessagingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
 
     cell.userImage.contentMode = UIViewContentModeScaleAspectFill;
@@ -112,7 +115,8 @@ UITableViewDelegate>
     [self performSegueWithIdentifier:@"MessageDetail" sender:self];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
     MessageDetailViewCon *mdvc = segue.destinationViewController;
     mdvc.recipient = self.recipientUser;
 }

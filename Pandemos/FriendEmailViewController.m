@@ -8,7 +8,7 @@
 
 #import "FriendEmailViewController.h"
 #import <Parse/Parse.h>
-#import "UserData.h"
+#import "User.h"
 #import "UIColor+Pandemos.h"
 
 @interface FriendEmailViewController ()

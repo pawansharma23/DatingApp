@@ -9,7 +9,7 @@
 #import "AddMoreImagesViewController.h"
 #import "AddImageCell.h"
 #import "UIColor+Pandemos.h"
-#import "FacebookData.h"
+#import "Facebook.h"
 
 @interface AddMoreImagesViewController ()
 <UICollectionViewDataSource,
@@ -46,10 +46,10 @@ UICollectionViewDelegate>
     [self.collectionView setCollectionViewLayout:flowLayout];
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
-    FacebookData *faceD = [FacebookData new];
-    [faceD loadFacebookThumbnails:self.nextButton arrayForPictures:self.pictureArray andCollectionView:self.collectionView];
-    self.nextURL = faceD.nextPage;
-    self.previousURL = faceD.previousPage;
+//    FacebookData *faceD = [FacebookData new];
+//    [faceD loadFacebookThumbnails:self.nextButton arrayForPictures:self.pictureArray andCollectionView:self.collectionView];
+//    self.nextURL = faceD.nextPage;
+//    self.previousURL = faceD.previousPage;
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -60,7 +60,7 @@ UICollectionViewDelegate>
 -(AddImageCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 
     AddImageCell *cell = (AddImageCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"AddImageCell" forIndexPath:indexPath];
-    FacebookData *userData = [self.pictureArray objectAtIndex:indexPath.row];
+    Facebook *userData = [self.pictureArray objectAtIndex:indexPath.row];
     cell.image.image = [UIImage imageWithData:userData.photoData];
 
     return cell;
@@ -75,16 +75,16 @@ UICollectionViewDelegate>
 
 - (IBAction)onNextButton:(UIButton *)sender
 {
-    FacebookData *face = [FacebookData new];
-    [face loadNextPrevPage:self.nextURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
+//    FacebookData *face = [FacebookData new];
+//    [face loadNextPrevPage:self.nextURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
 //    [self onNextPrevPage:self.nextURL];
 }
 
 
 - (IBAction)onPreviousButton:(UIButton *)sender
 {
-    FacebookData *face = [FacebookData new];
-    [face loadNextPrevPage:self.previousURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
+//    FacebookData *face = [FacebookData new];
+//    [face loadNextPrevPage:self.previousURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
     //[self onNextPrevPage:self.previousURL];
 }
 @end

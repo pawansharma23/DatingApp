@@ -8,11 +8,11 @@
 
 #import "FacebookAlbumsTableVC.h"
 #import "FacebookTableViewCell.h"
-#import "AlbumCustomCell.h"
 #import "AlbumDetailCollectionVC.h"
 #import "FacebookDetailViewController.h"
 #import "UIColor+Pandemos.h"
-#import "FacebookData.h"
+#import "Facebook.h"
+#import "FacebookManager.h"
 
 @interface FacebookAlbumsTableVC ()
 
@@ -33,9 +33,9 @@
     self.tableView.delegate = self;
     self.pictureArray = [NSMutableArray new];
 
-    FacebookData *face = [FacebookData new];
-    [face loadFacebookAlbumList:self.pictureArray andTableView:self.tableView];
-    
+//    FacebookData *face = [FacebookData new];
+//    [face loadFacebookAlbumList:self.pictureArray andTableView:self.tableView];
+
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -52,20 +52,20 @@
 -(FacebookTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FacebookTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    FacebookData *face = [self.pictureArray objectAtIndex:indexPath.row];
-    cell.albumTitleLabel.text = face.albumId;
-    cell.albumCountLabel.text = face.imageCount;
-    cell.albumImage.layer.cornerRadius = 9;
-    cell.albumImage.image = [UIImage imageWithData:face.photoData];
+//    FacebookData *face = [self.pictureArray objectAtIndex:indexPath.row];
+//    cell.albumTitleLabel.text = face.albumId;
+//    cell.albumCountLabel.text = face.imageCount;
+//    cell.albumImage.layer.cornerRadius = 7;
+//    cell.albumImage.image = [UIImage imageWithData:face.photoData];
 
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FacebookData *selectedPath = [self.pictureArray objectAtIndex:indexPath.row];
-    self.albumId = selectedPath.albumId2;
-    self.albumName = selectedPath.albumId;
+    Facebook *selectedPath = [self.pictureArray objectAtIndex:indexPath.row];
+    self.albumId = selectedPath.albumId;
+    self.albumName = selectedPath.albumName;
     NSLog(@"album path selected to push on %@", self.albumId);
     [self performSegueWithIdentifier:@"FacebookDetail" sender:self];
 }

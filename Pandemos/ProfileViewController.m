@@ -8,22 +8,13 @@
 
 #import "ProfileViewController.h"
 #import <Foundation/Foundation.h>
-#import <Bolts/BFTask.h>
-#import <FBSDKCoreKit/FBSDKAccessToken.h>
-#import <FBSDKLoginKit/FBSDKLoginManager.h>
-#import <ParseFacebookUtilsV4.h>
-#import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
-#import <FBSDKGraphRequest.h>
-#import <FBSDKGraphRequestConnection.h>
-#import "UserData.h"
-#import <Parse/Parse.h>
-#import "RangeSlider.h"
+#import "User.h"
 #import <MessageUI/MessageUI.h>
 #import "CVSettingCell.h"
 #import "PreferencesViewController.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "UIColor+Pandemos.h"
+#import "UIButton+Additions.h"
 
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
@@ -75,7 +66,7 @@ UIPopoverPresentationControllerDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.currentUser = [PFUser currentUser];
+    self.currentUser = [User currentUser];
     //NSLog(@"profile VC user: %@", self.currentUser);
     self.navigationItem.title = @"Settings";
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
@@ -115,91 +106,89 @@ UIPopoverPresentationControllerDelegate>
     [self.collectionView setCollectionViewLayout:flowlayouts];
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
-    //Buttons Setup
-    UserData *userD = [UserData new];
-    [userD setUpButtons:self.menButton];
-    [userD setUpButtons:self.womenButton];
-    [userD setUpButtons:self.bothButton];
-    [userD setUpButtons:self.logoutButton];
-    [userD setUpButtons:self.deleteButton];
-    [userD setUpButtons:self.shareButton];
-    [userD setUpButtons:self.feedbackButton];
+    [UIButton setUpButtons:self.menButton];
+    [UIButton setUpButtons:self.womenButton];
+    [UIButton setUpButtons:self.bothButton];
+    [UIButton setUpButtons:self.logoutButton];
+    [UIButton setUpButtons:self.deleteButton];
+    [UIButton setUpButtons:self.shareButton];
+    [UIButton setUpButtons:self.feedbackButton];
 
     self.textViewAboutMe.layer.cornerRadius = 10;
     [self.textViewAboutMe.layer setBorderWidth:1.0];
     [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
 
     //call Parse for User Data
-    PFQuery *query = [PFUser query];
+    //PFQuery *query = [PFUser query];
 
     //this is quering the user info from the PFUser cached in sim, which is not the usr that is logged in??
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if(!error){
-
-
-            NSString *name = [[objects firstObject]objectForKey:@"fullName"];
-            NSLog(@"name from query: %@", name);
-            //miles Away slider
-            CGFloat strFloat = (CGFloat)[[[objects firstObject] objectForKey:@"milesAway"] floatValue];
-            self.milesAwaySlider.value = strFloat;
-            NSString *milesAwayStr = [NSString stringWithFormat:@"Show results within %.f miles of here", strFloat];
-            self.milesAwayLabel.text = milesAwayStr;
-
-            //age min and max sliders
-            CGFloat strFloatForMinAge = (CGFloat)[[[objects firstObject] objectForKey:@"minAge"] floatValue];
-            self.minimumAgeSlider.value = strFloatForMinAge;
-            NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %.f", strFloatForMinAge];
-            self.minimumAgeLabel.text = minAge;
-            //Max
-            CGFloat strFloatForMaxAge = (CGFloat)[[[objects firstObject] objectForKey:@"maxAge"] floatValue];
-            self.maximumAgeSlider.value = strFloatForMaxAge;
-            NSString *maxAge = [NSString stringWithFormat:@"Minimum Age: %.f", strFloatForMaxAge];
-            self.maximumAgeLabel.text = maxAge;
-
-            //public profile status
-            NSString *pubProf = [[objects firstObject] objectForKey:@"publicProfile"];
-            NSLog(@"switch set to: %@", pubProf);
-            if ([pubProf containsString:@"public"]) {
-                [self.publicProfileSwitch setOn:YES animated:YES];
-            } else{
-                [self.publicProfileSwitch setOn:NO animated:YES];
-            }
-
-            //sex pref presets
-            NSString *sexPref = [[objects firstObject] objectForKey:@"sexPref"];
-
-            if ([sexPref isEqualToString:@"male"]) {
-                self.menButton.backgroundColor = [UIColor blackColor];
-                [self.menButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            } else if ([sexPref isEqualToString:@"female"]){
-                self.womenButton.backgroundColor = [UIColor blackColor];
-                [self.womenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            } else if ([sexPref isEqualToString:@"male female"])  {
-                self.bothButton.backgroundColor = [UIColor blackColor];
-                [self.bothButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            }else{
-            NSLog(@"sex pref: %@", sexPref);
-            }
-
-
-            //textView output
-            NSString *textView = [[objects firstObject]objectForKey:@"aboutMe"];
-            self.textViewAboutMe.text = textView;
-
-
-            //
-          //  NSArray *likes = [[objects firstObject] objectForKey:@"likes"];
-        //NSLog(@"likes array: %@", likes);
-            NSString *job = [[objects firstObject] objectForKey:@"work"];
-            NSString *school = [[objects firstObject] objectForKey:@"scool"];
-            self.jobLabel.text = job;
-            self.educationLabel.text = school;
-
-            [self loadImagesFromParse:objects];
-
-        }
-    }];
-
+//    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+//        if(!error){
+//
+//
+//            NSString *name = [[objects firstObject]objectForKey:@"fullName"];
+//            NSLog(@"name from query: %@", name);
+//            //miles Away slider
+//            CGFloat strFloat = (CGFloat)[[[objects firstObject] objectForKey:@"milesAway"] floatValue];
+//            self.milesAwaySlider.value = strFloat;
+//            NSString *milesAwayStr = [NSString stringWithFormat:@"Show results within %.f miles of here", strFloat];
+//            self.milesAwayLabel.text = milesAwayStr;
+//
+//            //age min and max sliders
+//            CGFloat strFloatForMinAge = (CGFloat)[[[objects firstObject] objectForKey:@"minAge"] floatValue];
+//            self.minimumAgeSlider.value = strFloatForMinAge;
+//            NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %.f", strFloatForMinAge];
+//            self.minimumAgeLabel.text = minAge;
+//            //Max
+//            CGFloat strFloatForMaxAge = (CGFloat)[[[objects firstObject] objectForKey:@"maxAge"] floatValue];
+//            self.maximumAgeSlider.value = strFloatForMaxAge;
+//            NSString *maxAge = [NSString stringWithFormat:@"Minimum Age: %.f", strFloatForMaxAge];
+//            self.maximumAgeLabel.text = maxAge;
+//
+//            //public profile status
+//            NSString *pubProf = [[objects firstObject] objectForKey:@"publicProfile"];
+//            NSLog(@"switch set to: %@", pubProf);
+//            if ([pubProf containsString:@"public"]) {
+//                [self.publicProfileSwitch setOn:YES animated:YES];
+//            } else{
+//                [self.publicProfileSwitch setOn:NO animated:YES];
+//            }
+//
+//            //sex pref presets
+//            NSString *sexPref = [[objects firstObject] objectForKey:@"sexPref"];
+//
+//            if ([sexPref isEqualToString:@"male"]) {
+//                self.menButton.backgroundColor = [UIColor blackColor];
+//                [self.menButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//            } else if ([sexPref isEqualToString:@"female"]){
+//                self.womenButton.backgroundColor = [UIColor blackColor];
+//                [self.womenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//            } else if ([sexPref isEqualToString:@"male female"])  {
+//                self.bothButton.backgroundColor = [UIColor blackColor];
+//                [self.bothButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//            }else{
+//            NSLog(@"sex pref: %@", sexPref);
+//            }
+//
+//
+//            //textView output
+//            NSString *textView = [[objects firstObject]objectForKey:@"aboutMe"];
+//            self.textViewAboutMe.text = textView;
+//
+//
+//            //
+//          //  NSArray *likes = [[objects firstObject] objectForKey:@"likes"];
+//        //NSLog(@"likes array: %@", likes);
+//            NSString *job = [[objects firstObject] objectForKey:@"work"];
+//            NSString *school = [[objects firstObject] objectForKey:@"scool"];
+//            self.jobLabel.text = job;
+//            self.educationLabel.text = school;
+//
+//            [self loadImagesFromParse:objects];
+//
+//        }
+//    }];
+//
 
 }
 

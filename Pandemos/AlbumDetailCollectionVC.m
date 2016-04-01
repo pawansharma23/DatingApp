@@ -19,8 +19,7 @@
 #import <Parse/PFUser.h>
 #import <FBSDKGraphRequest.h>
 #import <FBSDKGraphRequestConnection.h>
-#import "UserData.h"
-
+#import "User.h"
 #import "CVSettingCell.h"
 #import "PreferencesViewController.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
@@ -28,7 +27,7 @@
 #import "AFNetworking.h"
 #import "AddImageToProfileVC.h"
 #import "UIColor+Pandemos.h"
-#import "FacebookData.h"
+#import "Facebook.h"
 
 @interface AlbumDetailCollectionVC ()
 <UICollectionViewDataSource,
@@ -67,8 +66,8 @@ static NSString * const reuseIdentifier = @"Cell";
 
 
     NSLog(@"album id %@ & album Name %@", self.albumID, self.albumName);
-    FacebookData *faceD = [FacebookData new];
-    [faceD loadFacebookAlbum:self.albumID withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
+//    FacebookData *faceD = [FacebookData new];
+//    [faceD loadFacebookAlbum:self.albumID withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
 }
 
 
@@ -83,8 +82,8 @@ static NSString * const reuseIdentifier = @"Cell";
 - (SwapImagesCV *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     SwapImagesCV *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    FacebookData *faceD = [self.pictureArray objectAtIndex:indexPath.item];
-    cell.image.image = [UIImage imageWithData:faceD.photoData];
+//    FacebookData *faceD = [self.pictureArray objectAtIndex:indexPath.item];
+//    cell.image.image = [UIImage imageWithData:faceD.photoData];
 
     return cell;
 }
@@ -93,10 +92,10 @@ static NSString * const reuseIdentifier = @"Cell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
     //selects the image and pushes to the next VC for full idisplay(not sure if this is the 100x100 or full image
-    FacebookData *selectedImage = [self.pictureArray objectAtIndex:indexPath.item];
-    self.selectedImage = selectedImage.photoID;
-    self.selectedImageData = selectedImage.photoData;
-    NSLog(@"seleceted image: %@", selectedImage.photoID);
+//    FacebookData *selectedImage = [self.pictureArray objectAtIndex:indexPath.item];
+//    self.selectedImage = selectedImage.photoID;
+//    self.selectedImageData = selectedImage.photoData;
+//    NSLog(@"seleceted image: %@", selectedImage.photoID);
 
     [self performSegueWithIdentifier:@"AddImage" sender:self];
 }

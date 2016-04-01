@@ -1,5 +1,5 @@
 //
-//  UserData.h
+//  User.h
 //  Pandemos
 //
 //  Created by Michael Sevy on 12/19/15.
@@ -12,7 +12,7 @@
 
 #define APP_TITLE @"DoteOn"
 
-@interface UserData : NSObject
+@interface User : PFUser<PFSubclassing>
 //Parse User Data
 @property (strong, nonatomic) NSString *objectID;
 @property (strong, nonatomic) NSString *facebookID;
@@ -41,10 +41,8 @@
 @property (strong, nonatomic) NSString *aboutMe;
 @property (strong, nonatomic) NSString *username;
 
++(User *)currentUser;
 
--(void)setUpButtons:(UIButton *)button;
--(void)changeButtonState:(UIButton *)button;
--(void)changeOtherButton:(UIButton *)button;
 -(NSString *)ageFromBirthday:(NSString *)birthday;
 -(void)loadUserDataFromParse:(PFUser *)user;
 @end
