@@ -1,5 +1,5 @@
 //
-//  FacebookDetailViewController.h
+//  AddMoreImagesViewController.h
 //  Pandemos
 //
 //  Created by Michael Sevy on 1/30/16.
@@ -8,9 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FacebookDetailViewController : UIViewController
+@interface AlbumDetailViewController : UIViewController
 
-@property (strong, nonatomic) NSString *albumId;
+@property (strong, nonatomic) NSString *albumID;
 @property (strong, nonatomic) NSString *albumName;
-
 @end

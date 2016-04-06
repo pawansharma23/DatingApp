@@ -38,7 +38,30 @@
             [parsedData addObject:face];
         }
     }
-    
+
+    return parsedData;
+}
+
++(NSArray *)parseUserData:(NSDictionary *)results withError:(NSError *)error
+{
+    NSError *localError = nil;
+
+    if (localError != nil)
+    {
+        error = localError;
+        return nil;
+    }
+    NSLog(@"from builder: %@", results);
+
+    NSMutableArray *parsedData = [NSMutableArray new];
+    NSDictionary *dataArray = results[@"data"];
+
+//    if (dataArray)
+//    {
+//        Facebook *face = [Facebook new];
+//        face.locale = dataArray[@"locale"];
+//    }
+
     return parsedData;
 }
 
@@ -55,7 +78,7 @@
     NSDictionary *paging = results[@"paging"];
 
     //NSLog(@"pagings: %@", paging);
-    
+
     if (paging)
     {
         Facebook *face = [Facebook new];
@@ -71,7 +94,7 @@
             face.previousPage = previous;
         }
 
-            [parsedPaging addObject:face];
+        [parsedPaging addObject:face];
 
     }
     return parsedPaging;
@@ -91,16 +114,51 @@
 
     if (data)
     {
-        NSLog(@"data from builder: %@", data);
-        Facebook *face = [Facebook new];
-        NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:data];
-        NSArray *uniqueArray = [orderedSet array];
+        //NSLog(@"dta: %@", data);
 
-        for (NSDictionary *imageData in uniqueArray)
+        //        NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:data];
+        //        NSArray *uniqueArray = [orderedSet array];
+
+        for (NSDictionary *imageData in data)
         {
+            Facebook *face = [Facebook new];
+
             face.albumId = imageData[@"id"];
-            face.albumImageCount = imageData[@"count"];
+            NSNumber *nSCount = imageData[@"count"];
+            face.albumImageCount = [NSString stringWithFormat:@"%@", nSCount];
             face.albumName = imageData[@"name"];
+            NSDictionary *picture = imageData[@"picture"];
+            NSDictionary *data = picture[@"data"];
+            face.albumImageURL = data[@"url"];
+
+            //NSLog(@"id: %@ name: %@, url: %@ %@", face.albumId, face.albumImageCount, face.albumName, face.albumImageURL);
+            [parsedData addObject:face];
+        }
+    }
+
+    return parsedData;
+}
+
++(NSArray *)parseAlbum:(NSDictionary *)results withError:(NSError *)error
+{
+    NSError *localError = nil;
+
+    if (localError != nil)
+    {
+        error = localError;
+        return nil;
+    }
+    NSMutableArray *parsedData = [NSMutableArray new];
+    NSArray *data = results[@"data"];
+
+    if (data)
+    {
+        for (NSDictionary *dict in data)
+        {
+            Facebook *face = [Facebook new];
+            face.albumImageURL = dict[@"source"];
+            face.albumtimestamp = dict[@"updated_time"];
+            face.albumImageID = dict[@"id"];
 
             [parsedData addObject:face];
         }
@@ -108,4 +166,35 @@
 
     return parsedData;
 }
+
++(NSArray *)parseAlbumPaging:(NSDictionary *)results withError:(NSError *)error
+{
+    NSError *localError = nil;
+
+    if (localError != nil)
+    {
+        error = localError;
+        return nil;
+    }
+    NSMutableArray *parsedPagingData = [NSMutableArray new];
+    NSDictionary *paging = results[@"paging"];
+
+    if (paging)
+    {
+        Facebook *face = [Facebook new];
+        if (paging[@"next"])
+        {
+            face.nextPage = paging[@"next"];
+        }
+
+        if (paging[@"previous"])
+        {
+            face.previousPage = paging[@"previous"];
+        }
+        [parsedPagingData addObject:face];
+    }
+    
+    return parsedPagingData;
+}
+
 @end

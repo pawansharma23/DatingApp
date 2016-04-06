@@ -6,8 +6,8 @@
 //  Copyright © 2016 Michael Sevy. All rights reserved.
 //
 
-#import "CVImageCell.h"
+#import "PreviewCell.h"
 
-@implementation CVImageCell
+@implementation PreviewCell
 
 @end

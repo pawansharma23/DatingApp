@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CVImageCell : UICollectionViewCell
+@interface PreviewCell : UICollectionViewCell
+
 @property (weak, nonatomic) IBOutlet UIImageView *cvImage;
 
 @end

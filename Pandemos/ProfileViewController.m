@@ -11,7 +11,6 @@
 #import "User.h"
 #import <MessageUI/MessageUI.h>
 #import "CVSettingCell.h"
-#import "PreferencesViewController.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
@@ -444,7 +443,7 @@ UIPopoverPresentationControllerDelegate>
 }
 
 
-#pragma mark -- helpers
+#pragma mark -- HELPERS
 
 
 -(void)borderLabel:(UILabel *)label{
@@ -514,7 +513,8 @@ UIPopoverPresentationControllerDelegate>
     }
 }
 
--(void)deconstructArray:(NSMutableArray *)array {
+-(void)deconstructArray:(NSMutableArray *)array
+{
 
     NSString *firstImage = [array firstObject];
     NSString *secondImage = [array objectAtIndex:1];
@@ -542,10 +542,6 @@ UIPopoverPresentationControllerDelegate>
         [self.currentUser setObject:sixthImage forKey:@"image6"];
         [self.currentUser saveInBackground];
     }
-}
-
--(void)segueAction{
-    [self performSegueWithIdentifier:@"PreviewSegue" sender:self];
 }
 @end
 

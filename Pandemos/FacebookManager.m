@@ -20,7 +20,7 @@
     dispatch_once(&onceToken, ^{
         shared = [[self alloc] init];
     });
-    
+
     return shared;
 }
 
@@ -53,7 +53,22 @@
     }];
 }
 
--(void)loadParedFBPhotoAlbums
+-(void)loadParsedUserData
+{
+    [self.facebookNetworker loadFacebookUserData:^(BOOL success, NSError *error) {
+
+        if (success)
+        {
+            NSLog(@"loaded facebook user data");
+        }
+        else
+        {
+            NSLog(@"failed to load thumb data");
+        }
+    }];
+}
+
+-(void)loadParsedFBPhotoAlbums
 {
     [self.facebookNetworker loadFacebookPhotoAlbums:^(BOOL success, NSError *error) {
 
@@ -68,6 +83,20 @@
     }];
 }
 
+-(void)loadParsedFBAlbum:(NSString *)albumID
+{
+    [self.facebookNetworker loadFacebookPhotoAlbum:albumID withSuccess:^(BOOL success, NSError *error) {
+
+        if (success)
+        {
+            NSLog(@"loaded FB Album");
+        }
+        else
+        {
+            NSLog(@"failed to load");
+        }
+    }];
+}
 
 #pragma mark -- FACEBOOK NETWORK DELEGATE
 -(void)receivedFBThumbnail:(NSDictionary *)facebookThumbnails
@@ -85,12 +114,27 @@
     }
 }
 
+-(void)receivedFBUserInfo:(NSDictionary *)facebookUserInfo
+{
+    NSError *error = nil;
+    NSArray *userData = [FacebookBuilder parseUserData:facebookUserInfo withError:error];
+
+    if (!error)
+    {
+        [self.delegate didReceiveUserData:userData];
+    }
+    else
+    {
+        [self.delegate failedToReceiveUserData:error];
+    }
+}
+
 -(void)failedToFetchFBThumbs:(NSError *)error
 {
     [self.delegate failedToReceiveParsedThumbs:error];
 }
 
--(void)receivedFBThumbPaing:(NSDictionary *)facebookThumbPaging
+-(void)receivedFBThumbPaging:(NSDictionary *)facebookThumbPaging
 {
     NSError *error = nil;
     NSArray *thumbPages = [FacebookBuilder parseThumbnailPaging:facebookThumbPaging withError:error];
@@ -128,6 +172,46 @@
 -(void)failedToFetchFBPhotoAlbums:(NSError *)error
 {
     [self.delegate failedToReceiveParsedPhotoAlbums:error];
+}
+
+-(void)receivedFBPhotoAlbum:(NSDictionary *)album
+{
+    NSError *error = nil;
+    NSArray *albumData = [FacebookBuilder parseAlbum:album withError:error];
+
+    if (!error)
+    {
+        [self.delegate didReceiveParsedAlbum:albumData];
+    }
+    else
+    {
+        [self.delegate failedToReceiveParsedAlbum:error];
+    }
+}
+
+-(void)failedToFetchFBAlbum:(NSError *)error
+{
+    [self.delegate failedToReceiveParsedAlbum:error];
+}
+
+-(void)receivedFBAlbumPaging:(NSDictionary *)albumPaging
+{
+    NSError *error = nil;
+    NSArray *albumPages = [FacebookBuilder parseAlbumPaging:albumPaging withError:error];
+
+    if (!error)
+    {
+        [self.delegate didReceiveParsedAlbumPaging:albumPages];
+    }
+    else
+    {
+        [self.delegate failedToReceiveParsedAlbumPaging:error];
+    }
+}
+
+-(void)failedToFetchFBAlbumPaging:(NSError *)error
+{
+    [self.delegate failedToReceiveParsedAlbumPaging:error];
 }
 
 #pragma mark -- HELPERS

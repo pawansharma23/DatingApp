@@ -1,4 +1,3 @@
-//
 //  FacebookAlbumsTableVC.m
 //  Pandemos
 //
@@ -8,18 +7,19 @@
 
 #import "FacebookAlbumsTableVC.h"
 #import "FacebookTableViewCell.h"
-#import "AlbumDetailCollectionVC.h"
-#import "FacebookDetailViewController.h"
+#import "AlbumDetailViewController.h"
 #import "UIColor+Pandemos.h"
 #import "Facebook.h"
 #import "FacebookManager.h"
+#import "User.h"
 
-@interface FacebookAlbumsTableVC ()
+@interface FacebookAlbumsTableVC ()<FacebookManagerDelegate>
 
-@property (strong, nonatomic) NSMutableArray *pictureArray;
+@property (strong, nonatomic) NSArray *albums;
 @property (strong, nonatomic) NSString *albumName;
 @property (strong, nonatomic) NSString *albumId;
-
+@property (strong, nonatomic) User *currentUser;
+@property (strong, nonatomic) FacebookManager *manager;
 @end
 
 @implementation FacebookAlbumsTableVC
@@ -29,56 +29,67 @@
 
     self.navigationItem.title = @"Facebook Albums";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
-    
-    self.tableView.delegate = self;
-    self.pictureArray = [NSMutableArray new];
 
-//    FacebookData *face = [FacebookData new];
-//    [face loadFacebookAlbumList:self.pictureArray andTableView:self.tableView];
-
+    self.albums = [NSArray new];
+    self.currentUser = [User currentUser];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:YES];
+
+    if (self.currentUser)
+    {
+        self.manager = [FacebookManager new];
+        self.manager.facebookNetworker = [FacebookNetwork new];
+        self.manager.facebookNetworker.delegate = self.manager;
+        self.manager.delegate = self;
+        [self.manager loadParsedFBPhotoAlbums];
+    }
+    else
+    {
+        NSLog(@"no user for face request");
+    }
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-
-    return self.pictureArray.count;
+    return self.albums.count;
 }
 
 -(FacebookTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FacebookTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-//    FacebookData *face = [self.pictureArray objectAtIndex:indexPath.row];
-//    cell.albumTitleLabel.text = face.albumId;
-//    cell.albumCountLabel.text = face.imageCount;
-//    cell.albumImage.layer.cornerRadius = 7;
-//    cell.albumImage.image = [UIImage imageWithData:face.photoData];
+    Facebook *face = [self.albums objectAtIndex:indexPath.row];
+    cell.albumTitleLabel.text = face.albumName;
+    cell.albumCountLabel.text = face.albumImageCount;
+    cell.albumImage.layer.cornerRadius = 7;
+    cell.albumImage.image = [UIImage imageWithData:[face stringURLToData:face.albumImageURL]];
 
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Facebook *selectedPath = [self.pictureArray objectAtIndex:indexPath.row];
+    Facebook *selectedPath = [self.albums objectAtIndex:indexPath.row];
     self.albumId = selectedPath.albumId;
     self.albumName = selectedPath.albumName;
     NSLog(@"album path selected to push on %@", self.albumId);
-    [self performSegueWithIdentifier:@"FacebookDetail" sender:self];
+
+    [self performSegueWithIdentifier:@"AlbumDetail" sender:self];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    AlbumDetailViewController *advc = segue.destinationViewController;
+    NSLog(@"segueing: this: %@", self.albumId);
 
-    if ([segue.identifier isEqualToString:@"FacebookDetail"])
-    {
-        NSLog(@"segueing: this: %@", self.albumId);
-        FacebookDetailViewController *fdvc = segue.destinationViewController;
-        fdvc.albumId = self.albumId;
-        fdvc.albumName = self.albumName;
-    }
+    advc.albumID = self.albumId;
+    advc.albumName = self.albumName;
+}
+
+-(void)didReceiveParsedAlbumList:(NSArray *)photoAlbums
+{
+    self.albums = photoAlbums;
+    [self.tableView reloadData];
 }
 @end

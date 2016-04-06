@@ -265,7 +265,6 @@
                                                     </mask>
                                                 </variation>
                                                 <connections>
-                                                    <action selector="onFacebookAlbums:" destination="gBc-PO-3iR" eventType="touchUpInside" id="J9e-V0-eVe"/>
                                                     <action selector="onNextPage:" destination="gBc-PO-3iR" eventType="touchUpInside" id="wjP-7w-Kkw"/>
                                                     <action selector="onPreviousPage:" destination="gBc-PO-3iR" eventType="touchUpInside" id="62O-yS-QxW"/>
                                                     <segue destination="Pgz-5d-W3Q" kind="show" id="o7r-jU-1kF"/>
@@ -436,7 +435,7 @@
                 <viewControllerPlaceholder storyboardName="FacebookAlbums" id="Pgz-5d-W3Q" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fdo-Ex-B1I" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2700" y="-627"/>
+            <point key="canvasLocation" x="2719.5" y="-584.25"/>
         </scene>
         <!--Friend Email View Controller-->
         <scene sceneID="ryh-v2-oGi">
@@ -491,7 +490,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kNY-zk-PL4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3168" y="-443.25"/>
+            <point key="canvasLocation" x="3360" y="-406.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="o9r-5a-Vx9">

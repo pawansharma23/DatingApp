@@ -13,5 +13,6 @@
 +(void)setUpButtons:(UIButton *)button;
 +(void)changeButtonState:(UIButton *)button;
 +(void)changeOtherButton:(UIButton *)button;
-
++(void)acceptButton:(UIButton *)button;
++(void)denyButton:(UIButton *)button;
 @end

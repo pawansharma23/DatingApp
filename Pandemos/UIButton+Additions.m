@@ -32,4 +32,16 @@
     button.backgroundColor = [UIColor whiteColor];
     [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
 }
+
++(void)acceptButton:(UIButton *)button
+{
+    button.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
+    button.layer.cornerRadius = 20;
+}
+
++(void)denyButton:(UIButton *)button
+{
+    button.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
+    button.layer.cornerRadius = 20;
+}
 @end

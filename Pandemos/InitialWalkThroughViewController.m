@@ -12,7 +12,7 @@
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
 #import <Parse/Parse.h>
-#import "ChooseImageInitialViewController.h"
+#import "SelectedImageViewController.h"
 #import "SuggestionsViewController.h"
 
 #import <CoreLocation/CoreLocation.h>
@@ -191,6 +191,7 @@ FacebookManagerDelegate>
 
             self.manager.delegate = self;
             [self.manager loadParsedFacebookThumbnails];
+            [self.manager loadParsedUserData];
         }
         else
         {
@@ -437,8 +438,8 @@ FacebookManagerDelegate>
 
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
-        ChooseImageInitialViewController *cvc = segue.destinationViewController;
-        cvc.imageStr = self.selectedImage;
+        SelectedImageViewController *sivc = segue.destinationViewController;
+        sivc.image = self.selectedImage;
     }
     else if ([segue.identifier isEqualToString:@"Suggestions"])
     {
@@ -461,12 +462,6 @@ FacebookManagerDelegate>
     //FacebookData *face = [FacebookData new];
     //[face loadNextPrevPage:face.previousPage withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
 }
-
-- (IBAction)onFacebookAlbums:(UIButton *)sender
-{
-    [self performSegueWithIdentifier:@"FacebookAlbumsTable" sender:self];
-}
-
 
 #pragma mark -- PUSH NOTIFICATIONS
 - (IBAction)pushNotificationsOnOff:(UISwitch *)sender
@@ -493,9 +488,18 @@ FacebookManagerDelegate>
     NSLog(@"failed to call facebook delegate: %@", error);
 }
 
+-(void)didReceiveUserData:(NSArray *)userData
+{
+    NSLog(@"facebook user data: %@", userData);
+}
+
+-(void)failedToReceiveUserData:(NSError *)error
+{
+    NSLog(@"failed to get parsed Data %@", error);
+}
+
 -(void)didReceiveParsedThumbPaging:(NSArray *)thumbPaging
 {
-    NSLog(@"paging array from VC: %@", thumbPaging);
     self.nextPages = thumbPaging;
 
     //PAGE DATA

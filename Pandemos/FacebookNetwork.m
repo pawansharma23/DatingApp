@@ -24,13 +24,31 @@
         {
             results(YES, nil);
             [self.delegate receivedFBThumbnail:result];
-            [self.delegate receivedFBThumbPaing:result];
+            [self.delegate receivedFBThumbPaging:result];
         }
         else
         {
             results(NO, nil);
             [self.delegate failedToFetchFBThumbs:error];
             [self.delegate failedToFetchFBThumbPaging:error];
+        }
+    }];
+}
+
+-(void)loadFacebookUserData:(resultBlockWithSuccess)results
+{
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]initWithGraphPath:@"me" parameters:@{@"fields":@"id, name, about, birthday, gender, bio, education, is_verified, locale, first_name, work, location, likes"} HTTPMethod:@"GET"];
+    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+
+        if (!error)
+        {
+            results(YES, nil);
+            [self.delegate receivedFBUserInfo:result];
+        }
+        else
+        {
+            results(NO, nil);
+            [self.delegate failedToFetchUserInfo:error];
         }
     }];
 }
@@ -50,6 +68,27 @@
         {
             results(NO, nil);
             [self.delegate failedToFetchFBPhotoAlbums:error];
+        }
+    }];
+}
+
+-(void)loadFacebookPhotoAlbum:(NSString *)albumID withSuccess:(resultBlockWithSuccess)results
+{
+    NSString *albumIdPath = [NSString stringWithFormat:@"/%@/photos", albumID];
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:albumIdPath parameters:@{@"fields": @"source, updated_time"} HTTPMethod:@"GET"];
+    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+
+        if (!error)
+        {
+            results(YES, nil);
+            [self.delegate receivedFBPhotoAlbum:result];
+            [self.delegate receivedFBAlbumPaging:result];
+        }
+        else
+        {
+            results(NO, nil);
+            [self.delegate failedToFetchFBAlbum:error];
+            [self.delegate failedToFetchFBAlbum:error];
         }
     }];
 }

@@ -122,11 +122,9 @@ MFMailComposeViewControllerDelegate>
     [UIButton setUpButtons:self.image6Indicator];
     [UIButton setUpButtons:self.keepPlayingButton];
     [UIButton setUpButtons:self.messageButton];
+    [UIButton acceptButton:self.greenButton];
+    [UIButton denyButton:self.redButton];
 
-    self.greenButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
-    self.redButton.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
-    self.greenButton.layer.cornerRadius = 20;
-    self.redButton.layer.cornerRadius = 20;
     self.userImage.layer.cornerRadius = 8;
     self.userImage.clipsToBounds = YES;
     [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];

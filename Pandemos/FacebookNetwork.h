@@ -13,16 +13,18 @@
 
 -(void)receivedFBThumbnail:(NSDictionary *)facebookThumbnails;
 -(void)failedToFetchFBThumbs:(NSError *)error;
--(void)receivedFBThumbPaing:(NSDictionary *)facebookThumbPaging;
+-(void)receivedFBThumbPaging:(NSDictionary *)facebookThumbPaging;
 -(void)failedToFetchFBThumbPaging:(NSError *)error;
+-(void)receivedFBUserInfo:(NSDictionary *)facebookUserInfo;
+-(void)failedToFetchUserInfo:(NSError *)error;
 -(void)receivedFBPhotoAlbums:(NSDictionary *)facebookAlbums;
 -(void)failedToFetchFBPhotoAlbums:(NSError *)error;
-
-
-//-(void)receivedFBUserInfo:(NSArray *)facebookUserInfo;
-//-(void)receivedFBUserImage:(NSArray *)facebookUserImages;
-
+-(void)receivedFBPhotoAlbum:(NSDictionary *)album;
+-(void)failedToFetchFBAlbum:(NSError *)error;
+-(void)receivedFBAlbumPaging:(NSDictionary *)albumPaging;
+-(void)failedToFetchFBAlbumPaging:(NSError *)error;
 @end
+
 @interface FacebookNetwork : NSObject
 
 typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
@@ -30,5 +32,7 @@ typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
 @property (weak, nonatomic) id<FacebookNetworkDelegate>delegate;
 
 -(void)loadFacebookThumbnails:(resultBlockWithSuccess)results;
+-(void)loadFacebookUserData:(resultBlockWithSuccess)results;
 -(void)loadFacebookPhotoAlbums:(resultBlockWithSuccess)results;
+-(void)loadFacebookPhotoAlbum:(NSString *)albumID withSuccess:(resultBlockWithSuccess)results;
 @end

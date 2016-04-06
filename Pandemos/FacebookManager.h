@@ -15,12 +15,19 @@
 
 @protocol FacebookManagerDelegate <NSObject>
 
+@optional
 -(void)didReceiveParsedThumbnails:(NSArray *)thumbnails;
 -(void)failedToReceiveParsedThumbs:(NSError *)error;
 -(void)didReceiveParsedThumbPaging:(NSArray *)thumbPaging;
 -(void)failedToReceiveParsedThumbPaging:(NSError *)error;
 -(void)didReceiveParsedAlbumList:(NSArray *)photoAlbums;
+-(void)didReceiveUserData:(NSArray *)userData;
+-(void)failedToReceiveUserData:(NSError *)error;
 -(void)failedToReceiveParsedPhotoAlbums:(NSError *)error;
+-(void)didReceiveParsedAlbum:(NSArray *)album;
+-(void)failedToReceiveParsedAlbum:(NSError *)error;
+-(void)didReceiveParsedAlbumPaging:(NSArray *)albumPaging;
+-(void)failedToReceiveParsedAlbumPaging:(NSError *)error;
 @end
 
 @interface FacebookManager : NSObject<FacebookNetworkDelegate>
@@ -29,6 +36,8 @@
 @property(nonatomic, strong)NSMutableArray<User*> *allUsers;
 @property(nonatomic, strong)NSMutableArray<User*> *pendingMatches;
 @property(nonatomic, strong)NSMutableArray<User*> *matchingUsers;
+//@property(nonatomic, strong)NSMutableArray<Facebook*> *facebookAlbums;
+
 
 //@property(nonatomic, strong)NSMutableArray<FriendRequest*> *pendingArray;
 
@@ -38,5 +47,7 @@
 +(FacebookManager*)sharedSettings;
 
 -(void)loadParsedFacebookThumbnails;
--(void)loadParedFBPhotoAlbums;
+-(void)loadParsedUserData;
+-(void)loadParsedFBPhotoAlbums;
+-(void)loadParsedFBAlbum:(NSString *)albumID;
 @end
