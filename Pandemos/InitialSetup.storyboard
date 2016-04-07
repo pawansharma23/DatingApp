@@ -26,7 +26,9 @@
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qMH-Me-lir">
                                                 <rect key="frame" x="0.0" y="144" width="600" height="218"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="218" id="WlS-W4-znh"/>
+                                                    <constraint firstAttribute="height" constant="218" id="WlS-W4-znh">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="250"/>
+                                                    </constraint>
                                                 </constraints>
                                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="gce-MK-sFh">
                                                     <size key="itemSize" width="100" height="100"/>
@@ -270,29 +272,6 @@
                                                     <segue destination="Pgz-5d-W3Q" kind="show" id="o7r-jU-1kF"/>
                                                 </connections>
                                             </button>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pxm-X1-vuo">
-                                                <rect key="frame" x="180" y="304" width="240" height="128"/>
-                                                <subviews>
-                                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="xSg-Rg-8mq">
-                                                        <rect key="frame" x="102" y="45" width="37" height="37"/>
-                                                    </activityIndicatorView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v5C-NS-Noe">
-                                                        <rect key="frame" x="95" y="23" width="51" height="16.5"/>
-                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
-                                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                <constraints>
-                                                    <constraint firstItem="xSg-Rg-8mq" firstAttribute="centerX" secondItem="pxm-X1-vuo" secondAttribute="centerX" id="2ko-lr-IVb"/>
-                                                    <constraint firstItem="xSg-Rg-8mq" firstAttribute="centerY" secondItem="pxm-X1-vuo" secondAttribute="centerY" id="6NN-Jf-0MK"/>
-                                                    <constraint firstAttribute="width" constant="240" id="Og0-F6-yUO"/>
-                                                    <constraint firstAttribute="height" constant="128" id="PNZ-aJ-llE"/>
-                                                    <constraint firstItem="v5C-NS-Noe" firstAttribute="centerX" secondItem="pxm-X1-vuo" secondAttribute="centerX" id="h71-3D-ILw"/>
-                                                    <constraint firstItem="xSg-Rg-8mq" firstAttribute="top" secondItem="v5C-NS-Noe" secondAttribute="bottom" constant="6" id="pRW-gL-rCr"/>
-                                                </constraints>
-                                            </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Not a valid image, choose another" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hkE-EF-BJa">
                                                 <rect key="frame" x="212" y="364" width="175" height="13"/>
                                                 <constraints>
@@ -313,7 +292,6 @@
                                             <constraint firstItem="Aan-dq-i8y" firstAttribute="leading" secondItem="AEH-b7-HPa" secondAttribute="trailing" constant="40" id="755-8L-grC"/>
                                             <constraint firstAttribute="trailing" secondItem="VBp-cY-1EY" secondAttribute="trailing" constant="8" id="78b-ee-1xo"/>
                                             <constraint firstItem="FVi-dw-zEZ" firstAttribute="leading" secondItem="oqv-pF-CJO" secondAttribute="trailing" constant="8" id="8Uk-4z-pms"/>
-                                            <constraint firstItem="pxm-X1-vuo" firstAttribute="centerY" secondItem="4D1-bi-eRO" secondAttribute="centerY" id="CEs-Ke-d8e"/>
                                             <constraint firstItem="Re5-14-AvC" firstAttribute="top" secondItem="oCY-bk-JVY" secondAttribute="bottom" constant="8" id="Cen-aI-Adf"/>
                                             <constraint firstAttribute="trailing" secondItem="0Av-u2-SQa" secondAttribute="trailing" constant="8" id="CtF-aI-8Bt"/>
                                             <constraint firstItem="0Av-u2-SQa" firstAttribute="leading" secondItem="4D1-bi-eRO" secondAttribute="leading" constant="8" id="EgI-gG-AsW"/>
@@ -362,7 +340,6 @@
                                             <constraint firstItem="urI-hM-rJX" firstAttribute="centerX" secondItem="4D1-bi-eRO" secondAttribute="centerX" id="wnJ-pv-j5z"/>
                                             <constraint firstItem="lMO-CU-eYp" firstAttribute="top" secondItem="47n-wU-qo1" secondAttribute="bottom" constant="3" id="x46-7U-dsl"/>
                                             <constraint firstItem="oCY-bk-JVY" firstAttribute="leading" secondItem="4D1-bi-eRO" secondAttribute="leading" constant="8" id="xVq-lF-bf5"/>
-                                            <constraint firstItem="pxm-X1-vuo" firstAttribute="centerX" secondItem="4D1-bi-eRO" secondAttribute="centerX" id="xW4-aY-7fD"/>
                                             <constraint firstItem="oqv-pF-CJO" firstAttribute="bottom" secondItem="VXe-ak-FRe" secondAttribute="bottom" id="xi3-U8-wGm"/>
                                             <constraint firstItem="nej-xs-rD5" firstAttribute="leading" secondItem="Aan-dq-i8y" secondAttribute="trailing" constant="40" id="yHc-HC-lBX"/>
                                         </constraints>
@@ -396,8 +373,6 @@
                         <outlet property="continueButton" destination="c7J-ZD-NPr" id="nky-If-Poe"/>
                         <outlet property="emptyImageButton" destination="urI-hM-rJX" id="uSn-6a-g1P"/>
                         <outlet property="facebookAlbumBUtton" destination="VXe-ak-FRe" id="SgK-if-35I"/>
-                        <outlet property="loadingLabel" destination="v5C-NS-Noe" id="zIb-3F-wK3"/>
-                        <outlet property="loadingView" destination="pxm-X1-vuo" id="QnS-Gi-CfX"/>
                         <outlet property="locationlabel" destination="Cs7-W5-2et" id="Cc5-9L-IOb"/>
                         <outlet property="maxAgeLabel" destination="lte-GJ-n5S" id="cn8-Vk-5hy"/>
                         <outlet property="maxAgeSlider" destination="0Av-u2-SQa" id="R57-sx-jsS"/>
@@ -411,7 +386,6 @@
                         <outlet property="previousButton" destination="oqv-pF-CJO" id="7KI-EG-b3j"/>
                         <outlet property="pushNotifications" destination="jGb-tc-ifB" id="Pm0-K3-k51"/>
                         <outlet property="scrollView" destination="fPU-BL-hXf" id="olQ-TX-WWs"/>
-                        <outlet property="spinner" destination="xSg-Rg-8mq" id="ves-bB-jfp"/>
                         <outlet property="suggestionsButton" destination="EDQ-4r-tdp" id="kZo-QL-rP0"/>
                         <outlet property="textViewAboutMe" destination="VBp-cY-1EY" id="Ek0-Jy-HIV"/>
                         <outlet property="womensInterestButton" destination="Aan-dq-i8y" id="O5L-lg-wxI"/>

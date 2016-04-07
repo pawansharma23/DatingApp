@@ -15,7 +15,7 @@
 -(void)failedToFetchFBThumbs:(NSError *)error;
 -(void)receivedFBThumbPaging:(NSDictionary *)facebookThumbPaging;
 -(void)failedToFetchFBThumbPaging:(NSError *)error;
--(void)receivedFBUserInfo:(NSDictionary *)facebookUserInfo;
+-(void)receivedFBUserInfo:(NSDictionary *)facebookUserInfo andUser:(User*)user;
 -(void)failedToFetchUserInfo:(NSError *)error;
 -(void)receivedFBPhotoAlbums:(NSDictionary *)facebookAlbums;
 -(void)failedToFetchFBPhotoAlbums:(NSError *)error;

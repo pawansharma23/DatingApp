@@ -121,13 +121,12 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
 - (IBAction)onOtherFacebookAlbums:(UIButton *)sender
 {
-    [self performSegueWithIdentifier:@"FacebookAlbums" sender:self];
+    [self.navigationController popViewControllerAnimated:YES];
 }
-
 
 - (IBAction)onNextButton:(UIButton *)sender
 {
-    Facebook *face = [self.albumPages firstObject];
+  //  Facebook *face = [self.albumPages firstObject];
     //pagination need to use a whole different route to call the url, not through FB network
 
 //    [face loadNextPrevPage:self.nextURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];

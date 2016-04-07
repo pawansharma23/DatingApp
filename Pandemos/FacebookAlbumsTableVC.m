@@ -51,6 +51,15 @@
     }
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return @"Album:";
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 25;
+}
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.albums.count;
@@ -80,13 +89,21 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    if ([segue.identifier isEqualToString:@"BackToInitial"])
+    {
+        NSLog(@"back to initial setup");
+    }
+    else if([segue.identifier isEqualToString:@"AlbumDetail"])
+    {
     AlbumDetailViewController *advc = segue.destinationViewController;
     NSLog(@"segueing: this: %@", self.albumId);
 
     advc.albumID = self.albumId;
     advc.albumName = self.albumName;
+    }
 }
 
+#pragma mark - FACEBOOK MANAGER DELEGATE
 -(void)didReceiveParsedAlbumList:(NSArray *)photoAlbums
 {
     self.albums = photoAlbums;

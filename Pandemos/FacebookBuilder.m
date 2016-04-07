@@ -8,6 +8,8 @@
 
 #import "FacebookBuilder.h"
 #import "Facebook.h"
+#import "User.h"
+#import "Parse/Parse.h"
 
 @implementation FacebookBuilder
 
@@ -42,27 +44,88 @@
     return parsedData;
 }
 
-+(NSArray *)parseUserData:(NSDictionary *)results withError:(NSError *)error
++(void)parseAndSaveUserData:(NSDictionary *)results andUser:(User *)user withError:(NSError *)error
 {
     NSError *localError = nil;
 
     if (localError != nil)
     {
         error = localError;
-        return nil;
     }
-    NSLog(@"from builder: %@", results);
 
-    NSMutableArray *parsedData = [NSMutableArray new];
-    NSDictionary *dataArray = results[@"data"];
+    NSDictionary *userDict = results;
 
-//    if (dataArray)
-//    {
-//        Facebook *face = [Facebook new];
-//        face.locale = dataArray[@"locale"];
-//    }
+    if (userDict)
+    {
 
-    return parsedData;
+        NSString *faceID = userDict[@"id"];
+        NSString *name = userDict[@"first_name"];
+        NSString *gender = userDict[@"male"];
+        NSString *birthday = userDict[@"birthday"];
+        NSString *location = userDict[@"location"][@"name"];
+        //work
+        NSArray *workArray = userDict[@"work"];
+        NSDictionary *employerDict = [workArray lastObject];
+        NSString *placeOfWork = employerDict[@"employer"][@"name"];
+        //education
+        NSArray *educationArray = userDict[@"education"];
+        NSDictionary *schoolDict = [educationArray lastObject];
+        NSString *lastSchool = schoolDict[@"school"][@"name"];
+        //likes
+        NSDictionary *likeDict = userDict[@"likes"];
+
+        if (likeDict)
+        {
+            NSArray *likes = likeDict[@"data"];
+
+            //save to Parse
+            if (name)
+            {
+                [user setObject:name forKey:@"givenName"];
+            }
+            if (faceID)
+            {
+                [user setObject:faceID forKey:@"faceID"];
+            }
+            if (birthday)
+            {
+                [user setObject:birthday forKey:@"birthday"];
+            }
+            if (gender)
+            {
+                [user setObject:gender forKey:@"gender"];
+            }
+            if (location)
+            {
+                [user setObject:location forKey:@"facebookLocation"];
+            }
+            if (placeOfWork)
+            {
+                [user setObject:placeOfWork forKey:@"work"];
+            }
+            if (lastSchool)
+            {
+                [user setObject:lastSchool forKey:@"lastSchool"];
+            }
+            if (likes)
+            {
+                [user setObject:likes forKey:@"likes"];
+            }
+        }
+
+        [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+            if (succeeded)
+            {
+                NSLog(@"saved FB data to parse: %d", succeeded ? true : false);
+            }
+            else
+            {
+                NSLog(@"did not save to parse: %@", error);
+            }
+        }];
+    }
+
 }
 
 +(NSArray *)parseThumbnailPaging:(NSDictionary *)results withError:(NSError *)error

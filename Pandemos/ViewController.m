@@ -533,14 +533,14 @@ MFMailComposeViewControllerDelegate>
             //for logging purposes
             //NSString *fullName = [self.currentUser objectForKey:@"fullName"];
             NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-            NSLog(@"It's Match Between: %@ and %@", user.fullName, fullNameOfCurrentMatch);
+            NSLog(@"It's Match Between: %@ and %@", user.givenName, fullNameOfCurrentMatch);
 
             [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                 
                 if (error) {
                     NSLog(@"error saving relation: %@", error);
                 } else{
-                    NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", user.fullName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
+                    NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", user.givenName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
                 }
             }];
         }
@@ -774,7 +774,7 @@ MFMailComposeViewControllerDelegate>
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
     self.fullAboutMe.text = userB.aboutMe;
-    NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", userB.firstName, [userB ageFromBirthday:userB.birthday]];
+    NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", userB.givenName, [userB ageFromBirthday:userB.birthday]];
     self.fullDescNameAndAge.text = nameAndAge;
     self.fullMilesAway.text = userB.milesAway;
 }

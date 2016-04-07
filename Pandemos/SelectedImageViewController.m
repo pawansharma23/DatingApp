@@ -13,6 +13,7 @@
 #import "UIButton+Additions.h"
 #import "FacebookManager.h"
 #import "Facebook.h"
+#import "UserManager.h"
 
 @interface SelectedImageViewController ()
 <UICollectionViewDataSource,
@@ -20,22 +21,16 @@ UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDataSource,
 LXReorderableCollectionViewDelegateFlowLayout,
-FacebookManagerDelegate>
+FacebookManagerDelegate,
+UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *saveImage;
-@property (weak, nonatomic) IBOutlet UIButton *chooseAnotherButton;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 
 @property (strong, nonatomic) NSMutableArray *pictures;
 @property (strong, nonatomic) User *currentUser;
-
-@property (strong, nonatomic) NSString *image1;
-@property (strong, nonatomic) NSString *image2;
-@property (strong, nonatomic) NSString *image3;
-@property (strong, nonatomic) NSString *image4;
-@property (strong, nonatomic) NSString *image5;
-@property (strong, nonatomic) NSString *image6;
+@property (strong, nonatomic) UserManager *userManager;
 @end
 
 @implementation SelectedImageViewController
@@ -50,85 +45,63 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     self.navigationItem.title = @"Photo";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
     self.pictures = [NSMutableArray new];
-    self.automaticallyAdjustsScrollViewInsets = NO;
+    //self.automaticallyAdjustsScrollViewInsets = NO;
 
     self.userImage.image = [UIImage imageWithData:[self imageData:self.image]];
 
-    [UIButton setUpButtons:self.chooseAnotherButton];
     [UIButton setUpButtons:self.saveImage];
-
-
 
     self.collectionView.delegate = self;
     self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
     self.collectionView.layer.borderWidth = 1.0;
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
-//    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
-//    [flowlayouts setItemSize:CGSizeMake(100, 100)];
-//    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-//    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
-//    [self.collectionView setCollectionViewLayout:flowlayouts];
-//
-//
-//    //get "no data" from backend
-//    PFQuery *query = [PFUser query];
-//
-//    //this is quering the user info from the PFUser cached in sim, which is not the usr that is logged in??
-//    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-//        if(!error)
-//        {
-//            //userImages
-//            self.image1 = [[objects firstObject] objectForKey:@"image1"];
-//            self.image2 = [[objects firstObject] objectForKey:@"image2"];
-//            self.image3 = [[objects firstObject] objectForKey:@"image3"];
-//            self.image4 = [[objects firstObject] objectForKey:@"image4"];
-//            self.image5 = [[objects firstObject] objectForKey:@"image5"];
-//            self.image6 = [[objects firstObject] objectForKey:@"image6"];
-//
-//            if (self.image1) {
-//                [self.pictures addObject:self.image1];
-//            } if (self.image2) {
-//                [self.pictures addObject:self.image2];
-//            } if (self.image3) {
-//                [self.pictures addObject:self.image3];
-//            } if (self.image4) {
-//                [self.pictures addObject:self.image4];
-//            } if (self.image5) {
-//                [self.pictures addObject:self.image5];
-//            } if (self.image6) {
-//                [self.pictures addObject:self.image6];
-//            }
-//            //NSLog(@"picture array: %@", self.pictures);
-//
-//            [self.collectionView reloadData];
-//        }
-//    }];
+    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
+    [flowlayouts setItemSize:CGSizeMake(100, 100)];
+    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
+    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
+    [self.collectionView setCollectionViewLayout:flowlayouts];
+
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+
+    if (self.currentUser)
+    {
+        self.userManager = [UserManager new];
+        self.userManager.delegate = self;
+
+        [self.userManager loadUserImages:self.currentUser];
+    }
+    else
+    {
+        NSLog(@"no user for face request");
+    }
 }
 
 
 #pragma mark -- collectionView delegate Methods
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    NSLog(@"count: %d", (int)self.pictures.count);
     return self.pictures.count;
 }
 
 -(PreviewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     PreviewCell *cell = (PreviewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kReuseIdentifier forIndexPath:indexPath];
-    NSString *photoString = [self.pictures objectAtIndex:indexPath.item];
-    cell.cvImage.image = [UIImage imageWithData:[self imageData:photoString]];
+    NSString *image = [self.pictures objectAtIndex:indexPath.item];
+    cell.cvImage.image = [UIImage imageWithData:[self imageData:image]];
 
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath
 {
-    NSString *photoString = [self.pictures objectAtIndex:fromIndexPath.item];
+    User *images = [self.pictures objectAtIndex:fromIndexPath.item];
     [self.pictures removeObjectAtIndex:fromIndexPath.item];
-    [self.pictures insertObject:photoString atIndex:toIndexPath.item];
-
-    [self deconstructArray:self.pictures];
+    [self.pictures insertObject:images atIndex:toIndexPath.item];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath
@@ -143,88 +116,132 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     NSLog(@"dragging has stopped");
 }
 
-
-
-
-
-//- (IBAction)onSaveImage:(UIButton *)sender
-//{
-//    [UIButton changeButtonState:self.saveImage];
-//
-//    if (!self.image1)
-//    {
-//        NSLog(@"nothing in 1");
-//        [self.currentUser setObject:self.imageStr forKey:@"image1"];
-//        [self.currentUser saveInBackground];
-//        [self.saveImage setTitle:@"Saved Image 1" forState:UIControlStateNormal];
-//        [self.collectionView reloadData];
-//
-//    }
-//    else if (self.image1 && !self.image2)
-//    {
-//        NSLog(@"1 occupied, 2 empty");
-//        [self.currentUser setObject:self.imageStr forKey:@"image2"];
-//        [self.currentUser saveInBackground];
-//
-//        [self.saveImage setTitle:@"Saved Image 2" forState:UIControlStateNormal];
-//        [self.collectionView reloadData];
-//
-//    }
-//    else if (self.image1 && self.image2 && !self.image3)
-//    {
-//        NSLog(@"1 & 2 occ, 3 empty");
-//        [self.currentUser setObject:self.imageStr forKey:@"image3"];
-//        [self.currentUser saveInBackground];
-//        [self.saveImage setTitle:@"Saved Image 3" forState:UIControlStateNormal];
-//        [self.collectionView reloadData];
-//
-//    }
-//    else if (self.image1 && self.image2 && self.image3 && !self.image4)
-//    {
-//        NSLog(@"1, 2, 3 occ, 4 empty");
-//        [self.currentUser setObject:self.imageStr forKey:@"image4"];
-//        [self.currentUser saveInBackground];
-//        [self.saveImage setTitle:@"Saved Image 4" forState:UIControlStateNormal];
-//
-//        [self.collectionView reloadData];
-//
-//    }
-//    else if (self.image1 && self.image2 && self.image3 && self.image4 && !self.image5)
-//    {
-//        NSLog(@"1, 2, 3, 4 occ 5 empty");
-//
-//        [self.currentUser setObject:self.imageStr forKey:@"image5"];
-//        [self.currentUser saveInBackground];
-//        [self.saveImage setTitle:@"Saved Image 5" forState:UIControlStateNormal];
-//
-//        [self.collectionView reloadData];
-//
-//    }
-//    else if (self.image1 && self.image2 && self.image3 && self.image4 && self.image5 && !self.image6)
-//    {
-//        NSLog(@"1, 2, 3, 4, 5 occ 6 empty");
-//        [self.currentUser setObject:self.imageStr forKey:@"image6"];
-//        [self.currentUser saveInBackground];
-//        [self.saveImage setTitle:@"Save as Image 6" forState:UIControlStateNormal];
-//
-//        [self.collectionView reloadData];
-//        
-//    }
-//    else
-//    {
-//        NSLog(@"all images Filled");
-//        [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
-//    }
-//}
-
-- (IBAction)onAddMoreImages:(UIButton *)sender
+- (IBAction)onSaveImage:(UIButton *)sender
 {
-    [UIButton changeButtonState:self.chooseAnotherButton];
-    [self performSegueWithIdentifier:@"AddMore" sender:self];
+    [UIButton changeButtonState:self.saveImage];
+
+    if (self.pictures.count == 0)
+    {
+        [self saveForImage1];
+        [self.collectionView reloadData];
+    }
+
+    else if (self.pictures.count == 1)
+    {
+        [self saveForImage2];
+        [self.collectionView reloadData];
+    }
+
+    else if (self.pictures.count == 2)
+    {
+        [self saveForImage3];
+        [self.collectionView reloadData];
+    }
+
+    else if (self.pictures.count == 3)
+    {
+        [self saveForImage4];
+        [self.collectionView reloadData];
+    }
+
+    else if (self.pictures.count == 4)
+    {
+        [self saveForImage5];
+        [self.collectionView reloadData];
+    }
+
+    else if (self.pictures.count == 5)
+    {
+        [self saveForImage6];
+        [self.collectionView reloadData];
+    }
+
+    else
+    {
+        NSLog(@"all images Filled");
+        [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
+    }
 }
 
+- (IBAction)onAddAnother:(UIButton *)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark -- USER MANAGER DELEGATE
+-(void)didReceiveUserImages:(NSArray *)images
+{
+    if (images)
+    {
+        NSLog(@"images from delegate in VC: %@", images);
+
+        NSMutableArray *mutArr = [NSMutableArray arrayWithArray:images];
+        self.pictures = mutArr;
+    }
+    [self.collectionView reloadData];
+}
 
 #pragma mark -- HELPERS
+-(void)saveForImage1
+{
+    NSLog(@"1 Empty");
+    [self.pictures addObject:self.image];
+    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self.saveImage setTitle:@"Image 1 Set" forState:UIControlStateNormal];
+    }];
+}
+
+-(void)saveForImage2
+{
+    NSLog(@"2 Empty");
+    [self.pictures addObject:self.image];
+    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self.saveImage setTitle:@"Image 2 Set" forState:UIControlStateNormal];
+    }];
+}
+
+-(void)saveForImage3
+{
+    NSLog(@"3 Empty");
+    [self.pictures addObject:self.image];
+    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self.saveImage setTitle:@"Image 3 Set" forState:UIControlStateNormal];
+    }];
+}
+
+-(void)saveForImage4
+{
+    NSLog(@"4 Empty");
+    [self.pictures addObject:self.image];
+    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self.saveImage setTitle:@"Image 4 Set" forState:UIControlStateNormal];
+    }];
+}
+
+-(void)saveForImage5
+{
+    NSLog(@"5 Empty");
+    [self.pictures addObject:self.image];
+    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self.saveImage setTitle:@"Image 5 Set" forState:UIControlStateNormal];
+    }];
+}
+
+-(void)saveForImage6
+{
+    NSLog(@"6 Empty");
+    [self.pictures addObject:self.image];
+    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        [self.saveImage setTitle:@"Image 6 Set" forState:UIControlStateNormal];
+    }];
+}
+
 -(NSData *)imageData:(NSString *)imageString
 {
     NSURL *url = [NSURL URLWithString:imageString];
@@ -232,36 +249,33 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
     return data;
 }
-
--(void)deconstructArray:(NSMutableArray *)array
-{
-    NSString *firstImage = [array firstObject];
-    NSString *secondImage = [array objectAtIndex:1];
-    NSString *thirdImage = [array objectAtIndex:2];
-    NSString *forthImage = [array objectAtIndex:3];
-    NSString *fifthImage = [array objectAtIndex:4];
-    NSString *sixthImage = [array objectAtIndex:5];
-
-    if (firstImage) {
-        [self.currentUser setObject:firstImage forKey:@"image1"];
-        [self.currentUser saveInBackground];
-    } if (secondImage) {
-        [self.currentUser setObject:secondImage forKey:@"image2"];
-        [self.currentUser saveInBackground];
-    } if (thirdImage) {
-        [self.currentUser setObject:thirdImage forKey:@"image3"];
-        [self.currentUser saveInBackground];
-    } if (forthImage) {
-        [self.currentUser setObject:forthImage forKey:@"image4"];
-        [self.currentUser saveInBackground];
-    } if (fifthImage) {
-        [self.currentUser setObject:fifthImage forKey:@"image5"];
-        [self.currentUser saveInBackground];
-    } if (sixthImage) {
-        [self.currentUser setObject:sixthImage forKey:@"image6"];
-        [self.currentUser saveInBackground];
-    }
-}
-
-
 @end
+//-(void)deconstructArray:(NSMutableArray *)array
+//{
+//    NSString *firstImage = [array firstObject];
+//    NSString *secondImage = [array objectAtIndex:1];
+//    NSString *thirdImage = [array objectAtIndex:2];
+//    NSString *forthImage = [array objectAtIndex:3];
+//    NSString *fifthImage = [array objectAtIndex:4];
+//    NSString *sixthImage = [array objectAtIndex:5];
+//
+//    if (firstImage) {
+//        [self.currentUser setObject:firstImage forKey:@"image1"];
+//        [self.currentUser saveInBackground];
+//    } if (secondImage) {
+//        [self.currentUser setObject:secondImage forKey:@"image2"];
+//        [self.currentUser saveInBackground];
+//    } if (thirdImage) {
+//        [self.currentUser setObject:thirdImage forKey:@"image3"];
+//        [self.currentUser saveInBackground];
+//    } if (forthImage) {
+//        [self.currentUser setObject:forthImage forKey:@"image4"];
+//        [self.currentUser saveInBackground];
+//    } if (fifthImage) {
+//        [self.currentUser setObject:fifthImage forKey:@"image5"];
+//        [self.currentUser saveInBackground];
+//    } if (sixthImage) {
+//        [self.currentUser setObject:sixthImage forKey:@"image6"];
+//        [self.currentUser saveInBackground];
+//    }
+//}

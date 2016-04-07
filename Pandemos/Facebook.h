@@ -11,11 +11,13 @@
 
 @interface Facebook : NSObject
 //Ind. FB Categories
-@property (strong, nonatomic) NSString *locale;
+@property (strong, nonatomic) NSString *location;
 @property (strong, nonatomic) NSString *timezone;
-@property (strong, nonatomic) NSString *verified;
-@property (strong, nonatomic) NSString *email;
+@property (strong, nonatomic) NSString *givenName;
+@property (strong, nonatomic) NSString *birthday;
 @property (strong, nonatomic) NSArray *likes;
+
+
 //image properties-- THUMBS
 @property (strong, nonatomic) NSString *thumbURL;
 @property (strong, nonatomic) NSString *thumbPhotoID;

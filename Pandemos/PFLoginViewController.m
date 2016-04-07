@@ -18,10 +18,7 @@
 
 @interface PFLoginViewController ()
 @property (weak, nonatomic) IBOutlet UIView *footerView;
-
 @property (strong, nonatomic) PFUser *currentUser;
-
-
 @end
 
 @implementation PFLoginViewController

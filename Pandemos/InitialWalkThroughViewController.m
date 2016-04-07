@@ -8,13 +8,14 @@
 
 #import "InitialWalkThroughViewController.h"
 #import <Foundation/Foundation.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
 #import <Parse/Parse.h>
 #import "SelectedImageViewController.h"
-#import "SuggestionsViewController.h"
 
+#import "SuggestionsViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <LXReorderableCollectionViewFlowLayout.h>
@@ -26,6 +27,7 @@
 #import "FacebookManager.h"
 #import "FacebookNetwork.h"
 #import "User.h"
+#import "UserManager.h"
 #import "SVProgressHUD.h"
 
 @interface InitialWalkThroughViewController ()
@@ -37,7 +39,8 @@ LXReorderableCollectionViewDataSource,
 CLLocationManagerDelegate,
 UITextViewDelegate,
 UIScrollViewDelegate,
-FacebookManagerDelegate>
+FacebookManagerDelegate,
+UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UITextView *textViewAboutMe;
@@ -60,15 +63,14 @@ FacebookManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *emptyImageButton;
 @property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
 @property (weak, nonatomic) IBOutlet UILabel *notValidImageLabel;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
-@property (weak, nonatomic) IBOutlet UIView *loadingView;
-@property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) FacebookManager *manager;
-
+@property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) NSArray *thumbnails;
+@property (strong, nonatomic) NSArray *userData;
+
 @property (strong, nonatomic) NSMutableArray *selectedPictures;
 @property (strong, nonatomic) NSArray *nextPages;
 @property (strong, nonatomic) NSArray *previousPages;
@@ -92,11 +94,8 @@ FacebookManagerDelegate>
 
     if (self.currentUser)
     {
-        NSLog(@"User: %@", self.currentUser.fullName);
+        NSLog(@"User: %@", self.currentUser.givenName);
 
-        [self.spinner startAnimating];
-        self.loadingView.alpha = .75;
-        self.loadingView.layer.cornerRadius = 8;
         self.navigationItem.title = @"Setup";
         self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
         self.automaticallyAdjustsScrollViewInsets = NO;
@@ -108,10 +107,10 @@ FacebookManagerDelegate>
         self.selectedPictures = [NSMutableArray new];
         self.thumbnails = [NSArray new];
         self.nextPages = [NSArray new];
+        self.userData = [NSArray new];
 
         self.previousButton.hidden = YES;
-
-
+        self.notValidImageLabel.hidden = YES;
 
         //COLLECTIONVIEW
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -143,79 +142,23 @@ FacebookManagerDelegate>
         [UIButton setUpButtons:self.continueButton];
         [UITextView setup:self.textViewAboutMe];
 
-        self.notValidImageLabel.hidden = YES;
-
-        //set age slider values MIN
-        NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %.f", self.minAgeSlider.value];
-        self.minAgeLabel.text = minAge;
-        NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
-        [self.currentUser setObject:minAgeStr forKey:@"minAge"];
-        //Max
-        NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %.f", self.maxAgeSlider.value];
-        self.maxAgeLabel.text = maxAge;
-        NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
-        [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
-
-        //distance away slider initial
-        NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
-        NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
-        self.milesAwayLabel.text = milesAway;
-        [self.currentUser setObject:milesAwayStr forKey:@"milesAway"];
-
-        [self.currentUser setObject:@"public" forKey:@"publicProfile"];
-        //save default data
-//        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//
-//            if (error)
-//            {
-//                NSLog(@"error: %@", error.description);
-//            }
-//        }];
+        [self defaultAgeSliderSet];
+        [self defaultMilesAwaySliderSet];
+        [self defaultPublicProfileSet];
     }
-
-    else
-    {
-        NSLog(@"no User logged in");
-    }
-
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
 
     if (self.currentUser)
-        {
-            self.manager = [FacebookManager new];
-            self.manager.facebookNetworker = [FacebookNetwork new];
-            self.manager.facebookNetworker.delegate = self.manager;
-
-            self.manager.delegate = self;
-            [self.manager loadParsedFacebookThumbnails];
-            [self.manager loadParsedUserData];
-        }
-        else
-        {
-            NSLog(@"no user for face request");
-        }
-    
-
-    //sexPref Buttons
-//    if ([self.userGender isEqualToString:@"male"])
-//    {
-//        self.womensInterestButton.backgroundColor = [UIColor blackColor];
-//        [self.currentUser setObject:@"female" forKey:@"sexPref"];
-//        [self.currentUser saveInBackground];
-//    }
-//    else if ([self.userGender isEqualToString:@"female"])
-//    {
-//        self.mensInterestButton.backgroundColor = [UIColor blackColor];
-//        [self.currentUser setObject:@"male" forKey:@"sexPref"];
-//        [self.currentUser saveInBackground];
-//    }
-//    else
-//    {
-//        NSLog(@"no data for sex pref");
-//    }
+    {
+        [self setupManagersForInitalWalkViewController];
+    }
+    else
+    {
+        NSLog(@"no user for face request");
+    }
 
     //aboutMe TextView Populated
     NSString *aboutMeDescription = [self.currentUser objectForKey:@"aboutMe"];
@@ -223,11 +166,6 @@ FacebookManagerDelegate>
     {
         self.textViewAboutMe.text = aboutMeDescription;
     }
-
-    [self.spinner stopAnimating];
-    self.loadingLabel.hidden = YES;
-    self.loadingView.hidden = YES;
-    self.spinner.hidden = YES;
 }
 
 #pragma mark -- CLLOCATION
@@ -264,19 +202,6 @@ FacebookManagerDelegate>
     }];
 }
 
-
-- (IBAction)onEmptyImagesFromParse:(UIButton *)sender
-{
-    [self.currentUser removeObjectForKey:@"image1"];
-    [self.currentUser removeObjectForKey:@"image2"];
-    [self.currentUser removeObjectForKey:@"image3"];
-    [self.currentUser removeObjectForKey:@"image4"];
-    [self.currentUser removeObjectForKey:@"image5"];
-    [self.currentUser removeObjectForKey:@"image6"];
-    [self.currentUser saveInBackground];
-}
-
-
 #pragma mark -- TEXTVIEW DELEGATE
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
@@ -290,20 +215,20 @@ FacebookManagerDelegate>
 {
     NSLog(@"textViewDidEndEditing: %@", textView);
 
-   // NSString *aboutMeDescr = textView.text;
-//    [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
-//    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error)
-//     {
-//
-//         if (error)
-//         {
-//             NSLog(@"cannot save: %@", error.description);
-//         }
-//         else
-//         {
-//             NSLog(@"saved successful: %s", succeeded ? "true" : "false");
-//         }
-//     }];
+    // NSString *aboutMeDescr = textView.text;
+    //    [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
+    //    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error)
+    //     {
+    //
+    //         if (error)
+    //         {
+    //             NSLog(@"cannot save: %@", error.description);
+    //         }
+    //         else
+    //         {
+    //             NSLog(@"saved successful: %s", succeeded ? "true" : "false");
+    //         }
+    //     }];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
@@ -340,7 +265,6 @@ FacebookManagerDelegate>
 
 - (IBAction)onSuggestionsTapped:(UIButton *)sender
 {
-
     [self performSegueWithIdentifier:@"Suggestions" sender:self];
 }
 
@@ -355,6 +279,8 @@ FacebookManagerDelegate>
     static NSString *cellIdentifier = @"cvCell";
     CVCell *cell = (CVCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     Facebook *face = [self.thumbnails objectAtIndex:indexPath.item];
+    cell.layer.borderWidth = 1.0f;
+    cell.layer.borderColor = [UIColor blueColor].CGColor;
     cell.bookImage.image = [UIImage imageWithData:[face stringURLToData:face.thumbURL]];
 
     return cell;
@@ -488,9 +414,9 @@ FacebookManagerDelegate>
     NSLog(@"failed to call facebook delegate: %@", error);
 }
 
--(void)didReceiveUserData:(NSArray *)userData
+-(void)didReceiveAndSaveUserData
 {
-    NSLog(@"facebook user data: %@", userData);
+    NSLog(@"facebook user data");
 }
 
 -(void)failedToReceiveUserData:(NSError *)error
@@ -513,6 +439,108 @@ FacebookManagerDelegate>
 -(void)failedToReceiveParsedThumbPaging:(NSError *)error
 {
     NSLog(@"failed to call facebook del for Paging: %@", error);
+}
+
+#pragma mark - USERMANAGER DELEGATE
+-(void)didReceiveUserData:(NSArray *)data
+{
+    self.userData = data;
+    NSLog(@"user data: %@", data);
+    NSDictionary *userData = [data firstObject];
+
+    self.userGender = userData[@"gender"];
+    [self sexPreferenceButton];
+}
+
+-(void)failedToFetchUserData:(NSError *)error
+{
+    NSLog(@"failed to fetch Data: %@", error);
+}
+
+#pragma mark -- HELPERS
+-(void)sexPreferenceButton
+{
+    if ([self.userGender isEqualToString:@"male"])
+    {
+        self.womensInterestButton.backgroundColor = [UIColor blackColor];
+        [self.currentUser setObject:@"female" forKey:@"sexPref"];
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            NSLog(@"saved as prefer women: %d", succeeded ? true : false);
+        }];
+    }
+    else if ([self.userGender isEqualToString:@"female"])
+    {
+        self.mensInterestButton.backgroundColor = [UIColor blackColor];
+        [self.currentUser setObject:@"male" forKey:@"sexPref"];
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            NSLog(@"saved as prefer men: %d", succeeded ? true : false);
+        }];
+    }
+    else
+    {
+        NSLog(@"no data for sex pref");
+    }
+}
+
+-(void)defaultAgeSliderSet
+{
+    //MIN
+    NSString *minAgeFloat = [NSString stringWithFormat:@"Minimum Age: %.f", self.minAgeSlider.value];
+    self.minAgeLabel.text = minAgeFloat;
+    NSString *minAge = [NSString stringWithFormat:@"%.f", self.minAgeSlider.value];
+    //Max
+    NSString *maxAgeFloat = [NSString stringWithFormat:@"Maximum Age: %.f", self.maxAgeSlider.value];
+    self.maxAgeLabel.text = maxAgeFloat;
+    NSString *maxAge = [NSString stringWithFormat:@"%.f", self.maxAgeSlider.value];
+
+    [self.currentUser setObject:minAge forKey:@"minAge"];
+    [self.currentUser setObject:maxAge forKey:@"maxAge"];
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        NSLog(@"saved min/max age preference: mid: %@ & max: %@ %d", minAge, maxAge, succeeded ? true : false);
+    }];
+}
+
+-(void)defaultMilesAwaySliderSet
+{
+    NSString *milesAwayFloat = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
+    NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayFloat];
+    self.milesAwayLabel.text = milesAway;
+    [self.currentUser setObject:milesAway forKey:@"milesAway"];
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        NSLog(@"saved min/max age preference: milesAway: %@, %d", milesAway, succeeded ? true : false);
+    }];
+}
+
+-(void)defaultPublicProfileSet
+{
+    [self.currentUser setObject:@"public" forKey:@"publicProfile"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        NSLog(@"saved min/max age preference: milesAway: %d", succeeded ? true : false);
+    }];
+}
+
+- (IBAction)onEmptyImagesFromParse:(UIButton *)sender
+{
+    [self.currentUser removeObjectForKey:@"profileImages"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        NSLog(@"deleted profileImage array successfully: %d", succeeded ? true : false);
+    }];
+}
+
+-(void)setupManagersForInitalWalkViewController
+{
+    self.manager = [FacebookManager new];
+    self.manager.facebookNetworker = [FacebookNetwork new];
+    self.manager.facebookNetworker.delegate = self.manager;
+    self.userManager = [UserManager new];
+    self.userManager.delegate = self;
+    self.manager.delegate = self;
+
+    [self.manager loadParsedFacebookThumbnails];
+    [self.manager loadParsedUserData];
+    [self.userManager loadUserData:self.currentUser];
 }
 @end
 

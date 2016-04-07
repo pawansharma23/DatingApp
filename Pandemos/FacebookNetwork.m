@@ -37,13 +37,14 @@
 
 -(void)loadFacebookUserData:(resultBlockWithSuccess)results
 {
-    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]initWithGraphPath:@"me" parameters:@{@"fields":@"id, name, about, birthday, gender, bio, education, is_verified, locale, first_name, work, location, likes"} HTTPMethod:@"GET"];
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]initWithGraphPath:@"me" parameters:@{@"fields":@"id, about, birthday, gender, bio, education, first_name, work, location, likes"} HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
 
+        User *user = [User currentUser];
         if (!error)
         {
             results(YES, nil);
-            [self.delegate receivedFBUserInfo:result];
+            [self.delegate receivedFBUserInfo:result andUser:user];
         }
         else
         {

@@ -114,14 +114,19 @@
     }
 }
 
--(void)receivedFBUserInfo:(NSDictionary *)facebookUserInfo
+-(void)failedToFetchFBThumbs:(NSError *)error
+{
+    [self.delegate failedToReceiveParsedThumbs:error];
+}
+
+-(void)receivedFBUserInfo:(NSDictionary *)facebookUserInfo andUser:(User *)user
 {
     NSError *error = nil;
-    NSArray *userData = [FacebookBuilder parseUserData:facebookUserInfo withError:error];
+    [FacebookBuilder parseAndSaveUserData:facebookUserInfo andUser:user withError:error];
 
     if (!error)
     {
-        [self.delegate didReceiveUserData:userData];
+        [self.delegate didReceiveAndSaveUserData];
     }
     else
     {
@@ -129,9 +134,9 @@
     }
 }
 
--(void)failedToFetchFBThumbs:(NSError *)error
+-(void)failedToFetchUserInfo:(NSError *)error
 {
-    [self.delegate failedToReceiveParsedThumbs:error];
+    [self.delegate failedToReceiveUserData:error];
 }
 
 -(void)receivedFBThumbPaging:(NSDictionary *)facebookThumbPaging
