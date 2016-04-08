@@ -24,7 +24,8 @@
 
 @implementation FacebookAlbumsTableVC
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 
     self.navigationItem.title = @"Facebook Albums";
@@ -36,6 +37,7 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [self addBackButtonWithTitle:@"Back"];
 
     if (self.currentUser)
     {
@@ -89,18 +91,25 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"BackToInitial"])
+     if([segue.identifier isEqualToString:@"AlbumDetail"])
     {
-        NSLog(@"back to initial setup");
-    }
-    else if([segue.identifier isEqualToString:@"AlbumDetail"])
-    {
-    AlbumDetailViewController *advc = segue.destinationViewController;
-    NSLog(@"segueing: this: %@", self.albumId);
+        AlbumDetailViewController *advc = segue.destinationViewController;
+        NSLog(@"segueing: this: %@", self.albumId);
 
-    advc.albumID = self.albumId;
-    advc.albumName = self.albumName;
+        advc.albumID = self.albumId;
+        advc.albumName = self.albumName;
     }
+}
+
+- (void)addBackButtonWithTitle:(NSString *)title
+{
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(backButtonPressed)];
+    self.navigationItem.leftBarButtonItem = backButton;
+}
+
+- (void)backButtonPressed
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - FACEBOOK MANAGER DELEGATE

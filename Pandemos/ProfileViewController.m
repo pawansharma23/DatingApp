@@ -8,12 +8,14 @@
 
 #import "ProfileViewController.h"
 #import <Foundation/Foundation.h>
-#import "User.h"
 #import <MessageUI/MessageUI.h>
 #import "CVSettingCell.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
+#import "User.h"
+#import "FacebookManager.h"
+#import "UserManager.h"
 
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
@@ -24,23 +26,24 @@ UIScrollViewDelegate,
 UICollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDataSource,
-UIPopoverPresentationControllerDelegate>
+UIPopoverPresentationControllerDelegate,
+UserManagerDelegate>
 
-@property (strong, nonatomic) PFUser *currentUser;
-@property (strong, nonatomic) NSMutableArray *pictures;
 @property (weak, nonatomic) IBOutlet UIImageView *appLogo;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
 
 @property (weak, nonatomic) IBOutlet UILabel *minimumAgeLabel;
 @property (weak, nonatomic) IBOutlet UISlider *minimumAgeSlider;
+@property (weak, nonatomic) IBOutlet UISlider *maximumAgeSlider;
 @property (weak, nonatomic) IBOutlet UILabel *maximumAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
-@property (weak, nonatomic) IBOutlet UISlider *maximumAgeSlider;
-@property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
-@property (weak, nonatomic) IBOutlet UISlider *milesAwaySlider;
 @property (weak, nonatomic) IBOutlet UIButton *menButton;
 @property (weak, nonatomic) IBOutlet UIButton *womenButton;
 @property (weak, nonatomic) IBOutlet UIButton *bothButton;
+@property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
+@property (weak, nonatomic) IBOutlet UISlider *milesAwaySlider;
 
 @property (weak, nonatomic) IBOutlet UILabel *jobLabel;
 @property (weak, nonatomic) IBOutlet UILabel *educationLabel;
@@ -50,47 +53,42 @@ UIPopoverPresentationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *logoutButton;
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
 
-@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
-@property (weak, nonatomic) IBOutlet UIView *loadingView;
+@property (strong, nonatomic) NSString *aboutMe;
+@property (strong, nonatomic) NSString *sexPref;
+@property (strong, nonatomic) NSString *minAge;
+@property (strong, nonatomic) NSString *maxAge;
+@property (strong, nonatomic) NSString *miles;
+@property (strong, nonatomic) NSString *publicProfile;
 
-@property (strong, nonatomic) NSString *textViewString;
-@property (weak, nonatomic) IBOutlet UILabel *loadingLabel;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (strong, nonatomic) User *currentUser;
+@property (strong, nonatomic) NSMutableArray *profileImages;
+@property (strong, nonatomic) FacebookManager *manager;
+@property (strong, nonatomic) UserManager *userManager;
 
 @end
 
 @implementation ProfileViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-
     self.currentUser = [User currentUser];
-    //NSLog(@"profile VC user: %@", self.currentUser);
+
+    if (self.currentUser)
+    {
     self.navigationItem.title = @"Settings";
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
+
+    self.profileImages = [NSMutableArray new];
+
     //retrieve and pass segue properties
     self.locationLabel.text = self.cityAndState;
-    //loading view
-    self.loadingView.alpha = .75;
-    self.loadingView.layer.cornerRadius = 8;
-    [self.spinner startAnimating];
 
-    //UIBarButtonItem *previewYourProfile = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(segueAction)];
-    //self.navigationController.navigationItem.rightBarButtonItem = previewYourProfile;
-    //self.navigationController.navigationItem.rightBarButtonItem.title = @"this is it";
-
-    //UIBarButtonItem *newButton = [[UIBarButtonItem alloc] initWithTitle:@"Preview" style:UIBarButtonItemStylePlain target:self action:@selector(segueAction)];
-    //self.navigationItem.rightBarButtonItem = newButton;
-    UIBarButtonItem *newest = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(segueAction)];
-    self.navigationItem.rightBarButtonItem = newest;
-
-    self.automaticallyAdjustsScrollViewInsets = NO;
+    //self.automaticallyAdjustsScrollViewInsets = NO;
 
     //delegation, initialization
     self.scrollView.delegate = self;
     self.collectionView.delegate = self;
-    self.pictures = [NSMutableArray new];
     self.textViewAboutMe.delegate = self;
 
     //collection view
@@ -105,114 +103,37 @@ UIPopoverPresentationControllerDelegate>
     [self.collectionView setCollectionViewLayout:flowlayouts];
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
-    [UIButton setUpButtons:self.menButton];
-    [UIButton setUpButtons:self.womenButton];
-    [UIButton setUpButtons:self.bothButton];
-    [UIButton setUpButtons:self.logoutButton];
-    [UIButton setUpButtons:self.deleteButton];
-    [UIButton setUpButtons:self.shareButton];
-    [UIButton setUpButtons:self.feedbackButton];
+    [UIButton setUpButton:self.menButton];
+    [UIButton setUpButton:self.womenButton];
+    [UIButton setUpButton:self.bothButton];
+    [UIButton setUpButton:self.logoutButton];
+    [UIButton setUpButton:self.deleteButton];
+    [UIButton setUpButton:self.shareButton];
+    [UIButton setUpButton:self.feedbackButton];
 
     self.textViewAboutMe.layer.cornerRadius = 10;
     [self.textViewAboutMe.layer setBorderWidth:1.0];
     [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
-
-    //call Parse for User Data
-    //PFQuery *query = [PFUser query];
-
-    //this is quering the user info from the PFUser cached in sim, which is not the usr that is logged in??
-//    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-//        if(!error){
-//
-//
-//            NSString *name = [[objects firstObject]objectForKey:@"fullName"];
-//            NSLog(@"name from query: %@", name);
-//            //miles Away slider
-//            CGFloat strFloat = (CGFloat)[[[objects firstObject] objectForKey:@"milesAway"] floatValue];
-//            self.milesAwaySlider.value = strFloat;
-//            NSString *milesAwayStr = [NSString stringWithFormat:@"Show results within %.f miles of here", strFloat];
-//            self.milesAwayLabel.text = milesAwayStr;
-//
-//            //age min and max sliders
-//            CGFloat strFloatForMinAge = (CGFloat)[[[objects firstObject] objectForKey:@"minAge"] floatValue];
-//            self.minimumAgeSlider.value = strFloatForMinAge;
-//            NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %.f", strFloatForMinAge];
-//            self.minimumAgeLabel.text = minAge;
-//            //Max
-//            CGFloat strFloatForMaxAge = (CGFloat)[[[objects firstObject] objectForKey:@"maxAge"] floatValue];
-//            self.maximumAgeSlider.value = strFloatForMaxAge;
-//            NSString *maxAge = [NSString stringWithFormat:@"Minimum Age: %.f", strFloatForMaxAge];
-//            self.maximumAgeLabel.text = maxAge;
-//
-//            //public profile status
-//            NSString *pubProf = [[objects firstObject] objectForKey:@"publicProfile"];
-//            NSLog(@"switch set to: %@", pubProf);
-//            if ([pubProf containsString:@"public"]) {
-//                [self.publicProfileSwitch setOn:YES animated:YES];
-//            } else{
-//                [self.publicProfileSwitch setOn:NO animated:YES];
-//            }
-//
-//            //sex pref presets
-//            NSString *sexPref = [[objects firstObject] objectForKey:@"sexPref"];
-//
-//            if ([sexPref isEqualToString:@"male"]) {
-//                self.menButton.backgroundColor = [UIColor blackColor];
-//                [self.menButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//            } else if ([sexPref isEqualToString:@"female"]){
-//                self.womenButton.backgroundColor = [UIColor blackColor];
-//                [self.womenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//            } else if ([sexPref isEqualToString:@"male female"])  {
-//                self.bothButton.backgroundColor = [UIColor blackColor];
-//                [self.bothButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//            }else{
-//            NSLog(@"sex pref: %@", sexPref);
-//            }
-//
-//
-//            //textView output
-//            NSString *textView = [[objects firstObject]objectForKey:@"aboutMe"];
-//            self.textViewAboutMe.text = textView;
-//
-//
-//            //
-//          //  NSArray *likes = [[objects firstObject] objectForKey:@"likes"];
-//        //NSLog(@"likes array: %@", likes);
-//            NSString *job = [[objects firstObject] objectForKey:@"work"];
-//            NSString *school = [[objects firstObject] objectForKey:@"scool"];
-//            self.jobLabel.text = job;
-//            self.educationLabel.text = school;
-//
-//            [self loadImagesFromParse:objects];
-//
-//        }
-//    }];
-//
-
+    }
 }
 
--(void)viewDidAppear:(BOOL)animated{
+-(void)viewDidAppear:(BOOL)animated
+{
     [super viewDidAppear:YES];
 
-
+    [self setupManagersProfileVC];
 }
 
-
-#pragma mark -- textView Editing
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
     NSLog(@"touchesBegan:withEvent:");
     [self.view endEditing:YES];
     [super touchesBegan:touches withEvent:event];
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    NSLog(@"textViewDidBeginEditing");
-    //clears text set as instructions
-    [textView setText:@""];
-    textView.backgroundColor = [UIColor greenColor];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView{
+#pragma mark -- TEXTVIEW DELEGATE
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
     NSLog(@"textViewDidEndEditing:");
     textView.backgroundColor = [UIColor whiteColor];
     NSString *aboutMeDescr = textView.text;
@@ -230,90 +151,92 @@ UIPopoverPresentationControllerDelegate>
 
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
 
     NSCharacterSet *doneButtonCharacterSet = [NSCharacterSet newlineCharacterSet];
     NSRange replacementTextRange = [text rangeOfCharacterFromSet:doneButtonCharacterSet];
     NSUInteger location = replacementTextRange.location;
 
-    if (textView.text.length + text.length > 280){
-        if (location != NSNotFound){
+    if (textView.text.length + text.length > 280)
+    {
+        if (location != NSNotFound)
+        {
             [textView resignFirstResponder];
             NSLog(@"editing: %@", text);
         }
         return NO;
     }
-    else if (location != NSNotFound){
+    else if (location != NSNotFound)
+    {
         [textView resignFirstResponder];
         NSLog(@"not editing");
         NSLog(@"text from shouldChangeInRange: %@", text);
-
 
         return NO;
     }
     return YES;
 }
 
-- (void)textViewDidChange:(UITextView *)textView{
-    NSLog(@"textViewDidChange:");
+//- (void)textViewDidChange:(UITextView *)textView
+//{
+//    NSLog(@"textViewDidChange:");
+//
+//    NSLog(@"text: %@", textView.text);
+//
+//
+//}
 
-    NSLog(@"text: %@", textView.text);
 
 
+#pragma mark -- COLLECTIONVIEW DELEGATE
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.profileImages.count;
 }
 
-
-
-#pragma mark -- collectionView delegate Methods
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.pictures.count;
-}
-
--(CVSettingCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
+-(CVSettingCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
     static NSString *cellIdentifier = @"SettingCell";
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    NSString *photoString = [self.pictures objectAtIndex:indexPath.item];
+    NSString *photoString = [self.profileImages objectAtIndex:indexPath.item];
     cell.userImage.image = [UIImage imageWithData:[self imageData:photoString]];
 
     return cell;
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionView *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section    {
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionView *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+{
     return 5; // This is the minimum inter item spacing, can be more
 }
 
--(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
-    NSString *photoString = [self.pictures objectAtIndex:fromIndexPath.item];
-    [self.pictures removeObjectAtIndex:fromIndexPath.item];
-    [self.pictures insertObject:photoString atIndex:toIndexPath.item];
-
-    [self deconstructArray:self.pictures];
+-(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath
+{
+    NSString *photoString = [self.profileImages objectAtIndex:fromIndexPath.item];
+    [self.profileImages removeObjectAtIndex:fromIndexPath.item];
+    [self.profileImages insertObject:photoString atIndex:toIndexPath.item];
 }
 
-- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath
+{
     NSLog(@"dragging cell begun");
 
 }
 
-- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath
+{
     NSLog(@"dragging has stopped");
 
 }
-#pragma mark -- Segue
-- (IBAction)onSwapPhotsButton:(UIButton *)sender {
-    [self performSegueWithIdentifier:@"SwapImages" sender:self];
-}
 
-#pragma mark --other view elements
-
+#pragma mark -- BUTTONS/SLIDERS
 //3) Min/Max Ages
-- (IBAction)onMinAgeSliderChange:(UISlider *)sender {
-    //number to label convert
+- (IBAction)onMinAgeSliderChange:(UISlider *)sender
+{
     NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minimumAgeSlider.value];
     NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
     self.minimumAgeLabel.text = minAge;
-    //save to Parse
+
     [self.currentUser setObject:minAgeStr forKey:@"minAge"];
 
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -323,57 +246,94 @@ UIPopoverPresentationControllerDelegate>
             NSLog(@"saved: %s", succeeded ? "true" : "false");
         }
     }];
-
 }
-- (IBAction)onMaxAgeSliderChange:(UISlider *)sender {
-    //number to label convert
+
+- (IBAction)onMaxAgeSliderChange:(UISlider *)sender
+{
     NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maximumAgeSlider.value];
     NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %@", maxAgeStr];
     self.maximumAgeLabel.text = maxAge;
-    //save to Parse
+
     [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
-    [self.currentUser saveInBackground];
-    NSLog(@"change min age to: %@", maxAge);
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error in saving Max Age: %@", error);
+        } else{
+            NSLog(@"saved: %s", succeeded ? "true" : "false");
+        }
+    }];
 }
 
-
-// 4) Sex Preference buttons and saving to parse on selection, also deselecting the other two
-- (IBAction)onMensButton:(UIButton *)sender {
+// 4) Sex Preference
+- (IBAction)onMensButton:(UIButton *)sender
+{
     [self changeButtonState:self.menButton sexString:@"male" otherButton1:self.womenButton otherButton2:self.bothButton];
 }
-- (IBAction)onWomensButton:(UIButton *)sender {
+
+- (IBAction)onWomensButton:(UIButton *)sender
+{
     [self changeButtonState:self.womenButton sexString:@"female" otherButton1:self.menButton otherButton2:self.bothButton];
 }
-- (IBAction)onBothButton:(UIButton *)sender {
+
+- (IBAction)onBothButton:(UIButton *)sender
+{
     [self changeButtonState:self.bothButton sexString:@"male female" otherButton1:self.menButton otherButton2:self.womenButton];
 }
 
-
 //5) Miles away
-- (IBAction)milesAwaySlider:(UISlider *)sender {
-
+- (IBAction)milesAwaySlider:(UISlider *)sender
+{
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesAwaySlider.value];
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
     self.milesAwayLabel.text = milesAway;
     [self.currentUser setObject:milesAwayStr forKey:@"milesAway"];
-    [self.currentUser saveInBackground];
+
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error)
+        {
+            NSLog(@"error in saving miles away: %@", error);
+        }
+        else
+        {
+            NSLog(@"saved: %s", succeeded ? "true" : "false");
+        }
+    }];
 }
 
 
-//6)Puublic Profile On/Off
-- (IBAction)publicProfileSwitch:(UISwitch *)sender {
-    if ([sender isOn]) {
+//6)Puublic Profile
+- (IBAction)publicProfileSwitch:(UISwitch *)sender
+{
+    if ([sender isOn])
+    {
         [self.currentUser setObject:@"public" forKey:@"publicProfile"];
-        [self.currentUser saveInBackground];
-    } else {
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error)
+            {
+                NSLog(@"error in saving public profile: %@", error);
+            }
+            else
+            {
+                NSLog(@"saved: %s", succeeded ? "true" : "false");
+            }
+        }];
+    }
+    else
+    {
         [self.currentUser setObject:@"private" forKey:@"publicProfile"];
-        [self.currentUser saveInBackground];
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"error in saving pub profile: %@", error);
+            } else{
+                NSLog(@"saved: %s", succeeded ? "true" : "false");
+            }
+        }];
     }
 }
 
-
-//send an email with the UIMessage framework for feedback
-- (IBAction)feedback:(UIButton *)sender {
+- (IBAction)feedback:(UIButton *)sender
+{
     //subject line and body of email to send
     NSString *emailTitle = @"Feedback";
     NSString *messageBody = @"message body";
@@ -385,6 +345,183 @@ UIPopoverPresentationControllerDelegate>
     [mc setToRecipients:reciepents];
 
     [self presentViewController:mc animated:YES completion:nil];
+}
+
+- (IBAction)logOutButton:(UIButton *)sender
+{
+
+    if (sender.isSelected)
+    {
+        self.logoutButton.backgroundColor = [UIColor blackColor];
+    }
+    
+    [PFUser logOutInBackgroundWithBlock:^(NSError * _Nullable error) {
+        if (!error)
+        {
+            NSLog(@"logged Out");
+        }
+        else
+        {
+            NSLog(@"cannot log out: %@", error);
+        }
+    }];
+
+
+    //nothing works to unlink the facebok account
+   // [PFFacebookUtils unlinkUserInBackground:self.currentUser];
+
+//    [PFFacebookUtils unlinkUserInBackground:[PFUser currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
+//        if (error) {
+//            NSLog(@"error unlinking: %@", error);
+//        } else{
+//            NSLog(@"logged out, no user: %@", self.currentUser);
+//        }
+//    }];
+
+    NSLog(@"current user: after %@", self.currentUser);
+
+    [self performSegueWithIdentifier:@"LoggedOut" sender:self];
+}
+
+- (IBAction)onBackButton:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)userViewButton:(UIButton *)sender
+{
+
+}
+#pragma mark - USER MANAGER DELEGATE
+-(void)didReceiveUserData:(NSArray *)data
+{
+    NSDictionary *userData = [data firstObject];
+    self.sexPref = userData[@"sexPref"];
+    [self sexPreferenceButton];
+    self.aboutMe = userData[@"aboutMe"];
+    self.textViewAboutMe.text = self.aboutMe;
+    [self setMilesAway:userData[@"milesAway"]];
+    [self setMinAndMaxAgeSliders:userData[@"minAge"] andMax:userData[@"maxAge"]];
+    self.jobLabel.text = userData[@"work"];
+    self.educationLabel.text = userData[@"lastSchool"];
+    [self setPublicProfile:userData[@"publicProfile"]];
+}
+
+-(void)failedToFetchUserData:(NSError *)error
+{
+    NSLog(@"failed to fetch Data: %@", error);
+}
+
+-(void)didReceiveUserImages:(NSArray *)images
+{
+    self.profileImages = [NSMutableArray arrayWithArray:images];
+    [self.collectionView reloadData];
+}
+
+-(void)failedToFetchImages:(NSError *)error
+{
+    NSLog(@"failed to fetch profile images: %@", error);
+}
+
+#pragma mark -- HELPERS
+-(void)setPublicProfile:(NSString *)publicProfile
+{
+    if ([publicProfile containsString:@"public"])
+    {
+        NSLog(@"public: %@", publicProfile);
+        [self.publicProfileSwitch setOn:YES animated:YES];
+    }
+    else
+    {
+        NSLog(@"non public: %@", publicProfile);
+        [self.publicProfileSwitch setOn:NO animated:YES];
+    }
+}
+
+-(void)setMilesAway:(NSString *)milesAway
+{
+    self.milesAwayLabel.text = milesAway;
+    CGFloat away = (CGFloat)[milesAway floatValue];
+    NSLog(@"miels away: %d", (int)away);
+    self.milesAwaySlider.value = away;
+}
+
+-(void)setMinAndMaxAgeSliders:(NSString *)min andMax:(NSString *)max
+{
+    CGFloat minAge = (CGFloat)[min floatValue];
+    self.minimumAgeSlider.value = minAge;
+    NSString *minAgeStr = [NSString stringWithFormat:@"Minimum Age: %.f", minAge];
+    self.minimumAgeLabel.text = minAgeStr;
+
+    CGFloat maxAge = (CGFloat)[max floatValue];
+    self.maximumAgeSlider.value = maxAge;
+    NSString *maxAgeStr = [NSString stringWithFormat:@"Minimum Age: %.f", maxAge];
+    self.maximumAgeLabel.text = maxAgeStr;
+}
+
+-(void)sexPreferenceButton
+{
+    if ([self.sexPref isEqualToString:@"female"])
+    {
+        self.womenButton.backgroundColor = [UIColor blackColor];
+    }
+
+    else if ([self.sexPref isEqualToString:@"male"])
+    {
+        self.menButton.backgroundColor = [UIColor blackColor];
+    }
+    else if ([self.sexPref isEqualToString:@"male female"])
+    {
+        self.bothButton.backgroundColor = [UIColor blackColor];
+    }
+    else
+    {
+        NSLog(@"sex Pref data not working");
+    }
+}
+
+-(void)setupManagersProfileVC
+{
+    self.userManager = [UserManager new];
+    self.userManager.delegate = self;
+
+    [self.userManager loadUserData:self.currentUser];
+    [self.userManager loadUserImages:self.currentUser];
+}
+
+-(NSData *)imageData:(NSString *)imageString
+{
+    NSURL *url = [NSURL URLWithString:imageString];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    return data;
+}
+
+-(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2
+{
+    button.backgroundColor = [UIColor blackColor];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [self.currentUser setObject:sex forKey:@"sexPref"];
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        NSLog(@"saved for %@, %d", sex, succeeded ? true : false);
+    }];
+
+    if ([button isSelected])
+    {
+        [button setSelected:NO];
+        button.backgroundColor = [UIColor blackColor];
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    }
+    else
+    {
+        //change other two buttons
+        [button setSelected:YES];
+        [b1 setSelected:NO];
+        [b2 setSelected:NO];
+        [b1 setTitleColor:[UIColor blackColor] forState: UIControlStateNormal];
+        [b2 setTitleColor:[UIColor blackColor] forState: UIControlStateNormal];
+        b1.backgroundColor = [UIColor whiteColor];
+        b2.backgroundColor = [UIColor whiteColor];
+    }
 }
 
 - (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
@@ -409,139 +546,6 @@ UIPopoverPresentationControllerDelegate>
 
     // Close the Mail Interface
     [self dismissViewControllerAnimated:YES completion:NULL];
-}
-
-
-
-- (IBAction)logOutButton:(UIButton *)sender {
-
-    if (sender.isSelected) {
-        self.logoutButton.backgroundColor = [UIColor blackColor];
-
-    }
-    [PFUser logOut];
-
-
-    //nothing works to unlink the facebok account
-   // [PFFacebookUtils unlinkUserInBackground:self.currentUser];
-
-    [PFFacebookUtils unlinkUserInBackground:[PFUser currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"error unlinking: %@", error);
-        } else{
-            NSLog(@"logged out, no user: %@", self.currentUser);
-        }
-    }];
-
-    NSLog(@"current user: after %@", self.currentUser);
-
-    [self performSegueWithIdentifier:@"LoggedOut" sender:self];
-}
-
-
-- (IBAction)userViewButton:(UIButton *)sender {
-}
-
-
-#pragma mark -- HELPERS
-
-
--(void)borderLabel:(UILabel *)label{
-    label.layer.cornerRadius = 10;
-    label.clipsToBounds = YES;
-    [label.layer setBorderWidth:1.0];
-    [label.layer setBorderColor:[UIColor grayColor].CGColor];
-}
-
--(NSData *)imageData:(NSString *)imageString{
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
-}
-
--(void)loadImagesFromParse:(NSArray *)objectArray{
-
-    //userImages
-    NSString *image1 = [[objectArray firstObject] objectForKey:@"image1"];
-    NSString *image2 = [[objectArray firstObject] objectForKey:@"image2"];
-    NSString *image3 = [[objectArray firstObject] objectForKey:@"image3"];
-    NSString *image4 = [[objectArray firstObject] objectForKey:@"image4"];
-    NSString *image5 = [[objectArray firstObject] objectForKey:@"image5"];
-    NSString *image6 = [[objectArray firstObject] objectForKey:@"image6"];
-    if (image1) {
-        [self.pictures addObject:image1];
-    } if (image2) {
-        [self.pictures addObject:image2];
-    } if (image3) {
-        [self.pictures addObject:image3];
-    } if (image4) {
-        [self.pictures addObject:image4];
-    } if (image5) {
-        [self.pictures addObject:image5];
-    } if (image6) {
-        [self.pictures addObject:image6];
-    }
-
-    [self.collectionView reloadData];
-
-    [self.spinner stopAnimating];
-    self.loadingView.hidden = YES;
-    self.loadingLabel.hidden = YES;
-    self.spinner.hidden = YES;
-}
-
--(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2    {
-
-    button.backgroundColor = [UIColor blackColor];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-    [self.currentUser setObject:sex forKey:@"sexPref"];
-    [self.currentUser saveInBackground];
-
-    if ([button isSelected]) {
-        [button setSelected:NO];
-        button.backgroundColor = [UIColor blackColor];
-        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-    } else{
-        //change other two buttons to delected
-        [button setSelected:YES];
-        [b1 setSelected:NO];
-        [b2 setSelected:NO];
-        [b1 setTitleColor:[UIColor blackColor] forState: UIControlStateNormal];
-        [b2 setTitleColor:[UIColor blackColor] forState: UIControlStateNormal];
-        b1.backgroundColor = [UIColor whiteColor];
-        b2.backgroundColor = [UIColor whiteColor];
-    }
-}
-
--(void)deconstructArray:(NSMutableArray *)array
-{
-
-    NSString *firstImage = [array firstObject];
-    NSString *secondImage = [array objectAtIndex:1];
-    NSString *thirdImage = [array objectAtIndex:2];
-    NSString *forthImage = [array objectAtIndex:3];
-    NSString *fifthImage = [array objectAtIndex:4];
-    NSString *sixthImage = [array objectAtIndex:5];
-
-    if (firstImage) {
-        [self.currentUser setObject:firstImage forKey:@"image1"];
-        [self.currentUser saveInBackground];
-    } if (secondImage) {
-        [self.currentUser setObject:secondImage forKey:@"image2"];
-        [self.currentUser saveInBackground];
-    } if (thirdImage) {
-        [self.currentUser setObject:thirdImage forKey:@"image3"];
-        [self.currentUser saveInBackground];
-    } if (forthImage) {
-        [self.currentUser setObject:forthImage forKey:@"image4"];
-        [self.currentUser saveInBackground];
-    } if (fifthImage) {
-        [self.currentUser setObject:fifthImage forKey:@"image5"];
-        [self.currentUser saveInBackground];
-    } if (sixthImage) {
-        [self.currentUser setObject:sixthImage forKey:@"image6"];
-        [self.currentUser saveInBackground];
-    }
 }
 @end
 

@@ -31,6 +31,8 @@ static NSString * const kParseFacebookHometown             = @"facebookHometown"
 static NSString * const kParseWork                         = @"work";
 static NSString * const kParseConfidantEmail               = @"confidantEmail";
 static NSString * const kParseAboutMe                      = @"aboutMe";
+static NSString * const kParsePublic                       = @"publicProfile";
+
 //PFGeoPoint * const kParseGeoPoint= @"GeoCode";
 
 -(void)loadUserData:(User *)user
@@ -53,6 +55,7 @@ static NSString * const kParseAboutMe                      = @"aboutMe";
     NSString *work = [user objectForKey:kParseWork];
     NSString *confidantEmail = [user objectForKey:kParseConfidantEmail];
     NSString *aboutMe = [user objectForKey:kParseAboutMe];
+    NSString *pubProf = [user objectForKey:kParsePublic];
     //PFGeoPoint *geoPoint = [user objectForKey:kParseGeoPoint];
 
     if (objectId)
@@ -123,6 +126,10 @@ static NSString * const kParseAboutMe                      = @"aboutMe";
     {
         ob.birthday = birthday;
     }
+    if (pubProf)
+    {
+        ob.publicProfile = pubProf;
+    }
 
     [userData addObject:ob];
     //self.milesAwayInt = [userMilesAway intValue];
@@ -133,11 +140,7 @@ static NSString * const kParseAboutMe                      = @"aboutMe";
 
 -(void)loadUserImages:(User *)user;
 {
-//    NSMutableArray *userImages = [NSMutableArray new];
-//    User *ob = [User new];
-
     NSArray *images = [user objectForKey:@"profileImages"];
-    NSLog(@"from builder image array: %@" ,images);
     [self.delegate didReceiveUserImages:images];
 }
 @end

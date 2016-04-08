@@ -69,20 +69,13 @@ UserManagerDelegate>
 @property (strong, nonatomic) FacebookManager *manager;
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) NSArray *thumbnails;
-@property (strong, nonatomic) NSArray *userData;
 
-@property (strong, nonatomic) NSMutableArray *selectedPictures;
 @property (strong, nonatomic) NSArray *nextPages;
 @property (strong, nonatomic) NSArray *previousPages;
 
 @property (strong, nonatomic) NSString *selectedImage;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
 @property (strong, nonatomic) NSString *userGender;
-//likes
-//@property (strong, nonatomic) NSMutableArray *likeArray;
-//@property (strong, nonatomic) NSMutableArray *secondLikeArray;
-
-
 @end
 
 @implementation InitialWalkThroughViewController
@@ -103,16 +96,15 @@ UserManagerDelegate>
         //set and initialize delegates
         self.scrollView.delegate = self;
         self.textViewAboutMe.delegate = self;
-        self.collectionView.delegate = self;
-        self.selectedPictures = [NSMutableArray new];
+
         self.thumbnails = [NSArray new];
         self.nextPages = [NSArray new];
-        self.userData = [NSArray new];
 
         self.previousButton.hidden = YES;
         self.notValidImageLabel.hidden = YES;
 
         //COLLECTIONVIEW
+        self.collectionView.delegate = self;
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
         [flowLayout setItemSize:CGSizeMake(100, 100)];
         [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
@@ -134,12 +126,12 @@ UserManagerDelegate>
         //NSLog(@"saved PFGeoCode: %@", self.pfGeoCoded);
 
         //SETUP
-        [UIButton setUpButtons:self.mensInterestButton];
-        [UIButton setUpButtons:self.womensInterestButton];
-        [UIButton setUpButtons:self.bothSexesButton];
-        [UIButton setUpButtons:self.suggestionsButton];
-        [UIButton setUpButtons:self.emptyImageButton];
-        [UIButton setUpButtons:self.continueButton];
+        [UIButton setUpButton:self.mensInterestButton];
+        [UIButton setUpButton:self.womensInterestButton];
+        [UIButton setUpButton:self.bothSexesButton];
+        [UIButton setUpButton:self.suggestionsButton];
+        [UIButton setUpButton:self.emptyImageButton];
+        [UIButton setUpButton:self.continueButton];
         [UITextView setup:self.textViewAboutMe];
 
         [self defaultAgeSliderSet];
@@ -289,8 +281,7 @@ UserManagerDelegate>
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *selectedImage = [self.thumbnails objectAtIndex:indexPath.item];
-    [self.selectedPictures addObject:selectedImage];
-    NSLog(@"seleceted image: %@", self.selectedImage);
+    NSLog(@"seleceted image: %@", selectedImage);
 
 }
 
@@ -444,11 +435,10 @@ UserManagerDelegate>
 #pragma mark - USERMANAGER DELEGATE
 -(void)didReceiveUserData:(NSArray *)data
 {
-    self.userData = data;
-    NSLog(@"user data: %@", data);
     NSDictionary *userData = [data firstObject];
 
     self.userGender = userData[@"gender"];
+
     [self sexPreferenceButton];
 }
 

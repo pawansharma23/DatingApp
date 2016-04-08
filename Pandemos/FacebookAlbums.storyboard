@@ -65,13 +65,7 @@
                             <outlet property="delegate" destination="F8X-gv-J6N" id="Nz2-ja-QcM"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="pFh-5F-fdc">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="yU6-h6-tTr">
-                            <connections>
-                                <segue destination="4TX-Bk-UZO" kind="show" identifier="BackToInitial" id="7F7-Fl-ktg"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="pFh-5F-fdc"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <segue destination="cs4-Xc-Kj2" kind="show" identifier="AlbumDetail" id="ysw-qh-cnD"/>
@@ -98,14 +92,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="abA-dl-ie5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="511.5" y="159"/>
-        </scene>
-        <!--InitialSetup-->
-        <scene sceneID="iH1-UM-SSq">
-            <objects>
-                <viewControllerPlaceholder storyboardName="InitialSetup" id="4TX-Bk-UZO" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="B65-RX-RJ1" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1919.25" y="-208.5"/>
         </scene>
         <!--Album Detail View Controller-->
         <scene sceneID="q9C-MC-tDM">
@@ -295,7 +281,7 @@
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your profile images" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ed0-0d-ptA">
                                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tbP-Py-1nG">
@@ -305,16 +291,26 @@
                                                     <action selector="onAddAnother:" destination="GCu-te-ws5" eventType="touchUpInside" id="TMR-dk-Zut"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CZl-2K-85h">
+                                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                <state key="normal" title="continue"/>
+                                                <connections>
+                                                    <segue destination="6cr-PG-wSf" kind="show" id="jOC-2L-Iff"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="tbP-Py-1nG" firstAttribute="centerX" secondItem="fD2-LW-1QY" secondAttribute="centerX" id="2X3-A3-Y00"/>
                                             <constraint firstItem="sZ4-Zq-CSP" firstAttribute="centerX" secondItem="fD2-LW-1QY" secondAttribute="centerX" id="3e8-XY-hKz"/>
                                             <constraint firstItem="n6Z-2m-8nw" firstAttribute="leading" secondItem="fD2-LW-1QY" secondAttribute="leading" constant="8" id="4Gl-sp-ntF"/>
+                                            <constraint firstAttribute="trailing" secondItem="CZl-2K-85h" secondAttribute="trailing" constant="8" id="4v9-OM-Owc"/>
                                             <constraint firstItem="tbP-Py-1nG" firstAttribute="top" secondItem="Ed0-0d-ptA" secondAttribute="bottom" constant="8" id="B3C-yV-gG1"/>
                                             <constraint firstAttribute="trailing" secondItem="n6Z-2m-8nw" secondAttribute="trailing" constant="8" id="Buc-AT-Vgt"/>
                                             <constraint firstItem="Ed0-0d-ptA" firstAttribute="centerX" secondItem="fD2-LW-1QY" secondAttribute="centerX" id="DR6-h1-D0w"/>
                                             <constraint firstItem="n6Z-2m-8nw" firstAttribute="top" secondItem="fD2-LW-1QY" secondAttribute="top" constant="8" id="Qvh-2o-TFg"/>
+                                            <constraint firstItem="CZl-2K-85h" firstAttribute="top" secondItem="n6Z-2m-8nw" secondAttribute="bottom" constant="7.5" id="T91-DP-AP4"/>
                                             <constraint firstItem="fPg-Yd-LVm" firstAttribute="top" secondItem="sZ4-Zq-CSP" secondAttribute="bottom" constant="8" id="WE5-Sa-2B6"/>
                                             <constraint firstAttribute="trailing" secondItem="sZ4-Zq-CSP" secondAttribute="trailing" constant="5" id="drI-PK-1Kw"/>
                                             <constraint firstItem="sZ4-Zq-CSP" firstAttribute="top" secondItem="n6Z-2m-8nw" secondAttribute="bottom" constant="8" id="ho0-0m-QVR"/>
@@ -329,10 +325,13 @@
                                             <mask key="subviews">
                                                 <exclude reference="Ed0-0d-ptA"/>
                                                 <exclude reference="tbP-Py-1nG"/>
+                                                <exclude reference="CZl-2K-85h"/>
                                             </mask>
                                             <mask key="constraints">
                                                 <exclude reference="3e8-XY-hKz"/>
                                                 <exclude reference="lhI-Av-RBQ"/>
+                                                <exclude reference="4v9-OM-Owc"/>
+                                                <exclude reference="T91-DP-AP4"/>
                                                 <exclude reference="DR6-h1-D0w"/>
                                                 <exclude reference="sBi-c2-deX"/>
                                                 <exclude reference="2X3-A3-Y00"/>
@@ -343,10 +342,13 @@
                                             <mask key="subviews">
                                                 <include reference="Ed0-0d-ptA"/>
                                                 <include reference="tbP-Py-1nG"/>
+                                                <include reference="CZl-2K-85h"/>
                                             </mask>
                                             <mask key="constraints">
                                                 <include reference="3e8-XY-hKz"/>
                                                 <exclude reference="drI-PK-1Kw"/>
+                                                <include reference="4v9-OM-Owc"/>
+                                                <include reference="T91-DP-AP4"/>
                                                 <include reference="DR6-h1-D0w"/>
                                                 <include reference="sBi-c2-deX"/>
                                                 <include reference="2X3-A3-Y00"/>
@@ -384,6 +386,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kwC-Xp-rFy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2839.5" y="159"/>
+        </scene>
+        <!--Main-->
+        <scene sceneID="Ce1-FH-8mH">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Main" id="6cr-PG-wSf" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2fr-he-6xk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3431.25" y="137.25"/>
         </scene>
     </scenes>
 </document>

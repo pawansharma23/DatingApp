@@ -26,13 +26,7 @@
 @property int milesAwayInt;
 @property (strong, nonatomic) NSString *minAge;
 @property (strong, nonatomic) NSString *maxAge;
-
-//@property (strong, nonatomic) NSString *image;
-//@property (strong, nonatomic) NSString *image2;
-//@property (strong, nonatomic) NSString *image3;
-//@property (strong, nonatomic) NSString *image4;
-//@property (strong, nonatomic) NSString *image5;
-//@property (strong, nonatomic) NSString *image6;
+@property (strong, nonatomic) NSString *publicProfile;
 @property (strong, nonatomic) NSString *lastSchool;
 @property (strong, nonatomic) NSString *facebookLocation;
 @property (strong, nonatomic) NSString *facebookHometown;

@@ -49,7 +49,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
     self.userImage.image = [UIImage imageWithData:[self imageData:self.image]];
 
-    [UIButton setUpButtons:self.saveImage];
+    [UIButton setUpButton:self.saveImage];
 
     self.collectionView.delegate = self;
     self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);

@@ -16,8 +16,11 @@
 #import "PotentialMatch.h"
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
+#import "UIImageView+Additions.h"
+#import "User.h"
+#import "UserManager.h"
 
-@interface ViewController ()<FBSDKGraphRequestConnectionDelegate,
+@interface ViewController ()<
 UIGestureRecognizerDelegate,
 UINavigationControllerDelegate,
 CLLocationManagerDelegate,
@@ -84,9 +87,6 @@ MFMailComposeViewControllerDelegate>
     [super viewDidLoad];
 
     self.currentUser = [PFUser currentUser];
-//    UserData *userA = [UserData new];
-//    [userA loadUserDataFromParse:self.currentUser];
-
     self.navigationItem.title = APP_TITLE;
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
@@ -113,23 +113,22 @@ MFMailComposeViewControllerDelegate>
     //self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
     //[self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
 
-    //other view elements setup
-    [UIButton setUpButtons:self.image1Indicator];
-    [UIButton setUpButtons:self.image2Indicator];
-    [UIButton setUpButtons:self.image3Indicator];
-    [UIButton setUpButtons:self.image4Indicator];
-    [UIButton setUpButtons:self.image5Indicator];
-    [UIButton setUpButtons:self.image6Indicator];
-    [UIButton setUpButtons:self.keepPlayingButton];
-    [UIButton setUpButtons:self.messageButton];
+    [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
+    self.fullDescView.layer.cornerRadius = 10;
+
+    [UIImageView setupFullSizedImage:self.userImage];
+    [UIButton setUpButton:self.image1Indicator];
+    [UIButton setUpButton:self.image2Indicator];
+    [UIButton setUpButton:self.image3Indicator];
+    [UIButton setUpButton:self.image4Indicator];
+    [UIButton setUpButton:self.image5Indicator];
+    [UIButton setUpButton:self.image6Indicator];
+    [UIButton setUpButton:self.keepPlayingButton];
+    [UIButton setUpButton:self.messageButton];
     [UIButton acceptButton:self.greenButton];
     [UIButton denyButton:self.redButton];
 
-    self.userImage.layer.cornerRadius = 8;
-    self.userImage.clipsToBounds = YES;
-    [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
-    self.userInfoView.layer.cornerRadius = 10;
-
+    
     //matched View Setup
     //[self matchViewSetUp:self.userImageMatched andMatchImage:self.matchedImage];
 

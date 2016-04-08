@@ -19,6 +19,8 @@
 		26AC54681CAF1651005AD536 /* FacebookAlbums.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26AC54671CAF1651005AD536 /* FacebookAlbums.storyboard */; };
 		26AC546C1CAF1A63005AD536 /* Messaging.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26AC546B1CAF1A63005AD536 /* Messaging.storyboard */; };
 		26AC546E1CAF1B3C005AD536 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26AC546D1CAF1B3C005AD536 /* Profile.storyboard */; };
+		26B954561CB82202006245EE /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B954551CB82202006245EE /* NSString+Additions.m */; };
+		26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B954581CB82A89006245EE /* UIImageView+Additions.m */; };
 		26C1E3D61C3194B10020349A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D51C3194B10020349A /* CoreLocation.framework */; };
 		26C1E3D81C31AB590020349A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D71C31AB590020349A /* MobileCoreServices.framework */; };
 		26C70EAF1CA5B15100E9B98F /* PandemosUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0AE1C1DB53F0054414E /* PandemosUITests.m */; };
@@ -139,6 +141,10 @@
 		26AC54671CAF1651005AD536 /* FacebookAlbums.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = FacebookAlbums.storyboard; sourceTree = "<group>"; };
 		26AC546B1CAF1A63005AD536 /* Messaging.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Messaging.storyboard; sourceTree = "<group>"; };
 		26AC546D1CAF1B3C005AD536 /* Profile.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
+		26B954541CB82202006245EE /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
+		26B954551CB82202006245EE /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
+		26B954571CB82A89006245EE /* UIImageView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Additions.h"; sourceTree = "<group>"; };
+		26B954581CB82A89006245EE /* UIImageView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Additions.m"; sourceTree = "<group>"; };
 		26C1E3D51C3194B10020349A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
@@ -207,14 +213,6 @@
 				268EE4561C834BC500085DAD /* MatchRequest.m */,
 			);
 			name = Matches;
-			sourceTree = "<group>";
-		};
-		2614A7061CA1DC9900D6F6AA /* PreferenceVC */ = {
-			isa = PBXGroup;
-			children = (
-				2614A7071CA1DCA900D6F6AA /* PreviewUserProfile */,
-			);
-			name = PreferenceVC;
 			sourceTree = "<group>";
 		};
 		2614A7071CA1DCA900D6F6AA /* PreviewUserProfile */ = {
@@ -334,8 +332,8 @@
 		268BA10B1C25A8F00054414E /* MainAppFunctionality */ = {
 			isa = PBXGroup;
 			children = (
-				26F22BF31C6FAEFF00D86343 /* Messaging */,
 				26F22BF21C6FAEF000D86343 /* Preferences */,
+				26F22BF31C6FAEFF00D86343 /* Messaging */,
 				26F22BF41C6FAF0E00D86343 /* Matches */,
 			);
 			name = MainAppFunctionality;
@@ -438,8 +436,12 @@
 		26D314711C976BF80045BB22 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				26B954571CB82A89006245EE /* UIImageView+Additions.h */,
+				26B954581CB82A89006245EE /* UIImageView+Additions.m */,
 				26D314721C976CE70045BB22 /* UIButton+Additions.h */,
 				26D314731C976CE70045BB22 /* UIButton+Additions.m */,
+				26B954541CB82202006245EE /* NSString+Additions.h */,
+				26B954551CB82202006245EE /* NSString+Additions.m */,
 				26CC6A351C7CF31F000F3BAC /* UIColor+Pandemos.h */,
 				26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */,
 				26AC54621CAED17A005AD536 /* UITextView+Additions.h */,
@@ -500,7 +502,7 @@
 			children = (
 				268BA1051C25A86C0054414E /* ProfileViewController.h */,
 				268BA1061C25A86C0054414E /* ProfileViewController.m */,
-				2614A7061CA1DC9900D6F6AA /* PreferenceVC */,
+				2614A7071CA1DCA900D6F6AA /* PreviewUserProfile */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -746,6 +748,7 @@
 				26C70EC11CA5B18F00E9B98F /* MessageDetailCell.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
+				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,
 				26C70EC31CA5B18F00E9B98F /* MessagingCell.m in Sources */,
 				26C70EC41CA5B18F00E9B98F /* MessagingViewController.m in Sources */,
 				26C70EC51CA5B18F00E9B98F /* ProfileViewController.m in Sources */,
@@ -761,6 +764,7 @@
 				26AC54641CAED17A005AD536 /* UITextView+Additions.m in Sources */,
 				26C70ED31CA5B18F00E9B98F /* MatchRequest.m in Sources */,
 				26C70ED41CA5B18F00E9B98F /* AddImageCell.m in Sources */,
+				26B954561CB82202006245EE /* NSString+Additions.m in Sources */,
 				26C70ED51CA5B18F00E9B98F /* CVSettingCell.m in Sources */,
 				26C70ED61CA5B18F00E9B98F /* PreviewCell.m in Sources */,
 				26C70ED71CA5B18F00E9B98F /* UIButton+Additions.m in Sources */,

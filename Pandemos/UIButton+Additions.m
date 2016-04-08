@@ -11,12 +11,12 @@
 
 @implementation UIButton (Additions)
 
-+(void)setUpButtons:(UIButton *)button
++(void)setUpButton:(UIButton *)button
 {
-    button.layer.cornerRadius = 15;
+    button.layer.cornerRadius = 16.0 / 2.0;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UIColor blackColor].CGColor];
+    [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
 }
 
 +(void)changeButtonState:(UIButton *)button

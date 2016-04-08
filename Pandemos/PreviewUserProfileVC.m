@@ -8,14 +8,20 @@
 
 #import "PreviewUserProfileVC.h"
 #import <Foundation/Foundation.h>
-#import "User.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessagingViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "UIColor+Pandemos.h"
+#import "UIButton+Additions.h"
+#import "NSString+Additions.h"
+#import "UIImageView+Additions.h"
+#import "User.h"
+#import "UserManager.h"
 
-@interface PreviewUserProfileVC ()<UIGestureRecognizerDelegate>
+@interface PreviewUserProfileVC ()<
+UIGestureRecognizerDelegate,
+UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *image1Indicator;
@@ -24,7 +30,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *image4Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image5Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image6Indicator;
-
 
 @property (weak, nonatomic) IBOutlet UIView *userInfoView;
 @property (weak, nonatomic) IBOutlet UILabel *nameAndAge;
@@ -37,63 +42,56 @@
 @property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
 @property (strong, nonatomic) NSString *currentCityAndState;
 
-@property (strong, nonatomic) PFUser *currentUser;
-@property (strong, nonatomic) NSString *leadImage;
-@property (strong, nonatomic) NSData *leadImageData;
-@property (strong, nonatomic) NSMutableArray *imageArray;
-@property long imageArrayCount;
+@property (strong, nonatomic) User *currentUser;
+@property (strong, nonatomic) UserManager *userManager;
+@property (strong, nonatomic) NSMutableArray *profileImages;
 @property (strong, nonatomic) NSString *nameAndAgeGlobal;
-@property (strong, nonatomic) NSDate *birthday;
-//location
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
-
-@property long count;
+@property int count;
 @end
 
 @implementation PreviewUserProfileVC
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 
-    self.currentUser = [PFUser currentUser];
+    self.currentUser = [User currentUser];
 
     self.navigationItem.title = @"Your Profile";
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
 
-    self.imageArray = [NSMutableArray new];
-    //load user Images
-    [self checkAndGetYourImages];
-    //load proper # of indicator lights
-    [self loadProperIndicatorLights:(int)self.imageArrayCount];
     self.fullDescView.hidden = YES;
+    self.profileImages = [NSMutableArray new];
 
-    //get user info
     self.userInfoView.layer.cornerRadius = 10;
-    NSString *firstName = [self.currentUser objectForKey:@"firstName"];
-    NSString *age = [self.currentUser objectForKey:@"userAge"];
-    self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %@", firstName, age];
-    self.nameAndAge.text = self.nameAndAgeGlobal;
+    [UIImageView setupFullSizedImage:self.userImage];
+    [UIButton setUpButton:self.image1Indicator];
+    [UIButton setUpButton:self.image2Indicator];
+    [UIButton setUpButton:self.image3Indicator];
+    [UIButton setUpButton:self.image4Indicator];
+    [UIButton setUpButton:self.image5Indicator];
+    [UIButton setUpButton:self.image6Indicator];
 
-    self.educationLabel.text = [self.currentUser objectForKey:@"work"];
-    self.jobLabel.text = [self.currentUser objectForKey:@"scool"];
-    //Your images
-    self.count = 0;
-    //indicator buttons
-    [self currentImage:self.count];
-    [self setUpButtons:self.image1Indicator];
-    [self setUpButtons:self.image2Indicator];
-    [self setUpButtons:self.image3Indicator];
-    [self setUpButtons:self.image4Indicator];
-    [self setUpButtons:self.image5Indicator];
-    [self setUpButtons:self.image6Indicator];
-
-    //to get your location
+     //to get your location
     //PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
 //  using age object instead
 //    NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
 
-    //swipe gestures-- up
+
+
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+
+    self.count = 0;
+
+    [self setLightForImage:self.count];
+    [self setupManagersProfileVC];
+
     [self.userImage setUserInteractionEnabled:YES];
     UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureUp:)];
     [swipeGestureUp setDelegate:self];
@@ -104,70 +102,76 @@
     [swipeGestureDown setDelegate:self];
     swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
     [self.userImage addGestureRecognizer:swipeGestureDown];
-
 }
 
-#pragma mark -- CLLocation delegate methods
--(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations   {
+//#pragma mark -- CLLocation delegate methods
+//-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
+//{
+//
+//    //current location .............. Works in iPhone, not in Sim
+//    CLLocation *currentLocation = [locations firstObject];
+//    NSLog(@"array of cuurent locations: %@", locations);
+//    //double latitude = self.locationManager.location.coordinate.latitude;
+//    //double longitude = self.locationManager.location.coordinate.longitude;
+//
+//    [self.locationManager stopUpdatingLocation];
+//
+//    //get city and location from a CLPlacemark object
+//    CLGeocoder *geoCoder = [CLGeocoder new];
+//    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+//        if (error) {
+//            NSLog(@"error: %@", error);
+//        } else {
+//            CLPlacemark *placemark = [placemarks firstObject];
+//            NSString *city = placemark.locality;
+//            NSDictionary *stateDict = placemark.addressDictionary;
+//            NSString *state = stateDict[@"State"];
+//            self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
+//        }
+//    }];
+//}
 
-    //current location .............. Works in iPhone, not in Sim
-    CLLocation *currentLocation = [locations firstObject];
-    NSLog(@"array of cuurent locations: %@", locations);
-    //double latitude = self.locationManager.location.coordinate.latitude;
-    //double longitude = self.locationManager.location.coordinate.longitude;
-
-    [self.locationManager stopUpdatingLocation];
-
-    //get city and location from a CLPlacemark object
-    CLGeocoder *geoCoder = [CLGeocoder new];
-    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"error: %@", error);
-        } else {
-            CLPlacemark *placemark = [placemarks firstObject];
-            NSString *city = placemark.locality;
-            NSDictionary *stateDict = placemark.addressDictionary;
-            NSString *state = stateDict[@"State"];
-            self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
-        }
-    }];
-}
-
-#pragma mark -- Swipe Gestures
+#pragma mark -- SWIPE GESTURES
 //SwipeUp
-- (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender {
-
+- (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender
+{
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionUp) {
+    if (direction == UISwipeGestureRecognizerDirectionUp)
+    {
         NSLog(@"swipe up");
         //add animation
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
             self.count++;
 
-            if (self.count < self.imageArray.count - 1) {
+            if (self.count < self.profileImages.count - 1)
+            {
                 //display image
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
                 //indicator light to reflect image we are on
-                [self currentImage:self.count];
+                [self setLightForImage:self.count];
                 self.fullDescView.hidden = YES;
                 NSLog(@"count: %zd", self.count);
 
-            } else if (self.count == self.imageArray.count - 1) {
-
+            }
+            else if (self.count == self.profileImages.count - 1)
+            {
                 //self.fullDescView.hidden = YES;
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
                 NSLog(@"last image, count: %zd", self.count);
-                [self currentImage:self.count];
+                [self setLightForImage:self.count];
                 [self lastImageBringUpDesciptionView];
             }
-        } completion:^(BOOL finished) {
+        } completion:^(BOOL finished)
+        {
+
         }];
     }
 }
 
 //SwipeDown
-- (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender {
+- (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender
+{
 
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionDown) {
@@ -177,23 +181,24 @@
 
             self.count--;
 
-            if (self.count == 0) {
+            if (self.count == 0)
+            {
 
                 NSLog(@"first image, count: %zd", self.count);
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
                 //indicator lights
-                [self currentImage:self.count];
+                [self setLightForImage:self.count];
                 //re-hide full view on the way back up
                 self.fullDescView.hidden = YES;
 
-            } else if(self.count > 0){
+            }
+            else if(self.count > 0)
+            {
+                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
 
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-                //indicator lights
-                [self currentImage:self.count];
+                [self setLightForImage:self.count];
                 NSLog(@"count: %zd", self.count);
                 self.fullDescView.hidden = YES;
-                
             }
         } completion:^(BOOL finished) {
             NSLog(@"animated");
@@ -201,38 +206,42 @@
     }
 }
 
-#pragma mark -- helper methods
--(void)checkAndGetYourImages {
+#pragma mark -- USER MANAGER DELEGATE
+-(void)didReceiveUserImages:(NSArray *)images
+{
+    self.profileImages = [NSMutableArray arrayWithArray:images];
+    self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
+    [self loadProperIndicatorLights:(int)self.profileImages.count - 1];
 
-    NSString *image1 = [self.currentUser objectForKey:@"image1"];
-    NSString *image2 = [self.currentUser objectForKey:@"image2"];
-    NSString *image3 = [self.currentUser objectForKey:@"image3"];
-    NSString *image4 = [self.currentUser objectForKey:@"image4"];
-    NSString *image5 = [self.currentUser objectForKey:@"image5"];
-    NSString *image6 = [self.currentUser objectForKey:@"image6"];
-
-    if (image1) {
-        [self.imageArray addObject:image1];
-        self.userImage.image = [UIImage imageWithData:[self imageData:image1]];
-    }if (image2) {
-        [self.imageArray addObject:image2];
-    } if (image3) {
-        [self.imageArray addObject:image3];
-    } if (image4) {
-        [self.imageArray addObject:image4];
-    } if (image5) {
-        [self.imageArray addObject:image5];
-    } if (image6) {
-        [self.imageArray addObject:image6];
-    }
-    self.imageArrayCount = [self.imageArray count];
-    NSLog(@"%zd images in array", self.imageArrayCount);
 }
 
--(void)loadProperIndicatorLights:(int) count{
-    switch (count) {
+-(void)failedToFetchImages:(NSError *)error
+{
+    NSLog(@"cannot fetch user profile images: %@", error);
+}
+
+-(void)didReceiveUserData:(NSArray *)data
+{
+    NSDictionary *userData = [data firstObject];
+    NSString *bday = userData[@"birthday"];
+    self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %@", userData[@"givenName"], [bday ageFromBirthday:bday]];
+    self.nameAndAge.text = self.nameAndAgeGlobal;
+    self.educationLabel.text = userData[@"work"];
+    self.jobLabel.text = userData[@"lastSchool"];
+}
+
+-(void)failedToFetchUserData:(NSError *)error
+{
+    NSLog(@"failed to fetch data: %@", error);
+}
+
+#pragma mark -- HELPERS
+-(void)loadProperIndicatorLights:(int) count
+{
+    switch (count)
+    {
         case 0:
-            NSLog(@"error: No images loading");
+            NSLog(@"No images loading");
             break;
         case 1:
             self.image2Indicator.hidden = YES;
@@ -264,30 +273,10 @@
     }
 }
 
-- (NSInteger)ageFromBirthday:(NSDate *)birthdate {
-
-    NSDate *today = [NSDate date];
-    NSDateComponents *ageComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:birthdate toDate:today options:0];
-    return ageComponents.year;
-}
-
--(NSDate *)stringToNSDate:(NSString *)dateAsAString{
-
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"MM/dd/yyyy"];
-
-    return [formatter dateFromString:dateAsAString];
-}
-
-
--(NSData *)imageData:(NSString *)imageString{
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
-}
-
--(void)currentImage:(long)count{
-    switch (count) {
+-(void)setLightForImage:(long)count
+{
+    switch (count)
+    {
         case 0:
             self.image1Indicator.backgroundColor = [UIColor rubyRed];
             self.image2Indicator.backgroundColor = nil;
@@ -342,27 +331,31 @@
     }
 }
 
--(void)lastImageBringUpDesciptionView{
-
+-(void)lastImageBringUpDesciptionView
+{
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
     NSString *aboutMe = [self.currentUser objectForKey:@"aboutMe"];
     self.fullAboutMe.text = aboutMe;
     self.fullNameAndAge.text = self.nameAndAgeGlobal;
     self.fullMilesAway.text = self.currentCityAndState;
-
-}
-//round corners, change button colors
--(void)setUpButtons:(UIButton *)button{
-    button.layer.cornerRadius = 15.0 / 2.0f;
-    button.clipsToBounds = YES;
-    [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
-    
 }
 
+-(void)setupManagersProfileVC
+{
+    self.userManager = [UserManager new];
+    self.userManager.delegate = self;
 
+    [self.userManager loadUserData:self.currentUser];
+    [self.userManager loadUserImages:self.currentUser];
+}
 
+-(NSData *)imageData:(NSString *)imageString
+{
+    NSURL *url = [NSURL URLWithString:imageString];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    return data;
+}
 @end
 
 //add animation

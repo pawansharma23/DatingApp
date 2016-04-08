@@ -10,7 +10,7 @@
 
 @interface UIButton (Additions)
 
-+(void)setUpButtons:(UIButton *)button;
++(void)setUpButton:(UIButton *)button;
 +(void)changeButtonState:(UIButton *)button;
 +(void)changeOtherButton:(UIButton *)button;
 +(void)acceptButton:(UIButton *)button;

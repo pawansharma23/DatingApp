@@ -85,7 +85,8 @@ UITableViewDelegate>
 //}
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     return self.matchesNotYetConfirmed.count;
 }
 
@@ -122,13 +123,13 @@ UITableViewDelegate>
 }
 
 
-#pragma mark -- helpers
--(NSData *)imageData:(NSString *)imageString{
+#pragma mark -- HELPERS
+-(NSData *)imageData:(NSString *)imageString
+{
     NSURL *url = [NSURL URLWithString:imageString];
     NSData *data = [NSData dataWithContentsOfURL:url];
     return data;
 }
-
 @end
 
 

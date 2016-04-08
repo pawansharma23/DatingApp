@@ -33,12 +33,7 @@
 @dynamic milesAwayInt;
 @dynamic minAge;
 @dynamic maxAge;
-//@dynamic image;
-//@dynamic image2;
-//@dynamic image3;
-//@dynamic image4;
-//@dynamic image5;
-//@dynamic image6;
+@dynamic profilePhotos;
 @dynamic lastSchool;
 @dynamic facebookLocation;
 @dynamic facebookHometown;
@@ -49,6 +44,7 @@
 @dynamic likes;
 @dynamic longitude;
 @dynamic latitude;
+@dynamic publicProfile;
 
 -(NSString *)ageFromBirthday:(NSString *)birthday
 {
