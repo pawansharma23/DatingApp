@@ -44,7 +44,7 @@
     return parsedData;
 }
 
-+(void)parseAndSaveUserData:(NSDictionary *)results andUser:(User *)user withError:(NSError *)error
++(NSArray *)parseUserData:(NSDictionary *)results withError:(NSError *)error
 {
     NSError *localError = nil;
 
@@ -54,13 +54,13 @@
     }
 
     NSDictionary *userDict = results;
+    NSMutableArray *facebookItems = [NSMutableArray new];
 
     if (userDict)
     {
-
         NSString *faceID = userDict[@"id"];
         NSString *name = userDict[@"first_name"];
-        NSString *gender = userDict[@"male"];
+        NSString *gender = userDict[@"gender"];
         NSString *birthday = userDict[@"birthday"];
         NSString *location = userDict[@"location"][@"name"];
         //work
@@ -76,57 +76,32 @@
 
         if (likeDict)
         {
+            Facebook *face = [Facebook new];
             NSArray *likes = likeDict[@"data"];
+            face.likes = likes;
 
-            //save to Parse
-            if (name)
-            {
-                [user setObject:name forKey:@"givenName"];
-            }
-            if (faceID)
-            {
-                [user setObject:faceID forKey:@"faceID"];
-            }
-            if (birthday)
-            {
-                [user setObject:birthday forKey:@"birthday"];
-            }
-            if (gender)
-            {
-                [user setObject:gender forKey:@"gender"];
-            }
-            if (location)
-            {
-                [user setObject:location forKey:@"facebookLocation"];
-            }
-            if (placeOfWork)
-            {
-                [user setObject:placeOfWork forKey:@"work"];
-            }
-            if (lastSchool)
-            {
-                [user setObject:lastSchool forKey:@"lastSchool"];
-            }
-            if (likes)
-            {
-                [user setObject:likes forKey:@"likes"];
-            }
         }
 
-        [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 
-            if (succeeded)
-            {
-                NSLog(@"saved FB data to parse: %d", succeeded ? true : false);
-            }
-            else
-            {
-                NSLog(@"did not save to parse: %@", error);
-            }
-        }];
-    }
 
+            Facebook *face = [Facebook new];
+
+            face.givenName = name;
+            face.identification = faceID;
+            face.work = placeOfWork;
+            face.school = lastSchool;
+            face.gender = gender;
+            face.birthday = birthday;
+            face.location = location;
+
+            [facebookItems addObject:face];
+        }
+
+    return facebookItems;
 }
+
+
+
 
 +(NSArray *)parseThumbnailPaging:(NSDictionary *)results withError:(NSError *)error
 {
@@ -177,10 +152,6 @@
 
     if (data)
     {
-        //NSLog(@"dta: %@", data);
-
-        //        NSOrderedSet *orderedSet = [NSOrderedSet orderedSetWithArray:data];
-        //        NSArray *uniqueArray = [orderedSet array];
 
         for (NSDictionary *imageData in data)
         {
@@ -226,14 +197,14 @@
             [parsedData addObject:face];
         }
     }
-
+    
     return parsedData;
 }
 
 +(NSArray *)parseAlbumPaging:(NSDictionary *)results withError:(NSError *)error
 {
     NSError *localError = nil;
-
+    
     if (localError != nil)
     {
         error = localError;
@@ -241,7 +212,7 @@
     }
     NSMutableArray *parsedPagingData = [NSMutableArray new];
     NSDictionary *paging = results[@"paging"];
-
+    
     if (paging)
     {
         Facebook *face = [Facebook new];
@@ -249,7 +220,7 @@
         {
             face.nextPage = paging[@"next"];
         }
-
+        
         if (paging[@"previous"])
         {
             face.previousPage = paging[@"previous"];

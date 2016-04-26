@@ -10,4 +10,7 @@
 
 @interface ImageLabelViews : UIView
 
+-(instancetype)initWithFrame:(CGRect)frame
+                       image:(UIImage*)image
+                        text:(NSString*)text;
 @end

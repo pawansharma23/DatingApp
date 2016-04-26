@@ -15,6 +15,13 @@
 @property (strong, nonatomic) NSString *timezone;
 @property (strong, nonatomic) NSString *givenName;
 @property (strong, nonatomic) NSString *birthday;
+@property (strong, nonatomic) NSString *identification;
+@property (strong, nonatomic) NSString *gender;
+@property (strong, nonatomic) NSString *work;
+@property (strong, nonatomic) NSString *school;
+
+
+
 @property (strong, nonatomic) NSArray *likes;
 
 
@@ -36,4 +43,5 @@
 
 
 -(NSData *)stringURLToData:(NSString *)urlString;
+-(NSString *)ageFromBirthday:(NSString *)birthday;
 @end

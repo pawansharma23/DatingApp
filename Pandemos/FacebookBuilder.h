@@ -12,7 +12,7 @@
 @interface FacebookBuilder : NSObject
 
 +(NSArray *)parseThumbnailData:(NSDictionary *)results withError:(NSError *)error;
-+(void)parseAndSaveUserData:(NSDictionary *)results andUser:(User *)user withError:(NSError *)error;
++(NSArray *)parseUserData:(NSDictionary *)results withError:(NSError *)error;
 +(NSArray *)parseThumbnailPaging:(NSDictionary *)results withError:(NSError *)error;
 +(NSArray *)parsePhotoAlbums:(NSDictionary *)results withError:(NSError *)error;
 +(NSArray *)parseAlbum:(NSDictionary *)results withError:(NSError *)error;

@@ -7,7 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "User.h"
 
 @interface UserBuilder : NSObject
 
++(NSArray *)parsedUserData:(NSArray *)userArray withError:(NSError *)error;
 @end

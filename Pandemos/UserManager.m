@@ -7,6 +7,9 @@
 //
 #import "UserManager.h"
 #import "User.h"
+#import <Parse/Parse.h>
+#import "UserBuilder.h"
+#import "MatchRequest.h"
 
 @implementation UserManager
 
@@ -16,17 +19,12 @@ static NSString * const kParseGivenName                    = @"givenName";
 static NSString * const kParseUserBirthday                 = @"birthday";
 static NSString * const kParseUserGender                   = @"gender";
 static NSString * const kParseUserSexPreference            = @"sexPref";
-static NSString * const kParseUserFBLocation               = @"facebookLocation";
 static NSString * const kParseUserMilesAwayPreferece       = @"milesAway";
 static NSString * const kParseUserPreferenceMinAge         = @"minAge";
 static NSString * const kParseUserPreferenceMaxAge         = @"maxAge";
-static NSString * const kParseUserImage1                   = @"image1";
-static NSString * const kParseUserImage2                   = @"image2";
-static NSString * const kParseUserImage3                   = @"image3";
-static NSString * const kParseUserImage4                   = @"image4";
-static NSString * const kParseUserImage5                   = @"image5";
-static NSString * const kParseUserImage6                   = @"image6";
-static NSString * const kParseEducation                    = @"scool";
+static NSString * const kParseProfileImages                = @"profileImages";
+static NSString * const kParseEducation                    = @"lastSchool";
+static NSString * const kParseUserFBLocation               = @"facebookLocation";
 static NSString * const kParseFacebookHometown             = @"facebookHometown";
 static NSString * const kParseWork                         = @"work";
 static NSString * const kParseConfidantEmail               = @"confidantEmail";
@@ -34,6 +32,34 @@ static NSString * const kParseAboutMe                      = @"aboutMe";
 static NSString * const kParsePublic                       = @"publicProfile";
 
 //PFGeoPoint * const kParseGeoPoint= @"GeoCode";
+-(void)signUp:(PFUser*)user
+{
+    [self saveToUserDefaultsWithObject:user.objectId andKey:@"objectId"];
+    user.objectId = user.objectId;
+    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+     {
+         if (!error)
+         {
+             NSLog(@"SIGNUP SUCCESSFUL");
+             PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+             currentInstallation[@"user"] = [User currentUser];
+             [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error)
+              {
+                  if (!error)
+                  {
+                      [self.delegate didCreateUser:user withError:error];
+                  }
+              }];
+         }
+     }];
+}
+
+- (void)saveToUserDefaultsWithObject:(id)object andKey:(NSString*)key
+{
+    [[NSUserDefaults standardUserDefaults] setObject:object forKey:key];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSLog(@"SAVED %@ TO USER DEFAULTS", object);
+}
 
 -(void)loadUserData:(User *)user
 {
@@ -122,17 +148,12 @@ static NSString * const kParsePublic                       = @"publicProfile";
     {
         ob.aboutMe = aboutMe;
     }
-    if (birthday)
-    {
-        ob.birthday = birthday;
-    }
     if (pubProf)
     {
         ob.publicProfile = pubProf;
     }
 
     [userData addObject:ob];
-    //self.milesAwayInt = [userMilesAway intValue];
     NSArray *array = [NSArray arrayWithArray:userData];
 
     [self.delegate didReceiveUserData:array];
@@ -143,4 +164,99 @@ static NSString * const kParsePublic                       = @"publicProfile";
     NSArray *images = [user objectForKey:@"profileImages"];
     [self.delegate didReceiveUserImages:images];
 }
+
+-(void)loadUsersUnseenPotentialMatches:(User *)user withSexPreference:(NSString *)sexPref minAge:(NSString *)min maxAge:(NSString *)max
+{
+    PFQuery *query = [User query];
+    [query whereKey:@"objectId" notEqualTo:[User currentUser].objectId];
+    [query whereKey:@"gender" equalTo:sexPref];
+    [query whereKey:@"userAge" greaterThan:min];
+    [query whereKey:@"userAge" lessThan:max];
+    //[query whereKey:miles nearGeoPoint:nil withinMiles:user.milesAwayInt];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+
+        if (objects)
+        {
+            [self.delegate didReceivePotentialMatchData:objects];
+            //for (NSDictionary *dict in objects)
+            //{
+//                if (dict[@"profileImages"])
+//                {
+//                    NSArray *profileImages = dict[@"profileImages"];
+//                    [self.delegate didReceivePotentialMatchImages:profileImages];
+//                }
+            //}
+        }
+        else
+        {
+            [self.delegate failedToFetchPotentialMatchData:error];
+            [self.delegate failedToFetchPotentialMatchImages:error];
+        }
+    }];
+}
+
+-(void)createMatchRequest:(User *)user withCompletion:(resultBlockWithMatchRequest)result
+{
+    //request them
+    //MatchRequest *matchReqest = [MatchRequest object];
+    MatchRequest *matchRequest = [MatchRequest objectWithClassName:@"MatchRequest"];
+    matchRequest.fromUser = [User currentUser];
+    //NSLog(@"from user: %@", match.fromUser.givenName);
+    //selected user is the user at the cell that was selected
+    matchRequest.toUser = user;
+    //NSLog(@"to user: %@ & username: %@", match.toUser.givenName, match.toUser.work);
+
+    // set the initial status to pending, also can throw in sex checks in here
+    matchRequest.status = @"pending";
+
+    [matchRequest saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+        if (!error)
+        {
+            result(matchRequest, nil);
+            [self.delegate didCreateMatchRequest:matchRequest];
+        }
+        else
+        {
+            result(nil, error);
+            [self.delegate failedToCreateMatchRequest:error];
+        }
+    }];
+}
+
+-(void)updateMatchRequest:(MatchRequest *)request withResponse:(NSString *)response withSuccess:(resultBlockWithUser)result
+{
+    User *fromUser = request.fromUser;
+
+    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
+    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
+    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : request.objectId} block:^(id object, NSError *error)
+     {
+         if (!error)
+         {
+             //add the from user to the currentUsers friends
+             PFRelation *matchRelation = [[User currentUser] relationForKey:@"match"];
+             [matchRelation addObject:fromUser];
+
+             //save the current user
+             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+              {
+                  result(fromUser, error);
+                  [self.delegate didUpdateMatchRequest:fromUser];
+              }];
+         }
+         else
+         {
+             result(nil, error);
+             [self.delegate failedToCreateMatchRequest:error];
+         }
+     }];
+}
 @end
+
+
+
+
+
+
+

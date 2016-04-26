@@ -21,7 +21,7 @@
 -(void)didReceiveParsedThumbPaging:(NSArray *)thumbPaging;
 -(void)failedToReceiveParsedThumbPaging:(NSError *)error;
 -(void)didReceiveParsedAlbumList:(NSArray *)photoAlbums;
--(void)didReceiveAndSaveUserData;
+-(void)didReceiveParsedUserData:(NSArray*)data;
 -(void)failedToReceiveUserData:(NSError *)error;
 -(void)failedToReceiveParsedPhotoAlbums:(NSError *)error;
 -(void)didReceiveParsedAlbum:(NSArray *)album;

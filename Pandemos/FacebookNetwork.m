@@ -17,8 +17,6 @@
 {
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]initWithGraphPath:@"me/photos" parameters:@{@"fields":@"picture, updated_time, id, album"} HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-
-        //NSLog(@"result: %@", result);
         
         if (!error)
         {

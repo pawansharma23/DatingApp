@@ -8,6 +8,7 @@
 
 #import "UIButton+Additions.h"
 #import "UIColor+Pandemos.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation UIButton (Additions)
 
@@ -17,6 +18,14 @@
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
     [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
+}
+
++(void)roundButton:(UIButton *)button;
+{
+    button.layer.cornerRadius = button.bounds.size.width / 2;
+    button.clipsToBounds = YES;
+    [button.layer setBorderColor:[UIColor whiteColor].CGColor];
+
 }
 
 +(void)changeButtonState:(UIButton *)button

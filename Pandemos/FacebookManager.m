@@ -122,11 +122,11 @@
 -(void)receivedFBUserInfo:(NSDictionary *)facebookUserInfo andUser:(User *)user
 {
     NSError *error = nil;
-    [FacebookBuilder parseAndSaveUserData:facebookUserInfo andUser:user withError:error];
+    NSArray *data = [FacebookBuilder parseUserData:facebookUserInfo withError:error];
 
     if (!error)
     {
-        [self.delegate didReceiveAndSaveUserData];
+        [self.delegate didReceiveParsedUserData:data];
     }
     else
     {

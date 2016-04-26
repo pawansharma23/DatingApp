@@ -428,7 +428,7 @@
                         <outlet property="userImage" destination="pQv-YT-7zK" id="SQC-wu-I9a"/>
                         <outlet property="userImageMatched" destination="Stf-IV-aYp" id="JNB-uZ-JYG"/>
                         <outlet property="userInfoView" destination="wWN-3W-fS7" id="eVR-8r-fH4"/>
-                        <segue destination="ZfB-PD-3YE" kind="show" identifier="NoUserLogOut" id="sqJ-2N-hSO"/>
+                        <segue destination="ZfB-PD-3YE" kind="show" identifier="FacebookLogin" id="GsC-Py-x6y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -444,20 +444,20 @@
                         <outlet property="delegate" destination="BYZ-38-t0r" id="eVu-zW-4rs"/>
                     </connections>
                 </swipeGestureRecognizer>
-                <swipeGestureRecognizer direction="right" id="aCy-YD-Fw1">
-                    <connections>
-                        <action selector="onSwipeRight:" destination="BYZ-38-t0r" id="Nlt-t8-ZEL"/>
-                        <outlet property="delegate" destination="BYZ-38-t0r" id="y3e-Vy-TuJ"/>
-                    </connections>
-                </swipeGestureRecognizer>
                 <swipeGestureRecognizer direction="right" id="Dek-0R-qcV">
                     <connections>
                         <action selector="onSwipeLeft:" destination="BYZ-38-t0r" id="gg5-HK-Wqp"/>
                         <outlet property="delegate" destination="BYZ-38-t0r" id="SBv-Ci-yMx"/>
                     </connections>
                 </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="aCy-YD-Fw1">
+                    <connections>
+                        <action selector="onSwipeRight:" destination="BYZ-38-t0r" id="Nlt-t8-ZEL"/>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="y3e-Vy-TuJ"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="471" y="718.5"/>
+            <point key="canvasLocation" x="609" y="376.5"/>
         </scene>
         <!--Messaging-->
         <scene sceneID="jfg-im-UFA">
@@ -465,7 +465,7 @@
                 <viewControllerPlaceholder storyboardName="Messaging" id="H9v-cu-nYH" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QiA-4j-Xfy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1129.5" y="564.75"/>
+            <point key="canvasLocation" x="1183.5" y="417.75"/>
         </scene>
         <!--Profile-->
         <scene sceneID="RgI-rt-aYO">
@@ -473,7 +473,7 @@
                 <viewControllerPlaceholder storyboardName="Profile" id="Yjv-8l-uTW" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s2M-Fe-Akt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1129.5" y="904.5"/>
+            <point key="canvasLocation" x="1183.5" y="589.5"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="ljb-An-xxD">
@@ -519,7 +519,7 @@
                                 </constraints>
                                 <state key="normal" title="Initial User Sign in"/>
                                 <connections>
-                                    <segue destination="KSe-hp-M8n" kind="show" id="R7L-up-B5Y"/>
+                                    <segue destination="KSe-hp-M8n" kind="show" identifier="LoggedIn" id="R7L-up-B5Y"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -544,12 +544,11 @@
                     </view>
                     <connections>
                         <outlet property="footerView" destination="Fbg-za-t1V" id="km3-wz-cxp"/>
-                        <segue destination="5q6-1A-cmZ" kind="show" identifier="LoggedIn" id="6fP-9k-Ufc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ynt-3j-zb0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="471" y="-17.25"/>
+            <point key="canvasLocation" x="1581" y="325.5"/>
         </scene>
         <!--InitialSetup-->
         <scene sceneID="1tC-0G-caQ">
@@ -557,7 +556,7 @@
                 <viewControllerPlaceholder storyboardName="InitialSetup" id="KSe-hp-M8n" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YzK-mr-0Fn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1056" y="-17.25"/>
+            <point key="canvasLocation" x="2466" y="376.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3DC-MW-R5R">
@@ -582,7 +581,7 @@
         <image name="loginFB" width="288" height="62"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="GsC-Py-x6y"/>
         <segue reference="V0T-hb-5Ti"/>
-        <segue reference="Rop-v2-dfr"/>
     </inferredMetricsTieBreakers>
 </document>

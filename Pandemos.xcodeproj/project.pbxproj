@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
+		2657ABCC1CCE5E2100629437 /* ChooseMatchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */; };
+		2657ABCF1CCE5F3B00629437 /* ImageLabelViews.m in Sources */ = {isa = PBXBuildFile; fileRef = 2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */; };
 		268BA0941C1DB53F0054414E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 268BA0921C1DB53F0054414E /* Main.storyboard */; };
 		268BA0961C1DB53F0054414E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 268BA0951C1DB53F0054414E /* Assets.xcassets */; };
 		268BA0991C1DB53F0054414E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 268BA0971C1DB53F0054414E /* LaunchScreen.storyboard */; };
@@ -21,6 +23,7 @@
 		26AC546E1CAF1B3C005AD536 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26AC546D1CAF1B3C005AD536 /* Profile.storyboard */; };
 		26B954561CB82202006245EE /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B954551CB82202006245EE /* NSString+Additions.m */; };
 		26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B954581CB82A89006245EE /* UIImageView+Additions.m */; };
+		26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B9545B1CBAD0D5006245EE /* UserBuilder.m */; };
 		26C1E3D61C3194B10020349A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D51C3194B10020349A /* CoreLocation.framework */; };
 		26C1E3D81C31AB590020349A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D71C31AB590020349A /* MobileCoreServices.framework */; };
 		26C70EAF1CA5B15100E9B98F /* PandemosUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0AE1C1DB53F0054414E /* PandemosUITests.m */; };
@@ -90,6 +93,10 @@
 		2614A7121CA1EF4E00D6F6AA /* FacebookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookManager.m; sourceTree = "<group>"; };
 		264445191CB5699B00A0381B /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		2644451A1CB5699B00A0381B /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
+		2657ABCA1CCE5E2100629437 /* ChooseMatchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseMatchView.h; sourceTree = "<group>"; };
+		2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseMatchView.m; sourceTree = "<group>"; };
+		2657ABCD1CCE5F3B00629437 /* ImageLabelViews.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageLabelViews.h; sourceTree = "<group>"; };
+		2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageLabelViews.m; sourceTree = "<group>"; };
 		2664514E1C5D007B00D98136 /* AlbumDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailViewController.h; sourceTree = "<group>"; };
 		2664514F1C5D007B00D98136 /* AlbumDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailViewController.m; sourceTree = "<group>"; };
 		266451511C5D058C00D98136 /* AddImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddImageCell.h; sourceTree = "<group>"; };
@@ -145,6 +152,8 @@
 		26B954551CB82202006245EE /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
 		26B954571CB82A89006245EE /* UIImageView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Additions.h"; sourceTree = "<group>"; };
 		26B954581CB82A89006245EE /* UIImageView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Additions.m"; sourceTree = "<group>"; };
+		26B9545A1CBAD0D5006245EE /* UserBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserBuilder.h; sourceTree = "<group>"; };
+		26B9545B1CBAD0D5006245EE /* UserBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserBuilder.m; sourceTree = "<group>"; };
 		26C1E3D51C3194B10020349A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
@@ -211,6 +220,10 @@
 				26CC6A391C7CF3E1000F3BAC /* PotentialMatch.m */,
 				268EE4551C834BC500085DAD /* MatchRequest.h */,
 				268EE4561C834BC500085DAD /* MatchRequest.m */,
+				2657ABCA1CCE5E2100629437 /* ChooseMatchView.h */,
+				2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */,
+				2657ABCD1CCE5F3B00629437 /* ImageLabelViews.h */,
+				2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */,
 			);
 			name = Matches;
 			sourceTree = "<group>";
@@ -257,6 +270,8 @@
 				2614A7121CA1EF4E00D6F6AA /* FacebookManager.m */,
 				2614A70E1CA1EBF200D6F6AA /* FacebookBuilder.h */,
 				2614A70F1CA1EBF200D6F6AA /* FacebookBuilder.m */,
+				26B9545A1CBAD0D5006245EE /* UserBuilder.h */,
+				26B9545B1CBAD0D5006245EE /* UserBuilder.m */,
 				264445191CB5699B00A0381B /* UserManager.h */,
 				2644451A1CB5699B00A0381B /* UserManager.m */,
 			);
@@ -746,6 +761,7 @@
 				26C70EBF1CA5B18F00E9B98F /* InitialWalkThroughViewController.m in Sources */,
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26C70EC11CA5B18F00E9B98F /* MessageDetailCell.m in Sources */,
+				26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
 				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,
@@ -754,12 +770,14 @@
 				26C70EC51CA5B18F00E9B98F /* ProfileViewController.m in Sources */,
 				26C70EC61CA5B18F00E9B98F /* AlbumCustomCell.m in Sources */,
 				26C70EC71CA5B18F00E9B98F /* PreviewUserProfileVC.m in Sources */,
+				2657ABCF1CCE5F3B00629437 /* ImageLabelViews.m in Sources */,
 				26C70ECC1CA5B18F00E9B98F /* ViewController.m in Sources */,
 				26C70ECD1CA5B18F00E9B98F /* FacebookNetwork.m in Sources */,
 				26C70ECE1CA5B18F00E9B98F /* FacebookManager.m in Sources */,
 				26C70ECF1CA5B18F00E9B98F /* User.m in Sources */,
 				26C70ED01CA5B18F00E9B98F /* Facebook.m in Sources */,
 				26C70ED11CA5B18F00E9B98F /* FacebookBuilder.m in Sources */,
+				2657ABCC1CCE5E2100629437 /* ChooseMatchView.m in Sources */,
 				26C70ED21CA5B18F00E9B98F /* PotentialMatch.m in Sources */,
 				26AC54641CAED17A005AD536 /* UITextView+Additions.m in Sources */,
 				26C70ED31CA5B18F00E9B98F /* MatchRequest.m in Sources */,

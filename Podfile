@@ -5,3 +5,4 @@ pod 'LXReorderableCollectionViewFlowLayout', '~> 0.1.1'
 pod 'Parse'
 pod 'ParseUI'
 pod 'SVProgressHUD'
+pod "MDCSwipeToChoose"

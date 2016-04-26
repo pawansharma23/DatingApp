@@ -132,62 +132,44 @@ UserManagerDelegate>
 }
 
 #pragma mark -- TEXTVIEW DELEGATE
-- (void)textViewDidEndEditing:(UITextView *)textView
+-(void)textViewDidChange:(UITextView *)textView
 {
-    NSLog(@"textViewDidEndEditing:");
-    textView.backgroundColor = [UIColor whiteColor];
-    NSString *aboutMeDescr = textView.text;
-    NSLog(@"save textView: %@", aboutMeDescr);
-
-    [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
-
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"cannot save: %@", error.description);
-        } else {
-            NSLog(@"saved successful: %s", succeeded ? "true" : "false");
-        }
-    }];
-
-}
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-
     NSCharacterSet *doneButtonCharacterSet = [NSCharacterSet newlineCharacterSet];
-    NSRange replacementTextRange = [text rangeOfCharacterFromSet:doneButtonCharacterSet];
+    NSRange replacementTextRange = [textView.text rangeOfCharacterFromSet:doneButtonCharacterSet];
     NSUInteger location = replacementTextRange.location;
 
-    if (textView.text.length + text.length > 280)
+    if (textView.text.length > 280)
     {
         if (location != NSNotFound)
         {
             [textView resignFirstResponder];
-            NSLog(@"editing: %@", text);
+            NSLog(@"editing: %@", textView.text);
         }
-        return NO;
+
     }
     else if (location != NSNotFound)
     {
         [textView resignFirstResponder];
-        NSLog(@"not editing");
-        NSLog(@"text from shouldChangeInRange: %@", text);
 
-        return NO;
+        NSLog(@"text from shouldChangeInRange: %@", textView.text);
+
+        NSString *aboutMeDescr = textView.text;
+        NSLog(@"save textView: %@", aboutMeDescr);
+
+        [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
+
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error)
+            {
+                NSLog(@"cannot save: %@", error.description);
+            }
+            else
+            {
+                NSLog(@"saved successful: %s", succeeded ? "true" : "false");
+            }
+        }];
     }
-    return YES;
 }
-
-//- (void)textViewDidChange:(UITextView *)textView
-//{
-//    NSLog(@"textViewDidChange:");
-//
-//    NSLog(@"text: %@", textView.text);
-//
-//
-//}
-
-
 
 #pragma mark -- COLLECTIONVIEW DELEGATE
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -233,6 +215,7 @@ UserManagerDelegate>
 //3) Min/Max Ages
 - (IBAction)onMinAgeSliderChange:(UISlider *)sender
 {
+    NSLog(@"slider sender: %f", sender.value);
     NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minimumAgeSlider.value];
     NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
     self.minimumAgeLabel.text = minAge;
@@ -243,7 +226,7 @@ UserManagerDelegate>
         if (error) {
             NSLog(@"error in saving min Age: %@", error);
         } else{
-            NSLog(@"saved: %s", succeeded ? "true" : "false");
+            NSLog(@"saved: %s with string: %@", succeeded ? "true" : "false", minAgeStr);
         }
     }];
 }
@@ -285,6 +268,11 @@ UserManagerDelegate>
 - (IBAction)milesAwaySlider:(UISlider *)sender
 {
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesAwaySlider.value];
+
+
+    NSLog(@"miles away string to save: %@", milesAwayStr);
+
+
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
     self.milesAwayLabel.text = milesAway;
     [self.currentUser setObject:milesAwayStr forKey:@"milesAway"];
@@ -400,8 +388,14 @@ UserManagerDelegate>
     [self sexPreferenceButton];
     self.aboutMe = userData[@"aboutMe"];
     self.textViewAboutMe.text = self.aboutMe;
-    [self setMilesAway:userData[@"milesAway"]];
-    [self setMinAndMaxAgeSliders:userData[@"minAge"] andMax:userData[@"maxAge"]];
+
+    NSString *miles = userData[@"milesAway"];
+    [self setMilesAway:miles];
+
+    NSString *min = userData[@"minAge"];
+    NSString *max = userData[@"maxAge"];
+
+    [self setMinAndMaxAgeSliders:min andMax:max];
     self.jobLabel.text = userData[@"work"];
     self.educationLabel.text = userData[@"lastSchool"];
     [self setPublicProfile:userData[@"publicProfile"]];
@@ -424,6 +418,15 @@ UserManagerDelegate>
 }
 
 #pragma mark -- HELPERS
+-(void)setupManagersProfileVC
+{
+    self.userManager = [UserManager new];
+    self.userManager.delegate = self;
+
+    [self.userManager loadUserData:self.currentUser];
+    [self.userManager loadUserImages:self.currentUser];
+}
+
 -(void)setPublicProfile:(NSString *)publicProfile
 {
     if ([publicProfile containsString:@"public"])
@@ -440,10 +443,11 @@ UserManagerDelegate>
 
 -(void)setMilesAway:(NSString *)milesAway
 {
-    self.milesAwayLabel.text = milesAway;
     CGFloat away = (CGFloat)[milesAway floatValue];
-    NSLog(@"miels away: %d", (int)away);
     self.milesAwaySlider.value = away;
+    NSLog(@"miles away: %f", away);
+    NSString *milesAwayStr = [NSString stringWithFormat:@"Minimum Age: %.f", away];
+    self.milesAwayLabel.text = milesAwayStr;
 }
 
 -(void)setMinAndMaxAgeSliders:(NSString *)min andMax:(NSString *)max
@@ -478,15 +482,6 @@ UserManagerDelegate>
     {
         NSLog(@"sex Pref data not working");
     }
-}
-
--(void)setupManagersProfileVC
-{
-    self.userManager = [UserManager new];
-    self.userManager.delegate = self;
-
-    [self.userManager loadUserData:self.currentUser];
-    [self.userManager loadUserImages:self.currentUser];
 }
 
 -(NSData *)imageData:(NSString *)imageString

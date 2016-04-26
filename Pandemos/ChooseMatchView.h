@@ -7,7 +7,13 @@
 //
 
 #import <MDCSwipeToChoose/MDCSwipeToChoose.h>
+#import "User.h"
 
 @interface ChooseMatchView : MDCSwipeToChooseView
 
+@property (nonatomic, strong, readonly) User *user;
+
+-(instancetype)initWithFrame:(CGRect)frame
+                        user:(User*)user
+                     options:(MDCSwipeToChooseViewOptions*)options;
 @end

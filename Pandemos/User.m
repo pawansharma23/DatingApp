@@ -21,6 +21,7 @@
     return (User *)[PFUser currentUser];
 }
 
+@dynamic image;
 @dynamic objectID;
 @dynamic faceID;
 @dynamic givenName;
@@ -33,7 +34,7 @@
 @dynamic milesAwayInt;
 @dynamic minAge;
 @dynamic maxAge;
-@dynamic profilePhotos;
+@dynamic profileImages;
 @dynamic lastSchool;
 @dynamic facebookLocation;
 @dynamic facebookHometown;
@@ -66,6 +67,13 @@
     NSData *data = [NSData dataWithContentsOfURL:url];
 
     return data;
+}
+
+-(NSData *)userURLToData:(User *)urlString
+{
+    NSString *stringURL = [NSString stringWithFormat:@"%@", urlString];
+    NSURL *url = [NSURL URLWithString:stringURL];
+    return [NSData dataWithContentsOfURL:url];
 }
 @end
 

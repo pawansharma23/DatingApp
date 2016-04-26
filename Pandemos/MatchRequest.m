@@ -10,4 +10,12 @@
 
 @implementation MatchRequest
 
+@dynamic fromUser;
+@dynamic toUser;
+@dynamic status;
+
++ (NSString *)parseClassName
+{
+    return @"MatchRequest";
+}
 @end

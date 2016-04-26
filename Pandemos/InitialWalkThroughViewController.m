@@ -60,7 +60,6 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *bothSexesButton;
 @property (weak, nonatomic) IBOutlet UIButton *suggestionsButton;
 @property (weak, nonatomic) IBOutlet UIButton *continueButton;
-@property (weak, nonatomic) IBOutlet UIButton *emptyImageButton;
 @property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
 @property (weak, nonatomic) IBOutlet UILabel *notValidImageLabel;
 
@@ -72,7 +71,6 @@ UserManagerDelegate>
 
 @property (strong, nonatomic) NSArray *nextPages;
 @property (strong, nonatomic) NSArray *previousPages;
-
 @property (strong, nonatomic) NSString *selectedImage;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
 @property (strong, nonatomic) NSString *userGender;
@@ -87,6 +85,8 @@ UserManagerDelegate>
 
     if (self.currentUser)
     {
+        [self setupManagersForInitalWalkViewController];
+
         NSLog(@"User: %@", self.currentUser.givenName);
 
         self.navigationItem.title = @"Setup";
@@ -130,29 +130,22 @@ UserManagerDelegate>
         [UIButton setUpButton:self.womensInterestButton];
         [UIButton setUpButton:self.bothSexesButton];
         [UIButton setUpButton:self.suggestionsButton];
-        [UIButton setUpButton:self.emptyImageButton];
         [UIButton setUpButton:self.continueButton];
         [UITextView setup:self.textViewAboutMe];
 
         [self defaultAgeSliderSet];
         [self defaultMilesAwaySliderSet];
         [self defaultPublicProfileSet];
-    }
-}
 
--(void)viewDidAppear:(BOOL)animated
-{
-
-    if (self.currentUser)
-    {
-        [self setupManagersForInitalWalkViewController];
     }
     else
     {
         NSLog(@"no user for face request");
     }
+}
 
-    //aboutMe TextView Populated
+-(void)viewDidAppear:(BOOL)animated
+{
     NSString *aboutMeDescription = [self.currentUser objectForKey:@"aboutMe"];
     if (aboutMeDescription)
     {
@@ -195,65 +188,49 @@ UserManagerDelegate>
 }
 
 #pragma mark -- TEXTVIEW DELEGATE
-- (void)textViewDidBeginEditing:(UITextView *)textView
+-(void)textViewDidBeginEditing:(UITextView *)textView
 {
-    NSLog(@"textViewDidBeginEditing");
-    //clears text set as instructions
-    [textView setText:@""];
-    textView.backgroundColor = [UIColor greenColor];
+    textView.text = @"";
 }
 
-- (void)textViewDidEndEditing:(UITextView *)textView
-{
-    NSLog(@"textViewDidEndEditing: %@", textView);
-
-    // NSString *aboutMeDescr = textView.text;
-    //    [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
-    //    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error)
-    //     {
-    //
-    //         if (error)
-    //         {
-    //             NSLog(@"cannot save: %@", error.description);
-    //         }
-    //         else
-    //         {
-    //             NSLog(@"saved successful: %s", succeeded ? "true" : "false");
-    //         }
-    //     }];
-}
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+-(void)textViewDidChange:(UITextView *)textView
 {
     NSCharacterSet *doneButtonCharacterSet = [NSCharacterSet newlineCharacterSet];
-    NSRange replacementTextRange = [text rangeOfCharacterFromSet:doneButtonCharacterSet];
+    NSRange replacementTextRange = [textView.text rangeOfCharacterFromSet:doneButtonCharacterSet];
     NSUInteger location = replacementTextRange.location;
 
-    if (textView.text.length + text.length > 280)
+    if (textView.text.length > 280)
     {
         if (location != NSNotFound)
         {
             [textView resignFirstResponder];
-            NSLog(@"editing: %@", text);
+            NSLog(@"editing: %@", textView.text);
         }
-        return NO;
+
     }
     else if (location != NSNotFound)
     {
         [textView resignFirstResponder];
-        NSLog(@"text from shouldChangeInRange: %@", text);
 
-        return NO;
+        NSLog(@"text from shouldChangeInRange: %@", textView.text);
+
+        NSString *aboutMeDescr = textView.text;
+        NSLog(@"save textView: %@", aboutMeDescr);
+
+        [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
+
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error)
+            {
+                NSLog(@"cannot save: %@", error.description);
+            }
+            else
+            {
+                NSLog(@"saved successful: %s", succeeded ? "true" : "false");
+            }
+        }];
     }
-    return YES;
 }
-//
-//- (void)textViewDidChange:(UITextView *)textView
-//{
-//    NSLog(@"textViewDidChange:");
-//
-//    NSLog(@"text: %@", textView.text);
-//}
 
 - (IBAction)onSuggestionsTapped:(UIButton *)sender
 {
@@ -352,7 +329,6 @@ UserManagerDelegate>
 #pragma mark -- SEGUE
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
         SelectedImageViewController *sivc = segue.destinationViewController;
@@ -405,10 +381,57 @@ UserManagerDelegate>
     NSLog(@"failed to call facebook delegate: %@", error);
 }
 
--(void)didReceiveAndSaveUserData
+-(void)didReceiveParsedUserData:(NSArray *)data
 {
-    NSLog(@"facebook user data");
+    Facebook *face = [data firstObject];
+    NSLog(@"name: %@", face.givenName);
+    NSLog(@"name: %@", face.gender);
+
+    [self saveToParse:data];
 }
+-(void)saveToParse:(NSArray*)facebookUserDataArray
+{
+    Facebook *face = [facebookUserDataArray firstObject];
+
+    if (face.identification)
+    {
+        [self.currentUser setObject:face.identification forKey:@"faceID"];
+    }
+    if (face.givenName)
+    {
+        [self.currentUser setObject:face.givenName forKey:@"givenName"];
+    }
+    if (face.birthday)
+    {
+        [self.currentUser setObject:face.birthday forKey:@"birthday"];
+
+        [self.currentUser setObject:[face ageFromBirthday:face.birthday] forKey:@"userAge"];
+    }
+    if (face.gender)
+    {
+        [self.currentUser setObject:face.gender forKey:@"gender"];
+        self.userGender = face.gender;
+        [self sexPreferenceButton];
+    }
+    if (face.location)
+    {
+        [self.currentUser setObject:face.location forKey:@"facebookLocation"];
+    }
+    if (face.work)
+    {
+        [self.currentUser setObject:face.work forKey:@"work"];
+    }
+    if (face.school)
+    {
+        [self.currentUser setObject:face.school forKey:@"lastSchool"];
+    }
+    
+    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+        NSLog(@"saved facebook user data to parse: %d", succeeded ? true : false);
+    }];
+}
+
 
 -(void)failedToReceiveUserData:(NSError *)error
 {
@@ -494,9 +517,10 @@ UserManagerDelegate>
 -(void)defaultMilesAwaySliderSet
 {
     NSString *milesAwayFloat = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
+    NSLog(@"miles away: %@", milesAwayFloat);
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayFloat];
     self.milesAwayLabel.text = milesAway;
-    [self.currentUser setObject:milesAway forKey:@"milesAway"];
+    [self.currentUser setObject:milesAwayFloat forKey:@"milesAway"];
 
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         NSLog(@"saved min/max age preference: milesAway: %@, %d", milesAway, succeeded ? true : false);

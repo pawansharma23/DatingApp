@@ -139,7 +139,7 @@ UserManagerDelegate>
     if (direction == UISwipeGestureRecognizerDirectionUp)
     {
         NSLog(@"swipe up");
-        //add animation
+    
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
             self.count++;
@@ -211,8 +211,8 @@ UserManagerDelegate>
 {
     self.profileImages = [NSMutableArray arrayWithArray:images];
     self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
-    [self loadProperIndicatorLights:(int)self.profileImages.count - 1];
-
+    [self loadProperIndicatorLights:(int)self.profileImages.count];
+    self.image1Indicator.backgroundColor = [UIColor rubyRed];
 }
 
 -(void)failedToFetchImages:(NSError *)error
@@ -236,39 +236,89 @@ UserManagerDelegate>
 }
 
 #pragma mark -- HELPERS
--(void)loadProperIndicatorLights:(int) count
+-(void)loadProperIndicatorLights:(int)count
 {
     switch (count)
     {
         case 0:
-            NSLog(@"No images loading");
+            self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image3Indicator.hidden = YES;
+            self.image2Indicator.hidden = YES;
+            self.image1Indicator.hidden = YES;
             break;
         case 1:
-            self.image2Indicator.hidden = YES;
-            self.image3Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
+            [UIButton setUpButton:self.image1Indicator];
             self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image3Indicator.hidden = YES;
+            self.image2Indicator.hidden = YES;
+            self.image1Indicator.hidden = NO;
             break;
         case 2:
-            self.image3Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
+            [UIButton setUpButton:self.image1Indicator];
+            [UIButton setUpButton:self.image2Indicator];
             self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image3Indicator.hidden = YES;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
             break;
         case 3:
-            self.image4Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
+            [UIButton setUpButton:self.image1Indicator];
+            [UIButton setUpButton:self.image2Indicator];
+            [UIButton setUpButton:self.image3Indicator];
             self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
             break;
         case 4:
-            self.image5Indicator.hidden = YES;
+            [UIButton setUpButton:self.image1Indicator];
+            [UIButton setUpButton:self.image2Indicator];
+            [UIButton setUpButton:self.image3Indicator];
+            [UIButton setUpButton:self.image4Indicator];
             self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = NO;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
             break;
         case 5:
+            [UIButton setUpButton:self.image1Indicator];
+            [UIButton setUpButton:self.image2Indicator];
+            [UIButton setUpButton:self.image3Indicator];
+            [UIButton setUpButton:self.image4Indicator];
+            [UIButton setUpButton:self.image5Indicator];
             self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = NO;
+            self.image4Indicator.hidden = NO;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
+            break;
+        case 6:
+            [UIButton setUpButton:self.image1Indicator];
+            [UIButton setUpButton:self.image2Indicator];
+            [UIButton setUpButton:self.image3Indicator];
+            [UIButton setUpButton:self.image4Indicator];
+            [UIButton setUpButton:self.image5Indicator];
+            [UIButton setUpButton:self.image6Indicator];
+            self.image6Indicator.hidden = NO;
+            self.image5Indicator.hidden = NO;
+            self.image4Indicator.hidden = NO;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
             break;
         default:
+            NSLog(@"indicator light error");
             break;
     }
 }
@@ -357,29 +407,3 @@ UserManagerDelegate>
     return data;
 }
 @end
-
-//add animation
-//[UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
-//    if (self.count == self.imageArray.count - 1) {
-//
-//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-//        NSLog(@"last image");
-//        [self currentImage:self.count];
-//        //NSLog(@"count: %zd", self.count);
-//        [self lastImageBringUpDesciptionView];
-//
-//    } else {
-//
-//        self.count++;
-//        self.userImage.image = [UIImage imageWithData:[self imageData:[self.imageArray objectAtIndex:self.count]]];
-//        [self currentImage:self.count];
-//        //NSLog(@"count: %zd", self.count);
-//
-//        self.fullDescView.hidden = YES;
-//    }
-//} completion:^(BOOL finished) {
-//}];
-
-
-
-

@@ -7,7 +7,13 @@
 //
 
 #import <Parse/Parse.h>
+#import "User.h"
 
-@interface MatchRequest : PFObject
+@interface MatchRequest : PFObject <PFSubclassing>
 
++ (NSString *)parseClassName;
+
+@property(nonatomic, strong)User *toUser;
+@property(nonatomic, strong)User *fromUser;
+@property(nonatomic, strong)NSString *status;
 @end

@@ -12,6 +12,7 @@
 #import <Parse.h>
 #import <FBSDKAppEvents.h>
 #import "User.h"
+#import "MatchRequest.h"
 
 @interface AppDelegate ()
 
@@ -27,7 +28,9 @@
     //connect to parse
     [Parse setApplicationId:@"dCNWcarB6Tv1iW8vCT1c7UATrEwZ3AFq7OzwAs7A" clientKey:@"Fm7fN3AP4Efbcq6265D8Bh4ReICvjbHkgmRiQucl"];
     [User registerSubclass];
-    
+    [MatchRequest registerSubclass];
+
+
     //initialize the FB Parse plugin
     [PFFacebookUtils initialize];
     [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];

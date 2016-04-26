@@ -14,6 +14,7 @@
 
 @interface User : PFUser<PFSubclassing>
 //Parse User Data
+@property (strong, nonatomic) UIImage *image;
 @property (strong, nonatomic) NSString *objectID;
 @property (strong, nonatomic) NSString *faceID;
 @property (strong, nonatomic) NSString *givenName;
@@ -23,7 +24,7 @@
 @property (strong, nonatomic) NSString *sexPref;
 @property (strong, nonatomic) NSString *currentLocation;
 @property (strong, nonatomic) NSString *milesAway;
-@property int milesAwayInt;
+@property double milesAwayInt;
 @property (strong, nonatomic) NSString *minAge;
 @property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *publicProfile;
@@ -38,12 +39,13 @@
 @property (strong, nonatomic) NSString *latitude;
 
 @property (strong, nonatomic) NSArray *likes;
-@property (strong, nonatomic) NSArray *profilePhotos;
+@property (strong, nonatomic) NSArray *profileImages;
 
 +(User *)currentUser;
 
 -(NSString *)ageFromBirthday:(NSString *)birthday;
 -(NSData *)stringURLToData:(NSString *)urlString;
+-(NSData *)userURLToData:(NSString *)urlString;
 @end
 
 
