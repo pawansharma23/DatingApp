@@ -124,7 +124,6 @@
                                 </constraints>
                                 <state key="normal" title="✔️"/>
                                 <connections>
-                                    <action selector="onXButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="C3E-7u-lyP"/>
                                     <action selector="onYesButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="C4T-Ga-kWR"/>
                                 </connections>
                             </button>

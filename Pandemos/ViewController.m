@@ -63,18 +63,20 @@ MDCSwipeToChooseDelegate>
 
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *currentMatch;
-@property (strong, nonatomic) ChooseMatchView *frontCardView;
-@property (strong, nonatomic) ChooseMatchView *backCardView;
-
 @property (strong, nonatomic) UserManager *userManager;
-@property (strong, nonatomic) NSMutableArray *imageArray;
-@property (strong, nonatomic) NSMutableArray *dataArray;
-@property (strong, nonatomic) NSArray *potentialMatchImages;
 @property (strong, nonatomic) NSArray<User*> *potentialMatchData;
-@property (strong, nonatomic) NSMutableArray *people;
 @property int userCount;
 @property long imageArrayCount;
-@property (strong, nonatomic) NSString *nameAndAgeGlobal;
+
+//@property (strong, nonatomic) ChooseMatchView *frontCardView;
+//@property (strong, nonatomic) ChooseMatchView *backCardView;
+
+//@property (strong, nonatomic) NSMutableArray *imageArray;
+//@property (strong, nonatomic) NSMutableArray *dataArray;
+//@property (strong, nonatomic) NSArray *potentialMatchImages;
+//@property (strong, nonatomic) NSMutableArray *people;
+
+//@property (strong, nonatomic) NSString *nameAndAgeGlobal;
 @property (strong, nonatomic) NSString *currentCityAndState;
 //Matching
 @property (strong, nonatomic) NSString *sexPref;
@@ -84,7 +86,7 @@ MDCSwipeToChooseDelegate>
 @property (strong, nonatomic) NSString *userImageForMatching;
 @property long count;
 @property long matchedUsersCount;
-
+//Location
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) CLGeocoder *geoCoded;
@@ -109,8 +111,6 @@ MDCSwipeToChooseDelegate>
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-
     self.navigationItem.title = APP_TITLE;
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
@@ -120,9 +120,8 @@ MDCSwipeToChooseDelegate>
     [UIButton setUpButton:self.messageButton];
     [UIButton acceptButton:self.greenButton];
     [UIButton denyButton:self.redButton];
-
-
 }
+
 -(void)viewDidAppear:(BOOL)animated
 {
     self.image1Indicator.hidden = YES;
@@ -144,11 +143,10 @@ MDCSwipeToChooseDelegate>
         self.count = 0;
         self.userCount = 0;
         self.matchedUsersCount = 0;
-        self.imageArray = [NSMutableArray new];
-        self.dataArray = [NSMutableArray new];
+        //self.imageArray = [NSMutableArray new];
+        //self.dataArray = [NSMutableArray new];
 
         self.potentialMatchData = [NSArray new];
-        self.potentialMatchImages = [NSArray new];
 
         self.locationManager = [CLLocationManager new];
         self.locationManager.delegate = self;
@@ -243,27 +241,22 @@ MDCSwipeToChooseDelegate>
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionUp)
     {
-        NSLog(@"swipe up");
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
             self.count++;
-
             if (self.count < self.currentMatch.profileImages.count - 1)
             {
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
                 [self currentImageLightUpIndicatorLight:self.count];
             }
-
             else if (self.count == self.currentMatch.profileImages.count - 1)
             {
                 NSLog(@"last image");
-
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
                 [self currentImageLightUpIndicatorLight:self.count];
                 [self lastImageBringUpDesciptionView];
             }
         } completion:^(BOOL finished) {
-
         }];
     }
 }
@@ -303,38 +296,67 @@ MDCSwipeToChooseDelegate>
 - (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender
 {
    // [self.userManager createMatchRequest:self.currentMatch withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-
 //        NSLog(@"current match: %@", self.currentMatch.givenName);
-    
-
-
 //}];
+    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+
+    if (direction == UISwipeGestureRecognizerDirectionRight)
+    {
+        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
+
+            [self nextPotentialMatchUp];
+
+        } completion:^(BOOL finished) {
+        }];
+    }
 }
 
 - (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender
 {
-//
-//    NSLog(@"swipe Left, no match");
-//    self.matchedUsersCount++;
-////    [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-////    [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
-//
-//    //save rejected relationship on Parse
-//    PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
-//    PFRelation *noMatch = [self.currentUser relationForKey:@"NoMatch"];
-//    [noMatch addObject:currentMatchUser];
-//    //for logging
-//    NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-//    NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-//    NSLog(@"No Match between: %@ and %@",fullName, fullNameOfCurrentMatch);
-//
-//    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//
-//        if (error)
-//        {
-//            NSLog(@"error: %@", error);
-//        }
-//    }];
+    //createUnmatchRequest
+    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+
+    if (direction == UISwipeGestureRecognizerDirectionLeft)
+    {
+        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+
+            [self nextPotentialMatchUp];
+
+        } completion:^(BOOL finished) {
+        }];
+    }
+}
+
+- (IBAction)onYesButton:(UIButton *)sender
+{
+    //    [self.userManager createMatchRequest:[self.potentialMatchData firstObject] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    //    }];
+    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+
+    if (direction == UISwipeGestureRecognizerDirectionRight)
+    {
+        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
+
+            [self nextPotentialMatchUp];
+
+        } completion:^(BOOL finished) {
+        }];
+    }
+}
+
+- (IBAction)onXButton:(UIButton *)sender
+{
+    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+
+    if (direction == UISwipeGestureRecognizerDirectionLeft)
+    {
+        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+
+            [self nextPotentialMatchUp];
+
+        } completion:^(BOOL finished) {
+        }];
+    }
 }
 
 - (IBAction)onKeepPlaying:(UIButton *)sender
@@ -347,38 +369,6 @@ MDCSwipeToChooseDelegate>
     [self performSegueWithIdentifier:@"Messages" sender:self];
 }
 
-- (IBAction)onYesButton:(UIButton *)sender
-{
-    //set the match in Parse
-//    [self.userManager createMatchRequest:[self.potentialMatchData firstObject] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-//
-//    }];
-    //go to the next User
-    NSLog(@"user count: %d", self.userCount);
-    NSLog(@"how many matches: %d", (int)self.potentialMatchData.count);
-    //self.userCount = 1;
-    self.userCount++;
-NSLog(@"user count: %d", self.userCount);
-    User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
-NSLog(@"matched user: %@\nbday: %@\nprofile pics: %d", matchedUser.givenName, matchedUser.birthday, (int)[matchedUser.profileImages count]);
-    //assign proper User object to next match up
-    User *currentUserData = [self.potentialMatchData objectAtIndex:self.userCount];
-    //NSLog(@"current user data: %@", currentUserData);
-    self.currentMatch.profileImages = currentUserData[@"profileImages"];
-
-    self.userImage.image = [UIImage imageWithData:[self imageData:self.currentMatch.profileImages.firstObject]];
-    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", currentUserData.givenName, currentUserData.age];
-    self.jobLabel.text = currentUserData.work;
-    self.educationLabel.text = currentUserData.lastSchool;
-
-}
-
-- (IBAction)onXButton:(UIButton *)sender
-{
-
-}
-
-
 #pragma mark - USER MANAGER DELEGATE
 -(void)didReceiveUserData:(NSArray *)data
 {
@@ -387,7 +377,6 @@ NSLog(@"matched user: %@\nbday: %@\nprofile pics: %d", matchedUser.givenName, ma
     self.milesAway = userData[@"milesAway"];
     self.minAge = userData[@"minAge"];
     self.maxAge = userData[@"maxAge"];
-
     [self.userManager loadUsersUnseenPotentialMatches:self.currentUser withSexPreference:self.sexPref minAge:self.minAge maxAge:self.maxAge];
 }
 
@@ -398,15 +387,11 @@ NSLog(@"matched user: %@\nbday: %@\nprofile pics: %d", matchedUser.givenName, ma
 
 -(void)didReceivePotentialMatchData:(NSArray *)data
 {
-    //user match objects saved to this array globally
-    self.potentialMatchData = data;
-    NSLog(@"matched user data: %d", (int)data.count);
     NSMutableArray *array = [NSMutableArray new];
 
     for (NSDictionary *dict in data)
     {
         User *user = [User new];
-
         user.work = dict[@"work"];
         user.birthday = dict[@"birthday"];
         user.givenName = dict[@"givenName"];
@@ -418,16 +403,18 @@ NSLog(@"matched user: %@\nbday: %@\nprofile pics: %d", matchedUser.givenName, ma
     //1st match
     self.potentialMatchData = array;
     self.currentMatch = [array objectAtIndex:0];
-    //data
+    //set 1st match data objects
     self.nameAndAge.text = [NSString stringWithFormat:@"%@,%@", self.currentMatch.givenName, self.currentMatch.age];
     self.jobLabel.text = self.currentMatch.work;
-    self.educationLabel.text = self.currentMatch.lastSchool
-    ;
+    self.educationLabel.text = self.currentMatch.lastSchool;
     //images
     int profilePhotos = (int)self.currentMatch.profileImages.count;
     [self loadIndicatorLights:profilePhotos];
     self.image1Indicator.backgroundColor = [UIColor rubyRed];
     self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages firstObject]]];
+
+    //matches
+    NSLog(@"maches: %d\n2st: %@\n3st:%@", (int)self.potentialMatchData.count, [self.potentialMatchData objectAtIndex:1].givenName, [self.potentialMatchData objectAtIndex:2].givenName);
 }
 
 -(void)failedToFetchPotentialMatchData:(NSError *)error
@@ -437,11 +424,7 @@ NSLog(@"matched user: %@\nbday: %@\nprofile pics: %d", matchedUser.givenName, ma
 
 -(void)didReceivePotentialMatchImages:(NSArray *)images
 {
-//    int profilePhotos = (int)images.count;
-//    [self loadIndicatorLights:profilePhotos];
-//    self.image1Indicator.backgroundColor = [UIColor rubyRed];
-//
-//    self.userImage.image = [UIImage imageWithData:[self imageData:[images firstObject]]];
+    //vacated for now with data and images both being sent to didReceivePotentialMatchData
 }
 
 -(void)failedToFetchPotentialMatchImages:(NSError *)error
@@ -458,7 +441,6 @@ NSLog(@"matched user: %@\nbday: %@\nprofile pics: %d", matchedUser.givenName, ma
             NSLog(@"update worked");
         }
     }];
-
 }
 
 -(void)failedToCreateMatchRequest:(NSError *)error
@@ -477,6 +459,22 @@ NSLog(@"matched user: %@\nbday: %@\nprofile pics: %d", matchedUser.givenName, ma
 }
 
 #pragma mark -- HELPERS
+-(void)nextPotentialMatchUp
+{
+    self.userCount++;
+    User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
+    self.currentMatch.profileImages = matchedUser[@"profileImages"];
+    [self loadIndicatorLights:(int)self.currentMatch.profileImages.count];
+    self.image1Indicator.backgroundColor = [UIColor rubyRed];
+
+    self.userImage.image = [UIImage imageWithData:[self imageData:self.currentMatch.profileImages.firstObject]];
+    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", matchedUser.givenName, matchedUser.age];
+    self.jobLabel.text = matchedUser.work;
+    self.educationLabel.text = matchedUser.lastSchool;
+
+    self.count = 0;
+}
+
 -(void)setupManagersProfileVC
 {
     self.userManager = [UserManager new];

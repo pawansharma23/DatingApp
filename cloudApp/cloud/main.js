@@ -92,3 +92,24 @@ Parse.Cloud.define("addMatchToMatchRelation", function(request, response) {
     });
  
 });
+
+//layer funcitonality
+var fs = require('fs');
+var layer = require('cloud/layer-parse-module/layer-module.js');
+ 
+var layerProviderID = '5df3f6e6-bd19-11e4-8fa9-f5900500499a';
+var layerKeyID = 'db48dc76-ea3a-11e4-a62b-6795000008e5';
+var privateKey = fs.readFileSync('cloud/layer-parse-module/keys/layer-key.js');
+ 
+var twilio = require("twilio");
+twilio.initialize("AC42c81cfeff3ee6039f1dbd613420c267","04ea44eb31ef8c7456453b7ced5a3fb6");
+ 
+layer.initialize(layerProviderID, layerKeyID, privateKey);
+ 
+Parse.Cloud.define("generateToken", function(request, response) {
+    var userID = request.params.userID;
+    var nonce = request.params.nonce;
+    if (!userID) throw new Error('Missing userID parameter');
+    if (!nonce) throw new Error('Missing nonce parameter');
+        response.success(layer.layerIdentityToken(userID, nonce));
+});

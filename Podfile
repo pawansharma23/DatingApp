@@ -6,3 +6,4 @@ pod 'Parse'
 pod 'ParseUI'
 pod 'SVProgressHUD'
 pod "MDCSwipeToChoose"
+pod 'LayerKit'
