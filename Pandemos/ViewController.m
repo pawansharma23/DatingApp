@@ -21,6 +21,7 @@
 #import "UserManager.h"
 #import <MDCSwipeToChoose/MDCSwipeToChoose.h>
 #import "ChooseMatchView.h"
+#import "MessageManager.h"
 
 //static const CGFloat ChooseUserButtonHorizontalPadding = 80.f;
 //static const CGFloat ChooseUserButtonVerticalPadding = 20.f;
@@ -64,6 +65,7 @@ MDCSwipeToChooseDelegate>
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *currentMatch;
 @property (strong, nonatomic) UserManager *userManager;
+@property (strong, nonatomic) MessageManager *messageManager;
 @property (strong, nonatomic) NSArray<User*> *potentialMatchData;
 @property int userCount;
 @property long imageArrayCount;
@@ -124,6 +126,9 @@ MDCSwipeToChooseDelegate>
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    MessageManager *messageManager = [MessageManager new];
+    [messageManager launchApp];
+    
     self.image1Indicator.hidden = YES;
     self.image2Indicator.hidden = YES;
     self.image3Indicator.hidden = YES;
@@ -136,7 +141,7 @@ MDCSwipeToChooseDelegate>
     self.currentUser = [User currentUser];
     if (self.currentUser)
     {
-        NSLog(@"user: %@", self.currentUser.givenName);
+        NSLog(@"user: %@ logged in", self.currentUser.givenName);
 
         [self setupManagersProfileVC];
 
@@ -170,7 +175,6 @@ MDCSwipeToChooseDelegate>
 
         [self setupGestureUp];
         [self setupGestureDown];
-
         [self setupGestureLeft];
         [self setupGestureRight];
 
@@ -232,9 +236,6 @@ MDCSwipeToChooseDelegate>
     NSLog(@"location manager failed: %@", error);
 }
 
-
-
-
 #pragma mark -- SWIPE GESTURES
 - (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender
 {
@@ -243,19 +244,8 @@ MDCSwipeToChooseDelegate>
     {
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
-            self.count++;
-            if (self.count < self.currentMatch.profileImages.count - 1)
-            {
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
-                [self currentImageLightUpIndicatorLight:self.count];
-            }
-            else if (self.count == self.currentMatch.profileImages.count - 1)
-            {
-                NSLog(@"last image");
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
-                [self currentImageLightUpIndicatorLight:self.count];
-                [self lastImageBringUpDesciptionView];
-            }
+            [self profileImageSwipeUp];
+
         } completion:^(BOOL finished) {
         }];
     }
@@ -267,25 +257,9 @@ MDCSwipeToChooseDelegate>
 
     if (direction == UISwipeGestureRecognizerDirectionDown)
     {
-        NSLog(@"swipe down");
-
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
 
-            self.count--;
-
-            if (self.count == 0)
-            {
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
-                [self currentImageLightUpIndicatorLight:self.count];
-                self.fullDescView.hidden = YES;
-            }
-            else if(self.count > 0)
-            {
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
-                [self currentImageLightUpIndicatorLight:self.count];
-                NSLog(@"count: %zd", self.count);
-                self.fullDescView.hidden = YES;
-            }
+            [self profileImagesSwipeDown];
 
         } completion:^(BOOL finished) {
 
@@ -295,9 +269,9 @@ MDCSwipeToChooseDelegate>
 
 - (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender
 {
-   // [self.userManager createMatchRequest:self.currentMatch withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-//        NSLog(@"current match: %@", self.currentMatch.givenName);
-//}];
+    [self.userManager createMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    }];
+
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
 
     if (direction == UISwipeGestureRecognizerDirectionRight)
@@ -313,7 +287,9 @@ MDCSwipeToChooseDelegate>
 
 - (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender
 {
-    //createUnmatchRequest
+    [self.userManager createDenyMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    }];
+
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
 
     if (direction == UISwipeGestureRecognizerDirectionLeft)
@@ -327,36 +303,31 @@ MDCSwipeToChooseDelegate>
     }
 }
 
+#pragma mark -- BUTTONS
 - (IBAction)onYesButton:(UIButton *)sender
 {
-    //    [self.userManager createMatchRequest:[self.potentialMatchData firstObject] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-    //    }];
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+    [self.userManager createMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    }];
 
-    if (direction == UISwipeGestureRecognizerDirectionRight)
-    {
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
+    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
 
-            [self nextPotentialMatchUp];
+        [self nextPotentialMatchUp];
 
         } completion:^(BOOL finished) {
-        }];
-    }
+    }];
 }
 
 - (IBAction)onXButton:(UIButton *)sender
 {
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
+    [self.userManager createDenyMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    }];
 
-    if (direction == UISwipeGestureRecognizerDirectionLeft)
-    {
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
 
-            [self nextPotentialMatchUp];
+        [self nextPotentialMatchUp];
 
         } completion:^(BOOL finished) {
-        }];
-    }
+    }];
 }
 
 - (IBAction)onKeepPlaying:(UIButton *)sender
@@ -377,7 +348,7 @@ MDCSwipeToChooseDelegate>
     self.milesAway = userData[@"milesAway"];
     self.minAge = userData[@"minAge"];
     self.maxAge = userData[@"maxAge"];
-    [self.userManager loadUsersUnseenPotentialMatches:self.currentUser withSexPreference:self.sexPref minAge:self.minAge maxAge:self.maxAge];
+    [self.userManager loadUsersUnseenPotentialMatches:self.sexPref minAge:self.minAge maxAge:self.maxAge];
 }
 
 -(void)failedToFetchUserData:(NSError *)error
@@ -450,12 +421,26 @@ MDCSwipeToChooseDelegate>
 -(void)didUpdateMatchRequest:(User *)user
 {
        NSLog(@"park matched user object here: need to send on to hold in pending for other user to accept or deny %@ and %@", user.givenName, user.objectID);
-    
+    //this starts the convo even though we need another layer of authentication to go through so this method should live in a launch app or pending match screen, or even in the MessageController
+    //[self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
+
+//    }];
+
 }
 
 -(void)failedToUpdateMatchRequest:(NSError *)error
 {
     NSLog(@"failed to update match: %@", error);
+}
+
+-(void)didCreateDenyMatchRequest:(MatchRequest *)matchRequest
+{
+    NSLog(@"match user request was denied for %@", [self.potentialMatchData objectAtIndex:self.count].givenName);
+}
+
+-(void)failedToCreateDenyMatchRequest:(NSError *)error
+{
+    NSLog(@"failed to create deny request: %@", error);
 }
 
 #pragma mark -- HELPERS
@@ -473,6 +458,41 @@ MDCSwipeToChooseDelegate>
     self.educationLabel.text = matchedUser.lastSchool;
 
     self.count = 0;
+}
+
+-(void)profileImagesSwipeDown
+{
+    self.count--;
+    if (self.count == 0)
+    {
+        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        [self currentImageLightUpIndicatorLight:self.count];
+        self.fullDescView.hidden = YES;
+    }
+    else if(self.count > 0)
+    {
+        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        [self currentImageLightUpIndicatorLight:self.count];
+        NSLog(@"count: %zd", self.count);
+        self.fullDescView.hidden = YES;
+    }
+}
+
+-(void)profileImageSwipeUp
+{
+    self.count++;
+    if (self.count < self.currentMatch.profileImages.count - 1)
+    {
+        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        [self currentImageLightUpIndicatorLight:self.count];
+    }
+    else if (self.count == self.currentMatch.profileImages.count - 1)
+    {
+        NSLog(@"last image");
+        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        [self currentImageLightUpIndicatorLight:self.count];
+        [self lastImageBringUpDesciptionView];
+    }
 }
 
 -(void)setupManagersProfileVC
@@ -510,7 +530,6 @@ MDCSwipeToChooseDelegate>
 {
     NSURL *url = [NSURL URLWithString:imageString];
     NSData *data = [NSData dataWithContentsOfURL:url];
-
     return data;
 }
 
@@ -663,13 +682,14 @@ MDCSwipeToChooseDelegate>
 
 -(void)lastImageBringUpDesciptionView
 {
-    User *userB = [User new];
+    User *user = [User new];
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
-    self.fullAboutMe.text = userB.aboutMe;
-    NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", userB.givenName, [userB ageFromBirthday:userB.birthday]];
+    self.fullAboutMe.text = user.aboutMe;
+    NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", user.givenName, user.age];
+    //[userB ageFromBirthday:userB.birthday]];
     self.fullDescNameAndAge.text = nameAndAge;
-    self.fullMilesAway.text = userB.milesAway;
+    self.fullMilesAway.text = user.milesAway;
 }
 
 -(void) sendEmailForApproval

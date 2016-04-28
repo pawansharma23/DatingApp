@@ -60,6 +60,7 @@
 		26C70ED81CA5B18F00E9B98F /* UIColor+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */; };
 		26C70ED91CA5B18F00E9B98F /* RangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 260799061C29CB4600B364C8 /* RangeSlider.m */; };
 		26C70EDA1CA5B18F00E9B98F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
+		26F7E4C11CD29935002F8BFC /* MessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E4C01CD29935002F8BFC /* MessageManager.m */; };
 		B6D0576735DD6374DE9CF23F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E7EAF390F8A69E1F0F90DF /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -180,6 +181,8 @@
 		26EE239D1C4446AB006F328E /* SelectedImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectedImageViewController.m; sourceTree = "<group>"; };
 		26EE239F1C453F47006F328E /* PreviewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewCell.h; sourceTree = "<group>"; };
 		26EE23A01C453F47006F328E /* PreviewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewCell.m; sourceTree = "<group>"; };
+		26F7E4BF1CD29935002F8BFC /* MessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageManager.h; sourceTree = "<group>"; };
+		26F7E4C01CD29935002F8BFC /* MessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageManager.m; sourceTree = "<group>"; };
 		B2B739D58087A908AFCE74CE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		F2E7EAF390F8A69E1F0F90DF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -274,6 +277,8 @@
 				26B9545B1CBAD0D5006245EE /* UserBuilder.m */,
 				264445191CB5699B00A0381B /* UserManager.h */,
 				2644451A1CB5699B00A0381B /* UserManager.m */,
+				26F7E4BF1CD29935002F8BFC /* MessageManager.h */,
+				26F7E4C01CD29935002F8BFC /* MessageManager.m */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -753,6 +758,7 @@
 				26C70EB61CA5B18F00E9B98F /* FriendEmailViewController.m in Sources */,
 				26C70EB71CA5B18F00E9B98F /* SuggestionsViewController.m in Sources */,
 				26C70EB81CA5B18F00E9B98F /* FacebookCVCell.m in Sources */,
+				26F7E4C11CD29935002F8BFC /* MessageManager.m in Sources */,
 				26C70EBA1CA5B18F00E9B98F /* AlbumDetailViewController.m in Sources */,
 				26C70EBB1CA5B18F00E9B98F /* SelectedImageViewController.m in Sources */,
 				26C70EBC1CA5B18F00E9B98F /* FacebookTableViewCell.m in Sources */,

@@ -97,8 +97,8 @@ Parse.Cloud.define("addMatchToMatchRelation", function(request, response) {
 var fs = require('fs');
 var layer = require('cloud/layer-parse-module/layer-module.js');
  
-var layerProviderID = '5df3f6e6-bd19-11e4-8fa9-f5900500499a';
-var layerKeyID = 'db48dc76-ea3a-11e4-a62b-6795000008e5';
+var layerProviderID = '8b0c63ce-0cab-11e6-b294-424d000047e5';
+var layerKeyID = '3b495e9c-0d72-11e6-aa51-a8ea00006b62';
 var privateKey = fs.readFileSync('cloud/layer-parse-module/keys/layer-key.js');
  
 var twilio = require("twilio");

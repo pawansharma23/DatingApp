@@ -25,24 +25,31 @@
 -(void)failedToFetchPotentialMatchData:(NSError *)error;
 -(void)didReceivePotentialMatchImages:(NSArray *)images;
 -(void)failedToFetchPotentialMatchImages:(NSError*)error;
-
+//match Requests
 -(void)didCreateMatchRequest:(MatchRequest*)matchRequest;
 -(void)failedToCreateMatchRequest:(NSError*)error;
 -(void)didUpdateMatchRequest:(User *)user;
 -(void)failedToUpdateMatchRequest:(NSError*)error;
+-(void)didCreateDenyMatchRequest:(MatchRequest*)matchRequest;
+-(void)failedToCreateDenyMatchRequest:(NSError*)error;
 @end
 
 @interface UserManager : NSObject
 typedef void (^resultBlockWithMatchRequest)(MatchRequest *matchRequest, NSError *error);
-typedef void (^resultBlockWithUser)(User *user, NSError *error);
+typedef void (^resultBlockWithUser)(User *users, NSError *error);
+typedef void (^resultBlockWithArray)(NSArray *user, NSError *error);
+
+@property(nonatomic, strong)NSMutableArray<User*> *pendingUsers;
 
 @property (weak, nonatomic) id<UserManagerDelegate>delegate;
 
 -(void)signUp:(PFUser*)user;
 -(void)loadUserData:(User *)user;
 -(void)loadUserImages:(User *)user;
--(void)loadUsersUnseenPotentialMatches:(User *)user withSexPreference:(NSString *)sexPref minAge:(NSString *)min maxAge:(NSString *)max;
+-(void)loadUsersUnseenPotentialMatches:(NSString *)sexPref minAge:(NSString *)min maxAge:(NSString *)max;
 -(void)createMatchRequest:(User*)user
            withCompletion:(resultBlockWithMatchRequest)result;
+-(void)createDenyMatchRequest:(User *)user withCompletion:(resultBlockWithMatchRequest)result;
 -(void)updateMatchRequest:(MatchRequest*)matchRequest withResponse:(NSString*)response withSuccess:(resultBlockWithUser)result;
+-(void)loadMatchedUsers:(resultBlockWithArray)result;
 @end
