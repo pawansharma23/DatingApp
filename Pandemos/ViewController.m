@@ -67,19 +67,15 @@ MDCSwipeToChooseDelegate>
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) MessageManager *messageManager;
 @property (strong, nonatomic) NSArray<User*> *potentialMatchData;
+@property (strong, nonatomic) NSArray<User*> *rawUserMatchData;
+
 @property int userCount;
 @property long imageArrayCount;
-
+@property (strong, nonatomic) NSString *currentCityAndState;
 //@property (strong, nonatomic) ChooseMatchView *frontCardView;
 //@property (strong, nonatomic) ChooseMatchView *backCardView;
-
-//@property (strong, nonatomic) NSMutableArray *imageArray;
-//@property (strong, nonatomic) NSMutableArray *dataArray;
-//@property (strong, nonatomic) NSArray *potentialMatchImages;
-//@property (strong, nonatomic) NSMutableArray *people;
-
 //@property (strong, nonatomic) NSString *nameAndAgeGlobal;
-@property (strong, nonatomic) NSString *currentCityAndState;
+
 //Matching
 @property (strong, nonatomic) NSString *sexPref;
 @property (strong, nonatomic) NSString *milesAway;
@@ -141,21 +137,21 @@ MDCSwipeToChooseDelegate>
     self.currentUser = [User currentUser];
     if (self.currentUser)
     {
-        NSLog(@"user: %@ logged in", self.currentUser.givenName);
+        NSLog(@"user: %@(%@) logged in", self.currentUser.givenName, self.currentUser.objectId);
 
         [self setupManagersProfileVC];
 
         self.count = 0;
         self.userCount = 0;
         self.matchedUsersCount = 0;
-        //self.imageArray = [NSMutableArray new];
-        //self.dataArray = [NSMutableArray new];
-
+        //user match data for methods
+        self.rawUserMatchData = [NSArray new];
+        //User match data for views
         self.potentialMatchData = [NSArray new];
 
+        //location
         self.locationManager = [CLLocationManager new];
         self.locationManager.delegate = self;
-        //request permission and update locaiton
         [self.locationManager requestWhenInUseAuthorization];
         [self.locationManager startUpdatingLocation];
         self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
@@ -193,9 +189,6 @@ MDCSwipeToChooseDelegate>
         //    // See the `nopeFrontCardView` and `likeFrontCardView` methods.
         //    [self constructNopeButton];
         //    [self constructLikedButton];
-
-
-
     }
     else
     {
@@ -306,7 +299,11 @@ MDCSwipeToChooseDelegate>
 #pragma mark -- BUTTONS
 - (IBAction)onYesButton:(UIButton *)sender
 {
-    [self.userManager createMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+   // NSLog(@"user accepting: %@", [self.potentialMatchData objectAtIndex:self.userCount]);
+    NSString *givenName = [self.rawUserMatchData objectAtIndex:self.userCount].givenName;
+    NSLog(@"user accpting: %@", givenName);
+    
+    [self.userManager createMatchRequest:[self.rawUserMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
     }];
 
     [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
@@ -359,10 +356,12 @@ MDCSwipeToChooseDelegate>
 -(void)didReceivePotentialMatchData:(NSArray *)data
 {
     NSMutableArray *array = [NSMutableArray new];
+    self.rawUserMatchData = data;
 
     for (NSDictionary *dict in data)
     {
         User *user = [User new];
+        user.objectId = dict[@"objectId"];
         user.work = dict[@"work"];
         user.birthday = dict[@"birthday"];
         user.givenName = dict[@"givenName"];
@@ -385,7 +384,7 @@ MDCSwipeToChooseDelegate>
     self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages firstObject]]];
 
     //matches
-    NSLog(@"maches: %d\n2st: %@\n3st:%@", (int)self.potentialMatchData.count, [self.potentialMatchData objectAtIndex:1].givenName, [self.potentialMatchData objectAtIndex:2].givenName);
+    //NSLog(@"%d maches:\n1:%@ \n2st: %@\n3st:%@", (int)self.potentialMatchData.count, self.potentialMatchData.firstObject, [self.potentialMatchData objectAtIndex:1].givenName, [self.potentialMatchData objectAtIndex:2].givenName);
 }
 
 -(void)failedToFetchPotentialMatchData:(NSError *)error
@@ -420,7 +419,12 @@ MDCSwipeToChooseDelegate>
 }
 -(void)didUpdateMatchRequest:(User *)user
 {
-       NSLog(@"park matched user object here: need to send on to hold in pending for other user to accept or deny %@ and %@", user.givenName, user.objectID);
+    MessageManager *message = [MessageManager new];
+    [message createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
+        NSLog(@"convo object: %@", conversation);
+    }];
+
+
     //this starts the convo even though we need another layer of authentication to go through so this method should live in a launch app or pending match screen, or even in the MessageController
     //[self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
 
@@ -446,6 +450,9 @@ MDCSwipeToChooseDelegate>
 #pragma mark -- HELPERS
 -(void)nextPotentialMatchUp
 {
+    if (self.count < self.rawUserMatchData.count)
+    {
+
     self.userCount++;
     User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
     self.currentMatch.profileImages = matchedUser[@"profileImages"];
@@ -458,6 +465,11 @@ MDCSwipeToChooseDelegate>
     self.educationLabel.text = matchedUser.lastSchool;
 
     self.count = 0;
+    }
+    else
+    {
+        NSLog(@"last match");
+    }
 }
 
 -(void)profileImagesSwipeDown

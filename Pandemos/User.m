@@ -22,7 +22,6 @@
 }
 
 @dynamic image;
-@dynamic objectID;
 @dynamic faceID;
 @dynamic givenName;
 @dynamic birthday;
@@ -67,13 +66,6 @@
     NSData *data = [NSData dataWithContentsOfURL:url];
 
     return data;
-}
-
--(NSData *)userURLToData:(User *)urlString
-{
-    NSString *stringURL = [NSString stringWithFormat:@"%@", urlString];
-    NSURL *url = [NSURL URLWithString:stringURL];
-    return [NSData dataWithContentsOfURL:url];
 }
 @end
 

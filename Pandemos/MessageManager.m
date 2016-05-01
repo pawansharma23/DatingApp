@@ -9,6 +9,7 @@
 #import "MessageManager.h"
 #import "User.h"
 #import <Parse/Parse.h>
+#import "UserBuilder.h"
 
 @implementation MessageManager
 
@@ -98,18 +99,16 @@
 
         if (!error)
         {
+            //failing here not being sent a valid newConvo object
             [self sendInitialMessage:newConvo withText:@"Hello" withCompletion:^(BOOL success, NSError *error) {
 
                 if (success)
                 {
                     NSLog(@"layer sent message");
-                    //                    User *user = [User currentUser];
-                    //                    NSString *sentMessages = [NSString stringWithFormat:@"1"];
-                    //                    [user setObject:sentMessages forKey:@"sentMessages"];
                 }
                 else
                 {
-                    NSLog(@"no message sent");
+                    NSLog(@"no message sent %@", error);
                 }
             }];
 
@@ -118,7 +117,6 @@
         else
         {
             result(nil, error);
-            //getting stuck here, won't send new initail message b/c it sees that we already have a convo (from my user object, not from Lukes)
             NSLog(@"error: %@", error);
         }
     }
@@ -168,5 +166,24 @@
 -(void)deleteConversation:(LYRConversation*)conversation withResult:(resultBlockWithSuccess)result
 {
     
+}
+
+-(void)queryForMatches:(User*)currentUser withResult:(resultBlockWithResult)result
+{
+    PFRelation *relation = [currentUser objectForKey:@"match"];
+    PFQuery *query = [relation query];
+    [query orderByDescending:@"updatedAt"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+
+        if (error)
+        {
+            NSLog(@"error: %@", error);
+        }
+        else
+        {
+            NSArray *userObjects = [UserBuilder parsedUserData:objects withError:error];
+            result(userObjects, nil);
+        }
+    }];
 }
 @end

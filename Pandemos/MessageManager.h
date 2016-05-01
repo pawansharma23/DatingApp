@@ -13,6 +13,7 @@
 typedef void (^resultBlockWithConversation)(LYRConversation *conversation, NSError *error);
 typedef void (^resultBlockWithMessage) (LYRMessage *message, NSError *error);
 typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
+typedef void (^resultBlockWithResult)(NSArray *result, NSError *error);
 
 @interface MessageManager : NSObject
 
@@ -21,4 +22,5 @@ typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
 -(void)launchApp;
 -(void)createConversationWithUsers:(NSArray*)users withCompletion:(resultBlockWithConversation)result;
 -(void)deleteConversation:(LYRConversation*)conversation withResult:(resultBlockWithSuccess)result;
+-(void)queryForMatches:(User*)currentUser withResult:(resultBlockWithResult)result;
 @end

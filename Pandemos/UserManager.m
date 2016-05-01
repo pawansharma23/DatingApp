@@ -66,7 +66,6 @@ static NSString * const kParsePublic                       = @"publicProfile";
     NSMutableArray *userData = [NSMutableArray new];
     User *ob = [User new];
 
-    NSString *objectId = [user objectForKey:kParseObjectId];
     NSString *faceId = [user objectForKey:kFacebookId];
     NSString *givenName = [user objectForKey:kParseGivenName];
     NSString *birthday = [user objectForKey:kParseUserBirthday];
@@ -84,10 +83,6 @@ static NSString * const kParsePublic                       = @"publicProfile";
     NSString *pubProf = [user objectForKey:kParsePublic];
     //PFGeoPoint *geoPoint = [user objectForKey:kParseGeoPoint];
 
-    if (objectId)
-    {
-        ob.objectID = objectId;
-    }
     if (faceId)
     {
         ob.faceID = faceId;
@@ -202,16 +197,11 @@ static NSString * const kParsePublic                       = @"publicProfile";
 
 -(void)createMatchRequest:(User *)user withCompletion:(resultBlockWithMatchRequest)result
 {
-    //request them
     //MatchRequest *matchRequest = [MatchRequest object];
     MatchRequest *matchRequest = [MatchRequest objectWithClassName:@"MatchRequest"];
     matchRequest.fromUser = [User currentUser];
     matchRequest.toUser = user;
-
-    // set the initial status to pending, also can throw in sex checks in here
-    matchRequest.status = @"pending";
-
-    NSLog(@"from %@ to %@", matchRequest.fromUser.givenName, matchRequest.toUser.givenName);
+    matchRequest.status = @"pending";// set the initial status to pending, also can throw in sex checks in here
 
     [matchRequest saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 

@@ -12,6 +12,7 @@
 #import "UIColor+Pandemos.h"
 #import "User.h"
 #import "UserManager.h"
+#import "MessageManager.h"
 
 @interface MessagingViewController ()
 <UITableViewDataSource,
@@ -25,7 +26,10 @@ UserManagerDelegate>
 @property (strong, nonatomic) User *recipientUser;
 @property (strong, nonatomic) NSArray *matchesNotYetConfirmed;
 @property (strong, nonatomic) UserManager *userManager;
-@property (strong, nonatomic) NSArray<User*> *matches;
+@property (strong, nonatomic) MessageManager *messageManager;
+
+@property (strong, nonatomic) NSArray *matches;
+
 @end
 
 @implementation MessagingViewController
@@ -50,28 +54,8 @@ UserManagerDelegate>
 {
     [super viewDidAppear:animated];
 
-    [self setupManagersProfileVC];
+    [self setupMessageManager];
 }
-
-//recieve message
-//-(void)viewWillAppear:(BOOL)animated{
-//    [super viewWillAppear:animated];
-//
-//    PFQuery *query = [PFQuery queryWithClassName:@"Message"];
-//    [query whereKey:@"recipientsId" equalTo:[[PFUser currentUser] objectId]];
-//    [query orderByDescending:@"createdAt"];
-//    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error){
-//        if(error){
-//            NSLog(@"Error: %@ %@", error, [error userInfo]);
-//        } else {
-//            self.messages = objects;
-//            [self.tableView reloadData];
-//            NSLog(@"retrived %lu messages", self.messages.count);
-//        }
-//    }];
-//
-//}
-
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -81,18 +65,13 @@ UserManagerDelegate>
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessagingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-
-    cell.userImage.contentMode = UIViewContentModeScaleAspectFill;
-
     User *userSelected = [self.matches objectAtIndex:indexPath.row];
-    NSString *userimage1 = [userSelected.profileImages objectAtIndex:indexPath.row];
-    cell.userImage.image = [UIImage imageWithData:[self imageData:userimage1]];
-
+    cell.userImage.image = [UIImage imageWithData:[userSelected stringURLToData:[userSelected.profileImages objectAtIndex:indexPath.row]]];
+    cell.userImage.contentMode = UIViewContentModeScaleAspectFill;
     cell.userImage.layer.cornerRadius = 22.0 / 2.0f;
     cell.userImage.clipsToBounds = YES;
-
     cell.lastMessage.text = userSelected.givenName;
-    cell.lastMessageTime.text = userSelected.objectId;
+    cell.lastMessageTime.text = userSelected.work;
 
     return cell;
 }
@@ -112,39 +91,18 @@ UserManagerDelegate>
 
 
 #pragma mark -- HELPERS
--(NSData *)imageData:(NSString *)imageString
+-(void)setupMessageManager
 {
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
-}
+    self.messageManager = [MessageManager new];
+    [self.messageManager queryForMatches:self.currentUser withResult:^(NSArray *result, NSError *error) {
 
--(void)setupManagersProfileVC
-{
-    self.userManager = [UserManager new];
-    self.userManager.delegate = self;
-    [self.userManager loadMatchedUsers:^(NSArray *users, NSError *error)
-    {
-        self.matches = users;
-        NSLog(@"users: %@", users);
+        self.matches = [result firstObject];
+
+        [self.tableView reloadData];
     }];
-    [self.tableView reloadData];
 }
 @end
 
-//self.relation = [self.currentUser objectForKey:@"matchNotConfirmed"];
-//PFQuery *query = [self.relation query];
-//[query orderByDescending:@"updatedAt"];
-//[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-//    if (error) {
-//        NSLog(@"error: %@", error);
-//    } else{
-//        // NSLog(@"objects: %@", objects);
-//
-//        self.matchesNotYetConfirmed = objects;
-//        [self.tableView reloadData];
-//    }
-//}];
 
 
 
