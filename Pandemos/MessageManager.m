@@ -84,63 +84,6 @@
     }
 }
 
--(void)createConversationWithUsers:(NSArray*)users withCompletion:(resultBlockWithConversation)result
-{
-    NSError *error = nil;
-
-    if (users.count == 1)
-    {
-        User *userObjectId = users.lastObject;
-        BOOL deliveryReceiptsEnabled = false;
-        BOOL uniqueConvoBetweenParticipants = YES;
-        NSDictionary *dict = @{LYRConversationOptionsDeliveryReceiptsEnabledKey: @(deliveryReceiptsEnabled),
-                               LYRConversationOptionsDeliveryReceiptsEnabledKey: @(uniqueConvoBetweenParticipants)};
-        LYRConversation *newConvo = [self.layerClient newConversationWithParticipants:[NSSet setWithObjects:userObjectId, nil] options:dict error:&error];
-
-        if (!error)
-        {
-            //failing here not being sent a valid newConvo object
-            [self sendInitialMessage:newConvo withText:@"Hello" withCompletion:^(BOOL success, NSError *error) {
-
-                if (success)
-                {
-                    NSLog(@"layer sent message");
-                }
-                else
-                {
-                    NSLog(@"no message sent %@", error);
-                }
-            }];
-
-            result(newConvo,nil);
-        }
-        else
-        {
-            result(nil, error);
-            NSLog(@"error: %@", error);
-        }
-    }
-    else if (users.count > 1)
-    {
-        NSMutableSet *set = [NSMutableSet new];
-        for (User *user in users)
-        {
-            [set addObject:user.objectId];
-        }
-        BOOL deliveryReceiptsEnabled = NO;
-        LYRConversation *newConvo = [self.layerClient newConversationWithParticipants:set options:@{LYRConversationOptionsDeliveryReceiptsEnabledKey: @(deliveryReceiptsEnabled) } error:&error];
-
-        if (!error)
-        {
-            result(newConvo,nil);
-        }
-        else
-        {
-            result(nil, error);
-        }
-    }
-}
-
 -(void)sendInitialMessage:(LYRConversation *)conversation withText:(NSString*)text withCompletion:(resultBlockWithSuccess)success
 {
     NSString *messageText = [NSString stringWithFormat:@"%@", text];
@@ -168,6 +111,56 @@
     
 }
 
+-(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text
+{
+    PFObject *newMessage = [PFObject objectWithClassName:@"Chat"];
+    [newMessage setObject:recipient forKey:@"recipientId"];
+    //[newMessage setObject:recipient.givenName forKey:@"repName"];
+    //[newMessage setObject:recipient.profileImages.firstObject forKey:@"repImage"];
+    [newMessage setObject:user forKey:@"fromUser"];
+    //[newMessage setObject:user.givenName forKey:@"senderName"];
+    //[newMessage setObject:user.profileImages.firstObject forKey:@"senderImage"];
+    [newMessage setObject:text forKey:@"text"];
+    [newMessage setObject:[NSDate date] forKey:@"timestamp"];
+    [newMessage saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+        if (error)
+        {
+            NSLog(@"error saving message: %@", error);
+        }
+        else
+        {
+            NSLog(@"saved message: %s", succeeded ? "true" : "false");
+        }
+    }];
+}
+
+-(void)queryForChats:(User*)currentUser withResult:(resultBlockWithConversations)conversations
+{
+    PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
+    
+//    [query whereKey:@"recipientId" equalTo:currentUser];
+    //for testing
+    [query whereKey:@"fromUser" equalTo:currentUser];
+
+        NSLog(@"no chat data");
+        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+        [query orderByAscending:@"createdAt"];
+        NSLog(@"Trying to retrieve from cache");
+
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+
+            if (!error)
+            {
+                conversations(objects, nil);
+            }
+            else
+            {
+                NSLog(@"Error Above: %@ %@", error, [error userInfo]);
+            }
+        }];
+}
+
 -(void)queryForMatches:(User*)currentUser withResult:(resultBlockWithResult)result
 {
     PFRelation *relation = [currentUser objectForKey:@"match"];
@@ -181,9 +174,70 @@
         }
         else
         {
+            self.matches = objects;
             NSArray *userObjects = [UserBuilder parsedUserData:objects withError:error];
             result(userObjects, nil);
         }
     }];
 }
 @end
+
+
+
+//-(void)createConversationWithUsers:(NSArray*)users withCompletion:(resultBlockWithConversation)result
+//{
+//    NSError *error = nil;
+//
+//    if (users.count == 1)
+//    {
+//        User *userObjectId = users.lastObject;
+//        BOOL deliveryReceiptsEnabled = false;
+//        BOOL uniqueConvoBetweenParticipants = YES;
+//        NSDictionary *dict = @{LYRConversationOptionsDeliveryReceiptsEnabledKey: @(deliveryReceiptsEnabled),
+//                               LYRConversationOptionsDeliveryReceiptsEnabledKey: @(uniqueConvoBetweenParticipants)};
+////        LYRConversation *newConvo = [self.layerClient newConversationWithParticipants:[NSSet setWithObjects:userObjectId, nil] options:dict error:&error];
+//
+//        if (!error)
+//        {
+//            //failing here not being sent a valid newConvo object
+//            [self sendInitialMessage:newConvo withText:@"Hello" withCompletion:^(BOOL success, NSError *error) {
+//
+//                if (success)
+//                {
+//                    NSLog(@"layer sent message");
+//                }
+//                else
+//                {
+//                    NSLog(@"no message sent %@", error);
+//                }
+//            }];
+//
+//            result(newConvo,nil);
+//        }
+//        else
+//        {
+//            result(nil, error);
+//            NSLog(@"error: %@", error);
+//        }
+//    }
+//    else if (users.count > 1)
+//    {
+//        NSMutableSet *set = [NSMutableSet new];
+//        for (User *user in users)
+//        {
+//            [set addObject:user.objectId];
+//        }
+//        BOOL deliveryReceiptsEnabled = NO;
+//        LYRConversation *newConvo = [self.layerClient newConversationWithParticipants:set options:@{LYRConversationOptionsDeliveryReceiptsEnabledKey: @(deliveryReceiptsEnabled) } error:&error];
+//
+//        if (!error)
+//        {
+//            result(newConvo,nil);
+//        }
+//        else
+//        {
+//            result(nil, error);
+//        }
+//    }
+//}
+

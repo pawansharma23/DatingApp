@@ -328,14 +328,14 @@
                                                 <exclude reference="CZl-2K-85h"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <exclude reference="3e8-XY-hKz"/>
-                                                <exclude reference="lhI-Av-RBQ"/>
                                                 <exclude reference="4v9-OM-Owc"/>
                                                 <exclude reference="T91-DP-AP4"/>
-                                                <exclude reference="DR6-h1-D0w"/>
-                                                <exclude reference="sBi-c2-deX"/>
                                                 <exclude reference="2X3-A3-Y00"/>
                                                 <exclude reference="B3C-yV-gG1"/>
+                                                <exclude reference="DR6-h1-D0w"/>
+                                                <exclude reference="sBi-c2-deX"/>
+                                                <exclude reference="3e8-XY-hKz"/>
+                                                <exclude reference="lhI-Av-RBQ"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
@@ -345,14 +345,14 @@
                                                 <include reference="CZl-2K-85h"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <include reference="3e8-XY-hKz"/>
-                                                <exclude reference="drI-PK-1Kw"/>
                                                 <include reference="4v9-OM-Owc"/>
                                                 <include reference="T91-DP-AP4"/>
-                                                <include reference="DR6-h1-D0w"/>
-                                                <include reference="sBi-c2-deX"/>
                                                 <include reference="2X3-A3-Y00"/>
                                                 <include reference="B3C-yV-gG1"/>
+                                                <include reference="DR6-h1-D0w"/>
+                                                <include reference="sBi-c2-deX"/>
+                                                <include reference="3e8-XY-hKz"/>
+                                                <exclude reference="drI-PK-1Kw"/>
                                             </mask>
                                         </variation>
                                     </view>

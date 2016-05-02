@@ -65,18 +65,139 @@
                                     <outlet property="delegate" destination="EBs-iM-r0e" id="tFU-lf-EHM"/>
                                 </connections>
                             </tableView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="sSm-dg-rDS">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="saX-Jh-H6W">
+                                    <size key="itemSize" width="102" height="104"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MatchesCell" id="uvh-tC-A5u" customClass="MatchesCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="102" height="104"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7sg-x3-wYW">
+                                                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="75" id="8cS-vM-aU7"/>
+                                                        <constraint firstAttribute="height" constant="70" id="93J-dl-k0b">
+                                                            <variation key="heightClass=regular-widthClass=compact" constant="75"/>
+                                                        </constraint>
+                                                    </constraints>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="8cS-vM-aU7"/>
+                                                            <exclude reference="93J-dl-k0b"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <variation key="heightClass=regular-widthClass=compact">
+                                                        <mask key="constraints">
+                                                            <include reference="8cS-vM-aU7"/>
+                                                            <include reference="93J-dl-k0b"/>
+                                                        </mask>
+                                                    </variation>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="but-Di-dx4">
+                                                    <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstItem="but-Di-dx4" firstAttribute="top" secondItem="7sg-x3-wYW" secondAttribute="bottom" constant="1" id="3Il-WZ-0t7">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                            </constraint>
+                                            <constraint firstItem="7sg-x3-wYW" firstAttribute="top" secondItem="uvh-tC-A5u" secondAttribute="top" id="SQV-ha-Jra">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                            </constraint>
+                                            <constraint firstAttribute="trailing" secondItem="but-Di-dx4" secondAttribute="trailing" id="aNo-Xx-wGn"/>
+                                            <constraint firstItem="but-Di-dx4" firstAttribute="leading" secondItem="uvh-tC-A5u" secondAttribute="leading" id="f2u-CO-A2w"/>
+                                            <constraint firstItem="7sg-x3-wYW" firstAttribute="centerX" secondItem="uvh-tC-A5u" secondAttribute="centerX" id="f4P-R2-T0R"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="subviews">
+                                                <exclude reference="7sg-x3-wYW"/>
+                                                <exclude reference="but-Di-dx4"/>
+                                            </mask>
+                                            <mask key="constraints">
+                                                <exclude reference="SQV-ha-Jra"/>
+                                                <exclude reference="f4P-R2-T0R"/>
+                                                <exclude reference="3Il-WZ-0t7"/>
+                                                <exclude reference="aNo-Xx-wGn"/>
+                                                <exclude reference="f2u-CO-A2w"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="subviews">
+                                                <include reference="7sg-x3-wYW"/>
+                                                <include reference="but-Di-dx4"/>
+                                            </mask>
+                                            <mask key="constraints">
+                                                <include reference="SQV-ha-Jra"/>
+                                                <include reference="f4P-R2-T0R"/>
+                                                <include reference="3Il-WZ-0t7"/>
+                                                <include reference="aNo-Xx-wGn"/>
+                                                <include reference="f2u-CO-A2w"/>
+                                            </mask>
+                                        </variation>
+                                        <connections>
+                                            <outlet property="matchImage" destination="7sg-x3-wYW" id="pLA-0A-D9B"/>
+                                            <outlet property="nameLabel" destination="but-Di-dx4" id="icN-vD-vL9"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="EBs-iM-r0e" id="J9W-kX-Kpv"/>
+                                    <outlet property="delegate" destination="EBs-iM-r0e" id="xRg-vv-pEQ"/>
+                                </connections>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="fyv-gj-Vc3" firstAttribute="top" secondItem="1PV-uY-wZa" secondAttribute="bottom" constant="105" id="2Ut-Hc-krF"/>
+                            <constraint firstItem="sSm-dg-rDS" firstAttribute="leading" secondItem="udZ-do-Oon" secondAttribute="leading" id="57p-Fg-L6B"/>
+                            <constraint firstAttribute="trailing" secondItem="sSm-dg-rDS" secondAttribute="trailing" id="DlG-Kh-ldf"/>
                             <constraint firstItem="zw8-hZ-gUu" firstAttribute="top" secondItem="fyv-gj-Vc3" secondAttribute="bottom" id="XgF-r8-FyV"/>
+                            <constraint firstItem="sSm-dg-rDS" firstAttribute="top" secondItem="1PV-uY-wZa" secondAttribute="bottom" id="btL-DH-MtO"/>
                             <constraint firstItem="fyv-gj-Vc3" firstAttribute="leading" secondItem="udZ-do-Oon" secondAttribute="leading" id="q9F-xz-84Z"/>
                             <constraint firstAttribute="trailing" secondItem="fyv-gj-Vc3" secondAttribute="trailing" id="yaf-fM-6VK"/>
+                            <constraint firstItem="fyv-gj-Vc3" firstAttribute="top" secondItem="sSm-dg-rDS" secondAttribute="bottom" id="yti-Rc-1YJ"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="sSm-dg-rDS"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="57p-Fg-L6B"/>
+                                <exclude reference="DlG-Kh-ldf"/>
+                                <exclude reference="btL-DH-MtO"/>
+                                <exclude reference="yti-Rc-1YJ"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="sSm-dg-rDS"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="57p-Fg-L6B"/>
+                                <include reference="DlG-Kh-ldf"/>
+                                <include reference="btL-DH-MtO"/>
+                                <include reference="yti-Rc-1YJ"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="8m8-Ct-LM7"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="collectionView" destination="sSm-dg-rDS" id="Tub-rG-lh3"/>
                         <outlet property="tableView" destination="fyv-gj-Vc3" id="5EP-Cv-UuW"/>
                         <segue destination="EDn-T0-e2S" kind="show" identifier="detailMessage" id="icc-zt-tGY"/>
                     </connections>

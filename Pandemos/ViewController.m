@@ -419,10 +419,9 @@ MDCSwipeToChooseDelegate>
 }
 -(void)didUpdateMatchRequest:(User *)user
 {
-    MessageManager *message = [MessageManager new];
-    [message createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
-        NSLog(@"convo object: %@", conversation);
-    }];
+//    [self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
+//        NSLog(@"convo object: %@", conversation);
+//    }];
 
 
     //this starts the convo even though we need another layer of authentication to go through so this method should live in a launch app or pending match screen, or even in the MessageController
