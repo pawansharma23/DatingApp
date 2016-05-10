@@ -105,7 +105,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="but-Di-dx4">
                                                     <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -128,11 +128,11 @@
                                                 <exclude reference="but-Di-dx4"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <exclude reference="SQV-ha-Jra"/>
-                                                <exclude reference="f4P-R2-T0R"/>
                                                 <exclude reference="3Il-WZ-0t7"/>
                                                 <exclude reference="aNo-Xx-wGn"/>
                                                 <exclude reference="f2u-CO-A2w"/>
+                                                <exclude reference="SQV-ha-Jra"/>
+                                                <exclude reference="f4P-R2-T0R"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
@@ -141,11 +141,11 @@
                                                 <include reference="but-Di-dx4"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <include reference="SQV-ha-Jra"/>
-                                                <include reference="f4P-R2-T0R"/>
                                                 <include reference="3Il-WZ-0t7"/>
                                                 <include reference="aNo-Xx-wGn"/>
                                                 <include reference="f2u-CO-A2w"/>
+                                                <include reference="SQV-ha-Jra"/>
+                                                <include reference="f4P-R2-T0R"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -194,9 +194,16 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" id="8m8-Ct-LM7"/>
+                    <navigationItem key="navigationItem" id="8m8-Ct-LM7">
+                        <barButtonItem key="leftBarButtonItem" id="63T-02-7qy">
+                            <connections>
+                                <action selector="onBackButton:" destination="EBs-iM-r0e" id="ax8-BK-owZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="backButton" destination="63T-02-7qy" id="5aY-KU-J0c"/>
                         <outlet property="collectionView" destination="sSm-dg-rDS" id="Tub-rG-lh3"/>
                         <outlet property="tableView" destination="fyv-gj-Vc3" id="5EP-Cv-UuW"/>
                         <segue destination="EDn-T0-e2S" kind="show" identifier="detailMessage" id="icc-zt-tGY"/>
@@ -276,11 +283,20 @@
                     <connections>
                         <outlet property="tableView" destination="bjW-mX-cBV" id="nSr-gR-vIa"/>
                         <outlet property="textField" destination="47R-B1-Jxi" id="EmZ-b2-m7z"/>
+                        <segue destination="b3g-fN-Mkg" kind="presentation" identifier="toChatterProfile" id="6Qv-qQ-wGy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Czz-2l-2eL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3010.5" y="352.5"/>
+        </scene>
+        <!--UserDetail-->
+        <scene sceneID="QyR-ii-RtM">
+            <objects>
+                <viewControllerPlaceholder storyboardName="UserDetail" id="b3g-fN-Mkg" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bdk-Am-RlK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3750.75" y="164.25"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="hA1-Wh-a5e">

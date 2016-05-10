@@ -10,6 +10,9 @@
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
 		2653C0361CD7859B00DDBD65 /* MatchesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0351CD7859B00DDBD65 /* MatchesCell.m */; };
+		2653C03A1CDA357200DDBD65 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0391CDA357200DDBD65 /* NSData+Additions.m */; };
+		2653C03D1CDBA60C00DDBD65 /* UIImage+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C03C1CDBA60C00DDBD65 /* UIImage+Additions.m */; };
+		2653C0481CE0E3D000DDBD65 /* UserDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2653C0471CE0E3D000DDBD65 /* UserDetail.storyboard */; };
 		2657ABCC1CCE5E2100629437 /* ChooseMatchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */; };
 		2657ABCF1CCE5F3B00629437 /* ImageLabelViews.m in Sources */ = {isa = PBXBuildFile; fileRef = 2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */; };
 		268BA0941C1DB53F0054414E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 268BA0921C1DB53F0054414E /* Main.storyboard */; };
@@ -54,7 +57,6 @@
 		26C70ED11CA5B18F00E9B98F /* FacebookBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2614A70F1CA1EBF200D6F6AA /* FacebookBuilder.m */; };
 		26C70ED21CA5B18F00E9B98F /* PotentialMatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CC6A391C7CF3E1000F3BAC /* PotentialMatch.m */; };
 		26C70ED31CA5B18F00E9B98F /* MatchRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 268EE4561C834BC500085DAD /* MatchRequest.m */; };
-		26C70ED41CA5B18F00E9B98F /* AddImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266451521C5D058C00D98136 /* AddImageCell.m */; };
 		26C70ED51CA5B18F00E9B98F /* CVSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EE239A1C42BD7D006F328E /* CVSettingCell.m */; };
 		26C70ED61CA5B18F00E9B98F /* PreviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EE23A01C453F47006F328E /* PreviewCell.m */; };
 		26C70ED71CA5B18F00E9B98F /* UIButton+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D314731C976CE70045BB22 /* UIButton+Additions.m */; };
@@ -97,14 +99,17 @@
 		2644451A1CB5699B00A0381B /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		2653C0341CD7859B00DDBD65 /* MatchesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchesCell.h; sourceTree = "<group>"; };
 		2653C0351CD7859B00DDBD65 /* MatchesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchesCell.m; sourceTree = "<group>"; };
+		2653C0381CDA357200DDBD65 /* NSData+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Additions.h"; sourceTree = "<group>"; };
+		2653C0391CDA357200DDBD65 /* NSData+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Additions.m"; sourceTree = "<group>"; };
+		2653C03B1CDBA60C00DDBD65 /* UIImage+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Additions.h"; sourceTree = "<group>"; };
+		2653C03C1CDBA60C00DDBD65 /* UIImage+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Additions.m"; sourceTree = "<group>"; };
+		2653C0471CE0E3D000DDBD65 /* UserDetail.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UserDetail.storyboard; sourceTree = "<group>"; };
 		2657ABCA1CCE5E2100629437 /* ChooseMatchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseMatchView.h; sourceTree = "<group>"; };
 		2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseMatchView.m; sourceTree = "<group>"; };
 		2657ABCD1CCE5F3B00629437 /* ImageLabelViews.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageLabelViews.h; sourceTree = "<group>"; };
 		2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageLabelViews.m; sourceTree = "<group>"; };
 		2664514E1C5D007B00D98136 /* AlbumDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailViewController.h; sourceTree = "<group>"; };
 		2664514F1C5D007B00D98136 /* AlbumDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumDetailViewController.m; sourceTree = "<group>"; };
-		266451511C5D058C00D98136 /* AddImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddImageCell.h; sourceTree = "<group>"; };
-		266451521C5D058C00D98136 /* AddImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddImageCell.m; sourceTree = "<group>"; };
 		266451571C5D78CB00D98136 /* AlbumCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumCustomCell.h; sourceTree = "<group>"; };
 		266451581C5D78CB00D98136 /* AlbumCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumCustomCell.m; sourceTree = "<group>"; };
 		266F23E01C5DA1B300A34C0B /* FacebookAlbumsTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumsTableVC.h; sourceTree = "<group>"; };
@@ -324,11 +329,14 @@
 				26AC54611CAEBB41005AD536 /* Storyboards */,
 				268BA08C1C1DB53F0054414E /* AppDelegate.h */,
 				268BA08D1C1DB53F0054414E /* AppDelegate.m */,
+				268BA0951C1DB53F0054414E /* Assets.xcassets */,
 				268BA1131C26EFBD0054414E /* Initial Setup VCs */,
 				268BA10B1C25A8F00054414E /* MainAppFunctionality */,
 				2614A70D1CA1E24100D6F6AA /* Managers */,
 				268BA10F1C25AFE60054414E /* Model */,
-				268BA0951C1DB53F0054414E /* Assets.xcassets */,
+				26D314711C976BF80045BB22 /* Categories */,
+				26F22BF11C6FAE2000D86343 /* Third Party Helpers */,
+				2614A7031CA1DBF700D6F6AA /* Matches */,
 				268BA0971C1DB53F0054414E /* LaunchScreen.storyboard */,
 				268BA09A1C1DB53F0054414E /* Info.plist */,
 				268BA0891C1DB53F0054414E /* Supporting Files */,
@@ -379,10 +387,6 @@
 				26EC33041C76AFF8009E821D /* Facebook.m */,
 				268BA10C1C25AFE10054414E /* User.h */,
 				268BA10D1C25AFE10054414E /* User.m */,
-				2614A7031CA1DBF700D6F6AA /* Matches */,
-				26F22BEF1C6FADC200D86343 /* CollectionView Cells */,
-				26D314711C976BF80045BB22 /* Categories */,
-				26F22BF11C6FAE2000D86343 /* Third Party Helpers */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -429,6 +433,7 @@
 				26AC54671CAF1651005AD536 /* FacebookAlbums.storyboard */,
 				26AC546B1CAF1A63005AD536 /* Messaging.storyboard */,
 				26AC546D1CAF1B3C005AD536 /* Profile.storyboard */,
+				2653C0471CE0E3D000DDBD65 /* UserDetail.storyboard */,
 			);
 			name = Storyboards;
 			sourceTree = "<group>";
@@ -469,8 +474,12 @@
 		26D314711C976BF80045BB22 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				2653C0381CDA357200DDBD65 /* NSData+Additions.h */,
+				2653C0391CDA357200DDBD65 /* NSData+Additions.m */,
 				26B954571CB82A89006245EE /* UIImageView+Additions.h */,
 				26B954581CB82A89006245EE /* UIImageView+Additions.m */,
+				2653C03B1CDBA60C00DDBD65 /* UIImage+Additions.h */,
+				2653C03C1CDBA60C00DDBD65 /* UIImage+Additions.m */,
 				26D314721C976CE70045BB22 /* UIButton+Additions.h */,
 				26D314731C976CE70045BB22 /* UIButton+Additions.m */,
 				26B954541CB82202006245EE /* NSString+Additions.h */,
@@ -510,17 +519,6 @@
 			name = ConfidantEmail;
 			sourceTree = "<group>";
 		};
-		26F22BEF1C6FADC200D86343 /* CollectionView Cells */ = {
-			isa = PBXGroup;
-			children = (
-				266451511C5D058C00D98136 /* AddImageCell.h */,
-				266451521C5D058C00D98136 /* AddImageCell.m */,
-				26EE23991C42BD7D006F328E /* CVSettingCell.h */,
-				26EE239A1C42BD7D006F328E /* CVSettingCell.m */,
-			);
-			name = "CollectionView Cells";
-			sourceTree = "<group>";
-		};
 		26F22BF11C6FAE2000D86343 /* Third Party Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -533,6 +531,8 @@
 		26F22BF21C6FAEF000D86343 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
+				26EE23991C42BD7D006F328E /* CVSettingCell.h */,
+				26EE239A1C42BD7D006F328E /* CVSettingCell.m */,
 				268BA1051C25A86C0054414E /* ProfileViewController.h */,
 				268BA1061C25A86C0054414E /* ProfileViewController.m */,
 				2614A7071CA1DCA900D6F6AA /* PreviewUserProfile */,
@@ -695,6 +695,7 @@
 				26AC546E1CAF1B3C005AD536 /* Profile.storyboard in Resources */,
 				26AC54681CAF1651005AD536 /* FacebookAlbums.storyboard in Resources */,
 				268BA0941C1DB53F0054414E /* Main.storyboard in Resources */,
+				2653C0481CE0E3D000DDBD65 /* UserDetail.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -794,6 +795,7 @@
 				26C70ECC1CA5B18F00E9B98F /* ViewController.m in Sources */,
 				26C70ECD1CA5B18F00E9B98F /* FacebookNetwork.m in Sources */,
 				26C70ECE1CA5B18F00E9B98F /* FacebookManager.m in Sources */,
+				2653C03D1CDBA60C00DDBD65 /* UIImage+Additions.m in Sources */,
 				26C70ECF1CA5B18F00E9B98F /* User.m in Sources */,
 				26C70ED01CA5B18F00E9B98F /* Facebook.m in Sources */,
 				26C70ED11CA5B18F00E9B98F /* FacebookBuilder.m in Sources */,
@@ -801,11 +803,11 @@
 				26C70ED21CA5B18F00E9B98F /* PotentialMatch.m in Sources */,
 				26AC54641CAED17A005AD536 /* UITextView+Additions.m in Sources */,
 				26C70ED31CA5B18F00E9B98F /* MatchRequest.m in Sources */,
-				26C70ED41CA5B18F00E9B98F /* AddImageCell.m in Sources */,
 				26B954561CB82202006245EE /* NSString+Additions.m in Sources */,
 				26C70ED51CA5B18F00E9B98F /* CVSettingCell.m in Sources */,
 				26C70ED61CA5B18F00E9B98F /* PreviewCell.m in Sources */,
 				26C70ED71CA5B18F00E9B98F /* UIButton+Additions.m in Sources */,
+				2653C03A1CDA357200DDBD65 /* NSData+Additions.m in Sources */,
 				26C70ED81CA5B18F00E9B98F /* UIColor+Pandemos.m in Sources */,
 				26C70ED91CA5B18F00E9B98F /* RangeSlider.m in Sources */,
 				26C70EDA1CA5B18F00E9B98F /* main.m in Sources */,

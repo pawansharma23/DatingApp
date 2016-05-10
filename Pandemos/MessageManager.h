@@ -14,6 +14,7 @@ typedef void (^resultBlockWithMessage) (LYRMessage *message, NSError *error);
 typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
 typedef void (^resultBlockWithResult)(NSArray *result, NSError *error);
 typedef void (^resultBlockWithConversations)(NSArray *result, NSError *error);
+typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 
 @interface MessageManager : NSObject
 
@@ -21,8 +22,12 @@ typedef void (^resultBlockWithConversations)(NSArray *result, NSError *error);
 @property(nonatomic, strong)LYRClient *layerClient;
 
 -(void)launchApp;
+-(void)sendInitialMessage:(User*)recipient;
 -(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text;
+-(void)chatExists:(User*)recipient withSuccess:(resultBlockWithSuccess)success;
 -(void)deleteConversation:(LYRConversation*)conversation withResult:(resultBlockWithSuccess)result;
--(void)queryForChats:(User*)currentUser withResult:(resultBlockWithConversations)conversations;
--(void)queryForMatches:(User*)currentUser withResult:(resultBlockWithResult)result;
+-(void)queryForChats:(resultBlockWithConversations)conversations;
+-(void)queryForMatches:(resultBlockWithMatches)matches;
+-(void)queryForChat:(User*)recipient andConvo:(resultBlockWithConversations)conversation;
+-(void)queryForChatTextAndTimeOnly:(User*)recipient andConvo:(resultBlockWithConversations)conversation;
 @end

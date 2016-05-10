@@ -380,6 +380,7 @@ UserManagerDelegate>
 {
 
 }
+
 #pragma mark - USER MANAGER DELEGATE
 -(void)didReceiveUserData:(NSArray *)data
 {
@@ -415,6 +416,12 @@ UserManagerDelegate>
 -(void)failedToFetchImages:(NSError *)error
 {
     NSLog(@"failed to fetch profile images: %@", error);
+}
+#pragma mark -- NAV
+- (IBAction)onPreviewTapped:(UIBarButtonItem *)sender
+{
+    [self.userManager fromMessaging:self.currentUser];
+    [self performSegueWithIdentifier:@"fromCurrentUser" sender:self];
 }
 
 #pragma mark -- HELPERS

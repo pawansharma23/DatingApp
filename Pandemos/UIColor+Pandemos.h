@@ -14,5 +14,5 @@
 +(UIColor *)rubyRed;
 +(UIColor *)uclaBlue;
 +(UIColor *)yellowGreen;
-
++(UIColor *)mikeGray;
 @end

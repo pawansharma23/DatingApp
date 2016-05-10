@@ -40,9 +40,10 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *fullNameAndAge;
 @property (weak, nonatomic) IBOutlet UILabel *fullAboutMe;
 @property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
-@property (strong, nonatomic) NSString *currentCityAndState;
 
+@property (strong, nonatomic) NSString *currentCityAndState;
 @property (strong, nonatomic) User *currentUser;
+@property (strong, nonatomic) User *passedUser;
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) NSMutableArray *profileImages;
 @property (strong, nonatomic) NSString *nameAndAgeGlobal;
@@ -57,9 +58,10 @@ UserManagerDelegate>
 {
     [super viewDidLoad];
 
+    self.userManager = [UserManager new];
+    self.userManager.delegate = self;
     self.currentUser = [User currentUser];
 
-    self.navigationItem.title = @"Your Profile";
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
 
     self.fullDescView.hidden = YES;
@@ -78,9 +80,6 @@ UserManagerDelegate>
     //PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
 //  using age object instead
 //    NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
-
-
-
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -90,7 +89,6 @@ UserManagerDelegate>
     self.count = 0;
 
     [self setLightForImage:self.count];
-    [self setupManagersProfileVC];
 
     [self.userImage setUserInteractionEnabled:YES];
     UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureUp:)];
@@ -103,6 +101,8 @@ UserManagerDelegate>
     swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
     [self.userImage addGestureRecognizer:swipeGestureDown];
 }
+
+
 
 //#pragma mark -- CLLocation delegate methods
 //-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
@@ -132,7 +132,6 @@ UserManagerDelegate>
 //}
 
 #pragma mark -- SWIPE GESTURES
-//SwipeUp
 - (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender
 {
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
@@ -169,7 +168,6 @@ UserManagerDelegate>
     }
 }
 
-//SwipeDown
 - (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender
 {
 
@@ -183,7 +181,6 @@ UserManagerDelegate>
 
             if (self.count == 0)
             {
-
                 NSLog(@"first image, count: %zd", self.count);
                 self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
                 //indicator lights
@@ -228,6 +225,7 @@ UserManagerDelegate>
     self.nameAndAge.text = self.nameAndAgeGlobal;
     self.educationLabel.text = userData[@"work"];
     self.jobLabel.text = userData[@"lastSchool"];
+    self.navigationItem.title = userData[@"givenName"];
 }
 
 -(void)failedToFetchUserData:(NSError *)error
@@ -235,7 +233,31 @@ UserManagerDelegate>
     NSLog(@"failed to fetch data: %@", error);
 }
 
+-(void)didComeFromMessaging:(BOOL)fromMessaging withUser:(User *)user
+{
+    if (fromMessaging == YES)
+    {
+        [self setupManagersProfileVCFromMessaging:user];
+    }
+    else
+    {
+        [self setupManagersProfileVCForCurrentUser];
+    }
+}
+
 #pragma mark -- HELPERS
+-(void)setupManagersProfileVCFromMessaging:(User*)user
+{
+    [self.userManager loadUserData:user];
+    [self.userManager loadUserImages:user];
+}
+
+-(void)setupManagersProfileVCForCurrentUser
+{
+    [self.userManager loadUserData:self.currentUser];
+    [self.userManager loadUserImages:self.currentUser];
+}
+
 -(void)loadProperIndicatorLights:(int)count
 {
     switch (count)
@@ -389,15 +411,6 @@ UserManagerDelegate>
     self.fullAboutMe.text = aboutMe;
     self.fullNameAndAge.text = self.nameAndAgeGlobal;
     self.fullMilesAway.text = self.currentCityAndState;
-}
-
--(void)setupManagersProfileVC
-{
-    self.userManager = [UserManager new];
-    self.userManager.delegate = self;
-
-    [self.userManager loadUserData:self.currentUser];
-    [self.userManager loadUserImages:self.currentUser];
 }
 
 -(NSData *)imageData:(NSString *)imageString

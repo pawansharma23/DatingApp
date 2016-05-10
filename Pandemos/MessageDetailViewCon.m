@@ -15,6 +15,8 @@
 #import "User.h"
 #import "UIColor+Pandemos.h"
 #import "MessageManager.h"
+#import "UserManager.h"
+#import "UIImage+Additions.h"
 
 #define TABBAR_HEIGHT 49.0f
 #define TEXTFIELD_HEIGHT 70.0f
@@ -32,9 +34,12 @@ UITableViewDelegate>
 
 @property BOOL reloading;
 @property (strong, nonatomic) NSMutableArray *chatData;
+@property (strong, nonatomic) NSDictionary *lastObject;
+
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) NSString *user;
 @property (strong, nonatomic) MessageManager *messageManager;
+@property (strong, nonatomic) NSString *userImage;
 
 
 @end
@@ -46,14 +51,17 @@ UITableViewDelegate>
 {
     [super viewDidLoad];
 
+    NSLog(@"chatter: %@", self.recipient);
+
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
+    self.lastObject = [NSDictionary new];
+    self.chatData = [NSMutableArray new];
 
-    self.navigationItem.title = self.recipient.givenName;
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     self.navigationController.navigationBar.backgroundColor = [UIColor rubyRed];
     
-    _textField.delegate =self;
+    _textField.delegate = self;
     _textField.clearButtonMode = UITextFieldViewModeWhileEditing;
 
     self.tableView.delegate = self;
@@ -67,10 +75,12 @@ UITableViewDelegate>
 
 -(void)viewWillAppear:(BOOL)animated
 {
-
     self.chatData = [NSMutableArray new];
     [self loadChat];
-    //[self loadLocalChat];
+    [self loadChatWithImage];
+
+    UIBarButtonItem *moreButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"More-100"] scaledToSize:CGSizeMake(25.0, 25.0)] style:UIBarButtonItemStylePlain target:self action:@selector(segueToPreview)];
+    self.navigationItem.rightBarButtonItem = moreButton;
 }
 
 - (void)viewDidUnload
@@ -80,10 +90,10 @@ UITableViewDelegate>
 }
 
 #pragma mark -- TEXTFIELD DELEGATES
--(IBAction) backgroundTap:(id) sender
-{
-    [self.textField resignFirstResponder];
-}
+//-(IBAction) backgroundTap:(id) sender
+//{
+//    [self.textField resignFirstResponder];
+//}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -110,7 +120,7 @@ UITableViewDelegate>
         [self.messageManager sendMessage:self.currentUser toUser:self.recipient withText:textField.text];
 
         //reset textField
-        self.textField.text = @"";
+        textField.text = @"";
         return YES;
     }
 
@@ -127,49 +137,41 @@ UITableViewDelegate>
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+
     UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier: @"Cell"];
+    NSDictionary *chatText = [self.chatData objectAtIndex:indexPath.row];
+    [self setupImageInCell:cell];
     NSUInteger row = [_chatData count]-[indexPath row]-1;
-
-    if (row < _chatData.count)
+    User *user = [self.chatData objectAtIndex:indexPath.row];
+    User *userObject = user[@"fromUser"];
+    //incoming vs. outgoing
+    if ([[User currentUser].objectId isEqualToString:userObject.objectId])
     {
-        NSString *chatText = [[_chatData objectAtIndex:row] objectForKey:@"text"];
-        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        CGSize size = [chatText sizeWithAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14.0]}];
+        cell.imageView.image = [UIImage imageWithData:[self stringURLToData:self.lastObject[@"fromImage"]]];
 
-        cell.textLabel.frame = CGRectMake(75, 14, size.width +20, size.height + 20);
-        cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
-        cell.textLabel.text = chatText;
-        [cell.textLabel sizeToFit];
+        if (row < _chatData.count)
+        {
+            //NSString *chatText = [[_chatData objectAtIndex:indexPath.row] objectForKey:@"text"];
 
-        NSDate *theDate = [[_chatData objectAtIndex:row] objectForKey:@"timestamp"];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"HH:mm a"];
-        NSString *timeString = [formatter stringFromDate:theDate];
-        cell.detailTextLabel.text = timeString;
-
+            if (chatText)
+            {
+                [self setupCellForText:cell andChat:chatText index:indexPath];
+            }
+            else
+            {
+                [cell removeFromSuperview];
+            }
+        }
+    }
+    else
+    {
+        NSLog(@"incoming message");
+        NSLog(@"user objectID: %@", user[@"fromUser"]);
+        cell.textLabel.textAlignment = NSTextAlignmentRight;
+        [self setupCellForText:cell andChat:chatText index:indexPath];
     }
 
     return cell;
-}
-
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  {
-//    NSString *cellText = [[_chatData objectAtIndex:_chatData.count-indexPath.row-1] objectForKey:@"text"];
-//    UIFont *cellFont = [UIFont fontWithName:@"Helvetica" size:14.0];
-//    CGSize constraintSize = CGSizeMake(225.0f, MAXFLOAT);
-//    CGFloat labelSize = [cellText boundingRectWithSize:constraintSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14.0]} context:nil];
-//
-//    return labelSize;
-//
-//}
-
-
-#pragma mark -- helpers
--(void)reloadTableViewDataSource
-{
-    self.reloading = YES;
-    //[self loadLocalChat];
-    [self loadChat];
-    [self.tableView reloadData];
 }
 
 -(void)doneLoadingCollectionViewData
@@ -194,7 +196,8 @@ UITableViewDelegate>
 }
 
 
--(void) keyboardWasShown:(NSNotification*)aNotification {
+-(void) keyboardWasShown:(NSNotification*)aNotification
+{
     NSLog(@"Keyboard was shown");
     NSDictionary* info = [aNotification userInfo];
 
@@ -214,10 +217,8 @@ UITableViewDelegate>
 
 }
 
-
 -(void) keyboardWillHide:(NSNotification*)aNotification
 {
-
     NSLog(@"Keyboard will hide");
     NSDictionary* info = [aNotification userInfo];
 
@@ -236,13 +237,73 @@ UITableViewDelegate>
     [UIView commitAnimations];
 }
 
+#pragma mark -- HELPERS
 -(void)loadChat
 {
-    [self.messageManager queryForChats:self.currentUser withResult:^(NSArray *result, NSError *error) {
+    [self.messageManager queryForChatTextAndTimeOnly:self.recipient andConvo:^(NSArray *result, NSError *error) {
 
         self.chatData = [NSMutableArray arrayWithArray:result];
         [self.tableView reloadData];
     }];
+}
+
+-(void)loadChatWithImage
+{
+    [self.messageManager queryForChat:self.recipient andConvo:^(NSArray *result, NSError *error) {
+
+        self.lastObject = result.lastObject;
+        self.navigationItem.title = self.lastObject[@"repName"];
+        [self.tableView reloadData];
+    }];
+}
+
+-(NSData *)stringURLToData:(NSString *)urlString
+{
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+
+    return data;
+}
+
+-(void)setupImageInCell:(UITableViewCell*)cell
+{
+    cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    cell.imageView.layer.cornerRadius = 22.0 / 2.0f;
+    cell.imageView.clipsToBounds = YES;
+}
+
+-(void)setupCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
+{
+    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    CGSize size = CGSizeMake(10.0, 10.0);
+    cell.textLabel.frame = CGRectMake(75, 14, size.width +20, size.height + 20);
+    cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
+    cell.textLabel.text = chatDict[@"text"];
+    [cell.textLabel sizeToFit];
+
+    //NSDate *theDate = [[_chatData objectAtIndex:row] objectForKey:@"timestamp"];
+    NSDate *theDate = [[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm a"];
+    NSString *timeString = [formatter stringFromDate:theDate];
+    cell.detailTextLabel.text = timeString;
+}
+
+
+
+#pragma mark - Navigation
+-(void)segueToPreview
+{
+    [self performSegueWithIdentifier:@"toChatterProfile" sender:self];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"toChatterProfile"])
+    {
+        UserManager *userManager = [UserManager new];
+        [userManager fromMessaging:self.recipient];
+    }
 }
 @end
 //-(void)loadLocalChat
@@ -345,37 +406,3 @@ UITableViewDelegate>
 //        NSLog(@"convo between: %@ & %@ ID: %@\n chats:%@", userName, repName, self.recipient.objectId, text);
 //    }
 //}];
-
-//old code
-//recieve message
-//-(void)viewWillAppear:(BOOL)animated{
-//    [super viewWillAppear:animated];
-//
-//    PFQuery *query = [PFQuery queryWithClassName:@"Message"];
-//    [query whereKey:@"recipientsId" equalTo:[[PFUser currentUser] objectId]];
-//    [query orderByDescending:@"createdAt"];
-//    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error){
-//        if(error){
-//            NSLog(@"Error: %@ %@", error, [error userInfo]);
-//        } else {
-//            self.messages = objects;
-//            [self.tableView reloadData];
-//            NSLog(@"retrived %lu messages", self.messages.count);
-//        }
-//    }];
-//
-//}
-
-//    PFQuery *query = [PFQuery queryWithClassName:@"Message"];
-//    [query whereKey:@"recipientsId" equalTo:[[PFUser currentUser] objectId]];
-//    [query orderByDescending:@"createdAt"];
-//    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error){
-//        if(error){
-//            NSLog(@"Error: %@ %@", error, [error userInfo]);
-//        } else {
-//            self.messages = objects;
-//            [self.tableView reloadData];
-//            NSLog(@"retrived %lu messages", self.messages.count);
-//        }
-//    }];
-

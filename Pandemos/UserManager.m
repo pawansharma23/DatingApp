@@ -273,4 +273,16 @@ static NSString * const kParsePublic                       = @"publicProfile";
          }
      }];
 }
+
+-(void)fromMessaging:(User*)user
+{
+    if (user == [User currentUser])
+    {
+        [self.delegate didComeFromMessaging:NO withUser:user];
+    }
+    else
+    {
+        [self.delegate didComeFromMessaging:YES withUser:user];
+    }
+}
 @end

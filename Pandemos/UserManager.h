@@ -15,6 +15,8 @@
 
 @protocol UserManagerDelegate <NSObject>
 
+@required
+
 @optional
 -(void)didCreateUser:(PFUser*)user withError:(NSError*)error;
 -(void)didReceiveUserData:(NSArray*)data;
@@ -32,6 +34,7 @@
 -(void)failedToUpdateMatchRequest:(NSError*)error;
 -(void)didCreateDenyMatchRequest:(MatchRequest*)matchRequest;
 -(void)failedToCreateDenyMatchRequest:(NSError*)error;
+-(void)didComeFromMessaging:(BOOL)fromMessaging withUser:(User*)user;
 @end
 
 @interface UserManager : NSObject
@@ -52,4 +55,5 @@ typedef void (^resultBlockWithArray)(NSArray *user, NSError *error);
 -(void)createDenyMatchRequest:(User *)user withCompletion:(resultBlockWithMatchRequest)result;
 -(void)updateMatchRequest:(MatchRequest*)matchRequest withResponse:(NSString*)response withSuccess:(resultBlockWithUser)result;
 -(void)loadMatchedUsers:(resultBlockWithArray)result;
+-(void)fromMessaging:(User*)user;
 @end

@@ -10,10 +10,11 @@
 #import "MessagingCell.h"
 #import "MatchesCell.h"
 #import "MessageDetailViewCon.h"
-#import "UIColor+Pandemos.h"
 #import "User.h"
 #import "UserManager.h"
 #import "MessageManager.h"
+#import "UIColor+Pandemos.h"
+#import "UIImage+Additions.h"
 
 @interface MessagingViewController ()
 <UITableViewDataSource,
@@ -24,6 +25,7 @@ UICollectionViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
 
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *recipientUser;
@@ -33,8 +35,7 @@ UICollectionViewDataSource>
 @property (strong, nonatomic) MessageManager *messageManager;
 
 @property (strong, nonatomic) NSArray *matches;
-@property (strong, nonatomic) NSArray *rawMatches;
-@property (strong, nonatomic) NSMutableArray *chats;
+@property (strong, nonatomic) NSArray *chatters;
 
 @end
 
@@ -45,13 +46,17 @@ UICollectionViewDataSource>
     [super viewDidLoad];
 
     self.currentUser = [User currentUser];
-
+    self.messageManager = [MessageManager new];
+    
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     self.navigationItem.title = @"Messages";
 
+    self.backButton.tintColor = [UIColor mikeGray];
+    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(30.0, 30.0)];
+    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+
     self.matches = [NSArray new];
-    self.rawMatches = [NSArray new];
-    self.chats = [NSMutableArray new];
+    self.chatters = [NSArray new];
 
     self.tableView.delegate = self;
     self.collectionView.delegate = self;
@@ -68,7 +73,7 @@ UICollectionViewDataSource>
     [super viewDidAppear:animated];
 
     [self setupMatches];
-    [self setupChatters];
+    [self setupConversationList];
 }
 
 #pragma mark -- COLLECTION VIEW DELEGATE
@@ -82,6 +87,7 @@ UICollectionViewDataSource>
     static NSString *cellIdentifier = @"MatchesCell";
     MatchesCell *cell = (MatchesCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     User *user = [self.matches objectAtIndex:indexPath.item];
+
     [self setupCVCell:cell];
     cell.matchImage.image = [UIImage imageWithData:[user stringURLToData:[user.profileImages objectAtIndex:indexPath.row]]];
     cell.nameLabel.text = user.givenName;
@@ -92,7 +98,23 @@ UICollectionViewDataSource>
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.recipientUser = [self.messageManager.matches objectAtIndex:indexPath.row];
-    [self performSegueWithIdentifier:@"detailMessage" sender:self];
+
+    [self.messageManager chatExists:self.recipientUser withSuccess:^(BOOL success, NSError *error) {
+
+        if (success)
+        {
+            [self performSegueWithIdentifier:@"detailMessage" sender:self];
+            NSLog(@"chat object already exists");
+
+        }
+        else
+        {
+            [self.messageManager sendInitialMessage:self.recipientUser];
+            NSLog(@"first time chatters send initial message");
+            [self performSegueWithIdentifier:@"detailMessage" sender:self];
+        }
+    }];
+
 
 }
 
@@ -109,27 +131,23 @@ UICollectionViewDataSource>
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.chats.count;
+    return self.chatters.count;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessagingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    User *user = [self.chats objectAtIndex:indexPath.row];
-    [self setupImageForCell:cell];
-    //cell.userImage.image = [UIImage imageWithData:[user stringURLToData:[user.profileImages objectAtIndex:indexPath.row]]];
-    //cell.lastMessage.text = user.givenName;
-    //cell.lastMessageTime.text = user.work;
+    NSDictionary *chat = [self.chatters objectAtIndex:indexPath.row];
+    [self setupConversationCell:cell withUserData:chat];
 
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.chatter = [self.chats objectAtIndex:indexPath.row];
-    NSLog(@"%@", self.chatter);
-
-   // [self performSegueWithIdentifier:@"detailMessage" sender:self];
+    self.chatter = [self.chatters objectAtIndex:indexPath.row];
+    self.recipientUser = self.chatter[@"toUser"];
+    [self performSegueWithIdentifier:@"detailMessage" sender:self];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -138,33 +156,46 @@ UICollectionViewDataSource>
     mdvc.recipient = self.recipientUser;
 }
 
+- (IBAction)onBackButton:(UIBarButtonItem *)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 #pragma mark -- HELPERS
 -(void)setupMatches
 {
-    self.messageManager = [MessageManager new];
-    [self.messageManager queryForMatches:self.currentUser withResult:^(NSArray *result, NSError *error) {
+    [self.messageManager queryForMatches:^(NSArray *result, NSError *error) {
 
         self.matches = [result firstObject];
         [self.collectionView reloadData];
+        [self.collectionView layoutIfNeeded];
     }];
 }
 
--(void)setupChatters
+-(void)setupConversationList
 {
-    [self.messageManager queryForChats:self.currentUser withResult:^(NSArray *result, NSError *error) {
-
-        self.chats = [NSMutableArray arrayWithArray:result];
-        NSLog(@"chatter objects: %@", self.chats);
+    [self.messageManager queryForChats:^(NSArray *result, NSError *error) {
+        self.chatters = result;
         [self.tableView reloadData];
     }];
 }
 
--(void)setupImageForCell:(MessagingCell*)cell
+-(void)setupConversationCell:(MessagingCell*)cell withUserData:(NSDictionary*)chatter
 {
     cell.userImage.contentMode = UIViewContentModeScaleAspectFill;
     cell.userImage.layer.cornerRadius = 22.0 / 2.0f;
     cell.userImage.clipsToBounds = YES;
+    cell.lastMessage.text = chatter[@"repName"];
+    cell.lastMessageTime.text = @"last thing said from the Chat object ???";
+    cell.userImage.image = [UIImage imageWithData:[self stringURLToData:chatter[@"repImage"]]];
+
+    //data unique to individual chat
+//    NSDate *theDate = [user objectForKey:@"timestamp"];
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setDateFormat:@"HH:mm a"];
+//    NSString *timeString = [formatter stringFromDate:theDate];
+//    [user objectForKey:@"text"];
 }
 
 -(void)setupCVCell:(MatchesCell*)cell
@@ -172,6 +203,14 @@ UICollectionViewDataSource>
     cell.matchImage.contentMode = UIViewContentModeScaleAspectFill;
     cell.matchImage.layer.cornerRadius = 22.0 / 2.0f;
     cell.matchImage.clipsToBounds = YES;
+}
+
+-(NSData *)stringURLToData:(NSString *)urlString
+{
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+
+    return data;
 }
 @end
 
