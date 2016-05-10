@@ -391,11 +391,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="1Cb-Um-MZ5">
                         <barButtonItem key="leftBarButtonItem" title="Settings" id="sUH-xY-Owh">
+                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="Yjv-8l-uTW" kind="show" id="rEG-Lh-b0R"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Matches" id="LFs-Do-q6O">
+                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="H9v-cu-nYH" kind="show" id="NaH-kV-mIV"/>
                             </connections>

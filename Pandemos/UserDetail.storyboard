@@ -268,10 +268,17 @@
                         </variation>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="7ga-hL-a9r"/>
+                    <navigationItem key="navigationItem" id="V9u-tw-JXQ">
+                        <barButtonItem key="leftBarButtonItem" id="LFI-S1-dQL">
+                            <connections>
+                                <action selector="onCloseButton:" destination="13p-4F-9NV" id="TyQ-BH-qmB"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="closeBarButton" destination="LFI-S1-dQL" id="7Eg-SE-EJB"/>
                         <outlet property="educationLabel" destination="0PO-rA-6cp" id="tsd-Dg-uWI"/>
                         <outlet property="fullAboutMe" destination="pIe-hu-1RV" id="UQD-nW-WXC"/>
                         <outlet property="fullDescView" destination="kVr-jf-Qps" id="whM-Va-Zis"/>

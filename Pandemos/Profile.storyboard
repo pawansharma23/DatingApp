@@ -387,7 +387,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="5Sc-4F-rvF">
-                        <barButtonItem key="leftBarButtonItem" title="Back" id="qIy-h0-QPu">
+                        <barButtonItem key="leftBarButtonItem" id="qIy-h0-QPu">
                             <connections>
                                 <action selector="onBackButton:" destination="z3C-Zz-vhA" id="FBq-ou-Xvd"/>
                             </connections>
@@ -395,6 +395,7 @@
                         <barButtonItem key="rightBarButtonItem" title="Preview" id="WDf-5j-KJz">
                             <connections>
                                 <action selector="onPreviewTapped:" destination="z3C-Zz-vhA" id="fZ1-Dj-IHw"/>
+                                <segue destination="uSV-Of-GwX" kind="presentation" id="V97-j8-UH5"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -420,7 +421,6 @@
                         <outlet property="shareButton" destination="Xfh-U2-BrA" id="z8e-VA-7tX"/>
                         <outlet property="textViewAboutMe" destination="ylY-XR-z1c" id="KLc-xn-IcQ"/>
                         <outlet property="womenButton" destination="R3R-3P-8eX" id="9mW-nv-shn"/>
-                        <segue destination="uSV-Of-GwX" kind="presentation" identifier="fromCurrentUser" id="1bM-bX-DiR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="He5-uW-Vol" userLabel="First Responder" sceneMemberID="firstResponder"/>

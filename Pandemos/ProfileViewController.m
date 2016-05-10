@@ -16,6 +16,7 @@
 #import "User.h"
 #import "FacebookManager.h"
 #import "UserManager.h"
+#import "UIImage+Additions.h"
 
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
@@ -76,44 +77,47 @@ UserManagerDelegate>
 
     if (self.currentUser)
     {
-    self.navigationItem.title = @"Settings";
-    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
+        self.navigationItem.title = @"Settings";
+        self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
+        self.profileImages = [NSMutableArray new];
 
-    self.profileImages = [NSMutableArray new];
 
-    //retrieve and pass segue properties
-    self.locationLabel.text = self.cityAndState;
+        UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(30.0, 30.0)];
+        [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+        self.navigationItem.leftBarButtonItem.tintColor = [UIColor darkGrayColor];
+        //retrieve and pass segue properties
+        self.locationLabel.text = self.cityAndState;
 
-    //self.automaticallyAdjustsScrollViewInsets = NO;
+        //self.automaticallyAdjustsScrollViewInsets = NO;
 
-    //delegation, initialization
-    self.scrollView.delegate = self;
-    self.collectionView.delegate = self;
-    self.textViewAboutMe.delegate = self;
+        //delegation, initialization
+        self.scrollView.delegate = self;
+        self.collectionView.delegate = self;
+        self.textViewAboutMe.delegate = self;
 
-    //collection view
-    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-    self.collectionView.layer.borderWidth = 1.0;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
-    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
-    [flowlayouts setItemSize:CGSizeMake(100, 100)];
+        //collection view
+        self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
+        self.collectionView.layer.borderWidth = 1.0;
+        self.collectionView.backgroundColor = [UIColor whiteColor];
+        LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
+        [flowlayouts setItemSize:CGSizeMake(100, 100)];
 
-    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-    flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
-    [self.collectionView setCollectionViewLayout:flowlayouts];
-    self.collectionView.backgroundColor = [UIColor whiteColor];
+        [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
+        flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
+        [self.collectionView setCollectionViewLayout:flowlayouts];
+        self.collectionView.backgroundColor = [UIColor whiteColor];
 
-    [UIButton setUpButton:self.menButton];
-    [UIButton setUpButton:self.womenButton];
-    [UIButton setUpButton:self.bothButton];
-    [UIButton setUpButton:self.logoutButton];
-    [UIButton setUpButton:self.deleteButton];
-    [UIButton setUpButton:self.shareButton];
-    [UIButton setUpButton:self.feedbackButton];
+        [UIButton setUpButton:self.menButton];
+        [UIButton setUpButton:self.womenButton];
+        [UIButton setUpButton:self.bothButton];
+        [UIButton setUpButton:self.logoutButton];
+        [UIButton setUpButton:self.deleteButton];
+        [UIButton setUpButton:self.shareButton];
+        [UIButton setUpButton:self.feedbackButton];
 
-    self.textViewAboutMe.layer.cornerRadius = 10;
-    [self.textViewAboutMe.layer setBorderWidth:1.0];
-    [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
+        self.textViewAboutMe.layer.cornerRadius = 10;
+        [self.textViewAboutMe.layer setBorderWidth:1.0];
+        [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
     }
 }
 
@@ -418,11 +422,7 @@ UserManagerDelegate>
     NSLog(@"failed to fetch profile images: %@", error);
 }
 #pragma mark -- NAV
-- (IBAction)onPreviewTapped:(UIBarButtonItem *)sender
-{
-    [self.userManager fromMessaging:self.currentUser];
-    [self performSegueWithIdentifier:@"fromCurrentUser" sender:self];
-}
+
 
 #pragma mark -- HELPERS
 -(void)setupManagersProfileVC

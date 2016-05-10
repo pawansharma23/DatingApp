@@ -1,12 +1,12 @@
 //
-//  PreviewUserProfileVC.m
+//  MessagerProfileVC.m
 //  Pandemos
 //
-//  Created by Michael Sevy on 2/1/16.
+//  Created by Michael Sevy on 5/10/16.
 //  Copyright © 2016 Michael Sevy. All rights reserved.
 //
 
-#import "PreviewUserProfileVC.h"
+#import "MessagerProfileVC.h"
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -20,7 +20,7 @@
 #import "User.h"
 #import "UserManager.h"
 
-@interface PreviewUserProfileVC ()<
+@interface MessagerProfileVC ()<
 UIGestureRecognizerDelegate,
 UserManagerDelegate>
 
@@ -54,7 +54,7 @@ UserManagerDelegate>
 @property int count;
 @end
 
-@implementation PreviewUserProfileVC
+@implementation MessagerProfileVC
 
 - (void)viewDidLoad
 {
@@ -67,6 +67,8 @@ UserManagerDelegate>
     self.fullDescView.hidden = YES;
     self.profileImages = [NSMutableArray new];
 
+    NSLog(@"messager: %@", self.messagingUser.givenName);
+
     [self setupManagersProfileVCForCurrentUser];
 
     self.userInfoView.layer.cornerRadius = 10;
@@ -78,13 +80,13 @@ UserManagerDelegate>
     [UIButton setUpButton:self.image5Indicator];
     [UIButton setUpButton:self.image6Indicator];
 
-    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(30.0, 30.0)];
+    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Delete-100"] scaledToSize:CGSizeMake(30.0, 30.0)];
     [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
     self.closeBarButton.tintColor = [UIColor darkGrayColor];
-     //to get your location
+    //to get your location
     //PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
-//  using age object instead
-//    NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
+    //  using age object instead
+    //    NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -143,7 +145,7 @@ UserManagerDelegate>
     if (direction == UISwipeGestureRecognizerDirectionUp)
     {
         NSLog(@"swipe up");
-    
+
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
             self.count++;
@@ -167,9 +169,9 @@ UserManagerDelegate>
                 [self lastImageBringUpDesciptionView];
             }
         } completion:^(BOOL finished)
-        {
+         {
 
-        }];
+         }];
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 260317B91CE2338800C37C67 /* MessagerProfileVC.m */; };
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
 		2653C0361CD7859B00DDBD65 /* MatchesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0351CD7859B00DDBD65 /* MatchesCell.m */; };
@@ -86,6 +87,8 @@
 
 /* Begin PBXFileReference section */
 		06C994192A4EB211C11A44D2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		260317B81CE2338800C37C67 /* MessagerProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagerProfileVC.h; sourceTree = "<group>"; };
+		260317B91CE2338800C37C67 /* MessagerProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagerProfileVC.m; sourceTree = "<group>"; };
 		260799051C29CB4600B364C8 /* RangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeSlider.h; sourceTree = "<group>"; };
 		260799061C29CB4600B364C8 /* RangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RangeSlider.m; sourceTree = "<group>"; };
 		260799081C2B1C3500B364C8 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -224,6 +227,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		260317BB1CE2339F00C37C67 /* MessagerProfile */ = {
+			isa = PBXGroup;
+			children = (
+				260317B81CE2338800C37C67 /* MessagerProfileVC.h */,
+				260317B91CE2338800C37C67 /* MessagerProfileVC.m */,
+			);
+			name = MessagerProfile;
+			sourceTree = "<group>";
+		};
 		2614A7031CA1DBF700D6F6AA /* Matches */ = {
 			isa = PBXGroup;
 			children = (
@@ -543,6 +555,7 @@
 		26F22BF31C6FAEFF00D86343 /* Messaging */ = {
 			isa = PBXGroup;
 			children = (
+				260317BB1CE2339F00C37C67 /* MessagerProfile */,
 				2614A7081CA1DF9F00D6F6AA /* MessagingDetail */,
 				2614A7091CA1DFAA00D6F6AA /* Messaging */,
 			);
@@ -783,6 +796,7 @@
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26C70EC11CA5B18F00E9B98F /* MessageDetailCell.m in Sources */,
 				26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */,
+				260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
 				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,

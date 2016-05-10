@@ -17,21 +17,20 @@
 #import "MessageManager.h"
 #import "UserManager.h"
 #import "UIImage+Additions.h"
+#import "MessagerProfileVC.h"
 
 #define TABBAR_HEIGHT 49.0f
 #define TEXTFIELD_HEIGHT 70.0f
 #define MAX_ENTRIES_LOADED 50
 
 @interface MessageDetailViewCon ()<UITextFieldDelegate,
-//UICollectionViewDataSource,
-//UICollectionViewDelegate
 UITableViewDataSource,
 UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
-//@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardBarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backBarButton;
 @property BOOL reloading;
 @property (strong, nonatomic) NSMutableArray *chatData;
 @property (strong, nonatomic) NSDictionary *lastObject;
@@ -51,8 +50,6 @@ UITableViewDelegate>
 {
     [super viewDidLoad];
 
-    NSLog(@"chatter: %@", self.recipient);
-
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
     self.lastObject = [NSDictionary new];
@@ -60,12 +57,21 @@ UITableViewDelegate>
 
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     self.navigationController.navigationBar.backgroundColor = [UIColor rubyRed];
-    
+
+//    UIImage *moreButton = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    //[self.navigationItem.rightBarButtonItem setImage:moreButton];
+    //self.navigationItem.rightBarButtonItem.tintColor = [UIColor darkGrayColor];
+    [self.forwardBarButton setImage:[UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)]];
+    self.forwardBarButton.tintColor = [UIColor darkGrayColor];
+
+    [self.backBarButton setImage:[UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(25.0, 25.0)]];
+    self.backBarButton.tintColor = [UIColor darkGrayColor];
+
     _textField.delegate = self;
     _textField.clearButtonMode = UITextFieldViewModeWhileEditing;
 
     self.tableView.delegate = self;
-
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
 //    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
 //    [refreshControl addTarget:self action:@selector(startRefresh:)
@@ -78,9 +84,6 @@ UITableViewDelegate>
     self.chatData = [NSMutableArray new];
     [self loadChat];
     [self loadChatWithImage];
-
-    UIBarButtonItem *moreButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"More-100"] scaledToSize:CGSizeMake(25.0, 25.0)] style:UIBarButtonItemStylePlain target:self action:@selector(segueToPreview)];
-    self.navigationItem.rightBarButtonItem = moreButton;
 }
 
 - (void)viewDidUnload
@@ -137,7 +140,6 @@ UITableViewDelegate>
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
     UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier: @"Cell"];
     NSDictionary *chatText = [self.chatData objectAtIndex:indexPath.row];
     [self setupImageInCell:cell];
@@ -289,21 +291,11 @@ UITableViewDelegate>
     cell.detailTextLabel.text = timeString;
 }
 
-
-
 #pragma mark - Navigation
--(void)segueToPreview
-{
-    [self performSegueWithIdentifier:@"toChatterProfile" sender:self];
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"toChatterProfile"])
-    {
-        UserManager *userManager = [UserManager new];
-        [userManager fromMessaging:self.recipient];
-    }
+    MessagerProfileVC *mpvc = [segue destinationViewController];
+    mpvc.messagingUser = self.recipient;
 }
 @end
 //-(void)loadLocalChat
