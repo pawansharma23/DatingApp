@@ -22,6 +22,7 @@
 <MFMailComposeViewControllerDelegate,
 UICollectionViewDataSource,
 UICollectionViewDelegate,
+UICollectionViewDelegateFlowLayout,
 UITextViewDelegate,
 UIScrollViewDelegate,
 UICollectionViewDelegateFlowLayout,
@@ -77,35 +78,22 @@ UserManagerDelegate>
 
     if (self.currentUser)
     {
+        self.locationLabel.text = self.cityAndState;
+
         self.navigationItem.title = @"Settings";
         self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
         self.profileImages = [NSMutableArray new];
 
-
-        UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(30.0, 30.0)];
+        UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(25.0, 25.0)];
         [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
         self.navigationItem.leftBarButtonItem.tintColor = [UIColor darkGrayColor];
-        //retrieve and pass segue properties
-        self.locationLabel.text = self.cityAndState;
 
         //self.automaticallyAdjustsScrollViewInsets = NO;
-
-        //delegation, initialization
         self.scrollView.delegate = self;
         self.collectionView.delegate = self;
         self.textViewAboutMe.delegate = self;
 
-        //collection view
-        self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-        self.collectionView.layer.borderWidth = 1.0;
-        self.collectionView.backgroundColor = [UIColor whiteColor];
-        LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
-        [flowlayouts setItemSize:CGSizeMake(100, 100)];
-
-        [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-        flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
-        [self.collectionView setCollectionViewLayout:flowlayouts];
-        self.collectionView.backgroundColor = [UIColor whiteColor];
+        [self setFlowLayout];
 
         [UIButton setUpButton:self.menButton];
         [UIButton setUpButton:self.womenButton];
@@ -120,6 +108,27 @@ UserManagerDelegate>
         [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
     }
 }
+
+//- (NSArray <UICollectionViewLayoutAttributes*> *) layoutAttributesForElementsInRect:(CGRect)rect
+//{
+//    NSArray *answer = [super layoutAttributesForElementsInRect:rect];
+//
+//    for(int i = 1; i < [answer count]; ++i)
+//    {
+//        UICollectionViewLayoutAttributes *currentLayoutAttributes = answer[i];
+//        UICollectionViewLayoutAttributes *prevLayoutAttributes = answer[i - 1];
+//        NSInteger maximumSpacing = 4;
+//        NSInteger origin = CGRectGetMaxX(prevLayoutAttributes.frame);
+//
+//        if(origin + maximumSpacing + currentLayoutAttributes.frame.size.width < self.collectionView.contentSize.width)
+//        {
+//            CGRect frame = currentLayoutAttributes.frame;
+//            frame.origin.x = origin + maximumSpacing;
+//            currentLayoutAttributes.frame = frame;
+//        }
+//    }
+//    return answer;
+//}
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -293,7 +302,6 @@ UserManagerDelegate>
     }];
 }
 
-
 //6)Puublic Profile
 - (IBAction)publicProfileSwitch:(UISwitch *)sender
 {
@@ -425,6 +433,25 @@ UserManagerDelegate>
 
 
 #pragma mark -- HELPERS
+-(void)setFlowLayout
+{
+
+    UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
+
+    layout.minimumInteritemSpacing = 10;
+    layout.minimumLineSpacing = 2;
+
+    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
+    [flowlayouts setItemSize:CGSizeMake(100, 100)];
+    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
+    flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
+    [self.collectionView setCollectionViewLayout:flowlayouts];
+
+    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
+    self.collectionView.layer.borderWidth = 1.0;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+}
+
 -(void)setupManagersProfileVC
 {
     self.userManager = [UserManager new];

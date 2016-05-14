@@ -36,6 +36,7 @@ UICollectionViewDataSource>
 
 @property (strong, nonatomic) NSArray *matches;
 @property (strong, nonatomic) NSArray *chatters;
+@property (strong, nonatomic) NSArray *lastLines;
 
 @end
 
@@ -57,6 +58,7 @@ UICollectionViewDataSource>
 
     self.matches = [NSArray new];
     self.chatters = [NSArray new];
+    self.lastLines = [NSArray new];
 
     self.tableView.delegate = self;
     self.collectionView.delegate = self;
@@ -74,6 +76,7 @@ UICollectionViewDataSource>
 
     [self setupMatches];
     [self setupConversationList];
+    [self setupChatters];
 }
 
 #pragma mark -- COLLECTION VIEW DELEGATE
@@ -89,20 +92,22 @@ UICollectionViewDataSource>
     User *user = [self.matches objectAtIndex:indexPath.item];
 
     [self setupCVCell:cell];
-    cell.matchImage.image = [UIImage imageWithData:[user stringURLToData:[user.profileImages objectAtIndex:indexPath.row]]];
-    cell.nameLabel.text = user.givenName;
+    cell.matchImage.image = [UIImage imageWithData:[user stringURLToData:user.profileImages.firstObject]];
+    cell.nameLabel.text = user[@"givenName"];
 
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.recipientUser = [self.messageManager.matches objectAtIndex:indexPath.row];
+    NSLog(@"index Path: %d", (int)indexPath.row);
+    self.recipientUser = [self.matches objectAtIndex:indexPath.row];
 
-    [self.messageManager chatExists:self.recipientUser withSuccess:^(BOOL success, NSError *error) {
+    [self.messageManager queryIfChatExists:self.recipientUser currentUser:self.currentUser withSuccess:^(BOOL success, NSError *error) {
 
         if (success)
         {
+            //add code to switch PFRelation object text
             [self performSegueWithIdentifier:@"detailMessage" sender:self];
             NSLog(@"chat object already exists");
 
@@ -167,15 +172,34 @@ UICollectionViewDataSource>
 {
     [self.messageManager queryForMatches:^(NSArray *result, NSError *error) {
 
-        self.matches = [result firstObject];
+        self.matches = result;
         [self.collectionView reloadData];
-        [self.collectionView layoutIfNeeded];
     }];
 }
 
 -(void)setupConversationList
 {
+    //every chat object, filtered to take out blank string chats
     [self.messageManager queryForChats:^(NSArray *result, NSError *error) {
+
+        //the chatter object shuld query the [PFUser query] PFRelation with the updated status string from line 108
+
+        for (NSDictionary *dict in result)
+        {
+            //only grabbing last object in result array
+            self.lastLines = dict[@"text"];
+
+        }
+
+        [self.tableView reloadData];
+    }];
+}
+
+-(void)setupChatters
+{
+    //only the first send chat to get the user data from for the tableview
+    [self.messageManager queryForChattersImage:^(NSArray *result, NSError *error) {
+
         self.chatters = result;
         [self.tableView reloadData];
     }];
@@ -187,7 +211,7 @@ UICollectionViewDataSource>
     cell.userImage.layer.cornerRadius = 22.0 / 2.0f;
     cell.userImage.clipsToBounds = YES;
     cell.lastMessage.text = chatter[@"repName"];
-    cell.lastMessageTime.text = @"last thing said from the Chat object ???";
+    cell.lastMessageTime.text = chatter[@"text"];
     cell.userImage.image = [UIImage imageWithData:[self stringURLToData:chatter[@"repImage"]]];
 
     //data unique to individual chat
@@ -200,9 +224,9 @@ UICollectionViewDataSource>
 
 -(void)setupCVCell:(MatchesCell*)cell
 {
-    cell.matchImage.contentMode = UIViewContentModeScaleAspectFill;
+    //cell.matchImage.contentMode = UIViewContentModeScaleAspectFill;
     cell.matchImage.layer.cornerRadius = 22.0 / 2.0f;
-    cell.matchImage.clipsToBounds = YES;
+    //cell.matchImage.clipsToBounds = YES;
 }
 
 -(NSData *)stringURLToData:(NSString *)urlString

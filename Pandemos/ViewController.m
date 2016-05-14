@@ -193,6 +193,8 @@ MDCSwipeToChooseDelegate>
     else
     {
         NSLog(@"no user currently logged in");
+//        Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: 'Receiver (<PFLoginViewController: 0x7f8772067800>) has no segue with identifier 'FacebookLogin''
+        //[self performSegueWithIdentifier:@"FacebookLogin" sender:self];
     }
 }
 
@@ -419,6 +421,8 @@ MDCSwipeToChooseDelegate>
 }
 -(void)didUpdateMatchRequest:(User *)user
 {
+
+    NSLog(@"to user: %@", user.givenName);
 //    [self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
 //        NSLog(@"convo object: %@", conversation);
 //    }];
@@ -456,7 +460,9 @@ MDCSwipeToChooseDelegate>
     User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
     self.currentMatch.profileImages = matchedUser[@"profileImages"];
     [self loadIndicatorLights:(int)self.currentMatch.profileImages.count];
-    self.image1Indicator.backgroundColor = [UIColor rubyRed];
+    //self.image1Indicator.backgroundColor = [UIColor rubyRed];
+        //which indicator light will light up
+        [self currentImageLightUpIndicatorLight:0];
 
     self.userImage.image = [UIImage imageWithData:[self imageData:self.currentMatch.profileImages.firstObject]];
     self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", matchedUser.givenName, matchedUser.age];
@@ -465,9 +471,13 @@ MDCSwipeToChooseDelegate>
 
     self.count = 0;
     }
-    else
+    else if(self.count == self.rawUserMatchData.count)
     {
         NSLog(@"last match");
+    }
+    else
+    {
+        NSLog(@"other count");
     }
 }
 

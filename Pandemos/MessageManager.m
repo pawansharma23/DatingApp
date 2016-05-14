@@ -163,11 +163,11 @@
     }];
 }
 
--(void)chatExists:(User*)recipient withSuccess:(resultBlockWithSuccess)success
+-(void)queryIfChatExists:(User*)recipient currentUser:(User*)user withSuccess:(resultBlockWithSuccess)success
 {
     PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
     [query whereKey:@"toUser" equalTo:recipient];
-    [query whereKey:@"fromUser" equalTo:[User currentUser]];
+    [query whereKey:@"fromUser" equalTo:user];
 
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
 
@@ -175,7 +175,6 @@
         {
             NSLog(@"chats: %d", (int)objects.count);
             success(YES, nil);
-
         }
         else
         {
@@ -190,7 +189,7 @@
     PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
     [query whereKeyExists:@"toUser"];
-    [query whereKeyExists:@"repImage"];
+    [query whereKeyExists:@"text"];
     [query orderByDescending:@"updatedAt"];
 
     query.cachePolicy = kPFCachePolicyCacheThenNetwork;
@@ -210,11 +209,11 @@
     }];
 }
 
--(void)queryForChat:(User*)recipient andConvo:(resultBlockWithConversations)conversation
+-(void)queryForChattersImage:(resultBlockWithConversations)conversation
 {
     PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
-    [query whereKey:@"toUser" equalTo:recipient];
+    [query whereKeyExists:@"toUser"];
     [query whereKeyExists:@"repImage"];
     [query orderByDescending:@"updatedAt"];
 
@@ -263,6 +262,7 @@
 {
     PFRelation *relation = [[User currentUser] relationForKey:@"match"];
     PFQuery *query = [relation query];
+    [query whereKey:@"objectId" notEqualTo:[User currentUser].objectId];
     [query orderByDescending:@"updatedAt"];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 
@@ -272,8 +272,8 @@
         }
         else
         {
-            NSArray *userObjects = [UserBuilder parsedUserData:objects withError:error];
-            matches(userObjects, nil);
+            //NSArray *userObjects = [UserBuilder parsedUserData:objects withError:error];
+            matches(objects, nil);
         }
     }];
 }

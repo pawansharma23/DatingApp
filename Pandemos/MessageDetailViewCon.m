@@ -31,6 +31,7 @@ UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardBarButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backBarButton;
+@property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
 @property BOOL reloading;
 @property (strong, nonatomic) NSMutableArray *chatData;
 @property (strong, nonatomic) NSDictionary *lastObject;
@@ -59,13 +60,8 @@ UITableViewDelegate>
     self.navigationController.navigationBar.backgroundColor = [UIColor rubyRed];
 
 //    UIImage *moreButton = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
-    //[self.navigationItem.rightBarButtonItem setImage:moreButton];
-    //self.navigationItem.rightBarButtonItem.tintColor = [UIColor darkGrayColor];
-    [self.forwardBarButton setImage:[UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)]];
-    self.forwardBarButton.tintColor = [UIColor darkGrayColor];
+//    [self.navigationController.navigationItem.rightBarButtonItem setImage:moreButton];
 
-    [self.backBarButton setImage:[UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(25.0, 25.0)]];
-    self.backBarButton.tintColor = [UIColor darkGrayColor];
 
     _textField.delegate = self;
     _textField.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -101,11 +97,9 @@ UITableViewDelegate>
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     NSLog(@"text entry: %@", textField.text);
-    //[textField resignFirstResponder];
 
     if (textField.text.length > 0)
     {
-        // updating the table immediately
         NSArray *keys = [NSArray arrayWithObjects:@"text", @"userName", @"date", nil];
         NSArray *objects = [NSArray arrayWithObjects:textField.text, self.currentUser, [NSDate date], nil];
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
@@ -119,11 +113,11 @@ UITableViewDelegate>
         [self.tableView endUpdates];
         [self.tableView reloadData];
 
-        // send message in Parse
         [self.messageManager sendMessage:self.currentUser toUser:self.recipient withText:textField.text];
 
         //reset textField
         textField.text = @"";
+        [textField resignFirstResponder];
         return YES;
     }
 
@@ -251,7 +245,7 @@ UITableViewDelegate>
 
 -(void)loadChatWithImage
 {
-    [self.messageManager queryForChat:self.recipient andConvo:^(NSArray *result, NSError *error) {
+    [self.messageManager queryForChats:^(NSArray *result, NSError *error) {
 
         self.lastObject = result.lastObject;
         self.navigationItem.title = self.lastObject[@"repName"];
@@ -276,19 +270,28 @@ UITableViewDelegate>
 
 -(void)setupCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
 {
-    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    CGSize size = CGSizeMake(10.0, 10.0);
-    cell.textLabel.frame = CGRectMake(75, 14, size.width +20, size.height + 20);
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
-    cell.textLabel.text = chatDict[@"text"];
-    [cell.textLabel sizeToFit];
+    NSString *text = chatDict[@"text"];
 
-    //NSDate *theDate = [[_chatData objectAtIndex:row] objectForKey:@"timestamp"];
-    NSDate *theDate = [[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"HH:mm a"];
-    NSString *timeString = [formatter stringFromDate:theDate];
-    cell.detailTextLabel.text = timeString;
+    if (text.length == 0)
+    {
+        [_chatData removeObjectAtIndex:indexPath.row];
+        [self.tableView reloadData];
+    }
+    else
+    {
+        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        CGSize size = CGSizeMake(10.0, 10.0);
+        cell.textLabel.frame = CGRectMake(75, 14, size.width +20, size.height + 20);
+        cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
+        cell.textLabel.text = chatDict[@"text"];
+        [cell.textLabel sizeToFit];
+
+        NSDate *theDate = [[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"HH:mm a"];
+        NSString *timeString = [formatter stringFromDate:theDate];
+        cell.detailTextLabel.text = timeString;
+    }
 }
 
 #pragma mark - Navigation
@@ -297,6 +300,16 @@ UITableViewDelegate>
     MessagerProfileVC *mpvc = [segue destinationViewController];
     mpvc.messagingUser = self.recipient;
 }
+
+//-(void) viewWillDisappear:(BOOL)animated
+//{
+//    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound)
+//    {
+//        [self.navigationController popViewControllerAnimated:NO];
+//    }
+//
+//    [super viewWillDisappear:animated];
+//}
 @end
 //-(void)loadLocalChat
 //{

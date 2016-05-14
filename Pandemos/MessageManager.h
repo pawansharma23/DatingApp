@@ -24,10 +24,10 @@ typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 -(void)launchApp;
 -(void)sendInitialMessage:(User*)recipient;
 -(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text;
--(void)chatExists:(User*)recipient withSuccess:(resultBlockWithSuccess)success;
+-(void)queryIfChatExists:(User*)recipient currentUser:(User*)user withSuccess:(resultBlockWithSuccess)success;
 -(void)deleteConversation:(LYRConversation*)conversation withResult:(resultBlockWithSuccess)result;
 -(void)queryForChats:(resultBlockWithConversations)conversations;
 -(void)queryForMatches:(resultBlockWithMatches)matches;
--(void)queryForChat:(User*)recipient andConvo:(resultBlockWithConversations)conversation;
+-(void)queryForChattersImage:(resultBlockWithConversations)conversation;
 -(void)queryForChatTextAndTimeOnly:(User*)recipient andConvo:(resultBlockWithConversations)conversation;
 @end
