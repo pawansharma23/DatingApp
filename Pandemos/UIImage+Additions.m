@@ -7,6 +7,10 @@
 //
 
 #import "UIImage+Additions.h"
+#import <QuartzCore/QuartzCore.h>
+
+#define pi 3.14159265359
+#define DEGREES_TO_RADIANS(degrees) ((pi * degrees) / 180)
 
 @implementation UIImage (Additions)
 
@@ -49,5 +53,30 @@
     NSURL *url = [NSURL URLWithString:image];
     NSData *data = [NSData dataWithContentsOfURL:url];
     return [UIImage imageWithData:data];
+}
+
++(UIImage *)imageAsACircle:(UIImageView*)view radius:(CGFloat)radius startAngle:(CGFloat)startAngle endEndle:(CGFloat)endAngle withImageStr:(NSString*)string
+{
+    CGPoint center = CGPointMake(view.frame.size.width/2, view.frame.size.height/2);
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:center];
+    [path addArcWithCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(startAngle) endAngle:DEGREES_TO_RADIANS(endAngle) clockwise:YES];
+    [path closePath];
+
+    CAShapeLayer *layer = [CAShapeLayer layer];
+    layer.frame = view.bounds;
+    layer.path = path.CGPath;
+
+    view.image = [UIImage imageWithString:string];
+
+    //layer.fillColor = [UIColor color]
+    UIGraphicsBeginImageContextWithOptions(layer.frame.size, NO, 0);
+
+    [layer renderInContext:UIGraphicsGetCurrentContext()];
+    //UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+
+    return view.image;
 }
 @end

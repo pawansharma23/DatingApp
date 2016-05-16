@@ -195,7 +195,7 @@ UserManagerDelegate>
     static NSString *cellIdentifier = @"SettingCell";
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     NSString *photoString = [self.profileImages objectAtIndex:indexPath.item];
-    cell.userImage.image = [UIImage imageWithData:[self imageData:photoString]];
+    cell.userImage.image = [UIImage imageWithString:photoString];
 
     return cell;
 }
@@ -516,13 +516,6 @@ UserManagerDelegate>
     {
         NSLog(@"sex Pref data not working");
     }
-}
-
--(NSData *)imageData:(NSString *)imageString
-{
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
 }
 
 -(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2

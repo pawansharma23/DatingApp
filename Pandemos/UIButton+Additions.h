@@ -16,4 +16,5 @@
 +(void)changeOtherButton:(UIButton *)button;
 +(void)acceptButton:(UIButton *)button;
 +(void)denyButton:(UIButton *)button;
++(UIButton*)roundButtonEdges:(UIButton *)button radius:(CGFloat)radius startAngle:(CGFloat)startAngle endEndle:(CGFloat)endAngle;
 @end

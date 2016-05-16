@@ -73,12 +73,12 @@ UserManagerDelegate>
 
     self.userInfoView.layer.cornerRadius = 10;
     [UIImageView setupFullSizedImage:self.userImage];
-    [UIButton setUpButton:self.image1Indicator];
-    [UIButton setUpButton:self.image2Indicator];
-    [UIButton setUpButton:self.image3Indicator];
-    [UIButton setUpButton:self.image4Indicator];
-    [UIButton setUpButton:self.image5Indicator];
-    [UIButton setUpButton:self.image6Indicator];
+//    [UIButton setUpButton:self.image1Indicator];
+//    [UIButton setUpButton:self.image2Indicator];
+//    [UIButton setUpButton:self.image3Indicator];
+//    [UIButton setUpButton:self.image4Indicator];
+//    [UIButton setUpButton:self.image5Indicator];
+//    [UIButton setUpButton:self.image6Indicator];
 
     UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Delete-100"] scaledToSize:CGSizeMake(30.0, 30.0)];
     [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
@@ -153,7 +153,7 @@ UserManagerDelegate>
             if (self.count < self.profileImages.count - 1)
             {
                 //display image
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
+                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
                 //indicator light to reflect image we are on
                 [self setLightForImage:self.count];
                 self.fullDescView.hidden = YES;
@@ -163,7 +163,7 @@ UserManagerDelegate>
             else if (self.count == self.profileImages.count - 1)
             {
                 //self.fullDescView.hidden = YES;
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
+                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
                 NSLog(@"last image, count: %zd", self.count);
                 [self setLightForImage:self.count];
                 [self lastImageBringUpDesciptionView];
@@ -264,78 +264,78 @@ UserManagerDelegate>
             self.image2Indicator.hidden = YES;
             self.image1Indicator.hidden = YES;
             break;
-        case 1:
-            [UIButton setUpButton:self.image1Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image3Indicator.hidden = YES;
-            self.image2Indicator.hidden = YES;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 2:
-            [UIButton setUpButton:self.image1Indicator];
-            [UIButton setUpButton:self.image2Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image3Indicator.hidden = YES;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 3:
-            [UIButton setUpButton:self.image1Indicator];
-            [UIButton setUpButton:self.image2Indicator];
-            [UIButton setUpButton:self.image3Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 4:
-            [UIButton setUpButton:self.image1Indicator];
-            [UIButton setUpButton:self.image2Indicator];
-            [UIButton setUpButton:self.image3Indicator];
-            [UIButton setUpButton:self.image4Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = NO;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 5:
-            [UIButton setUpButton:self.image1Indicator];
-            [UIButton setUpButton:self.image2Indicator];
-            [UIButton setUpButton:self.image3Indicator];
-            [UIButton setUpButton:self.image4Indicator];
-            [UIButton setUpButton:self.image5Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = NO;
-            self.image4Indicator.hidden = NO;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 6:
-            [UIButton setUpButton:self.image1Indicator];
-            [UIButton setUpButton:self.image2Indicator];
-            [UIButton setUpButton:self.image3Indicator];
-            [UIButton setUpButton:self.image4Indicator];
-            [UIButton setUpButton:self.image5Indicator];
-            [UIButton setUpButton:self.image6Indicator];
-            self.image6Indicator.hidden = NO;
-            self.image5Indicator.hidden = NO;
-            self.image4Indicator.hidden = NO;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        default:
-            NSLog(@"indicator light error");
-            break;
+//        case 1:
+//            [UIButton setUpButton:self.image1Indicator];
+//            self.image6Indicator.hidden = YES;
+//            self.image5Indicator.hidden = YES;
+//            self.image4Indicator.hidden = YES;
+//            self.image3Indicator.hidden = YES;
+//            self.image2Indicator.hidden = YES;
+//            self.image1Indicator.hidden = NO;
+//            break;
+//        case 2:
+//            [UIButton setUpButton:self.image1Indicator];
+//            [UIButton setUpButton:self.image2Indicator];
+//            self.image6Indicator.hidden = YES;
+//            self.image5Indicator.hidden = YES;
+//            self.image4Indicator.hidden = YES;
+//            self.image3Indicator.hidden = YES;
+//            self.image2Indicator.hidden = NO;
+//            self.image1Indicator.hidden = NO;
+//            break;
+//        case 3:
+//            [UIButton setUpButton:self.image1Indicator];
+//            [UIButton setUpButton:self.image2Indicator];
+//            [UIButton setUpButton:self.image3Indicator];
+//            self.image6Indicator.hidden = YES;
+//            self.image5Indicator.hidden = YES;
+//            self.image4Indicator.hidden = YES;
+//            self.image3Indicator.hidden = NO;
+//            self.image2Indicator.hidden = NO;
+//            self.image1Indicator.hidden = NO;
+//            break;
+//        case 4:
+//            [UIButton setUpButton:self.image1Indicator];
+//            [UIButton setUpButton:self.image2Indicator];
+//            [UIButton setUpButton:self.image3Indicator];
+//            [UIButton setUpButton:self.image4Indicator];
+//            self.image6Indicator.hidden = YES;
+//            self.image5Indicator.hidden = YES;
+//            self.image4Indicator.hidden = NO;
+//            self.image3Indicator.hidden = NO;
+//            self.image2Indicator.hidden = NO;
+//            self.image1Indicator.hidden = NO;
+//            break;
+//        case 5:
+//            [UIButton setUpButton:self.image1Indicator];
+//            [UIButton setUpButton:self.image2Indicator];
+//            [UIButton setUpButton:self.image3Indicator];
+//            [UIButton setUpButton:self.image4Indicator];
+//            [UIButton setUpButton:self.image5Indicator];
+//            self.image6Indicator.hidden = YES;
+//            self.image5Indicator.hidden = NO;
+//            self.image4Indicator.hidden = NO;
+//            self.image3Indicator.hidden = NO;
+//            self.image2Indicator.hidden = NO;
+//            self.image1Indicator.hidden = NO;
+//            break;
+//        case 6:
+//            [UIButton setUpButton:self.image1Indicator];
+//            [UIButton setUpButton:self.image2Indicator];
+//            [UIButton setUpButton:self.image3Indicator];
+//            [UIButton setUpButton:self.image4Indicator];
+//            [UIButton setUpButton:self.image5Indicator];
+//            [UIButton setUpButton:self.image6Indicator];
+//            self.image6Indicator.hidden = NO;
+//            self.image5Indicator.hidden = NO;
+//            self.image4Indicator.hidden = NO;
+//            self.image3Indicator.hidden = NO;
+//            self.image2Indicator.hidden = NO;
+//            self.image1Indicator.hidden = NO;
+//            break;
+//        default:
+//            NSLog(@"indicator light error");
+//            break;
     }
 }
 

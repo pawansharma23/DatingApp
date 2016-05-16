@@ -288,14 +288,6 @@ MatchViewDelegate>
     [matchView setMatchViewWithChatterDetailImage:self.userImage];
 }
 
-//-(NSData *)stringURLToData:(NSString *)urlString
-//{
-//    NSURL *url = [NSURL URLWithString:urlString];
-//    NSData *data = [NSData dataWithContentsOfURL:url];
-//
-//    return data;
-//}
-
 -(void)setupImageInCell:(UITableViewCell*)cell
 {
     cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
