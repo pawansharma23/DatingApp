@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MatchView">
+            <connections>
+                <outlet property="container" destination="iN0-l3-epB" id="HCp-fW-UKw"/>
+                <outlet property="image" destination="kXh-sV-yzd" id="Ac6-lV-qRC"/>
+                <outlet property="titleLabel" destination="mPE-Gg-qQh" id="PH3-Ru-4eU"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" restorationIdentifier="MatchView" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="200" height="40"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Michael" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mPE-Gg-qQh">
+                    <rect key="frame" x="45" y="9" width="110" height="21"/>
+                    <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kXh-sV-yzd">
+                    <rect key="frame" x="160" y="10" width="20" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="20" id="iek-vJ-Gev"/>
+                        <constraint firstAttribute="height" constant="20" id="lK0-8T-Q5r"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" red="0.94901960784313721" green="1" blue="0.46274509803921571" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="mPE-Gg-qQh" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="3u9-sl-soE"/>
+                <constraint firstItem="kXh-sV-yzd" firstAttribute="centerY" secondItem="mPE-Gg-qQh" secondAttribute="centerY" id="Izb-1P-eyn"/>
+                <constraint firstItem="mPE-Gg-qQh" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="OqU-aw-yTP"/>
+                <constraint firstAttribute="trailing" secondItem="kXh-sV-yzd" secondAttribute="trailing" priority="750" constant="20" id="RPg-uH-0N1"/>
+                <constraint firstItem="kXh-sV-yzd" firstAttribute="leading" secondItem="mPE-Gg-qQh" secondAttribute="trailing" constant="5" id="apm-NI-aIe"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="146" y="223"/>
+        </view>
+    </objects>
+</document>

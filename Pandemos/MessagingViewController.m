@@ -26,6 +26,7 @@ UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navBar;
 
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *recipientUser;
@@ -53,8 +54,7 @@ UICollectionViewDataSource>
     self.navigationItem.title = @"Messages";
 
     self.backButton.tintColor = [UIColor mikeGray];
-    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(30.0, 30.0)];
-    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
 
     self.matches = [NSArray new];
     self.chatters = [NSArray new];
@@ -131,7 +131,7 @@ UICollectionViewDataSource>
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 30;
+    return 25;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -163,7 +163,10 @@ UICollectionViewDataSource>
 
 - (IBAction)onBackButton:(UIBarButtonItem *)sender
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"tapping");
+    [self.navigationController dismissViewControllerAnimated:YES completion:^{
+
+    }];
 }
 
 

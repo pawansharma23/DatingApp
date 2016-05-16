@@ -285,4 +285,21 @@ static NSString * const kParsePublic                       = @"publicProfile";
         [self.delegate didComeFromMessaging:YES withUser:user];
     }
 }
+
+-(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict
+{
+    PFQuery *query = [PFUser query];
+    [query whereKey:@"objectId" equalTo:objectId];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+
+        if (objects)
+        {
+            userDict(objects.firstObject, nil);
+        }
+        else
+        {
+            NSLog(@"error querying for User data: %@", error);
+        }
+    }];
+}
 @end

@@ -18,6 +18,7 @@
 #import "UserManager.h"
 #import "UIImage+Additions.h"
 #import "MessagerProfileVC.h"
+#import "MatchView.h"
 
 #define TABBAR_HEIGHT 49.0f
 #define TEXTFIELD_HEIGHT 70.0f
@@ -25,13 +26,14 @@
 
 @interface MessageDetailViewCon ()<UITextFieldDelegate,
 UITableViewDataSource,
-UITableViewDelegate>
+UITableViewDelegate,
+MatchViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardBarButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *backBarButton;
-@property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backToMessaging;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardToUserDetail;
 @property BOOL reloading;
 @property (strong, nonatomic) NSMutableArray *chatData;
 @property (strong, nonatomic) NSDictionary *lastObject;
@@ -40,6 +42,7 @@ UITableViewDelegate>
 @property (strong, nonatomic) NSString *user;
 @property (strong, nonatomic) MessageManager *messageManager;
 @property (strong, nonatomic) NSString *userImage;
+@property (strong, nonatomic) NSString *userGiven;
 
 
 @end
@@ -57,11 +60,11 @@ UITableViewDelegate>
     self.chatData = [NSMutableArray new];
 
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-    self.navigationController.navigationBar.backgroundColor = [UIColor rubyRed];
 
-//    UIImage *moreButton = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
-//    [self.navigationController.navigationItem.rightBarButtonItem setImage:moreButton];
-
+    self.backToMessaging.tintColor = [UIColor mikeGray];
+    self.forwardToUserDetail.tintColor = [UIColor mikeGray];
+    self.forwardToUserDetail.image = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    self.backToMessaging.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
 
     _textField.delegate = self;
     _textField.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -73,6 +76,8 @@ UITableViewDelegate>
 //    [refreshControl addTarget:self action:@selector(startRefresh:)
 //             forControlEvents:UIControlEventValueChanged];
 //    [self.collectionView addSubview:refreshControl];
+
+
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -80,6 +85,12 @@ UITableViewDelegate>
     self.chatData = [NSMutableArray new];
     [self loadChat];
     [self loadChatWithImage];
+    [self loadUserData];
+
+
+
+
+
 }
 
 - (void)viewDidUnload
@@ -143,7 +154,8 @@ UITableViewDelegate>
     //incoming vs. outgoing
     if ([[User currentUser].objectId isEqualToString:userObject.objectId])
     {
-        cell.imageView.image = [UIImage imageWithData:[self stringURLToData:self.lastObject[@"fromImage"]]];
+        cell.imageView.image = [UIImage imageWithString:self.lastObject[@"fromImage"]];
+        //[UIImage imageWithData:[self stringURLToData:self.lastObject[@"fromImage"]]];
 
         if (row < _chatData.count)
         {
@@ -253,13 +265,36 @@ UITableViewDelegate>
     }];
 }
 
--(NSData *)stringURLToData:(NSString *)urlString
+-(void)loadUserData
 {
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
+    UserManager *userManager = [UserManager new];
+    [userManager queryForUserData:self.recipient.objectId withUser:^(NSDictionary *userDict, NSError *error) {
 
-    return data;
+
+        self.userGiven = userDict[@"givenName"];
+        NSArray *array = userDict[@"profileImages"];
+        self.userImage = array.firstObject;
+
+        [self loadMatchView];
+    }];
 }
+
+-(void)loadMatchView
+{
+    MatchView *matchView = [[MatchView alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+    self.navigationItem.titleView = matchView;
+    matchView.delegate = self;
+    [matchView setMatchViewWithChatter:self.userGiven];
+    [matchView setMatchViewWithChatterDetailImage:self.userImage];
+}
+
+//-(NSData *)stringURLToData:(NSString *)urlString
+//{
+//    NSURL *url = [NSURL URLWithString:urlString];
+//    NSData *data = [NSData dataWithContentsOfURL:url];
+//
+//    return data;
+//}
 
 -(void)setupImageInCell:(UITableViewCell*)cell
 {
@@ -294,22 +329,34 @@ UITableViewDelegate>
     }
 }
 
-#pragma mark - Navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+#pragma mark -- DELEGATES
+-(void)didPressMatchView
 {
-    MessagerProfileVC *mpvc = [segue destinationViewController];
-    mpvc.messagingUser = self.recipient;
+
 }
 
-//-(void) viewWillDisappear:(BOOL)animated
-//{
-//    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound)
-//    {
-//        [self.navigationController popViewControllerAnimated:NO];
-//    }
-//
-//    [super viewWillDisappear:animated];
-//}
+#pragma mark - Navigation
+- (IBAction)onForwardTapped:(UIBarButtonItem *)sender
+{
+    [self performSegueWithIdentifier:@"toUserDetail" sender:self];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"toUserDetail"])
+    {
+        MessagerProfileVC *mpvc = [segue destinationViewController];
+        mpvc.messagingUser = self.recipient;
+        NSLog(@"User object segueing: %@", self.recipient);
+    }
+
+}
+
+- (IBAction)onBackToMessaging:(UIBarButtonItem *)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 @end
 //-(void)loadLocalChat
 //{

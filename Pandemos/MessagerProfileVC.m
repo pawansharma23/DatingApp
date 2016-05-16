@@ -20,8 +20,7 @@
 #import "User.h"
 #import "UserManager.h"
 
-@interface MessagerProfileVC ()<
-UIGestureRecognizerDelegate,
+@interface MessagerProfileVC ()<UIGestureRecognizerDelegate,
 UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
@@ -67,7 +66,8 @@ UserManagerDelegate>
     self.fullDescView.hidden = YES;
     self.profileImages = [NSMutableArray new];
 
-    NSLog(@"messager: %@", self.messagingUser.givenName);
+    NSLog(@"messager: %@", self.messagingUser);
+    //call to get user info from UserManager
 
     [self setupManagersProfileVCForCurrentUser];
 

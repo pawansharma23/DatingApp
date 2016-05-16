@@ -13,4 +13,5 @@
 + (UIImage *)imageWithData:(NSData *)data scaledToSize:(CGSize)newSize;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToScale:(float)scale;
++ (UIImage *)imageWithString:(NSString*)image;
 @end

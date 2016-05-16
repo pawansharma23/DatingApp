@@ -44,4 +44,10 @@
     return scaledImage;
 }
 
++(UIImage *)imageWithString:(NSString*)image
+{
+    NSURL *url = [NSURL URLWithString:image];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    return [UIImage imageWithData:data];
+}
 @end
