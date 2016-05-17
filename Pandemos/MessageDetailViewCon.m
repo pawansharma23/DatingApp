@@ -39,16 +39,16 @@ MatchViewDelegate>
 @property (strong, nonatomic) NSDictionary *lastObject;
 
 @property (strong, nonatomic) User *currentUser;
-@property (strong, nonatomic) NSString *user;
 @property (strong, nonatomic) MessageManager *messageManager;
+
 @property (strong, nonatomic) NSString *userImage;
 @property (strong, nonatomic) NSString *userGiven;
+@property (strong, nonatomic) NSString *user;
 
 
 @end
 
 @implementation MessageDetailViewCon
-//@synthesize textField;
 
 - (void)viewDidLoad
 {
@@ -60,24 +60,16 @@ MatchViewDelegate>
     self.chatData = [NSMutableArray new];
 
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-
-    self.backToMessaging.tintColor = [UIColor mikeGray];
-    self.forwardToUserDetail.tintColor = [UIColor mikeGray];
-    self.forwardToUserDetail.image = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    //self.forwardToUserDetail.tintColor = [UIColor mikeGray];
+    //self.forwardToUserDetail.image = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.backToMessaging.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    self.backToMessaging.tintColor = [UIColor mikeGray];
 
     _textField.delegate = self;
     _textField.clearButtonMode = UITextFieldViewModeWhileEditing;
 
     self.tableView.delegate = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-
-//    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-//    [refreshControl addTarget:self action:@selector(startRefresh:)
-//             forControlEvents:UIControlEventValueChanged];
-//    [self.collectionView addSubview:refreshControl];
-
-
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -86,11 +78,6 @@ MatchViewDelegate>
     [self loadChat];
     [self loadChatWithImage];
     [self loadUserData];
-
-
-
-
-
 }
 
 - (void)viewDidUnload
@@ -189,13 +176,12 @@ MatchViewDelegate>
 }
 
 
-//keyboard methods
+#pragma mark -- KEYBOARD DELEGATES
 -(void) registerForKeyboardNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
-
 
 -(void) freeKeyboardNotifications
 {
@@ -222,7 +208,6 @@ MatchViewDelegate>
     [self.view setFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y- keyboardFrame.size.height+TABBAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height)];
 
     [UIView commitAnimations];
-
 }
 
 -(void) keyboardWillHide:(NSNotification*)aNotification
@@ -269,7 +254,6 @@ MatchViewDelegate>
 {
     UserManager *userManager = [UserManager new];
     [userManager queryForUserData:self.recipient.objectId withUser:^(NSDictionary *userDict, NSError *error) {
-
 
         self.userGiven = userDict[@"givenName"];
         NSArray *array = userDict[@"profileImages"];
@@ -321,132 +305,24 @@ MatchViewDelegate>
     }
 }
 
-#pragma mark -- DELEGATES
+#pragma mark -- MATCHVIEW DELEGATE
 -(void)didPressMatchView
-{
-
-}
-
-#pragma mark - Navigation
-- (IBAction)onForwardTapped:(UIBarButtonItem *)sender
 {
     [self performSegueWithIdentifier:@"toUserDetail" sender:self];
 }
 
+#pragma mark - Navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"toUserDetail"])
     {
         MessagerProfileVC *mpvc = [segue destinationViewController];
         mpvc.messagingUser = self.recipient;
-        NSLog(@"User object segueing: %@", self.recipient);
     }
-
 }
 
 - (IBAction)onBackToMessaging:(UIBarButtonItem *)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
 @end
-//-(void)loadLocalChat
-//{
-//    PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
-//    //query to user and recipient specific
-//    [query whereKey:@"recipientId" equalTo:self.currentUser];
-//
-//    // If no objects are loaded in memory, we look to the cache first to fill the table
-//    // and then subsequently do a query against the network.
-//    if ([_chatData count] == 0) {
-//        NSLog(@"no chat data");
-//        query.cachePolicy = kPFCachePolicyCacheThenNetwork;
-//        [query orderByAscending:@"createdAt"];
-//        NSLog(@"Trying to retrieve from cache");
-//
-//
-//        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//            if (!error) {
-//                // The find succeeded.
-//                NSLog(@"Successfully retrieved %zd chats from cache.", objects.count);
-//                [_chatData removeAllObjects];
-//                [_chatData addObjectsFromArray:objects];
-//                [self.tableView reloadData];
-//            } else {
-//                // Log details of the failure
-//                NSLog(@"Error Above: %@ %@", error, [error userInfo]);
-//            }
-//        }];
-//    }
-//
-//    PFQuery *query2 = [PFQuery queryWithClassName:@"Chat"];
-//    [query2 whereKey:@"recipientId" equalTo:self.currentUser];
-//    [query2 orderByDescending:@"createdAt"];
-//
-//    __block int totalNumberOfEntries = 0;
-//    [query2 countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-//        if (!error) {
-//            // The count request succeeded. Log the count
-//            NSLog(@"There are currently %d entries", number);
-//            totalNumberOfEntries = number;
-//            if (totalNumberOfEntries > [_chatData count]) {
-//                NSLog(@"Retrieving data");
-//                long theLimit;
-//
-//                if (totalNumberOfEntries-[_chatData count]> 25)
-//                {
-//                    theLimit = 25;
-//                }
-//                else
-//                {
-//                    theLimit = (long)totalNumberOfEntries - [_chatData count];
-//                }
-//                query2.limit = (long)[NSNumber numberWithLong:theLimit];
-//                [query2 findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-//                    if (!error) {
-//                        // The find succeeded.
-//                        NSLog(@"Successfully retrieved %zd chats.", objects.count);
-//                        [_chatData addObjectsFromArray:objects];
-//                        NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
-//                        for (int ind = 0; ind < objects.count; ind++)
-//                        {
-//                            NSIndexPath *newPath = [NSIndexPath indexPathForRow:ind inSection:0];
-//                            [insertIndexPaths addObject:newPath];
-//                        }
-//                        [self.tableView beginUpdates];
-//                        [self.tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationTop];
-//                        [self.tableView endUpdates];
-//                        [self.tableView reloadData];
-//                        [self.tableView scrollsToTop];
-//                    } else
-//                    {
-//                        // Log details of the failure
-//                        NSLog(@"Error below: %@ %@", error, [error userInfo]);
-//                    }
-//                }];
-//            }
-//
-//        } else {
-//            // The request failed, we'll keep the chatData count?
-//            number = (int)[_chatData count];
-//        }
-//    }];
-//
-//}
-//PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
-//[query whereKey:@"recipientId" equalTo:self.currentUser];
-//[query whereKey:@"recipientId" equalTo:self.recipient];
-//[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-//    if (error) {
-//        NSLog(@"error in VDL: %@", error);
-//    }
-//
-//    if (objects.count == 0) {
-//        NSLog(@"convo between %@ & %@ has no chats yet", userName, repName);
-//    } else  {
-//        PFUser *chat1 = [objects objectAtIndex:0];
-//        NSString *text = [chat1 objectForKey:@"text"];
-//
-//        NSLog(@"convo between: %@ & %@ ID: %@\n chats:%@", userName, repName, self.recipient.objectId, text);
-//    }
-//}];

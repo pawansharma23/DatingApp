@@ -284,12 +284,12 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3n8-Uc-OFc">
-                        <barButtonItem key="leftBarButtonItem" title="Item" id="bOk-h6-wJF">
+                        <barButtonItem key="leftBarButtonItem" id="bOk-h6-wJF">
                             <connections>
                                 <action selector="onBackToMessaging:" destination="EDn-T0-e2S" id="147-By-Gz9"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="59j-T7-Qdn">
+                        <barButtonItem key="rightBarButtonItem" id="59j-T7-Qdn">
                             <connections>
                                 <action selector="onForwardTapped:" destination="EDn-T0-e2S" id="cso-jG-2Fu"/>
                             </connections>
@@ -327,7 +327,7 @@
             </objects>
             <point key="canvasLocation" x="1170" y="353"/>
         </scene>
-        <!--Messager ProfileVC-->
+        <!--Title-->
         <scene sceneID="rwn-5b-ci4">
             <objects>
                 <viewController id="HfP-qY-u8H" customClass="MessagerProfileVC" sceneMemberID="viewController">
@@ -367,7 +367,7 @@
                                         <variation key="heightClass=regular-widthClass=compact" constant="11"/>
                                     </constraint>
                                     <constraint firstAttribute="height" constant="15" id="WoW-dm-XX8">
-                                        <variation key="heightClass=regular-widthClass=compact" constant="12"/>
+                                        <variation key="heightClass=regular-widthClass=compact" constant="11"/>
                                     </constraint>
                                 </constraints>
                             </button>
@@ -447,11 +447,20 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Block User with alert action" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u82-x1-zbG">
+                                        <rect key="frame" x="5" y="47" width="490" height="17.5"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="u82-x1-zbG" secondAttribute="trailing" constant="5" id="47P-0W-sWF"/>
                                     <constraint firstItem="NCR-Ur-ukh" firstAttribute="top" secondItem="Drc-3P-KxO" secondAttribute="top" constant="5" id="70J-B2-RSJ"/>
                                     <constraint firstItem="aYj-My-CLS" firstAttribute="top" secondItem="ths-CU-fGc" secondAttribute="bottom" constant="2" id="BDd-u9-W1R"/>
+                                    <constraint firstItem="u82-x1-zbG" firstAttribute="leading" secondItem="Drc-3P-KxO" secondAttribute="leading" constant="5" id="BXe-Ao-Kb3"/>
+                                    <constraint firstItem="u82-x1-zbG" firstAttribute="top" secondItem="aYj-My-CLS" secondAttribute="bottom" constant="2" id="EO3-z0-A3o"/>
                                     <constraint firstAttribute="trailing" secondItem="aYj-My-CLS" secondAttribute="trailing" constant="5" id="Imw-3h-giL"/>
                                     <constraint firstAttribute="trailing" secondItem="NCR-Ur-ukh" secondAttribute="trailing" constant="5" id="LO1-f3-QBy"/>
                                     <constraint firstItem="ths-CU-fGc" firstAttribute="leading" secondItem="Drc-3P-KxO" secondAttribute="leading" constant="5" id="ZV7-Mg-3nR"/>
@@ -459,8 +468,30 @@
                                     <constraint firstItem="aYj-My-CLS" firstAttribute="leading" secondItem="Drc-3P-KxO" secondAttribute="leading" constant="5" id="gcV-b8-4HV"/>
                                     <constraint firstAttribute="trailing" secondItem="ths-CU-fGc" secondAttribute="trailing" constant="5" id="hCS-Y4-X6m"/>
                                     <constraint firstItem="NCR-Ur-ukh" firstAttribute="leading" secondItem="Drc-3P-KxO" secondAttribute="leading" constant="5" id="qYh-pz-yEH"/>
-                                    <constraint firstAttribute="height" constant="80" id="rRC-yT-Gxw"/>
+                                    <constraint firstAttribute="height" constant="80" id="rRC-yT-Gxw">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="100"/>
+                                    </constraint>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="u82-x1-zbG"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="47P-0W-sWF"/>
+                                        <exclude reference="BXe-Ao-Kb3"/>
+                                        <exclude reference="EO3-z0-A3o"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="subviews">
+                                        <include reference="u82-x1-zbG"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <include reference="47P-0W-sWF"/>
+                                        <include reference="BXe-Ao-Kb3"/>
+                                        <include reference="EO3-z0-A3o"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Uv-9V-bSF">
                                 <rect key="frame" x="20" y="227" width="560" height="319"/>
@@ -589,17 +620,23 @@
                         </variation>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="gbZ-NQ-MhB">
-                        <barButtonItem key="leftBarButtonItem" id="hhM-vw-YN2">
+                    <navigationItem key="navigationItem" title="Title" id="iCn-yY-7Ba">
+                        <barButtonItem key="leftBarButtonItem" id="fm8-Dz-JF4">
                             <connections>
-                                <action selector="onCloseButton:" destination="HfP-qY-u8H" id="D5E-xE-oAP"/>
+                                <action selector="onCloseButton:" destination="HfP-qY-u8H" id="iq0-Kf-J2A"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="GDr-el-lWU">
+                            <connections>
+                                <action selector="onMatchController:" destination="HfP-qY-u8H" id="LZJ-nL-8Ne"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="closeBarButton" destination="hhM-vw-YN2" id="TIW-sg-LK1"/>
+                        <outlet property="backToConversation" destination="fm8-Dz-JF4" id="uPg-Tj-nIa"/>
+                        <outlet property="blockUserLabel" destination="u82-x1-zbG" id="Kt4-Po-nY4"/>
                         <outlet property="educationLabel" destination="aYj-My-CLS" id="pdz-4p-luY"/>
                         <outlet property="fullAboutMe" destination="8LA-NE-bca" id="fMR-HT-ffL"/>
                         <outlet property="fullDescView" destination="1Uv-9V-bSF" id="snV-mz-92f"/>
@@ -613,6 +650,8 @@
                         <outlet property="image6Indicator" destination="kLh-c7-pwo" id="3aH-cb-sTD"/>
                         <outlet property="jobLabel" destination="ths-CU-fGc" id="iuc-DF-m0h"/>
                         <outlet property="nameAndAge" destination="NCR-Ur-ukh" id="gDD-p8-8Vd"/>
+                        <outlet property="navBar" destination="iCn-yY-7Ba" id="aLu-ul-Bbw"/>
+                        <outlet property="sendMessage" destination="GDr-el-lWU" id="uHQ-A3-VfP"/>
                         <outlet property="userImage" destination="KB2-F1-zlf" id="OPO-Zl-KLQ"/>
                         <outlet property="userInfoView" destination="Drc-3P-KxO" id="Vbv-R0-b1q"/>
                     </connections>

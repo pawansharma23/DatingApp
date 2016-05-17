@@ -94,17 +94,10 @@ static NSString * const reuseIdentifier = @"FaceCell";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     Facebook *selectedImage = [self.photos objectAtIndex:indexPath.item];
-    self.selectedImage = selectedImage.albumImageURL;
-
-    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+    [self.manager loadPhotoSource:selectedImage.albumImageID];
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    SelectedImageViewController *sivc = segue.destinationViewController;
-    sivc.image = self.selectedImage;
-}
-
+#pragma mark -- DELEGATES
 -(void)didReceiveParsedAlbum:(NSArray *)album
 {
     self.photos = album;
@@ -118,6 +111,18 @@ static NSString * const reuseIdentifier = @"FaceCell";
     NSLog(@"next: %@", nextPage.nextPage);
 }
 
+-(void)didReceiveParsedPhotoSource:(NSString *)photoURL
+{
+    self.selectedImage = photoURL;
+    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+}
+
+#pragma mark -- NAV
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    SelectedImageViewController *sivc = segue.destinationViewController;
+    sivc.image = self.selectedImage;
+}
 
 - (IBAction)onOtherFacebookAlbums:(UIButton *)sender
 {

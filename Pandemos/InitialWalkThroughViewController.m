@@ -9,33 +9,20 @@
 #import "InitialWalkThroughViewController.h"
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
-
-#import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
-#import <Parse/Parse.h>
-#import "SelectedImageViewController.h"
-
-#import "SuggestionsViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <LXReorderableCollectionViewFlowLayout.h>
-#import "CVCell.h"
-#import "UIColor+Pandemos.h"
-#import "UIButton+Additions.h"
-#import "UITextView+Additions.h"
+#import "SuggestionsViewController.h"
 #import "Facebook.h"
 #import "FacebookManager.h"
 #import "FacebookNetwork.h"
 #import "User.h"
 #import "UserManager.h"
 #import "SVProgressHUD.h"
+#import "UIColor+Pandemos.h"
+#import "UIButton+Additions.h"
+#import "UITextView+Additions.h"
 
-@interface InitialWalkThroughViewController ()
-<UICollectionViewDataSource,
-UICollectionViewDelegate,
-UICollectionViewDelegateFlowLayout,
-LXReorderableCollectionViewDelegateFlowLayout,
-LXReorderableCollectionViewDataSource,
+@interface InitialWalkThroughViewController ()<
 CLLocationManagerDelegate,
 UITextViewDelegate,
 UIScrollViewDelegate,
@@ -44,7 +31,6 @@ UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UITextView *textViewAboutMe;
-@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UISlider *minAgeSlider;
 @property (weak, nonatomic) IBOutlet UISlider *maxAgeSlider;
 @property (weak, nonatomic) IBOutlet UISlider *milesSlider;
@@ -52,8 +38,6 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationlabel;
 @property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
-@property (weak, nonatomic) IBOutlet UIButton *previousButton;
-@property (weak, nonatomic) IBOutlet UIButton *nextButton;
 @property (weak, nonatomic) IBOutlet UIButton *facebookAlbumBUtton;
 @property (weak, nonatomic) IBOutlet UIButton *mensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *womensInterestButton;
@@ -61,17 +45,13 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *suggestionsButton;
 @property (weak, nonatomic) IBOutlet UIButton *continueButton;
 @property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
-@property (weak, nonatomic) IBOutlet UILabel *notValidImageLabel;
+@property (weak, nonatomic) IBOutlet UIButton *imagesFromPhoneButton;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) FacebookManager *manager;
 @property (strong, nonatomic) UserManager *userManager;
-@property (strong, nonatomic) NSArray *thumbnails;
 
-@property (strong, nonatomic) NSArray *nextPages;
-@property (strong, nonatomic) NSArray *previousPages;
-@property (strong, nonatomic) NSString *selectedImage;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
 @property (strong, nonatomic) NSString *userGender;
 @end
@@ -87,56 +67,18 @@ UserManagerDelegate>
     {
         [self setupManagersForInitalWalkViewController];
 
-        NSLog(@"User: %@", self.currentUser.givenName);
-
         self.navigationItem.title = @"Setup";
         self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
         self.automaticallyAdjustsScrollViewInsets = NO;
-
-        //set and initialize delegates
         self.scrollView.delegate = self;
         self.textViewAboutMe.delegate = self;
 
-        self.thumbnails = [NSArray new];
-        self.nextPages = [NSArray new];
-
-        self.previousButton.hidden = YES;
-        self.notValidImageLabel.hidden = YES;
-
-        //COLLECTIONVIEW
-        self.collectionView.delegate = self;
-        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        [flowLayout setItemSize:CGSizeMake(100, 100)];
-        [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-        [self.collectionView setCollectionViewLayout:flowLayout];
-        self.collectionView.backgroundColor = [UIColor whiteColor];
-
-        //LOCATION
-        self.locationManager = [CLLocationManager new];
-        self.locationManager.delegate = self;
-        [self.locationManager requestWhenInUseAuthorization];
-        [self.locationManager startUpdatingLocation];
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
-        double latitude = self.locationManager.location.coordinate.latitude;
-        double longitude = self.locationManager.location.coordinate.longitude;
-
-        //save lat and long in a PFGeoCode Object and save to User in Parse
-        self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
-        [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
-        //NSLog(@"saved PFGeoCode: %@", self.pfGeoCoded);
-
-        //SETUP
-        [UIButton setUpButton:self.mensInterestButton];
-        [UIButton setUpButton:self.womensInterestButton];
-        [UIButton setUpButton:self.bothSexesButton];
-        [UIButton setUpButton:self.suggestionsButton];
-        [UIButton setUpButton:self.continueButton];
-        [UITextView setup:self.textViewAboutMe];
+        [self setupLocation];
+        [self setupButtons];
 
         [self defaultAgeSliderSet];
         [self defaultMilesAwaySliderSet];
         [self defaultPublicProfileSet];
-
     }
     else
     {
@@ -237,31 +179,8 @@ UserManagerDelegate>
     [self performSegueWithIdentifier:@"Suggestions" sender:self];
 }
 
-#pragma mark -- COLLECTION VIEW DELEGATE
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return self.thumbnails.count;
+- (IBAction)onImagesFromPhone:(UIButton *)sender {
 }
-
--(CVCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *cellIdentifier = @"cvCell";
-    CVCell *cell = (CVCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    Facebook *face = [self.thumbnails objectAtIndex:indexPath.item];
-    cell.layer.borderWidth = 1.0f;
-    cell.layer.borderColor = [UIColor blueColor].CGColor;
-    cell.bookImage.image = [UIImage imageWithData:[face stringURLToData:face.thumbURL]];
-
-    return cell;
-}
-
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *selectedImage = [self.thumbnails objectAtIndex:indexPath.item];
-    NSLog(@"seleceted image: %@", selectedImage);
-
-}
-
 #pragma mark -- AGE SLIDERS
 - (IBAction)minSliderChange:(UISlider *)sender
 {
@@ -295,7 +214,6 @@ UserManagerDelegate>
 }
 
 #pragma mark -- SEX PREFERENCE
-//Sender is the only thing that has been omitted in the helper method, grouping it with the global object
 - (IBAction)menInterestButton:(UIButton *)sender
 {
     [UIButton changeButtonState:self.mensInterestButton];
@@ -305,7 +223,7 @@ UserManagerDelegate>
     [self.currentUser setObject:@"male" forKey:@"sexPref"];
     [self.currentUser saveInBackground];
 }
-//Womens
+//W
 - (IBAction)womenInterestButton:(UIButton *)sender
 {
     [UIButton changeButtonState:self.womensInterestButton];
@@ -327,34 +245,7 @@ UserManagerDelegate>
 }
 
 #pragma mark -- SEGUE
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"ChooseImage"])
-    {
-        SelectedImageViewController *sivc = segue.destinationViewController;
-        sivc.image = self.selectedImage;
-    }
-    else if ([segue.identifier isEqualToString:@"Suggestions"])
-    {
-        //SuggestionsViewController *svc = segue.destinationViewController;
-        //svc.userGender = self.userGender;
-    }
-}
 
-
-#pragma mark -- NEXT/PREVIOUS PAGE BUTTONS
--(IBAction)onNextPage:(UIButton *)sender
-{
-    self.previousButton.hidden = NO;
-    // FacebookData *face = [FacebookData new];
-    // [face loadNextPrevPage:face.nextPage withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
-}
-
-- (IBAction)onPreviousPage:(UIButton *)sender
-{
-    //FacebookData *face = [FacebookData new];
-    //[face loadNextPrevPage:face.previousPage withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
-}
 
 #pragma mark -- PUSH NOTIFICATIONS
 - (IBAction)pushNotificationsOnOff:(UISwitch *)sender
@@ -370,17 +261,6 @@ UserManagerDelegate>
 }
 
 #pragma mark -- FACEBOOK MANAGER DELEGATE
--(void)didReceiveParsedThumbnails:(NSArray *)thumbnails
-{
-    self.thumbnails = thumbnails;
-    [self.collectionView reloadData];
-}
-
--(void)failedToReceiveParsedThumbs:(NSError *)error
-{
-    NSLog(@"failed to call facebook delegate: %@", error);
-}
-
 -(void)didReceiveParsedUserData:(NSArray *)data
 {
     Facebook *face = [data firstObject];
@@ -438,23 +318,6 @@ UserManagerDelegate>
     NSLog(@"failed to get parsed Data %@", error);
 }
 
--(void)didReceiveParsedThumbPaging:(NSArray *)thumbPaging
-{
-    self.nextPages = thumbPaging;
-
-    //PAGE DATA
-    if (self.nextPages)
-    {
-        self.nextButton.hidden = NO;
-        //algo in here from UserManager to pull up page two from facebook photos
-    }
-}
-
--(void)failedToReceiveParsedThumbPaging:(NSError *)error
-{
-    NSLog(@"failed to call facebook del for Paging: %@", error);
-}
-
 #pragma mark - USERMANAGER DELEGATE
 -(void)didReceiveUserData:(NSArray *)data
 {
@@ -471,6 +334,34 @@ UserManagerDelegate>
 }
 
 #pragma mark -- HELPERS
+-(void)setupButtons
+{
+    [UIButton setUpButton:self.mensInterestButton];
+    [UIButton setUpButton:self.womensInterestButton];
+    [UIButton setUpButton:self.bothSexesButton];
+    [UIButton setUpButton:self.suggestionsButton];
+    [UIButton setUpButton:self.continueButton];
+    [UIButton setUpButton:self.facebookAlbumBUtton];
+    [UIButton setUpButton:self.imagesFromPhoneButton];
+    [UITextView setup:self.textViewAboutMe];
+}
+
+-(void)setupLocation
+{
+     self.locationManager = [CLLocationManager new];
+     self.locationManager.delegate = self;
+     [self.locationManager requestWhenInUseAuthorization];
+     [self.locationManager startUpdatingLocation];
+     self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+     double latitude = self.locationManager.location.coordinate.latitude;
+     double longitude = self.locationManager.location.coordinate.longitude;
+
+     //save lat and long in a PFGeoCode Object and save to User in Parse
+     self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
+     [self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+     //NSLog(@"saved PFGeoCode: %@", self.pfGeoCoded);
+}
+
 -(void)sexPreferenceButton
 {
     if ([self.userGender isEqualToString:@"male"])
@@ -552,7 +443,6 @@ UserManagerDelegate>
     self.userManager.delegate = self;
     self.manager.delegate = self;
 
-    [self.manager loadParsedFacebookThumbnails];
     [self.manager loadParsedUserData];
     [self.userManager loadUserData:self.currentUser];
 }

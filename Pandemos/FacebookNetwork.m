@@ -91,4 +91,23 @@
         }
     }];
 }
+
+-(void)loadFacebookSourcePhoto:(NSString *)photoId withSuccess:(resultBlockWithSuccess)results
+{
+    NSString *photoIdStr = [NSString stringWithFormat:@"/%@", photoId];
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:photoIdStr parameters:@{@"fields": @"source, updated_time"} HTTPMethod:@"GET"];
+    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+
+        if (!error)
+        {
+            results(YES, nil);
+            [self.delegate receivedPhotoSource:result];
+        }
+        else
+        {
+            results(NO, nil);
+            [self.delegate failedToFetchFBAlbum:error];
+        }
+    }];
+}
 @end

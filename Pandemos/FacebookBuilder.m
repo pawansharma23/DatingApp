@@ -165,7 +165,6 @@
             NSDictionary *data = picture[@"data"];
             face.albumImageURL = data[@"url"];
 
-            //NSLog(@"id: %@ name: %@, url: %@ %@", face.albumId, face.albumImageCount, face.albumName, face.albumImageURL);
             [parsedData addObject:face];
         }
     }

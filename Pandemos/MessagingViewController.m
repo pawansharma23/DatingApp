@@ -215,7 +215,7 @@ UICollectionViewDataSource>
     cell.userImage.clipsToBounds = YES;
     cell.lastMessage.text = chatter[@"repName"];
     cell.lastMessageTime.text = chatter[@"text"];
-    cell.userImage.image = [UIImage imageWithData:[self stringURLToData:chatter[@"repImage"]]];
+    cell.userImage.image = [UIImage imageWithString:chatter[@"repImage"]];
 
     //data unique to individual chat
 //    NSDate *theDate = [user objectForKey:@"timestamp"];
@@ -230,14 +230,6 @@ UICollectionViewDataSource>
     //cell.matchImage.contentMode = UIViewContentModeScaleAspectFill;
     cell.matchImage.layer.cornerRadius = 22.0 / 2.0f;
     //cell.matchImage.clipsToBounds = YES;
-}
-
--(NSData *)stringURLToData:(NSString *)urlString
-{
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-
-    return data;
 }
 @end
 

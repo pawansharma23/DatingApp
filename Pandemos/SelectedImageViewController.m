@@ -11,6 +11,8 @@
 #import "User.h"
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
+#import "UIImage+Additions.h"
+#import "UIImageView+Additions.h"
 #import "FacebookManager.h"
 #import "Facebook.h"
 #import "UserManager.h"
@@ -47,21 +49,12 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     self.pictures = [NSMutableArray new];
     //self.automaticallyAdjustsScrollViewInsets = NO;
 
-    self.userImage.image = [UIImage imageWithData:[self imageData:self.image]];
+    self.userImage.image = [UIImage imageWithString:self.image];
+    [UIImageView setupFullSizedImage:self.userImage];
 
     [UIButton setUpButton:self.saveImage];
 
-    self.collectionView.delegate = self;
-    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-    self.collectionView.layer.borderWidth = 1.0;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
-
-    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
-    [flowlayouts setItemSize:CGSizeMake(100, 100)];
-    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
-    [self.collectionView setCollectionViewLayout:flowlayouts];
-
+    [self setupCollectionView];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -92,7 +85,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 {
     PreviewCell *cell = (PreviewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kReuseIdentifier forIndexPath:indexPath];
     NSString *image = [self.pictures objectAtIndex:indexPath.item];
-    cell.cvImage.image = [UIImage imageWithData:[self imageData:image]];
+    cell.cvImage.image = [UIImage imageWithString:image];
 
     return cell;
 }
@@ -182,6 +175,20 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 }
 
 #pragma mark -- HELPERS
+-(void)setupCollectionView
+{
+    self.collectionView.delegate = self;
+    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
+    self.collectionView.layer.borderWidth = 1.0;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+
+    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
+    [flowlayouts setItemSize:CGSizeMake(100, 100)];
+    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
+    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
+    [self.collectionView setCollectionViewLayout:flowlayouts];
+}
+
 -(void)saveForImage1
 {
     NSLog(@"1 Empty");
@@ -241,41 +248,4 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         [self.saveImage setTitle:@"Image 6 Set" forState:UIControlStateNormal];
     }];
 }
-
--(NSData *)imageData:(NSString *)imageString
-{
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-
-    return data;
-}
 @end
-//-(void)deconstructArray:(NSMutableArray *)array
-//{
-//    NSString *firstImage = [array firstObject];
-//    NSString *secondImage = [array objectAtIndex:1];
-//    NSString *thirdImage = [array objectAtIndex:2];
-//    NSString *forthImage = [array objectAtIndex:3];
-//    NSString *fifthImage = [array objectAtIndex:4];
-//    NSString *sixthImage = [array objectAtIndex:5];
-//
-//    if (firstImage) {
-//        [self.currentUser setObject:firstImage forKey:@"image1"];
-//        [self.currentUser saveInBackground];
-//    } if (secondImage) {
-//        [self.currentUser setObject:secondImage forKey:@"image2"];
-//        [self.currentUser saveInBackground];
-//    } if (thirdImage) {
-//        [self.currentUser setObject:thirdImage forKey:@"image3"];
-//        [self.currentUser saveInBackground];
-//    } if (forthImage) {
-//        [self.currentUser setObject:forthImage forKey:@"image4"];
-//        [self.currentUser saveInBackground];
-//    } if (fifthImage) {
-//        [self.currentUser setObject:fifthImage forKey:@"image5"];
-//        [self.currentUser saveInBackground];
-//    } if (sixthImage) {
-//        [self.currentUser setObject:sixthImage forKey:@"image6"];
-//        [self.currentUser saveInBackground];
-//    }
-//}

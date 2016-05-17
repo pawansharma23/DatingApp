@@ -17,49 +17,14 @@
 
 @implementation UIButton (Additions)
 
-+(UIButton*)roundButtonEdges:(UIButton *)button radius:(CGFloat)radius startAngle:(CGFloat)startAngle endEndle:(CGFloat)endAngle
++(UIButton*)circleButtonEdges:(UIButton *)button
 {
-//    CGPoint center = CGPointMake(button.frame.size.width/2, button.frame.size.height/2);
-//    UIBezierPath *path = [UIBezierPath bezierPath];
-//    [path moveToPoint:center];
-//    [path addArcWithCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(startAngle) endAngle:DEGREES_TO_RADIANS(endAngle) clockwise:YES];
-//    [path closePath];
-//
-//    CAShapeLayer *layer = [CAShapeLayer layer];
-//    layer.frame = button.bounds;
-//    layer.path = path.CGPath;
-//    //layer.fillColor = [UIColor color]
-//    UIGraphicsBeginImageContextWithOptions(layer.frame.size, NO, 0);
-//
-//    [layer renderInContext:UIGraphicsGetCurrentContext()];
-//    UIButton *outputButton = UIGraphicsGetImageFromCurrentImageContext();
-//
-//    UIGraphicsEndImageContext();
-//
+    button.layer.masksToBounds = YES;
+    button.layer.cornerRadius = button.frame.size.height *.5f;
+    button.layer.cornerRadius = button.bounds.size.width *.5f;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
     [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
-
-
-
-    button = [UIButton buttonWithType:UIButtonTypeCustom];
-
-    //[button setImage:[UIImage imageNamed:@"TimoonPumba.png"] forState:UIControlStateNormal];
-
-    //[button addTarget:self action:@selector(roundButtonDidTap:) forControlEvents:UIControlEventTouchUpInside];
-
-    //width and height should be same value
-    button.frame = CGRectMake(0, 0, ROUND_BUTTON_WIDTH_HEIGHT, ROUND_BUTTON_WIDTH_HEIGHT);
-
-    //Clip/Clear the other pieces whichever outside the rounded corner
-    button.clipsToBounds = YES;
-
-    //half of the width
-    button.layer.cornerRadius = ROUND_BUTTON_WIDTH_HEIGHT/2.0f;
-    button.layer.borderColor=[UIColor redColor].CGColor;
-    button.layer.borderWidth=2.0f;
-    
-    //[self.view addSubview:button];
     return button;
 }
 
@@ -69,14 +34,7 @@
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
     [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
-}
-
-+(void)roundButton:(UIButton *)button;
-{
-    button.layer.cornerRadius = button.bounds.size.width / 2;
-    button.clipsToBounds = YES;
-    [button.layer setBorderColor:[UIColor whiteColor].CGColor];
-
+    [button setTitleColor:[UIColor facebookBlue] forState:UIControlStateNormal];
 }
 
 +(void)changeButtonState:(UIButton *)button

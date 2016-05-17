@@ -568,7 +568,7 @@ MDCSwipeToChooseDelegate>
             self.image1Indicator.hidden = YES;
             break;
         case 1:
-            [UIButton roundButtonEdges:self.image1Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
+            [UIButton circleButtonEdges:self.image1Indicator];
             self.image6Indicator.hidden = YES;
             self.image5Indicator.hidden = YES;
             self.image4Indicator.hidden = YES;
@@ -577,8 +577,8 @@ MDCSwipeToChooseDelegate>
             self.image1Indicator.hidden = NO;
             break;
         case 2:
-            [UIButton roundButtonEdges:self.image1Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image2Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
             self.image6Indicator.hidden = YES;
             self.image5Indicator.hidden = YES;
             self.image4Indicator.hidden = YES;
@@ -587,9 +587,9 @@ MDCSwipeToChooseDelegate>
             self.image1Indicator.hidden = NO;
             break;
         case 3:
-            [UIButton roundButtonEdges:self.image1Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image2Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image3Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
             self.image6Indicator.hidden = YES;
             self.image5Indicator.hidden = YES;
             self.image4Indicator.hidden = YES;
@@ -598,10 +598,10 @@ MDCSwipeToChooseDelegate>
             self.image1Indicator.hidden = NO;
             break;
         case 4:
-            [UIButton roundButtonEdges:self.image1Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image2Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image3Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image4Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
+            [UIButton circleButtonEdges:self.image4Indicator];
             self.image6Indicator.hidden = YES;
             self.image5Indicator.hidden = YES;
             self.image4Indicator.hidden = NO;
@@ -610,11 +610,11 @@ MDCSwipeToChooseDelegate>
             self.image1Indicator.hidden = NO;
             break;
         case 5:
-            [UIButton roundButtonEdges:self.image1Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image2Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image3Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image4Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image5Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
+            [UIButton circleButtonEdges:self.image4Indicator];
+            [UIButton circleButtonEdges:self.image5Indicator];
             self.image6Indicator.hidden = YES;
             self.image5Indicator.hidden = NO;
             self.image4Indicator.hidden = NO;
@@ -623,12 +623,12 @@ MDCSwipeToChooseDelegate>
             self.image1Indicator.hidden = NO;
             break;
         case 6:
-            [UIButton roundButtonEdges:self.image1Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image2Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image3Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image4Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image5Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
-            [UIButton roundButtonEdges:self.image6Indicator radius:5.5 startAngle:0.0 endEndle:360.0];
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
+            [UIButton circleButtonEdges:self.image4Indicator];
+            [UIButton circleButtonEdges:self.image5Indicator];
+            [UIButton circleButtonEdges:self.image6Indicator];
             self.image6Indicator.hidden = NO;
             self.image5Indicator.hidden = NO;
             self.image4Indicator.hidden = NO;

@@ -10,11 +10,10 @@
 
 @interface UIButton (Additions)
 
++(UIButton*)circleButtonEdges:(UIButton *)button;
 +(void)setUpButton:(UIButton *)button;
-+(void)roundButton:(UIButton *)button;
 +(void)changeButtonState:(UIButton *)button;
 +(void)changeOtherButton:(UIButton *)button;
 +(void)acceptButton:(UIButton *)button;
 +(void)denyButton:(UIButton *)button;
-+(UIButton*)roundButtonEdges:(UIButton *)button radius:(CGFloat)radius startAngle:(CGFloat)startAngle endEndle:(CGFloat)endAngle;
 @end

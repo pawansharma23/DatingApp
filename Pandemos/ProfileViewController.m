@@ -215,13 +215,16 @@ UserManagerDelegate>
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"dragging cell begun");
-
 }
 
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"dragging has stopped");
+}
 
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"image url selected: %@", [self.profileImages objectAtIndex:indexPath.item]);
 }
 
 #pragma mark -- BUTTONS/SLIDERS

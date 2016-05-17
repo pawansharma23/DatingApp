@@ -40,7 +40,7 @@
 
 -(void)setMatchViewWithChatterDetailImage:(NSString*)pic
 {
-    self.image.image = [UIImage imageAsACircle:self.image radius:15.0 startAngle:0.0 endEndle:360.0 withImageStr:pic];
+    self.image.image = [UIImage imageWithString:pic];
 }
 
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer

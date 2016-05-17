@@ -42,7 +42,6 @@
 		26C70EBB1CA5B18F00E9B98F /* SelectedImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EE239D1C4446AB006F328E /* SelectedImageViewController.m */; };
 		26C70EBC1CA5B18F00E9B98F /* FacebookTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23E41C5DA24F00A34C0B /* FacebookTableViewCell.m */; };
 		26C70EBD1CA5B18F00E9B98F /* FacebookAlbumsTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23E11C5DA1B300A34C0B /* FacebookAlbumsTableVC.m */; };
-		26C70EBE1CA5B18F00E9B98F /* CVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA1151C2737170054414E /* CVCell.m */; };
 		26C70EBF1CA5B18F00E9B98F /* InitialWalkThroughViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA1111C26EFA70054414E /* InitialWalkThroughViewController.m */; };
 		26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0C41C21BDF10054414E /* PFLoginViewController.m */; };
 		26C70EC11CA5B18F00E9B98F /* MessageDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD0431C47FDDC00944300 /* MessageDetailCell.m */; };
@@ -154,8 +153,6 @@
 		268BA10D1C25AFE10054414E /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		268BA1101C26EFA70054414E /* InitialWalkThroughViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitialWalkThroughViewController.h; sourceTree = "<group>"; };
 		268BA1111C26EFA70054414E /* InitialWalkThroughViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitialWalkThroughViewController.m; sourceTree = "<group>"; };
-		268BA1141C2737170054414E /* CVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVCell.h; sourceTree = "<group>"; };
-		268BA1151C2737170054414E /* CVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CVCell.m; sourceTree = "<group>"; };
 		268EE4551C834BC500085DAD /* MatchRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchRequest.h; sourceTree = "<group>"; };
 		268EE4561C834BC500085DAD /* MatchRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchRequest.m; sourceTree = "<group>"; };
 		26AC545F1CAEBB36005AD536 /* Suggestions.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Suggestions.storyboard; sourceTree = "<group>"; };
@@ -431,8 +428,6 @@
 		268EE4581C834C1A00085DAD /* InitialSetup */ = {
 			isa = PBXGroup;
 			children = (
-				268BA1141C2737170054414E /* CVCell.h */,
-				268BA1151C2737170054414E /* CVCell.m */,
 				268BA1101C26EFA70054414E /* InitialWalkThroughViewController.h */,
 				268BA1111C26EFA70054414E /* InitialWalkThroughViewController.m */,
 			);
@@ -808,7 +803,6 @@
 				2653C0361CD7859B00DDBD65 /* MatchesCell.m in Sources */,
 				26C70EBC1CA5B18F00E9B98F /* FacebookTableViewCell.m in Sources */,
 				26C70EBD1CA5B18F00E9B98F /* FacebookAlbumsTableVC.m in Sources */,
-				26C70EBE1CA5B18F00E9B98F /* CVCell.m in Sources */,
 				26C70EBF1CA5B18F00E9B98F /* InitialWalkThroughViewController.m in Sources */,
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26C70EC11CA5B18F00E9B98F /* MessageDetailCell.m in Sources */,

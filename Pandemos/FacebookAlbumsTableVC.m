@@ -109,7 +109,7 @@
 
 - (void)backButtonPressed
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - FACEBOOK MANAGER DELEGATE

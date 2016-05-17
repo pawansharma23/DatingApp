@@ -23,6 +23,7 @@
 -(void)failedToFetchFBAlbum:(NSError *)error;
 -(void)receivedFBAlbumPaging:(NSDictionary *)albumPaging;
 -(void)failedToFetchFBAlbumPaging:(NSError *)error;
+-(void)receivedPhotoSource:(NSDictionary*)facebookPhotoSource;
 @end
 
 @interface FacebookNetwork : NSObject
@@ -35,4 +36,5 @@ typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
 -(void)loadFacebookUserData:(resultBlockWithSuccess)results;
 -(void)loadFacebookPhotoAlbums:(resultBlockWithSuccess)results;
 -(void)loadFacebookPhotoAlbum:(NSString *)albumID withSuccess:(resultBlockWithSuccess)results;
+-(void)loadFacebookSourcePhoto:(NSString *)photoId withSuccess:(resultBlockWithSuccess)results;
 @end

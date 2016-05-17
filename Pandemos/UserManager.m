@@ -87,6 +87,10 @@ static NSString * const kParsePublic                       = @"publicProfile";
     {
         ob.faceID = faceId;
     }
+    else
+    {
+        ob.faceID = nil;
+    }
     if (givenName)
     {
         ob.givenName = givenName;
@@ -295,6 +299,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
         if (objects)
         {
             userDict(objects.firstObject, nil);
+            [self.delegate didReceiveUserImages:objects.firstObject[@"profileImages"]];
         }
         else
         {

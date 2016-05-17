@@ -98,6 +98,22 @@
     }];
 }
 
+-(void)loadPhotoSource:(NSString *)photoSource
+{
+    [self.facebookNetworker loadFacebookSourcePhoto:photoSource withSuccess:^(BOOL success, NSError *error) {
+
+        if (success)
+        {
+            NSLog(@"received Photo Source");
+            //[self.delegate didReceiveParsedFacebookPhotoSource:@"result url string"];
+        }
+        else
+        {
+            NSLog(@"did not received photo source: %@", error);
+        }
+    }];
+}
+
 #pragma mark -- FACEBOOK NETWORK DELEGATE
 -(void)receivedFBThumbnail:(NSDictionary *)facebookThumbnails
 {
@@ -217,6 +233,11 @@
 -(void)failedToFetchFBAlbumPaging:(NSError *)error
 {
     [self.delegate failedToReceiveParsedAlbumPaging:error];
+}
+
+-(void)receivedPhotoSource:(NSDictionary *)facebookPhotoSource
+{
+    [self.delegate didReceiveParsedPhotoSource:facebookPhotoSource[@"source"]];
 }
 
 #pragma mark -- HELPERS

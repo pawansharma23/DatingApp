@@ -35,14 +35,20 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *nameAndAge;
 @property (weak, nonatomic) IBOutlet UILabel *jobLabel;
 @property (weak, nonatomic) IBOutlet UILabel *educationLabel;
+@property (weak, nonatomic) IBOutlet UILabel *blockUserLabel;
 
 @property (weak, nonatomic) IBOutlet UIView *fullDescView;
 @property (weak, nonatomic) IBOutlet UILabel *fullNameAndAge;
 @property (weak, nonatomic) IBOutlet UILabel *fullAboutMe;
 @property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *closeBarButton;
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backToConversation;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sendMessage;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navBar;
 
 @property (strong, nonatomic) NSString *currentCityAndState;
+@property (strong, nonatomic) NSString *aboutMe;
+
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *passedUser;
 @property (strong, nonatomic) UserManager *userManager;
@@ -67,22 +73,17 @@ UserManagerDelegate>
     self.profileImages = [NSMutableArray new];
 
     NSLog(@"messager: %@", self.messagingUser);
-    //call to get user info from UserManager
+    //call to get user info from UserManager adn swap out current user data
 
     [self setupManagersProfileVCForCurrentUser];
 
     self.userInfoView.layer.cornerRadius = 10;
     [UIImageView setupFullSizedImage:self.userImage];
-//    [UIButton setUpButton:self.image1Indicator];
-//    [UIButton setUpButton:self.image2Indicator];
-//    [UIButton setUpButton:self.image3Indicator];
-//    [UIButton setUpButton:self.image4Indicator];
-//    [UIButton setUpButton:self.image5Indicator];
-//    [UIButton setUpButton:self.image6Indicator];
 
-    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Delete-100"] scaledToSize:CGSizeMake(30.0, 30.0)];
-    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
-    self.closeBarButton.tintColor = [UIColor darkGrayColor];
+    self.backToConversation.tintColor = [UIColor mikeGray];
+    self.backToConversation.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    self.sendMessage.title = @"Matches";
+
     //to get your location
     //PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
     //  using age object instead
@@ -189,7 +190,7 @@ UserManagerDelegate>
             if (self.count == 0)
             {
                 NSLog(@"first image, count: %zd", self.count);
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
+                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
                 //indicator lights
                 [self setLightForImage:self.count];
                 //re-hide full view on the way back up
@@ -198,7 +199,7 @@ UserManagerDelegate>
             }
             else if(self.count > 0)
             {
-                self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
+                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
 
                 [self setLightForImage:self.count];
                 NSLog(@"count: %zd", self.count);
@@ -210,17 +211,24 @@ UserManagerDelegate>
     }
 }
 
+- (IBAction)onMatchController:(UIBarButtonItem *)sender
+{
+    [self.navigationController dismissViewControllerAnimated:YES completion:^{
+
+    }];
+}
+
 - (IBAction)onCloseButton:(UIBarButtonItem *)sender
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -- USER MANAGER DELEGATE
 -(void)didReceiveUserImages:(NSArray *)images
 {
     self.profileImages = [NSMutableArray arrayWithArray:images];
-    self.userImage.image = [UIImage imageWithData:[self imageData:[self.profileImages objectAtIndex:self.count]]];
-    [self loadProperIndicatorLights:(int)self.profileImages.count];
+    self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
+    [self loadIndicatorLights:(int)self.profileImages.count];
     self.image1Indicator.backgroundColor = [UIColor rubyRed];
 }
 
@@ -248,13 +256,34 @@ UserManagerDelegate>
 #pragma mark -- HELPERS
 -(void)setupManagersProfileVCForCurrentUser
 {
-    [self.userManager loadUserData:self.currentUser];
-    [self.userManager loadUserImages:self.currentUser];
+    [self.userManager queryForUserData:self.messagingUser.objectId withUser:^(NSDictionary *userDict, NSError *error) {
+
+        NSString *bday = userDict[@"birthday"];
+        self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %@", userDict[@"givenName"], [bday ageFromBirthday:bday]];
+        self.nameAndAge.text = self.nameAndAgeGlobal;
+        self.educationLabel.text = userDict[@"work"];
+        self.jobLabel.text = userDict[@"lastSchool"];
+        self.navBar.title = userDict[@"givenName"];
+        self.aboutMe = userDict[@"aboutMe"];
+    }];
+
+//    [self.userManager loadUserData:self.messagingUser];
+//    [self.userManager loadUserImages:self.messagingUser];
 }
 
--(void)loadProperIndicatorLights:(int)count
+-(void)lastImageBringUpDesciptionView
 {
-    switch (count)
+    self.fullDescView.hidden = NO;
+    self.fullDescView.layer.cornerRadius = 10;
+    self.aboutMe = [self.currentUser objectForKey:@"aboutMe"];
+    self.fullAboutMe.text = self.aboutMe;
+    self.fullNameAndAge.text = self.nameAndAgeGlobal;
+    self.fullMilesAway.text = self.currentCityAndState;
+}
+
+-(void)loadIndicatorLights:(int)profileImageCount
+{
+    switch (profileImageCount)
     {
         case 0:
             self.image6Indicator.hidden = YES;
@@ -264,78 +293,78 @@ UserManagerDelegate>
             self.image2Indicator.hidden = YES;
             self.image1Indicator.hidden = YES;
             break;
-//        case 1:
-//            [UIButton setUpButton:self.image1Indicator];
-//            self.image6Indicator.hidden = YES;
-//            self.image5Indicator.hidden = YES;
-//            self.image4Indicator.hidden = YES;
-//            self.image3Indicator.hidden = YES;
-//            self.image2Indicator.hidden = YES;
-//            self.image1Indicator.hidden = NO;
-//            break;
-//        case 2:
-//            [UIButton setUpButton:self.image1Indicator];
-//            [UIButton setUpButton:self.image2Indicator];
-//            self.image6Indicator.hidden = YES;
-//            self.image5Indicator.hidden = YES;
-//            self.image4Indicator.hidden = YES;
-//            self.image3Indicator.hidden = YES;
-//            self.image2Indicator.hidden = NO;
-//            self.image1Indicator.hidden = NO;
-//            break;
-//        case 3:
-//            [UIButton setUpButton:self.image1Indicator];
-//            [UIButton setUpButton:self.image2Indicator];
-//            [UIButton setUpButton:self.image3Indicator];
-//            self.image6Indicator.hidden = YES;
-//            self.image5Indicator.hidden = YES;
-//            self.image4Indicator.hidden = YES;
-//            self.image3Indicator.hidden = NO;
-//            self.image2Indicator.hidden = NO;
-//            self.image1Indicator.hidden = NO;
-//            break;
-//        case 4:
-//            [UIButton setUpButton:self.image1Indicator];
-//            [UIButton setUpButton:self.image2Indicator];
-//            [UIButton setUpButton:self.image3Indicator];
-//            [UIButton setUpButton:self.image4Indicator];
-//            self.image6Indicator.hidden = YES;
-//            self.image5Indicator.hidden = YES;
-//            self.image4Indicator.hidden = NO;
-//            self.image3Indicator.hidden = NO;
-//            self.image2Indicator.hidden = NO;
-//            self.image1Indicator.hidden = NO;
-//            break;
-//        case 5:
-//            [UIButton setUpButton:self.image1Indicator];
-//            [UIButton setUpButton:self.image2Indicator];
-//            [UIButton setUpButton:self.image3Indicator];
-//            [UIButton setUpButton:self.image4Indicator];
-//            [UIButton setUpButton:self.image5Indicator];
-//            self.image6Indicator.hidden = YES;
-//            self.image5Indicator.hidden = NO;
-//            self.image4Indicator.hidden = NO;
-//            self.image3Indicator.hidden = NO;
-//            self.image2Indicator.hidden = NO;
-//            self.image1Indicator.hidden = NO;
-//            break;
-//        case 6:
-//            [UIButton setUpButton:self.image1Indicator];
-//            [UIButton setUpButton:self.image2Indicator];
-//            [UIButton setUpButton:self.image3Indicator];
-//            [UIButton setUpButton:self.image4Indicator];
-//            [UIButton setUpButton:self.image5Indicator];
-//            [UIButton setUpButton:self.image6Indicator];
-//            self.image6Indicator.hidden = NO;
-//            self.image5Indicator.hidden = NO;
-//            self.image4Indicator.hidden = NO;
-//            self.image3Indicator.hidden = NO;
-//            self.image2Indicator.hidden = NO;
-//            self.image1Indicator.hidden = NO;
-//            break;
-//        default:
-//            NSLog(@"indicator light error");
-//            break;
+        case 1:
+            [UIButton circleButtonEdges:self.image1Indicator];
+            self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image3Indicator.hidden = YES;
+            self.image2Indicator.hidden = YES;
+            self.image1Indicator.hidden = NO;
+            break;
+        case 2:
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image3Indicator.hidden = YES;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
+            break;
+        case 3:
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
+            self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = YES;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
+            break;
+        case 4:
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
+            [UIButton circleButtonEdges:self.image4Indicator];
+            self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = YES;
+            self.image4Indicator.hidden = NO;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
+            break;
+        case 5:
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
+            [UIButton circleButtonEdges:self.image4Indicator];
+            [UIButton circleButtonEdges:self.image5Indicator];
+            self.image6Indicator.hidden = YES;
+            self.image5Indicator.hidden = NO;
+            self.image4Indicator.hidden = NO;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
+            break;
+        case 6:
+            [UIButton circleButtonEdges:self.image1Indicator];
+            [UIButton circleButtonEdges:self.image2Indicator];
+            [UIButton circleButtonEdges:self.image3Indicator];
+            [UIButton circleButtonEdges:self.image4Indicator];
+            [UIButton circleButtonEdges:self.image5Indicator];
+            [UIButton circleButtonEdges:self.image6Indicator];
+            self.image6Indicator.hidden = NO;
+            self.image5Indicator.hidden = NO;
+            self.image4Indicator.hidden = NO;
+            self.image3Indicator.hidden = NO;
+            self.image2Indicator.hidden = NO;
+            self.image1Indicator.hidden = NO;
+            break;
+        default:
+            NSLog(@"indicator light error");
+            break;
     }
 }
 
@@ -395,22 +424,5 @@ UserManagerDelegate>
             NSLog(@"image beyond bounds");
             break;
     }
-}
-
--(void)lastImageBringUpDesciptionView
-{
-    self.fullDescView.hidden = NO;
-    self.fullDescView.layer.cornerRadius = 10;
-    NSString *aboutMe = [self.currentUser objectForKey:@"aboutMe"];
-    self.fullAboutMe.text = aboutMe;
-    self.fullNameAndAge.text = self.nameAndAgeGlobal;
-    self.fullMilesAway.text = self.currentCityAndState;
-}
-
--(NSData *)imageData:(NSString *)imageString
-{
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
 }
 @end

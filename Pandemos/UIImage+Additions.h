@@ -14,5 +14,4 @@
 + (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize;
 + (UIImage *)imageWithImage:(UIImage *)image scaledToScale:(float)scale;
 + (UIImage *)imageWithString:(NSString*)image;
-+(UIImage *)imageAsACircle:(UIImageView*)view radius:(CGFloat)radius startAngle:(CGFloat)startAngle endEndle:(CGFloat)endAngle withImageStr:(NSString*)string;
 @end
