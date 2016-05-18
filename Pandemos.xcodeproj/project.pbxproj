@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2601A33C1CECD8A70041B17F /* UICollectionView+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 2601A33B1CECD8A70041B17F /* UICollectionView+Pandemos.m */; };
 		260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 260317B91CE2338800C37C67 /* MessagerProfileVC.m */; };
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
@@ -88,6 +89,8 @@
 
 /* Begin PBXFileReference section */
 		06C994192A4EB211C11A44D2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		2601A33A1CECD8A70041B17F /* UICollectionView+Pandemos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+Pandemos.h"; sourceTree = "<group>"; };
+		2601A33B1CECD8A70041B17F /* UICollectionView+Pandemos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Pandemos.m"; sourceTree = "<group>"; };
 		260317B81CE2338800C37C67 /* MessagerProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagerProfileVC.h; sourceTree = "<group>"; };
 		260317B91CE2338800C37C67 /* MessagerProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagerProfileVC.m; sourceTree = "<group>"; };
 		260799051C29CB4600B364C8 /* RangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeSlider.h; sourceTree = "<group>"; };
@@ -550,6 +553,8 @@
 				26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */,
 				26AC54621CAED17A005AD536 /* UITextView+Additions.h */,
 				26AC54631CAED17A005AD536 /* UITextView+Additions.m */,
+				2601A33A1CECD8A70041B17F /* UICollectionView+Pandemos.h */,
+				2601A33B1CECD8A70041B17F /* UICollectionView+Pandemos.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -854,6 +859,7 @@
 				26C70EC31CA5B18F00E9B98F /* MessagingCell.m in Sources */,
 				26C70EC41CA5B18F00E9B98F /* MessagingViewController.m in Sources */,
 				26C70EC51CA5B18F00E9B98F /* ProfileViewController.m in Sources */,
+				2601A33C1CECD8A70041B17F /* UICollectionView+Pandemos.m in Sources */,
 				26C70EC61CA5B18F00E9B98F /* AlbumCustomCell.m in Sources */,
 				26C70EC71CA5B18F00E9B98F /* PreviewUserProfileVC.m in Sources */,
 				2657ABCF1CCE5F3B00629437 /* ImageLabelViews.m in Sources */,

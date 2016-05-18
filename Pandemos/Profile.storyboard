@@ -361,8 +361,8 @@
                                         </constraints>
                                         <variation key="default">
                                             <mask key="constraints">
-                                                <exclude reference="QDw-4Q-IHU"/>
                                                 <exclude reference="IsI-fw-4C2"/>
+                                                <exclude reference="QDw-4Q-IHU"/>
                                                 <exclude reference="zfA-p7-zcp"/>
                                                 <exclude reference="1Zq-a7-bTS"/>
                                                 <exclude reference="8Sj-zm-P8a"/>
@@ -371,10 +371,10 @@
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
                                             <mask key="constraints">
-                                                <include reference="QDw-4Q-IHU"/>
-                                                <exclude reference="ljt-dl-E8y"/>
                                                 <include reference="IsI-fw-4C2"/>
                                                 <exclude reference="hi5-xo-J9f"/>
+                                                <include reference="QDw-4Q-IHU"/>
+                                                <exclude reference="ljt-dl-E8y"/>
                                                 <exclude reference="DFL-qZ-M1M"/>
                                             </mask>
                                         </variation>

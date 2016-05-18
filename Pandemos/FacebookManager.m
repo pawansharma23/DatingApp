@@ -245,10 +245,10 @@
     [self.delegate didReceiveParsedPhotoSource:facebookPhotoSource[@"source"]];
 }
 
--(void)receivedNextPage:(NSData *)data
+-(void)receivedNextPage:(NSArray *)imageArray
 {
 
-    [self.delegate didReceiveNextPagePhotos:@"new array parsed and ready"];
+    [self.delegate didReceiveNextPagePhotos:imageArray];
 }
 
 #pragma mark -- HELPERS

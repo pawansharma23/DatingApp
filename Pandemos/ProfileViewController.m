@@ -93,6 +93,8 @@ UserManagerDelegate>
         self.collectionView.delegate = self;
         self.textViewAboutMe.delegate = self;
 
+        [self.scrollView setContentInset:UIEdgeInsetsMake(-20, 0, 0, 0)];
+
         [self setFlowLayout];
 
         [self setupButtonsAndTextView];

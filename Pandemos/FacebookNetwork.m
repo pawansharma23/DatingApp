@@ -11,6 +11,7 @@
 #import <FBSDKGraphRequestConnection.h>
 #import <FBSDKGraphRequest.h>
 #import <AFNetworking.h>
+#import "Facebook.h"
 
 @implementation FacebookNetwork
 
@@ -129,7 +130,6 @@
         else
         {
             [self parsePageData:data];
-            [self.delegate receivedNextPage:data];
         }
     }];
 
@@ -138,34 +138,24 @@
 #pragma mark -- PRIVATE METHODS
 -(void)parsePageData:(NSData*)data
 {
-    //remove the current images from the collectionview array
-    //            [mutArray removeAllObjects];
-    //
     NSError *error = nil;
     NSDictionary *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSArray *dataFromJSON = objects[@"data"];
 
+    NSMutableArray *newArray = [NSMutableArray new];
+
     for (NSDictionary *sourceURL in dataFromJSON)
     {
-        NSLog(@"%@", sourceURL[@"next"]);
-    }
-    //parse through the data like the detail photo albums does
+        NSLog(@"%@", sourceURL[@"source"]);
+        Facebook *face = [Facebook new];
+        face.albumImageURL = sourceURL[@"source"];
 
-
-    NSDictionary *paging = objects[@"paging"];
-    NSString *next = paging[@"next"];
-    NSString *previous = paging[@"previous"];
-
-    if (next)
-    {
-        //self.nextPage = paging[@"next"];
+        //hrow in if check for more next and prevs
+        [newArray addObject:face];
     }
 
-    if (previous)
-    {
-        //self.previousPage = paging[@"previous"];
-    }
-    //    parse data
+    [self.delegate receivedNextPage:newArray];
+
 }
 
 @end

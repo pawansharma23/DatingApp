@@ -16,6 +16,7 @@
 #import "FacebookManager.h"
 #import "Facebook.h"
 #import "UserManager.h"
+#import "UICollectionView+Pandemos.h"
 
 @interface SelectedImageViewController ()
 <UICollectionViewDataSource,
@@ -184,9 +185,8 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 #pragma mark -- HELPERS
 -(void)setupCollectionView
 {
+    [UICollectionView setupBorder:self.collectionView];
     self.collectionView.delegate = self;
-    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-    self.collectionView.layer.borderWidth = 1.0;
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];

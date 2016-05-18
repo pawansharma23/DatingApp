@@ -13,6 +13,8 @@
 #import "FacebookManager.h"
 #import "User.h"
 #import "UIImage+Additions.h"
+#import "UIButton+Additions.h"
+#import "UIColor+Pandemos.h"
 
 @interface AlbumDetailViewController ()
 <UICollectionViewDataSource,
@@ -21,14 +23,14 @@ FacebookManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
-@property (weak, nonatomic) IBOutlet UIButton *previousButton;
+@property (weak, nonatomic) IBOutlet UIButton *otherAlbumsButton;
 
 @property (strong, nonatomic) NSString *nextURL;
 @property (strong, nonatomic) NSString *previousURL;
 @property (strong, nonatomic) NSString *selectedImage;
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) FacebookManager *manager;
-@property (strong, nonatomic) NSArray *photos;
+@property (strong, nonatomic) NSMutableArray *photos;
 @property (strong, nonatomic) NSArray *albumPages;
 
 @end
@@ -51,8 +53,11 @@ static NSString * const reuseIdentifier = @"FaceCell";
     [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 
-    self.photos = [NSArray new];
+    self.photos = [NSMutableArray new];
     self.albumPages = [NSArray new];
+
+    [UIButton setUpButton:self.nextButton];
+    [UIButton setUpButton:self.otherAlbumsButton];
 
     [self setupCollectionView];
 }
@@ -84,7 +89,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
 {
     FacebookCVCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     Facebook *face = [self.photos objectAtIndex:indexPath.item];
-    cell.image.image = [UIImage imageWithData:[face stringURLToData:face.albumImageURL]];
+    cell.image.image = [UIImage imageWithString:face.albumImageURL];
 
     return cell;
 }
@@ -95,21 +100,43 @@ static NSString * const reuseIdentifier = @"FaceCell";
     [self.manager loadPhotoSource:selectedImage.albumImageID];
 }
 
+#pragma mark -- NAVIGATION
+- (IBAction)onBackButton:(UIBarButtonItem *)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)onOtherFacebookAlbums:(UIButton *)sender
+{
+    [self selectButtonStateForSingleButton:self.otherAlbumsButton];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)onNextButton:(UIButton *)sender
+{
+    [self selectButtonStateForSingleButton:self.nextButton];
+    [self.manager loadNextPage:self.nextURL];
+}
+
+#pragma mark -- SEGUE
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    SelectedImageViewController *sivc = segue.destinationViewController;
+    sivc.image = self.selectedImage;
+}
+
 #pragma mark -- DELEGATES
 -(void)didReceiveParsedAlbum:(NSArray *)album
 {
-    self.photos = album;
+    self.photos = [NSMutableArray arrayWithArray:album];
     [self.collectionView reloadData];
 }
 
 -(void)didReceiveParsedAlbumPaging:(NSArray *)albumPaging
 {
     self.albumPages = albumPaging;
-
     Facebook *nextPage = [self.albumPages firstObject];
-    NSLog(@"next: %@", nextPage.nextPage);
     self.nextURL = nextPage.nextPage;
-
 }
 
 -(void)didReceiveParsedPhotoSource:(NSString *)photoURL
@@ -118,54 +145,39 @@ static NSString * const reuseIdentifier = @"FaceCell";
     [self performSegueWithIdentifier:@"ChooseImage" sender:self];
 }
 
-#pragma mark -- NAV
-- (IBAction)onBackButton:(UIBarButtonItem *)sender
+-(void)didReceiveNextPagePhotos:(NSArray *)nextPhotos
 {
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (IBAction)onOtherFacebookAlbums:(UIButton *)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (IBAction)onNextButton:(UIButton *)sender
-{
-  //  Facebook *face = [self.albumPages firstObject];
-    //pagination need to use a whole different route to call the url, not through FB network
-
-//    [face loadNextPrevPage:self.nextURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
-//    [self onNextPrevPage:self.nextURL];
-    [self.manager loadNextPage:self.nextURL];
-    
+    [self.photos removeAllObjects];
+    self.photos = [NSMutableArray arrayWithArray:nextPhotos];
+    [self deselectButtonStateForSingleButton:self.nextButton];
     [self.collectionView reloadData];
-}
-
-
-- (IBAction)onPreviousButton:(UIButton *)sender
-{
-//    FacebookData *face = [FacebookData new];
-//    [face loadNextPrevPage:self.previousURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
-    //[self onNextPrevPage:self.previousURL];
-}
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    SelectedImageViewController *sivc = segue.destinationViewController;
-    sivc.image = self.selectedImage;
 }
 
 #pragma mark -- HELPERS
 -(void)setupCollectionView
 {
     self.collectionView.delegate = self;
-    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-    self.collectionView.layer.borderWidth = 1.0;
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
     [self.collectionView setCollectionViewLayout:flowLayout];
+
+    self.collectionView.layer.borderWidth = 2;
+    self.collectionView.layer.borderColor = [UIColor mikeGray].CGColor;
+    self.collectionView.layer.cornerRadius = 7;
+}
+
+-(void)selectButtonStateForSingleButton:(UIButton*)button
+{
+    button.backgroundColor = [UIColor blackColor];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+}
+
+-(void)deselectButtonStateForSingleButton:(UIButton*)button
+{
+    button.backgroundColor = [UIColor whiteColor];
+    [button setTitleColor:[UIColor facebookBlue] forState:UIControlStateNormal];
 }
 @end

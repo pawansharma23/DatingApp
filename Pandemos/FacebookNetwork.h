@@ -24,7 +24,7 @@
 -(void)receivedFBAlbumPaging:(NSDictionary *)albumPaging;
 -(void)failedToFetchFBAlbumPaging:(NSError *)error;
 -(void)receivedPhotoSource:(NSDictionary*)facebookPhotoSource;
--(void)receivedNextPage:(NSData*)data;
+-(void)receivedNextPage:(NSArray*)imageArray;
 //-(void)failedToFetchPagnation:(NSError*)error;
 @end
 
