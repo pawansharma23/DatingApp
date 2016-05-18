@@ -44,8 +44,13 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     [super viewDidLoad];
 
     self.currentUser = [User currentUser];
+
     self.navigationItem.title = @"Photo";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
+    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+
     self.pictures = [NSMutableArray new];
     //self.automaticallyAdjustsScrollViewInsets = NO;
 
@@ -74,10 +79,9 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 }
 
 
-#pragma mark -- collectionView delegate Methods
+#pragma mark -- COLLECTIONVIEW DELEGATE
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSLog(@"count: %d", (int)self.pictures.count);
     return self.pictures.count;
 }
 
@@ -155,6 +159,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
     }
 }
+- (IBAction)onBackButton:(UIBarButtonItem *)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (IBAction)onAddAnother:(UIButton *)sender
 {
@@ -166,11 +174,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 {
     if (images)
     {
-        NSLog(@"images from delegate in VC: %@", images);
-
         NSMutableArray *mutArr = [NSMutableArray arrayWithArray:images];
         self.pictures = mutArr;
     }
+
     [self.collectionView reloadData];
 }
 

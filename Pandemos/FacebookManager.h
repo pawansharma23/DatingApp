@@ -29,6 +29,7 @@
 -(void)didReceiveParsedAlbumPaging:(NSArray *)albumPaging;
 -(void)failedToReceiveParsedAlbumPaging:(NSError *)error;
 -(void)didReceiveParsedPhotoSource:(NSString*)photoURL;
+-(void)didReceiveNextPagePhotos:(NSArray*)nextPhotos;
 @end
 
 @interface FacebookManager : NSObject<FacebookNetworkDelegate>
@@ -52,4 +53,5 @@
 -(void)loadParsedFBPhotoAlbums;
 -(void)loadParsedFBAlbum:(NSString *)albumID;
 -(void)loadPhotoSource:(NSString *)photoSource;
+-(void)loadNextPage:(NSString *)nextPageURL;
 @end

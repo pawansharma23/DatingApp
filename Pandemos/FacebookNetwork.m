@@ -10,6 +10,7 @@
 #import "User.h"
 #import <FBSDKGraphRequestConnection.h>
 #import <FBSDKGraphRequest.h>
+#import <AFNetworking.h>
 
 @implementation FacebookNetwork
 
@@ -110,4 +111,61 @@
         }
     }];
 }
+
+-(void)loadNextPrevPage:(NSString *)pageURLString
+{
+    NSURL *URL = [NSURL URLWithString:pageURLString];
+    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    NSURLSessionDataTask *dTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, NSData *data , NSError * _Nullable error) {
+
+        if (!response)
+        {
+            NSLog(@"error: %@", error);
+            //[self.delegate failedToFetchPagnation:error];
+        }
+        else
+        {
+            [self parsePageData:data];
+            [self.delegate receivedNextPage:data];
+        }
+    }];
+
+    [dTask resume];
+}
+#pragma mark -- PRIVATE METHODS
+-(void)parsePageData:(NSData*)data
+{
+    //remove the current images from the collectionview array
+    //            [mutArray removeAllObjects];
+    //
+    NSError *error = nil;
+    NSDictionary *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSArray *dataFromJSON = objects[@"data"];
+
+    for (NSDictionary *sourceURL in dataFromJSON)
+    {
+        NSLog(@"%@", sourceURL[@"next"]);
+    }
+    //parse through the data like the detail photo albums does
+
+
+    NSDictionary *paging = objects[@"paging"];
+    NSString *next = paging[@"next"];
+    NSString *previous = paging[@"previous"];
+
+    if (next)
+    {
+        //self.nextPage = paging[@"next"];
+    }
+
+    if (previous)
+    {
+        //self.previousPage = paging[@"previous"];
+    }
+    //    parse data
+}
+
 @end

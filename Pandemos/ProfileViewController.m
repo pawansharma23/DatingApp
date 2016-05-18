@@ -31,29 +31,30 @@ LXReorderableCollectionViewDataSource,
 UIPopoverPresentationControllerDelegate,
 UserManagerDelegate>
 
-@property (weak, nonatomic) IBOutlet UIImageView *appLogo;
+
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
 
 @property (weak, nonatomic) IBOutlet UILabel *minimumAgeLabel;
-@property (weak, nonatomic) IBOutlet UISlider *minimumAgeSlider;
-@property (weak, nonatomic) IBOutlet UISlider *maximumAgeSlider;
 @property (weak, nonatomic) IBOutlet UILabel *maximumAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
-@property (weak, nonatomic) IBOutlet UIButton *menButton;
-@property (weak, nonatomic) IBOutlet UIButton *womenButton;
-@property (weak, nonatomic) IBOutlet UIButton *bothButton;
 @property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
-@property (weak, nonatomic) IBOutlet UISlider *milesAwaySlider;
 
 @property (weak, nonatomic) IBOutlet UILabel *jobLabel;
+@property (weak, nonatomic) IBOutlet UIButton *SwapAddPhotoButton;
 @property (weak, nonatomic) IBOutlet UILabel *educationLabel;
 @property (weak, nonatomic) IBOutlet UIButton *feedbackButton;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
-@property (weak, nonatomic) IBOutlet UISwitch *publicProfileSwitch;
+@property (weak, nonatomic) IBOutlet UIButton *menButton;
+@property (weak, nonatomic) IBOutlet UIButton *womenButton;
+@property (weak, nonatomic) IBOutlet UIButton *bothButton;
 @property (weak, nonatomic) IBOutlet UIButton *logoutButton;
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
+@property (weak, nonatomic) IBOutlet UISwitch *publicProfileSwitch;
+@property (weak, nonatomic) IBOutlet UISlider *milesAwaySlider;
+@property (weak, nonatomic) IBOutlet UISlider *minimumAgeSlider;
+@property (weak, nonatomic) IBOutlet UISlider *maximumAgeSlider;
 
 @property (strong, nonatomic) NSString *aboutMe;
 @property (strong, nonatomic) NSString *sexPref;
@@ -79,56 +80,24 @@ UserManagerDelegate>
     if (self.currentUser)
     {
         self.locationLabel.text = self.cityAndState;
-
         self.navigationItem.title = @"Settings";
         self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-        self.profileImages = [NSMutableArray new];
 
-        UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back-100"] scaledToSize:CGSizeMake(25.0, 25.0)];
+        UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
         [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
-        self.navigationItem.leftBarButtonItem.tintColor = [UIColor darkGrayColor];
+        self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+        self.navigationItem.rightBarButtonItem.tintColor = [UIColor mikeGray];
 
-        //self.automaticallyAdjustsScrollViewInsets = NO;
+        self.profileImages = [NSMutableArray new];
         self.scrollView.delegate = self;
         self.collectionView.delegate = self;
         self.textViewAboutMe.delegate = self;
 
         [self setFlowLayout];
 
-        [UIButton setUpButton:self.menButton];
-        [UIButton setUpButton:self.womenButton];
-        [UIButton setUpButton:self.bothButton];
-        [UIButton setUpButton:self.logoutButton];
-        [UIButton setUpButton:self.deleteButton];
-        [UIButton setUpButton:self.shareButton];
-        [UIButton setUpButton:self.feedbackButton];
-
-        self.textViewAboutMe.layer.cornerRadius = 10;
-        [self.textViewAboutMe.layer setBorderWidth:1.0];
-        [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
+        [self setupButtonsAndTextView];
     }
 }
-
-//- (NSArray <UICollectionViewLayoutAttributes*> *) layoutAttributesForElementsInRect:(CGRect)rect
-//{
-//    NSArray *answer = [super layoutAttributesForElementsInRect:rect];
-//
-//    for(int i = 1; i < [answer count]; ++i)
-//    {
-//        UICollectionViewLayoutAttributes *currentLayoutAttributes = answer[i];
-//        UICollectionViewLayoutAttributes *prevLayoutAttributes = answer[i - 1];
-//        NSInteger maximumSpacing = 4;
-//        NSInteger origin = CGRectGetMaxX(prevLayoutAttributes.frame);
-//
-//        if(origin + maximumSpacing + currentLayoutAttributes.frame.size.width < self.collectionView.contentSize.width)
-//        {
-//            CGRect frame = currentLayoutAttributes.frame;
-//            frame.origin.x = origin + maximumSpacing;
-//            currentLayoutAttributes.frame = frame;
-//        }
-//    }
-//    return answer;
-//}
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -185,6 +154,11 @@ UserManagerDelegate>
 }
 
 #pragma mark -- COLLECTIONVIEW DELEGATE
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    return CGSizeMake(0, 0);
+}
+
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return self.profileImages.count;
@@ -280,14 +254,16 @@ UserManagerDelegate>
     [self changeButtonState:self.bothButton sexString:@"male female" otherButton1:self.menButton otherButton2:self.womenButton];
 }
 
+- (IBAction)onSwapButton:(UIButton *)sender
+{
+    [self changeButtonStateForSingleButton:self.SwapAddPhotoButton];
+}
+
 //5) Miles away
 - (IBAction)milesAwaySlider:(UISlider *)sender
 {
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesAwaySlider.value];
-
-
     NSLog(@"miles away string to save: %@", milesAwayStr);
-
 
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
     self.milesAwayLabel.text = milesAway;
@@ -436,9 +412,24 @@ UserManagerDelegate>
 
 
 #pragma mark -- HELPERS
+-(void)setupButtonsAndTextView
+{
+    [UIButton setUpButton:self.menButton];
+    [UIButton setUpButton:self.womenButton];
+    [UIButton setUpButton:self.bothButton];
+    [UIButton setUpButton:self.logoutButton];
+    [UIButton setUpButton:self.deleteButton];
+    [UIButton setUpButton:self.shareButton];
+    [UIButton setUpButton:self.feedbackButton];
+    [UIButton setUpButton:self.SwapAddPhotoButton];
+
+    self.textViewAboutMe.layer.cornerRadius = 10;
+    [self.textViewAboutMe.layer setBorderWidth:1.0];
+    [self.textViewAboutMe.layer setBorderColor:[UIColor grayColor].CGColor];
+}
+
 -(void)setFlowLayout
 {
-
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
 
     layout.minimumInteritemSpacing = 10;
@@ -521,6 +512,12 @@ UserManagerDelegate>
     }
 }
 
+-(void)changeButtonStateForSingleButton:(UIButton*)button
+{
+    button.backgroundColor = [UIColor blackColor];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+}
+
 -(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2
 {
     button.backgroundColor = [UIColor blackColor];
@@ -573,10 +570,3 @@ UserManagerDelegate>
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 @end
-
-
-
-
-
-
-

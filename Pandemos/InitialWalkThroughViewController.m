@@ -38,6 +38,7 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *maxAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationlabel;
 @property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
+
 @property (weak, nonatomic) IBOutlet UIButton *facebookAlbumBUtton;
 @property (weak, nonatomic) IBOutlet UIButton *mensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *womensInterestButton;
@@ -179,8 +180,11 @@ UserManagerDelegate>
     [self performSegueWithIdentifier:@"Suggestions" sender:self];
 }
 
-- (IBAction)onImagesFromPhone:(UIButton *)sender {
+- (IBAction)onImagesFromPhone:(UIButton *)sender
+{
+
 }
+
 #pragma mark -- AGE SLIDERS
 - (IBAction)minSliderChange:(UISlider *)sender
 {
@@ -200,7 +204,6 @@ UserManagerDelegate>
     [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
     [self.currentUser saveInBackground];
 }
-
 
 #pragma mark -- Distance Away Slider
 - (IBAction)sliderValueChanged:(UISlider *)sender
@@ -423,14 +426,6 @@ UserManagerDelegate>
     [self.currentUser setObject:@"public" forKey:@"publicProfile"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         NSLog(@"saved min/max age preference: milesAway: %d", succeeded ? true : false);
-    }];
-}
-
-- (IBAction)onEmptyImagesFromParse:(UIButton *)sender
-{
-    [self.currentUser removeObjectForKey:@"profileImages"];
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        NSLog(@"deleted profileImage array successfully: %d", succeeded ? true : false);
     }];
 }
 

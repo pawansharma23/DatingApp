@@ -114,6 +114,11 @@
     }];
 }
 
+-(void)loadNextPage:(NSString *)nextPageURL
+{
+    [self.facebookNetworker loadNextPrevPage:nextPageURL];
+}
+
 #pragma mark -- FACEBOOK NETWORK DELEGATE
 -(void)receivedFBThumbnail:(NSDictionary *)facebookThumbnails
 {
@@ -238,6 +243,12 @@
 -(void)receivedPhotoSource:(NSDictionary *)facebookPhotoSource
 {
     [self.delegate didReceiveParsedPhotoSource:facebookPhotoSource[@"source"]];
+}
+
+-(void)receivedNextPage:(NSData *)data
+{
+
+    [self.delegate didReceiveNextPagePhotos:@"new array parsed and ready"];
 }
 
 #pragma mark -- HELPERS

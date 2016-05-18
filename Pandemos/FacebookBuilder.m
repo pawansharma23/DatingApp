@@ -215,15 +215,19 @@
     if (paging)
     {
         Facebook *face = [Facebook new];
-        if (paging[@"next"])
+        NSString *next = paging[@"next"];
+        NSString *prev = paging[@"previous"];
+
+        if (next)
         {
-            face.nextPage = paging[@"next"];
+            face.nextPage = next;
         }
         
-        if (paging[@"previous"])
+        if (prev)
         {
-            face.previousPage = paging[@"previous"];
+            face.previousPage = prev;
         }
+
         [parsedPagingData addObject:face];
     }
     

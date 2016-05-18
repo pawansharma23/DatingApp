@@ -12,6 +12,7 @@
 #import "Facebook.h"
 #import "FacebookManager.h"
 #import "User.h"
+#import "UIImage+Additions.h"
 
 @interface AlbumDetailViewController ()
 <UICollectionViewDataSource,
@@ -42,25 +43,22 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
     self.currentUser = [User currentUser];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationItem.title = self.albumName;
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
+    self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
+
+    self.navigationItem.title = self.albumName;
+    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+
     self.photos = [NSArray new];
     self.albumPages = [NSArray new];
 
-    self.collectionView.delegate = self;
-    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-    self.collectionView.layer.borderWidth = 1.0;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
-
-    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setItemSize:CGSizeMake(100, 100)];
-    [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-    [self.collectionView setCollectionViewLayout:flowLayout];
+    [self setupCollectionView];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-
     if (self.currentUser)
     {
         self.manager = [FacebookManager new];
@@ -107,8 +105,11 @@ static NSString * const reuseIdentifier = @"FaceCell";
 -(void)didReceiveParsedAlbumPaging:(NSArray *)albumPaging
 {
     self.albumPages = albumPaging;
+
     Facebook *nextPage = [self.albumPages firstObject];
     NSLog(@"next: %@", nextPage.nextPage);
+    self.nextURL = nextPage.nextPage;
+
 }
 
 -(void)didReceiveParsedPhotoSource:(NSString *)photoURL
@@ -118,10 +119,9 @@ static NSString * const reuseIdentifier = @"FaceCell";
 }
 
 #pragma mark -- NAV
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (IBAction)onBackButton:(UIBarButtonItem *)sender
 {
-    SelectedImageViewController *sivc = segue.destinationViewController;
-    sivc.image = self.selectedImage;
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)onOtherFacebookAlbums:(UIButton *)sender
@@ -136,6 +136,8 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
 //    [face loadNextPrevPage:self.nextURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
 //    [self onNextPrevPage:self.nextURL];
+    [self.manager loadNextPage:self.nextURL];
+    
     [self.collectionView reloadData];
 }
 
@@ -146,53 +148,24 @@ static NSString * const reuseIdentifier = @"FaceCell";
 //    [face loadNextPrevPage:self.previousURL withPhotoArray:self.pictureArray andCollectionView:self.collectionView];
     //[self onNextPrevPage:self.previousURL];
 }
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    SelectedImageViewController *sivc = segue.destinationViewController;
+    sivc.image = self.selectedImage;
+}
+
+#pragma mark -- HELPERS
+-(void)setupCollectionView
+{
+    self.collectionView.delegate = self;
+    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
+    self.collectionView.layer.borderWidth = 1.0;
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    [flowLayout setItemSize:CGSizeMake(100, 100)];
+    [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+    [self.collectionView setCollectionViewLayout:flowLayout];
+}
 @end
-
-//-(void)loadNextPrevPage:(NSString *)pageURLString withPhotoArray:(NSMutableArray *)mutArray andCollectionView:(UICollectionView *)collectionView
-//{
-//    NSURL *URL = [NSURL URLWithString:pageURLString];
-//    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-//    NSURLSessionDataTask *dTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, NSData *data , NSError * _Nullable error) {
-//
-//        if (!response)
-//        {
-//            NSLog(@"error: %@", error);
-//        }
-//        else
-//        {
-//            //remove the current images from the collectionview array
-//            [mutArray removeAllObjects];
-//
-//            NSDictionary *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//            //NSArray *dataFromJSON = objects[@"data"];
-//            NSDictionary *paging = objects[@"paging"];
-//            NSString *next = paging[@"next"];
-//            NSString *previous = paging[@"previous"];
-//
-//            if (next)
-//            {
-//                self.nextPage = paging[@"next"];
-//            }
-//
-//            if (previous)
-//            {
-//                self.previousPage = paging[@"previous"];
-//            }
-//            [collectionView setContentOffset:CGPointZero animated:YES];
-//
-//        }
-//    }];
-//    
-//    [dTask resume];
-//}
-
-
-
-
-
-
-
-

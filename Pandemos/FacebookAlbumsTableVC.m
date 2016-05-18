@@ -9,6 +9,7 @@
 #import "FacebookTableViewCell.h"
 #import "AlbumDetailViewController.h"
 #import "UIColor+Pandemos.h"
+#import "UIImage+Additions.h"
 #import "Facebook.h"
 #import "FacebookManager.h"
 #import "User.h"
@@ -31,14 +32,18 @@
     self.navigationItem.title = @"Facebook Albums";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 
+    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+    //self.navigationItem.rightBarButtonItem.tintColor = [UIColor mikeGray];
+
+
     self.albums = [NSArray new];
     self.currentUser = [User currentUser];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [self addBackButtonWithTitle:@"Back"];
-
     if (self.currentUser)
     {
         self.manager = [FacebookManager new];
@@ -53,6 +58,7 @@
     }
 }
 
+#pragma mark -- TABLEVIEW DELEGATES
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return @"Album:";
@@ -84,32 +90,25 @@
     Facebook *selectedPath = [self.albums objectAtIndex:indexPath.row];
     self.albumId = selectedPath.albumId;
     self.albumName = selectedPath.albumName;
-    NSLog(@"album path selected to push on %@", self.albumId);
 
     [self performSegueWithIdentifier:@"AlbumDetail" sender:self];
 }
 
+#pragma mark -- NAV
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
      if([segue.identifier isEqualToString:@"AlbumDetail"])
     {
         AlbumDetailViewController *advc = segue.destinationViewController;
-        NSLog(@"segueing: this: %@", self.albumId);
-
         advc.albumID = self.albumId;
         advc.albumName = self.albumName;
     }
 }
 
-- (void)addBackButtonWithTitle:(NSString *)title
+- (IBAction)onBackButtonPressed:(UIBarButtonItem *)sender
 {
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(backButtonPressed)];
-    self.navigationItem.leftBarButtonItem = backButton;
-}
-
-- (void)backButtonPressed
-{
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:^{
+    }];
 }
 
 #pragma mark - FACEBOOK MANAGER DELEGATE

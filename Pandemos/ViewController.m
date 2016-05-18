@@ -340,6 +340,22 @@ MDCSwipeToChooseDelegate>
     [self performSegueWithIdentifier:@"Messages" sender:self];
 }
 
+#pragma mark -- NAV
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"Messages"])
+    {
+        NSLog(@"Messages Segue");
+
+    }
+    else if ([segue.identifier isEqualToString:@"Settings"])
+    {
+        ProfileViewController *pvc = segue.destinationViewController;
+        pvc.userFromViewController = self.currentUser;
+        pvc.cityAndState = self.currentCityAndState;
+    }
+}
+
 #pragma mark - USER MANAGER DELEGATE
 -(void)didReceiveUserData:(NSArray *)data
 {
@@ -783,21 +799,6 @@ MDCSwipeToChooseDelegate>
     [self.userImage addGestureRecognizer:swipeLeft];
 }
 
-#pragma mark -- SEGUE
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"Messages"])
-    {
-        NSLog(@"Messages Segue");
-
-    }
-    else if ([segue.identifier isEqualToString:@"Settings"])
-    {
-        ProfileViewController *pvc = segue.destinationViewController;
-        pvc.userFromViewController = self.currentUser;
-        pvc.cityAndState = self.currentCityAndState;
-    }
-}
 
 @end
 
