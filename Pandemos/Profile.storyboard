@@ -305,6 +305,7 @@
                                             </constraint>
                                             <constraint firstItem="oJA-aV-j4F" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="JIf-mO-Hxf"/>
                                             <constraint firstItem="oJA-aV-j4F" firstAttribute="top" secondItem="ylY-XR-z1c" secondAttribute="bottom" constant="8" id="Jpc-Vr-OD5"/>
+                                            <constraint firstAttribute="trailing" secondItem="yfG-Kl-yAT" secondAttribute="trailing" constant="8" id="Kfa-OW-xCr"/>
                                             <constraint firstAttribute="trailing" secondItem="HGx-JF-at7" secondAttribute="trailing" constant="4" id="LFh-Xu-P67">
                                                 <variation key="heightClass=regular-widthClass=compact" constant="5"/>
                                             </constraint>
@@ -322,6 +323,7 @@
                                             <constraint firstItem="gcN-Gc-G5e" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="Uoj-6A-gws"/>
                                             <constraint firstAttribute="trailing" secondItem="sSQ-Ny-hHG" secondAttribute="trailing" constant="8" id="VdH-U9-2wX"/>
                                             <constraint firstItem="sSQ-Ny-hHG" firstAttribute="top" secondItem="3zh-sK-oKJ" secondAttribute="bottom" constant="8" id="XDs-MP-tgw"/>
+                                            <constraint firstItem="yfG-Kl-yAT" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="Ygn-2R-A2C"/>
                                             <constraint firstItem="fWw-6I-8co" firstAttribute="leading" secondItem="0zP-vU-Q1f" secondAttribute="trailing" constant="30" id="Zks-RP-rkC"/>
                                             <constraint firstItem="XSb-d7-zxF" firstAttribute="leading" secondItem="R3R-3P-8eX" secondAttribute="trailing" constant="40" id="aAm-QI-K5U"/>
                                             <constraint firstItem="HGx-JF-at7" firstAttribute="top" secondItem="yfG-Kl-yAT" secondAttribute="bottom" id="aG8-fS-wDT">
@@ -361,8 +363,10 @@
                                         </constraints>
                                         <variation key="default">
                                             <mask key="constraints">
-                                                <exclude reference="IsI-fw-4C2"/>
+                                                <exclude reference="Kfa-OW-xCr"/>
+                                                <exclude reference="Ygn-2R-A2C"/>
                                                 <exclude reference="QDw-4Q-IHU"/>
+                                                <exclude reference="IsI-fw-4C2"/>
                                                 <exclude reference="zfA-p7-zcp"/>
                                                 <exclude reference="1Zq-a7-bTS"/>
                                                 <exclude reference="8Sj-zm-P8a"/>
@@ -371,10 +375,14 @@
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
                                             <mask key="constraints">
-                                                <include reference="IsI-fw-4C2"/>
-                                                <exclude reference="hi5-xo-J9f"/>
+                                                <include reference="Kfa-OW-xCr"/>
+                                                <include reference="Ygn-2R-A2C"/>
+                                                <exclude reference="f1l-wL-3pM"/>
+                                                <exclude reference="kcI-g8-VXf"/>
                                                 <include reference="QDw-4Q-IHU"/>
                                                 <exclude reference="ljt-dl-E8y"/>
+                                                <include reference="IsI-fw-4C2"/>
+                                                <exclude reference="hi5-xo-J9f"/>
                                                 <exclude reference="DFL-qZ-M1M"/>
                                             </mask>
                                         </variation>

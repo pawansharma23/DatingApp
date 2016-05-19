@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2601A33C1CECD8A70041B17F /* UICollectionView+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 2601A33B1CECD8A70041B17F /* UICollectionView+Pandemos.m */; };
+		2601A3401CEDF55F0041B17F /* SelectedImage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2601A33F1CEDF55F0041B17F /* SelectedImage.storyboard */; };
 		260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 260317B91CE2338800C37C67 /* MessagerProfileVC.m */; };
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
@@ -91,6 +92,7 @@
 		06C994192A4EB211C11A44D2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		2601A33A1CECD8A70041B17F /* UICollectionView+Pandemos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+Pandemos.h"; sourceTree = "<group>"; };
 		2601A33B1CECD8A70041B17F /* UICollectionView+Pandemos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+Pandemos.m"; sourceTree = "<group>"; };
+		2601A33F1CEDF55F0041B17F /* SelectedImage.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = SelectedImage.storyboard; sourceTree = "<group>"; };
 		260317B81CE2338800C37C67 /* MessagerProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagerProfileVC.h; sourceTree = "<group>"; };
 		260317B91CE2338800C37C67 /* MessagerProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagerProfileVC.m; sourceTree = "<group>"; };
 		260799051C29CB4600B364C8 /* RangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeSlider.h; sourceTree = "<group>"; };
@@ -502,6 +504,7 @@
 				26AC546B1CAF1A63005AD536 /* Messaging.storyboard */,
 				26AC546D1CAF1B3C005AD536 /* Profile.storyboard */,
 				2653C0471CE0E3D000DDBD65 /* UserDetail.storyboard */,
+				2601A33F1CEDF55F0041B17F /* SelectedImage.storyboard */,
 			);
 			name = Storyboards;
 			sourceTree = "<group>";
@@ -761,6 +764,7 @@
 				26AC54661CAF13A9005AD536 /* InitialSetup.storyboard in Resources */,
 				268BA0991C1DB53F0054414E /* LaunchScreen.storyboard in Resources */,
 				2655A47E1CE920A800838853 /* MatchView.xib in Resources */,
+				2601A3401CEDF55F0041B17F /* SelectedImage.storyboard in Resources */,
 				268BA0961C1DB53F0054414E /* Assets.xcassets in Resources */,
 				26AC546E1CAF1B3C005AD536 /* Profile.storyboard in Resources */,
 				26AC54681CAF1651005AD536 /* FacebookAlbums.storyboard in Resources */,

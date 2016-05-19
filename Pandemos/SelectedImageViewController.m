@@ -53,14 +53,21 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 
     self.pictures = [NSMutableArray new];
-    //self.automaticallyAdjustsScrollViewInsets = NO;
 
-    self.userImage.image = [UIImage imageWithString:self.image];
-    [UIImageView setupFullSizedImage:self.userImage];
+    if (self.fromCamera == YES)
+    {
+        self.userImage.image = [UIImage imageWithData:self.imageAsData];
+    }
+    else
+    {
+        self.userImage.image = [UIImage imageWithString:self.image];
+        [UIImageView setupFullSizedImage:self.userImage];
+    }
 
     [UIButton setUpButton:self.saveImage];
 
-    [self setupCollectionView];
+    [UICollectionView setupBorder:self.collectionView];
+    [self setupCollectionViewFlowLayout];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -183,12 +190,8 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 }
 
 #pragma mark -- HELPERS
--(void)setupCollectionView
+-(void)setupCollectionViewFlowLayout
 {
-    [UICollectionView setupBorder:self.collectionView];
-    self.collectionView.delegate = self;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
-
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];

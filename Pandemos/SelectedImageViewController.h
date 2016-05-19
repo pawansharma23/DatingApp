@@ -11,4 +11,6 @@
 @interface SelectedImageViewController : UIViewController
 
 @property (strong, nonatomic) NSString *image;
+@property (strong, nonatomic) NSData *imageAsData;
+@property BOOL fromCamera;
 @end

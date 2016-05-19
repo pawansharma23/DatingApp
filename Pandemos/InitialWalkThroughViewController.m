@@ -21,13 +21,18 @@
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
 #import "UITextView+Additions.h"
+#import "SelectedImageViewController.h"
 
 @interface InitialWalkThroughViewController ()<
 CLLocationManagerDelegate,
 UITextViewDelegate,
 UIScrollViewDelegate,
 FacebookManagerDelegate,
-UserManagerDelegate>
+UserManagerDelegate,
+UIImagePickerControllerDelegate>
+{
+    UIImagePickerController *ipc;
+}
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UITextView *textViewAboutMe;
@@ -55,6 +60,8 @@ UserManagerDelegate>
 
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
 @property (strong, nonatomic) NSString *userGender;
+@property (strong, nonatomic) NSString *cameraImage;
+@property (strong, nonatomic) NSData *dataImage;
 @end
 
 @implementation InitialWalkThroughViewController
@@ -175,14 +182,87 @@ UserManagerDelegate>
     }
 }
 
+#pragma mark -- NAV
 - (IBAction)onSuggestionsTapped:(UIButton *)sender
 {
     [self performSegueWithIdentifier:@"Suggestions" sender:self];
 }
+- (IBAction)onFacebookAlbumsTapped:(UIButton *)sender
+{
+    [self performSegueWithIdentifier:@"FacebookAlbums" sender:self];
+}
+
 
 - (IBAction)onImagesFromPhone:(UIButton *)sender
 {
+    ipc = [[UIImagePickerController alloc] init];
+    ipc.delegate = (id)self;
 
+    UIAlertController *alertController = [UIAlertController
+                                          alertControllerWithTitle:nil
+                                          message:nil
+                                          preferredStyle:UIAlertControllerStyleActionSheet];
+
+    UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action)
+                                   {
+                                       ipc.sourceType = UIImagePickerControllerSourceTypeCamera;
+                                       [self presentViewController:ipc animated:YES completion:nil];
+                                   }];
+
+    UIAlertAction *libraryAction = [UIAlertAction actionWithTitle:@"Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action)
+                                    {
+                                        ipc.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                                        [self presentViewController:ipc animated:YES completion:nil];
+                                    }];
+
+    UIAlertAction *savedPhotosAction = [UIAlertAction actionWithTitle:@"Saved" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action)
+                                        {
+                                            ipc.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+                                            [self presentViewController:ipc animated:YES completion:nil];
+                                        }];
+
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+    [alertController addAction:cameraAction];
+    [alertController addAction:libraryAction];
+    [alertController addAction:savedPhotosAction];
+    [alertController addAction:cancelAction];
+
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
+    UIImage *orginalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    //UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
+    //set image no need to scale _profilePicture.image = scaledImage;
+    //_backgroundProfileView.image = scaledImage;
+
+    if (orginalImage)
+    {
+
+        self.dataImage = [[NSData alloc] init];
+        self.dataImage = UIImagePNGRepresentation(orginalImage);
+        //conversion of nsdata to string self.cameraImage = [dataImage base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    }
+
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+}
+
+#pragma mark -- SEGUE
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"ChooseImage"])
+    {
+        SelectedImageViewController *sivc = segue.destinationViewController;
+        sivc.imageAsData = self.dataImage;
+    }
+}
+-
+(IBAction)onContinueTapped:(UIButton *)sender
+{
+    [self performSegueWithIdentifier:@"ConfidantEmail" sender:self];
 }
 
 #pragma mark -- AGE SLIDERS
@@ -246,9 +326,6 @@ UserManagerDelegate>
     [self.currentUser setObject:@"male female" forKey:@"sexPref"];
     [self.currentUser saveInBackground];
 }
-
-#pragma mark -- SEGUE
-
 
 #pragma mark -- PUSH NOTIFICATIONS
 - (IBAction)pushNotificationsOnOff:(UISwitch *)sender
@@ -344,8 +421,11 @@ UserManagerDelegate>
     [UIButton setUpButton:self.bothSexesButton];
     [UIButton setUpButton:self.suggestionsButton];
     [UIButton setUpButton:self.continueButton];
-    [UIButton setUpButton:self.facebookAlbumBUtton];
     [UIButton setUpButton:self.imagesFromPhoneButton];
+    self.facebookAlbumBUtton.layer.cornerRadius = 16.0 / 2.0;
+    self.facebookAlbumBUtton.clipsToBounds = YES;
+    [self.facebookAlbumBUtton.layer setBorderWidth:1.0];
+    [self.facebookAlbumBUtton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [UITextView setup:self.textViewAboutMe];
 }
 

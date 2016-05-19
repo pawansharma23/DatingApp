@@ -13,6 +13,7 @@
 
 +(void)setupBorder:(UICollectionView *)collectionView
 {
+    collectionView.backgroundColor = [UIColor whiteColor];
     collectionView.layer.borderWidth = 2;
     collectionView.layer.borderColor = [UIColor mikeGray].CGColor;
     collectionView.layer.cornerRadius = 7;

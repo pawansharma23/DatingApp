@@ -15,6 +15,7 @@
 #import "UIImage+Additions.h"
 #import "UIButton+Additions.h"
 #import "UIColor+Pandemos.h"
+#import "UICollectionView+Pandemos.h"
 
 @interface AlbumDetailViewController ()
 <UICollectionViewDataSource,
@@ -24,6 +25,7 @@ FacebookManagerDelegate>
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 @property (weak, nonatomic) IBOutlet UIButton *otherAlbumsButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
 
 @property (strong, nonatomic) NSString *nextURL;
 @property (strong, nonatomic) NSString *previousURL;
@@ -46,11 +48,9 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.currentUser = [User currentUser];
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
-    self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
-
     self.navigationItem.title = self.albumName;
-    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+
+    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 
     self.photos = [NSMutableArray new];
@@ -59,7 +59,9 @@ static NSString * const reuseIdentifier = @"FaceCell";
     [UIButton setUpButton:self.nextButton];
     [UIButton setUpButton:self.otherAlbumsButton];
 
-    [self setupCollectionView];
+    self.collectionView.delegate = self;
+    [UICollectionView setupBorder:self.collectionView];
+    [self setupCollectionViewFlowLayout];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -121,8 +123,14 @@ static NSString * const reuseIdentifier = @"FaceCell";
 #pragma mark -- SEGUE
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    SelectedImageViewController *sivc = segue.destinationViewController;
-    sivc.image = self.selectedImage;
+    if ([segue.identifier isEqualToString:@"ChooseImage"])
+    {
+        //NSLog(@"class: %d", [self.selectedImage isKindOfClass:[NSString class]]);
+        NSLog(@"class: %@", [[self.selectedImage class] description]);
+
+        SelectedImageViewController *sivc = segue.destinationViewController;
+        sivc.image = self.selectedImage;
+    }
 }
 
 #pragma mark -- DELEGATES
@@ -154,19 +162,12 @@ static NSString * const reuseIdentifier = @"FaceCell";
 }
 
 #pragma mark -- HELPERS
--(void)setupCollectionView
+-(void)setupCollectionViewFlowLayout
 {
-    self.collectionView.delegate = self;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
-
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     [flowLayout setItemSize:CGSizeMake(100, 100)];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
     [self.collectionView setCollectionViewLayout:flowLayout];
-
-    self.collectionView.layer.borderWidth = 2;
-    self.collectionView.layer.borderColor = [UIColor mikeGray].CGColor;
-    self.collectionView.layer.cornerRadius = 7;
 }
 
 -(void)selectButtonStateForSingleButton:(UIButton*)button

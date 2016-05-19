@@ -23,7 +23,7 @@
                                     <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4D1-bi-eRO">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="736"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Minimum Age" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="47n-wU-qo1">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Minimum Age:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="47n-wU-qo1">
                                                 <rect key="frame" x="8" y="384" width="584" height="18"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="18" id="OZ1-Zv-Kmr"/>
@@ -38,7 +38,7 @@
                                                     <action selector="minSliderChange:" destination="gBc-PO-3iR" eventType="valueChanged" id="MOw-mq-WQQ"/>
                                                 </connections>
                                             </slider>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Maximum Age" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lte-GJ-n5S">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Maximum Age:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lte-GJ-n5S">
                                                 <rect key="frame" x="8" y="438" width="584" height="18"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="18" id="zBU-gv-Srg"/>
@@ -65,7 +65,7 @@
                                                     <action selector="maxSliderChange:" destination="gBc-PO-3iR" eventType="valueChanged" id="POK-ri-dBr"/>
                                                 </connections>
                                             </slider>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Show" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2L3-mj-WBQ">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Show:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2L3-mj-WBQ">
                                                 <rect key="frame" x="8" y="494" width="584" height="18"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="18" id="arB-Ge-mbM"/>
@@ -150,7 +150,7 @@
                                                     <rect key="frame" x="270" y="698" width="110" height="30"/>
                                                 </variation>
                                                 <connections>
-                                                    <segue destination="PGV-jq-rCo" kind="show" id="4c7-Y8-g0a"/>
+                                                    <action selector="onContinueTapped:" destination="gBc-PO-3iR" eventType="touchUpInside" id="Ou6-yc-Geh"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EDQ-4r-tdp">
@@ -164,7 +164,6 @@
                                                 </state>
                                                 <connections>
                                                     <action selector="onSuggestionsTapped:" destination="gBc-PO-3iR" eventType="touchUpInside" id="IyH-DR-HtI"/>
-                                                    <segue destination="OAs-xZ-Osr" kind="presentation" identifier="Suggestions" id="PmO-8S-iXf"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VXe-ak-FRe">
@@ -195,13 +194,13 @@
                                                     </mask>
                                                 </variation>
                                                 <connections>
-                                                    <segue destination="Pgz-5d-W3Q" kind="show" id="o7r-jU-1kF"/>
+                                                    <action selector="onFacebookAlbumsTapped:" destination="gBc-PO-3iR" eventType="touchUpInside" id="rr9-Qw-xo7"/>
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add up to six images to your profile:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YBf-Q6-kEa">
                                                 <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Rw-gn-qH8">
@@ -395,6 +394,10 @@
                         <outlet property="suggestionsButton" destination="EDQ-4r-tdp" id="kZo-QL-rP0"/>
                         <outlet property="textViewAboutMe" destination="VBp-cY-1EY" id="Ek0-Jy-HIV"/>
                         <outlet property="womensInterestButton" destination="Aan-dq-i8y" id="O5L-lg-wxI"/>
+                        <segue destination="aFw-9W-iLK" kind="show" identifier="ChooseImage" id="aR1-he-IFi"/>
+                        <segue destination="OAs-xZ-Osr" kind="show" identifier="Suggestions" id="hSx-UW-4cP"/>
+                        <segue destination="Pgz-5d-W3Q" kind="show" identifier="FacebookAlbums" id="Bwh-PA-4Xi"/>
+                        <segue destination="PGV-jq-rCo" kind="show" identifier="ConfidantEmail" id="Vxf-ND-ukB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CAM-5Z-RNY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -415,7 +418,15 @@
                 <viewControllerPlaceholder storyboardName="FacebookAlbums" id="Pgz-5d-W3Q" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fdo-Ex-B1I" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2719.5" y="-584.25"/>
+            <point key="canvasLocation" x="2676" y="-651.75"/>
+        </scene>
+        <!--SelectedImage-->
+        <scene sceneID="Plt-x1-BwE">
+            <objects>
+                <viewControllerPlaceholder storyboardName="SelectedImage" id="aFw-9W-iLK" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ukI-fo-90n" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2676.75" y="-586.5"/>
         </scene>
         <!--Friend Email View Controller-->
         <scene sceneID="ryh-v2-oGi">
@@ -470,7 +481,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kNY-zk-PL4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3360" y="-406.5"/>
+            <point key="canvasLocation" x="3139.5" y="-443.25"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="o9r-5a-Vx9">

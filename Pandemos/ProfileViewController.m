@@ -17,6 +17,7 @@
 #import "FacebookManager.h"
 #import "UserManager.h"
 #import "UIImage+Additions.h"
+#import "UICollectionView+Pandemos.h"
 
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
@@ -90,11 +91,12 @@ UserManagerDelegate>
 
         self.profileImages = [NSMutableArray new];
         self.scrollView.delegate = self;
-        self.collectionView.delegate = self;
         self.textViewAboutMe.delegate = self;
 
-        [self.scrollView setContentInset:UIEdgeInsetsMake(-20, 0, 0, 0)];
+//isnt working need to take the top off         [self.scrollView setContentInset:UIEdgeInsetsMake(-20, 0, 0, 0)];
 
+        [UICollectionView setupBorder:self.collectionView];
+        self.collectionView.delegate = self;
         [self setFlowLayout];
 
         [self setupButtonsAndTextView];
@@ -106,6 +108,8 @@ UserManagerDelegate>
     [super viewDidAppear:YES];
 
     [self setupManagersProfileVC];
+
+    [UIButton setUpButton:self.SwapAddPhotoButton];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -433,7 +437,6 @@ UserManagerDelegate>
 -(void)setFlowLayout
 {
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
-
     layout.minimumInteritemSpacing = 10;
     layout.minimumLineSpacing = 2;
 
@@ -442,10 +445,6 @@ UserManagerDelegate>
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
     flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
     [self.collectionView setCollectionViewLayout:flowlayouts];
-
-    self.collectionView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor grayColor]);
-    self.collectionView.layer.borderWidth = 1.0;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
 }
 
 -(void)setupManagersProfileVC

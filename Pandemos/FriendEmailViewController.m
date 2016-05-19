@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import "User.h"
 #import "UIColor+Pandemos.h"
+#import "UIImage+Additions.h"
 
 @interface FriendEmailViewController ()
 <UITextFieldDelegate>
@@ -30,8 +31,11 @@
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 
     self.emailTextField.delegate = self;
-    self.currentUser = [PFUser currentUser];
+    self.currentUser = [User currentUser];
 
+    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 }
 
 
