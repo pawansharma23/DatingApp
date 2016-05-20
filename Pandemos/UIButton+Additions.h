@@ -13,6 +13,7 @@
 +(UIButton*)circleButtonEdges:(UIButton *)button;
 +(void)setUpButton:(UIButton *)button;
 +(void)changeButtonState:(UIButton *)button;
++(void)changeButtonStateForSingleButton:(UIButton*)button;
 +(void)changeOtherButton:(UIButton *)button;
 +(void)acceptButton:(UIButton *)button;
 +(void)denyButton:(UIButton *)button;

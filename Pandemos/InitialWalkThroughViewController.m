@@ -243,7 +243,6 @@ UIImagePickerControllerDelegate>
 
         self.dataImage = [[NSData alloc] init];
         self.dataImage = UIImagePNGRepresentation(orginalImage);
-        //conversion of nsdata to string self.cameraImage = [dataImage base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -255,8 +254,9 @@ UIImagePickerControllerDelegate>
 {
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
-        SelectedImageViewController *sivc = segue.destinationViewController;
-        sivc.imageAsData = self.dataImage;
+
+        //SelectedImageViewController *sivc = segue.destinationViewController;
+        //sivc.imageAsData = self.dataImage;
     }
 }
 -
@@ -411,6 +411,11 @@ UIImagePickerControllerDelegate>
 -(void)failedToFetchUserData:(NSError *)error
 {
     NSLog(@"failed to fetch Data: %@", error);
+}
+
+-(void)didReceiveProfileImageData:(NSData *)data
+{
+    NSLog(@"stop here");
 }
 
 #pragma mark -- HELPERS

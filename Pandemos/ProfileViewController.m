@@ -93,8 +93,6 @@ UserManagerDelegate>
         self.scrollView.delegate = self;
         self.textViewAboutMe.delegate = self;
 
-//isnt working need to take the top off         [self.scrollView setContentInset:UIEdgeInsetsMake(-20, 0, 0, 0)];
-
         [UICollectionView setupBorder:self.collectionView];
         self.collectionView.delegate = self;
         [self setFlowLayout];
@@ -262,7 +260,7 @@ UserManagerDelegate>
 
 - (IBAction)onSwapButton:(UIButton *)sender
 {
-    [self changeButtonStateForSingleButton:self.SwapAddPhotoButton];
+    [UIButton changeButtonStateForSingleButton:self.SwapAddPhotoButton];
 }
 
 //5) Miles away
@@ -384,8 +382,16 @@ UserManagerDelegate>
     NSDictionary *userData = [data firstObject];
     self.sexPref = userData[@"sexPref"];
     [self sexPreferenceButton];
+
     self.aboutMe = userData[@"aboutMe"];
-    self.textViewAboutMe.text = self.aboutMe;
+    if (self.aboutMe)
+    {
+        self.textViewAboutMe.text = self.aboutMe;
+    }
+    else
+    {
+        self.textViewAboutMe.text = @"Tell us about you, 280 characters max";
+    }
 
     NSString *miles = userData[@"milesAway"];
     [self setMilesAway:miles];
@@ -511,12 +517,6 @@ UserManagerDelegate>
     {
         NSLog(@"sex Pref data not working");
     }
-}
-
--(void)changeButtonStateForSingleButton:(UIButton*)button
-{
-    button.backgroundColor = [UIColor blackColor];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
 }
 
 -(void)changeButtonState:(UIButton *)button sexString:(NSString *)sex otherButton1:(UIButton *)b1 otherButton2:(UIButton *)b2

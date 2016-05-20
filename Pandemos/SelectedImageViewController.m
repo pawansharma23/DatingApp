@@ -29,7 +29,11 @@ UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *saveImage;
+@property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navItem;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIButton *profileButton;
 
 @property (strong, nonatomic) NSMutableArray *pictures;
 @property (strong, nonatomic) User *currentUser;
@@ -48,23 +52,16 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
     self.navigationItem.title = @"Photo";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
-    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
-    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 
+    self.userImage.image = [UIImage imageWithString:self.profileImage];
+    self.userImage.layer.cornerRadius = 10;
+    
+    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    self.backButton.tintColor = [UIColor grayColor];
+    
     self.pictures = [NSMutableArray new];
 
-    if (self.fromCamera == YES)
-    {
-        self.userImage.image = [UIImage imageWithData:self.imageAsData];
-    }
-    else
-    {
-        self.userImage.image = [UIImage imageWithString:self.image];
-        [UIImageView setupFullSizedImage:self.userImage];
-    }
 
-    [UIButton setUpButton:self.saveImage];
 
     [UICollectionView setupBorder:self.collectionView];
     [self setupCollectionViewFlowLayout];
@@ -79,6 +76,9 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         self.userManager.delegate = self;
 
         [self.userManager loadUserImages:self.currentUser];
+
+        [UIButton setUpButton:self.saveImage];
+        [UIButton setUpButton:self.profileButton];
     }
     else
     {
@@ -121,9 +121,26 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     NSLog(@"dragging has stopped");
 }
 
+#pragma mark -- NAV
+- (IBAction)onBackButton:(UIBarButtonItem *)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)onAddAnother:(UIButton *)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)onContinueButton:(UIButton *)sender
+{
+    [UIButton changeButtonStateForSingleButton:self.profileButton];
+    [self performSegueWithIdentifier:@"Profile" sender:self];
+}
+
 - (IBAction)onSaveImage:(UIButton *)sender
 {
-    [UIButton changeButtonState:self.saveImage];
+    [UIButton changeButtonStateForSingleButton:self.saveImage];
 
     if (self.pictures.count == 0)
     {
@@ -167,15 +184,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
     }
 }
-- (IBAction)onBackButton:(UIBarButtonItem *)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (IBAction)onAddAnother:(UIButton *)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
 
 #pragma mark -- USER MANAGER DELEGATE
 -(void)didReceiveUserImages:(NSArray *)images
@@ -202,7 +210,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(void)saveForImage1
 {
     NSLog(@"1 Empty");
-    [self.pictures addObject:self.image];
+    [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 1 Set" forState:UIControlStateNormal];
@@ -212,7 +220,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(void)saveForImage2
 {
     NSLog(@"2 Empty");
-    [self.pictures addObject:self.image];
+    [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 2 Set" forState:UIControlStateNormal];
@@ -222,7 +230,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(void)saveForImage3
 {
     NSLog(@"3 Empty");
-    [self.pictures addObject:self.image];
+    [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 3 Set" forState:UIControlStateNormal];
@@ -232,7 +240,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(void)saveForImage4
 {
     NSLog(@"4 Empty");
-    [self.pictures addObject:self.image];
+    [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 4 Set" forState:UIControlStateNormal];
@@ -242,7 +250,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(void)saveForImage5
 {
     NSLog(@"5 Empty");
-    [self.pictures addObject:self.image];
+    [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 5 Set" forState:UIControlStateNormal];
@@ -252,7 +260,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(void)saveForImage6
 {
     NSLog(@"6 Empty");
-    [self.pictures addObject:self.image];
+    [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 6 Set" forState:UIControlStateNormal];

@@ -15,6 +15,7 @@
 #import "User.h"
 
 @interface FacebookAlbumsTableVC ()<FacebookManagerDelegate>
+@property (weak, nonatomic) IBOutlet UINavigationItem *navBar;
 
 @property (strong, nonatomic) NSArray *albums;
 @property (strong, nonatomic) NSString *albumName;

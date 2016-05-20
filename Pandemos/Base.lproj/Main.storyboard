@@ -163,14 +163,19 @@
                                     <constraint firstItem="FcC-Q3-yZP" firstAttribute="top" secondItem="3vw-AH-Izn" secondAttribute="bottom" constant="2" id="ztk-TE-94U"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nbh-I4-sbC">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nbh-I4-sbC">
                                 <rect key="frame" x="289" y="270" width="22" height="22"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="22" id="KWP-hJ-ZmS"/>
-                                    <constraint firstAttribute="height" constant="22" id="Nw3-fS-3pS"/>
+                                    <constraint firstAttribute="width" constant="22" id="KWP-hJ-ZmS">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="198"/>
+                                    </constraint>
+                                    <constraint firstAttribute="height" constant="22" id="Nw3-fS-3pS">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="34"/>
+                                    </constraint>
                                 </constraints>
+                                <state key="normal" title="Initial setup for new user"/>
                                 <connections>
-                                    <segue destination="ZfB-PD-3YE" kind="show" id="Rop-v2-dfr"/>
+                                    <action selector="initialSetup:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ofi-lf-9yU"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bjm-Ib-0Fx">
@@ -296,7 +301,6 @@
                                         <state key="normal" title="Message"/>
                                         <connections>
                                             <action selector="onMessage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="grf-uD-Dci"/>
-                                            <segue destination="H9v-cu-nYH" kind="show" id="V0T-hb-5Ti"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -358,7 +362,9 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="HIo-qw-L8K" secondAttribute="bottom" constant="10" id="afF-bW-wbk"/>
                             <constraint firstItem="Kk8-CP-tm3" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="b21-jU-2iw"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="RSC-gd-8eA" secondAttribute="bottom" constant="32" id="dE7-hL-90z"/>
-                            <constraint firstItem="Nbh-I4-sbC" firstAttribute="top" secondItem="XFn-cN-fWs" secondAttribute="bottom" constant="150" id="fLR-Yy-C8a"/>
+                            <constraint firstItem="Nbh-I4-sbC" firstAttribute="top" secondItem="XFn-cN-fWs" secondAttribute="bottom" constant="150" id="fLR-Yy-C8a">
+                                <variation key="heightClass=regular-widthClass=compact" constant="169"/>
+                            </constraint>
                             <constraint firstItem="XR2-Qv-fsi" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="5" id="fc6-hP-vDV"/>
                             <constraint firstItem="Kk8-CP-tm3" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="gmX-hd-CLa"/>
                             <constraint firstAttribute="trailing" secondItem="pQv-YT-7zK" secondAttribute="trailing" constant="5" id="hvm-2R-4HU"/>
@@ -393,13 +399,13 @@
                         <barButtonItem key="leftBarButtonItem" title="Settings" id="sUH-xY-Owh">
                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <segue destination="Yjv-8l-uTW" kind="show" id="rEG-Lh-b0R"/>
+                                <action selector="onSettings:" destination="BYZ-38-t0r" id="bXq-o4-xd7"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Matches" id="LFs-Do-q6O">
                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <segue destination="H9v-cu-nYH" kind="show" id="NaH-kV-mIV"/>
+                                <action selector="onMessaging:" destination="BYZ-38-t0r" id="llb-6v-C2b"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -429,7 +435,9 @@
                         <outlet property="userImage" destination="pQv-YT-7zK" id="SQC-wu-I9a"/>
                         <outlet property="userImageMatched" destination="Stf-IV-aYp" id="JNB-uZ-JYG"/>
                         <outlet property="userInfoView" destination="wWN-3W-fS7" id="eVR-8r-fH4"/>
-                        <segue destination="ZfB-PD-3YE" kind="show" identifier="FacebookLogin" id="GsC-Py-x6y"/>
+                        <segue destination="H9v-cu-nYH" kind="show" identifier="Messaging" id="bQj-I8-dsa"/>
+                        <segue destination="Yjv-8l-uTW" kind="show" identifier="Settings" id="lKd-3H-lwR"/>
+                        <segue destination="ZfB-PD-3YE" kind="show" identifier="NoUser" id="gYb-Xk-Oy4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -466,7 +474,7 @@
                 <viewControllerPlaceholder storyboardName="Messaging" id="H9v-cu-nYH" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QiA-4j-Xfy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1183.5" y="417.75"/>
+            <point key="canvasLocation" x="1081.5" y="282.75"/>
         </scene>
         <!--Profile-->
         <scene sceneID="RgI-rt-aYO">
@@ -474,7 +482,7 @@
                 <viewControllerPlaceholder storyboardName="Profile" id="Yjv-8l-uTW" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s2M-Fe-Akt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1183.5" y="589.5"/>
+            <point key="canvasLocation" x="1081.5" y="451.5"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="ljb-An-xxD">
@@ -549,7 +557,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ynt-3j-zb0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1581" y="325.5"/>
+            <point key="canvasLocation" x="1539" y="376.5"/>
         </scene>
         <!--InitialSetup-->
         <scene sceneID="1tC-0G-caQ">
@@ -557,7 +565,7 @@
                 <viewControllerPlaceholder storyboardName="InitialSetup" id="KSe-hp-M8n" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YzK-mr-0Fn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2466" y="376.5"/>
+            <point key="canvasLocation" x="2148" y="376.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3DC-MW-R5R">
@@ -581,8 +589,4 @@
     <resources>
         <image name="loginFB" width="288" height="62"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="GsC-Py-x6y"/>
-        <segue reference="NaH-kV-mIV"/>
-    </inferredMetricsTieBreakers>
 </document>

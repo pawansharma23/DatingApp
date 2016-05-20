@@ -15,11 +15,9 @@
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
 #import "ProfileViewController.h"
+#import "User.h"
 
 @interface ProfileViewController : UIViewController
 
-@property (strong, nonatomic) PFUser *pfUser;
-@property (strong, nonatomic) PFUser *userFromViewController;
 @property (strong, nonatomic) NSString *cityAndState;
-
 @end

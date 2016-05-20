@@ -145,23 +145,9 @@ MDCSwipeToChooseDelegate>
         self.count = 0;
         self.userCount = 0;
         self.matchedUsersCount = 0;
-        //user match data for methods
-        self.rawUserMatchData = [NSArray new];
-        //User match data for views
-        self.potentialMatchData = [NSArray new];
 
-        //location
-        self.locationManager = [CLLocationManager new];
-        self.locationManager.delegate = self;
-        [self.locationManager requestWhenInUseAuthorization];
-        [self.locationManager startUpdatingLocation];
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
-        CLLocation *currentlocal = [self.locationManager location];
-        self.currentLocation = currentlocal;
-        //NSLog(@"location: lat: %f & long: %f", self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude);
-        //save lat and long in a PFGeoCode Object and save to User in Parse
-        //self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
-        //[self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+        self.rawUserMatchData = [NSArray new];
+        self.potentialMatchData = [NSArray new];
 
         [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
         self.fullDescView.layer.cornerRadius = 10;
@@ -193,9 +179,7 @@ MDCSwipeToChooseDelegate>
     }
     else
     {
-        NSLog(@"no user currently logged in");
-//        Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: 'Receiver (<PFLoginViewController: 0x7f8772067800>) has no segue with identifier 'FacebookLogin''
-        //[self performSegueWithIdentifier:@"FacebookLogin" sender:self];
+        [self performSegueWithIdentifier:@"NoUser" sender:self];
     }
 }
 
@@ -221,7 +205,6 @@ MDCSwipeToChooseDelegate>
             NSDictionary *stateDict = placemark.addressDictionary;
             NSString *state = stateDict[@"State"];
             self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
-        //    NSLog(@"user location: %@", self.currentCityAndState);
         }
     }];
 
@@ -341,9 +324,24 @@ MDCSwipeToChooseDelegate>
 }
 
 #pragma mark -- NAV
+- (IBAction)onMessaging:(UIBarButtonItem *)sender
+{
+    [self performSegueWithIdentifier:@"Messaging" sender:self];
+}
+
+- (IBAction)onSettings:(UIBarButtonItem *)sender
+{
+    [self performSegueWithIdentifier:@"Settings" sender:self];
+}
+
+- (IBAction)initialSetup:(UIButton *)sender
+{
+    [self performSegueWithIdentifier:@"NoUser" sender:self];
+}
+
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"Messages"])
+    if ([segue.identifier isEqualToString:@"Messaging"])
     {
         NSLog(@"Messages Segue");
 
@@ -351,8 +349,11 @@ MDCSwipeToChooseDelegate>
     else if ([segue.identifier isEqualToString:@"Settings"])
     {
         ProfileViewController *pvc = segue.destinationViewController;
-        pvc.userFromViewController = self.currentUser;
-        pvc.cityAndState = self.currentCityAndState;
+        //pvc.cityAndState = self.currentCityAndState;
+    }
+    else if ([segue.identifier isEqualToString:@"NoUser"])
+    {
+        NSLog(@"no user, log in screen");
     }
 }
 
@@ -400,10 +401,7 @@ MDCSwipeToChooseDelegate>
     int profilePhotos = (int)self.currentMatch.profileImages.count;
     [self loadIndicatorLights:profilePhotos];
     self.image1Indicator.backgroundColor = [UIColor rubyRed];
-    self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages firstObject]]];
-
-    //matches
-    //NSLog(@"%d maches:\n1:%@ \n2st: %@\n3st:%@", (int)self.potentialMatchData.count, self.potentialMatchData.firstObject, [self.potentialMatchData objectAtIndex:1].givenName, [self.potentialMatchData objectAtIndex:2].givenName);
+    self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages firstObject]];
 }
 
 -(void)failedToFetchPotentialMatchData:(NSError *)error
@@ -468,25 +466,38 @@ MDCSwipeToChooseDelegate>
 }
 
 #pragma mark -- HELPERS
+-(void)loadLocation
+{
+    //location
+    self.locationManager = [CLLocationManager new];
+    self.locationManager.delegate = self;
+    [self.locationManager requestWhenInUseAuthorization];
+    [self.locationManager startUpdatingLocation];
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    CLLocation *currentlocal = [self.locationManager location];
+    self.currentLocation = currentlocal;
+    //NSLog(@"location: lat: %f & long: %f", self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude);
+    //save lat and long in a PFGeoCode Object and save to User in Parse
+    //self.pfGeoCoded = [PFGeoPoint geoPointWithLatitude:latitude longitude:longitude];
+    //[self.currentUser setObject:self.pfGeoCoded forKey:@"GeoCode"];
+}
+
 -(void)nextPotentialMatchUp
 {
     if (self.count < self.rawUserMatchData.count)
     {
-
-    self.userCount++;
-    User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
-    self.currentMatch.profileImages = matchedUser[@"profileImages"];
-    [self loadIndicatorLights:(int)self.currentMatch.profileImages.count];
-    //self.image1Indicator.backgroundColor = [UIColor rubyRed];
-        //which indicator light will light up
+        self.userCount++;
+        User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
+        self.currentMatch.profileImages = matchedUser[@"profileImages"];
+        [self loadIndicatorLights:(int)self.currentMatch.profileImages.count];
         [self currentImageLightUpIndicatorLight:0];
 
-    self.userImage.image = [UIImage imageWithData:[self imageData:self.currentMatch.profileImages.firstObject]];
-    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", matchedUser.givenName, matchedUser.age];
-    self.jobLabel.text = matchedUser.work;
-    self.educationLabel.text = matchedUser.lastSchool;
+        self.userImage.image = [UIImage imageWithString:self.currentMatch.profileImages.firstObject];
+        self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", matchedUser.givenName, matchedUser.age];
+        self.jobLabel.text = matchedUser.work;
+        self.educationLabel.text = matchedUser.lastSchool;
 
-    self.count = 0;
+        self.count = 0;
     }
     else if(self.count == self.rawUserMatchData.count)
     {
@@ -503,13 +514,13 @@ MDCSwipeToChooseDelegate>
     self.count--;
     if (self.count == 0)
     {
-        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages objectAtIndex:self.count]];
         [self currentImageLightUpIndicatorLight:self.count];
         self.fullDescView.hidden = YES;
     }
     else if(self.count > 0)
     {
-        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages objectAtIndex:self.count]];
         [self currentImageLightUpIndicatorLight:self.count];
         NSLog(@"count: %zd", self.count);
         self.fullDescView.hidden = YES;
@@ -521,13 +532,13 @@ MDCSwipeToChooseDelegate>
     self.count++;
     if (self.count < self.currentMatch.profileImages.count - 1)
     {
-        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages objectAtIndex:self.count]];
         [self currentImageLightUpIndicatorLight:self.count];
     }
     else if (self.count == self.currentMatch.profileImages.count - 1)
     {
         NSLog(@"last image");
-        self.userImage.image = [UIImage imageWithData:[self imageData:[self.currentMatch.profileImages objectAtIndex:self.count]]];
+        self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages objectAtIndex:self.count]];
         [self currentImageLightUpIndicatorLight:self.count];
         [self lastImageBringUpDesciptionView];
     }
@@ -546,9 +557,9 @@ MDCSwipeToChooseDelegate>
     PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber - 1];
     NSString *image = [userForImageAndName objectForKey:@"image1"];
     NSString *firstName = [userForImageAndName objectForKey:@"firstName"];
-    self.matchedImage.image = [UIImage imageWithData:[self imageData:image]];
+    self.matchedImage.image = [UIImage imageWithString:image];
     self.matchedLabel.text = firstName;
-    self.userImageMatched.image = [UIImage imageWithData:[self imageData:self.userImageForMatching]];
+    self.userImageMatched.image = [UIImage imageWithString:self.userImageForMatching];
 }
 
 -(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage
@@ -562,13 +573,6 @@ MDCSwipeToChooseDelegate>
     matchedImage.clipsToBounds = YES;
     [self.matchView addSubview:userImage];
     [self.matchView addSubview:matchedImage];
-}
-
--(NSData *)imageData:(NSString *)imageString
-{
-    NSURL *url = [NSURL URLWithString:imageString];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    return data;
 }
 
 -(void)loadIndicatorLights:(int)profileImageCount

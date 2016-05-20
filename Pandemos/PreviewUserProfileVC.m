@@ -102,34 +102,11 @@ UserManagerDelegate>
     [self.userImage addGestureRecognizer:swipeGestureDown];
 }
 
+#pragma mark -- CLLocation delegate methods
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
+{
 
-
-//#pragma mark -- CLLocation delegate methods
-//-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
-//{
-//
-//    //current location .............. Works in iPhone, not in Sim
-//    CLLocation *currentLocation = [locations firstObject];
-//    NSLog(@"array of cuurent locations: %@", locations);
-//    //double latitude = self.locationManager.location.coordinate.latitude;
-//    //double longitude = self.locationManager.location.coordinate.longitude;
-//
-//    [self.locationManager stopUpdatingLocation];
-//
-//    //get city and location from a CLPlacemark object
-//    CLGeocoder *geoCoder = [CLGeocoder new];
-//    [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-//        if (error) {
-//            NSLog(@"error: %@", error);
-//        } else {
-//            CLPlacemark *placemark = [placemarks firstObject];
-//            NSString *city = placemark.locality;
-//            NSDictionary *stateDict = placemark.addressDictionary;
-//            NSString *state = stateDict[@"State"];
-//            self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
-//        }
-//    }];
-//}
+}
 
 #pragma mark -- SWIPE GESTURES
 - (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender
@@ -253,6 +230,30 @@ UserManagerDelegate>
     [UIButton circleButtonEdges:self.image4Indicator];
     [UIButton circleButtonEdges:self.image5Indicator];
     [UIButton circleButtonEdges:self.image6Indicator];
+}
+
+-(void)setupLocationInDelegate:(CLLocation*)location
+{
+
+    NSLog(@"array of cuurent locations: %@", location);
+    //double latitude = self.locationManager.location.coordinate.latitude;
+    //double longitude = self.locationManager.location.coordinate.longitude;
+
+    [self.locationManager stopUpdatingLocation];
+
+    //get city and location from a CLPlacemark object
+    CLGeocoder *geoCoder = [CLGeocoder new];
+    [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+        } else {
+            CLPlacemark *placemark = [placemarks firstObject];
+            NSString *city = placemark.locality;
+            NSDictionary *stateDict = placemark.addressDictionary;
+            NSString *state = stateDict[@"State"];
+            self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
+        }
+    }];
 }
 
 -(void)loadIndicatorLights:(int)profileImageCount

@@ -64,7 +64,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="128" id="GPQ-Kt-Yha"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 <connections>
                                                     <outlet property="delegate" destination="z3C-Zz-vhA" id="w0R-UM-HdO"/>

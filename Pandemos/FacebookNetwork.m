@@ -146,11 +146,12 @@
 
     for (NSDictionary *sourceURL in dataFromJSON)
     {
-        NSLog(@"%@", sourceURL[@"source"]);
         Facebook *face = [Facebook new];
         face.albumImageURL = sourceURL[@"source"];
+        face.albumImageID = sourceURL[@"id"];
+        face.nextPage = objects[@"next"];
+        face.previousPage = objects[@"previous"];
 
-        //hrow in if check for more next and prevs
         [newArray addObject:face];
     }
 

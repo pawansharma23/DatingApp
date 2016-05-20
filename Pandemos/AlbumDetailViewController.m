@@ -51,13 +51,16 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.navigationItem.title = self.albumName;
 
     self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+    self.backButton.tintColor = [UIColor mikeGray];
+
+
+//    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+//    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 
     self.photos = [NSMutableArray new];
     self.albumPages = [NSArray new];
 
-    [UIButton setUpButton:self.nextButton];
-    [UIButton setUpButton:self.otherAlbumsButton];
+
 
     self.collectionView.delegate = self;
     [UICollectionView setupBorder:self.collectionView];
@@ -74,6 +77,9 @@ static NSString * const reuseIdentifier = @"FaceCell";
         self.manager.delegate = self;
 
         [self.manager loadParsedFBAlbum:self.albumID];
+
+        [UIButton setUpButton:self.nextButton];
+        [UIButton setUpButton:self.otherAlbumsButton];
     }
     else
     {
@@ -125,11 +131,17 @@ static NSString * const reuseIdentifier = @"FaceCell";
 {
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
-        //NSLog(@"class: %d", [self.selectedImage isKindOfClass:[NSString class]]);
-        NSLog(@"class: %@", [[self.selectedImage class] description]);
+        //SelectedImageViewController *sivc = segue.destinationViewController;
 
-        SelectedImageViewController *sivc = segue.destinationViewController;
-        sivc.image = self.selectedImage;
+        if ([segue.destinationViewController isKindOfClass:[UIViewController class]])
+        {
+            SelectedImageViewController *sivc = segue.destinationViewController;
+            sivc.profileImage = self.selectedImage;
+        }
+        else
+        {
+            NSLog(@"destination not correct");
+        }
     }
 }
 

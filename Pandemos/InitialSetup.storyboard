@@ -394,10 +394,10 @@
                         <outlet property="suggestionsButton" destination="EDQ-4r-tdp" id="kZo-QL-rP0"/>
                         <outlet property="textViewAboutMe" destination="VBp-cY-1EY" id="Ek0-Jy-HIV"/>
                         <outlet property="womensInterestButton" destination="Aan-dq-i8y" id="O5L-lg-wxI"/>
-                        <segue destination="aFw-9W-iLK" kind="show" identifier="ChooseImage" id="aR1-he-IFi"/>
                         <segue destination="OAs-xZ-Osr" kind="show" identifier="Suggestions" id="hSx-UW-4cP"/>
                         <segue destination="Pgz-5d-W3Q" kind="show" identifier="FacebookAlbums" id="Bwh-PA-4Xi"/>
                         <segue destination="PGV-jq-rCo" kind="show" identifier="ConfidantEmail" id="Vxf-ND-ukB"/>
+                        <segue destination="aFw-9W-iLK" kind="show" identifier="ChooseImage" id="YjL-gk-37B"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CAM-5Z-RNY" userLabel="First Responder" sceneMemberID="firstResponder"/>

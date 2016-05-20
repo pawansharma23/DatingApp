@@ -30,11 +30,12 @@
 
 +(void)setUpButton:(UIButton *)button
 {
-    button.layer.cornerRadius = 16.0 / 2.0;
+    button.layer.cornerRadius = 7.5;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
-    [button.layer setBorderColor:[UIColor uclaBlue].CGColor];
+    [button.layer setBorderColor:[UIColor blackColor].CGColor];
     [button setTitleColor:[UIColor facebookBlue] forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor whiteColor]];
 }
 
 +(void)changeButtonState:(UIButton *)button
@@ -42,6 +43,12 @@
     [button setHighlighted:YES];
     button.backgroundColor = [UIColor blackColor];
     [button setTitleColor:[UIColor yellowGreen] forState:UIControlStateNormal];
+}
+
++(void)changeButtonStateForSingleButton:(UIButton*)button
+{
+    button.backgroundColor = [UIColor blackColor];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
 }
 
 +(void)changeOtherButton:(UIButton *)button
