@@ -348,7 +348,7 @@ MDCSwipeToChooseDelegate>
     }
     else if ([segue.identifier isEqualToString:@"Settings"])
     {
-        ProfileViewController *pvc = segue.destinationViewController;
+        //ProfileViewController *pvc = segue.destinationViewController;
         //pvc.cityAndState = self.currentCityAndState;
     }
     else if ([segue.identifier isEqualToString:@"NoUser"])

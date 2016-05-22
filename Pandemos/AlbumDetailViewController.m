@@ -50,10 +50,13 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
     self.navigationItem.title = self.albumName;
 
-    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-    self.backButton.tintColor = [UIColor mikeGray];
-
-
+    self.navigationController.navigationBar.tintColor = [UIColor colorWithHexValue:@"f1c40f"];
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor],
+                                 NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
+    [self.navigationController.navigationBar setTitleTextAttributes:attributes];
+    
+//    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+//    self.backButton.tintColor = [UIColor mikeGray];
 //    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
 //    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 
@@ -131,18 +134,13 @@ static NSString * const reuseIdentifier = @"FaceCell";
 {
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
-        //SelectedImageViewController *sivc = segue.destinationViewController;
-
-        if ([segue.destinationViewController isKindOfClass:[UIViewController class]])
-        {
-            SelectedImageViewController *sivc = segue.destinationViewController;
-            sivc.profileImage = self.selectedImage;
-        }
+        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+        sivc.profileImage = self.selectedImage;
+    }
         else
         {
             NSLog(@"destination not correct");
         }
-    }
 }
 
 #pragma mark -- DELEGATES

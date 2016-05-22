@@ -105,7 +105,7 @@
         if (success)
         {
             NSLog(@"received Photo Source");
-            //[self.delegate didReceiveParsedFacebookPhotoSource:@"result url string"];
+            //[self.delegate didReceiveParsedFacebookPhotoSource];
         }
         else
         {

@@ -8,8 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol PreviewCellDelegate <NSObject>
+
+-(void)previewCellDidReturnButtonAction:(BOOL)action;
+
+@end
 @interface PreviewCell : UICollectionViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *cvImage;
+@property (weak, nonatomic) IBOutlet UIImageView *xImage;
 
 @end
+
+

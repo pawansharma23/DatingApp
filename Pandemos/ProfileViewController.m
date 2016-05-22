@@ -18,6 +18,7 @@
 #import "UserManager.h"
 #import "UIImage+Additions.h"
 #import "UICollectionView+Pandemos.h"
+#import "SelectedImageViewController.h"
 
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
@@ -63,6 +64,7 @@ UserManagerDelegate>
 @property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *miles;
 @property (strong, nonatomic) NSString *publicProfile;
+@property (strong, nonatomic) NSString *selectedImage;
 
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) NSMutableArray *profileImages;
@@ -202,7 +204,8 @@ UserManagerDelegate>
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"image url selected: %@", [self.profileImages objectAtIndex:indexPath.item]);
+    self.selectedImage = [self.profileImages objectAtIndex:indexPath.item];
+    [self performSegueWithIdentifier:@"Selected" sender:self];
 }
 
 #pragma mark -- BUTTONS/SLIDERS
@@ -256,11 +259,6 @@ UserManagerDelegate>
 - (IBAction)onBothButton:(UIButton *)sender
 {
     [self changeButtonState:self.bothButton sexString:@"male female" otherButton1:self.menButton otherButton2:self.womenButton];
-}
-
-- (IBAction)onSwapButton:(UIButton *)sender
-{
-    [UIButton changeButtonStateForSingleButton:self.SwapAddPhotoButton];
 }
 
 //5) Miles away
@@ -368,7 +366,9 @@ UserManagerDelegate>
 
 - (IBAction)onBackButton:(id)sender
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+
+    }];
 }
 
 - (IBAction)userViewButton:(UIButton *)sender
@@ -421,7 +421,26 @@ UserManagerDelegate>
     NSLog(@"failed to fetch profile images: %@", error);
 }
 #pragma mark -- NAV
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"Selected"])
+    {
+        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+        sivc.profileImage = self.selectedImage;
+    }
 
+}
+
+- (IBAction)onPreviewTapped:(UIBarButtonItem *)sender
+{
+    [self performSegueWithIdentifier:@"Preview" sender:self];
+}
+
+- (IBAction)onSwapTapped:(UIButton *)sender
+{
+    [UIButton changeButtonStateForSingleButton:self.SwapAddPhotoButton];
+    [self performSegueWithIdentifier:@"Swap" sender:self];
+}
 
 #pragma mark -- HELPERS
 -(void)setupButtonsAndTextView

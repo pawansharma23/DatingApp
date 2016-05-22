@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Ahn-FC-XIM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Ahn-FC-XIM">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -99,7 +99,7 @@
             </objects>
             <point key="canvasLocation" x="511.5" y="159"/>
         </scene>
-        <!--Title-->
+        <!--Album Detail View Controller-->
         <scene sceneID="q9C-MC-tDM">
             <objects>
                 <viewController id="cs4-Xc-Kj2" customClass="AlbumDetailViewController" sceneMemberID="viewController">
@@ -157,7 +157,7 @@
                                     </constraint>
                                     <constraint firstAttribute="height" constant="30" id="uye-9l-LCm"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="15"/>
+                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="13"/>
                                 <state key="normal" title="Next page"/>
                                 <connections>
                                     <action selector="onNextButton:" destination="cs4-Xc-Kj2" eventType="touchUpInside" id="mam-So-UlQ"/>
@@ -171,7 +171,7 @@
                                     </constraint>
                                     <constraint firstAttribute="height" constant="30" id="fCg-v3-ecy"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="15"/>
+                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="13"/>
                                 <state key="normal" title="Other albums"/>
                                 <connections>
                                     <action selector="onOtherFacebookAlbums:" destination="cs4-Xc-Kj2" eventType="touchUpInside" id="KfQ-RN-VVF"/>
@@ -231,16 +231,8 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="lAQ-Y5-TdW">
-                        <barButtonItem key="leftBarButtonItem" title="Item" id="Ahk-7V-qt1">
-                            <connections>
-                                <action selector="onBackButton:" destination="cs4-Xc-Kj2" id="XDU-zQ-xhA"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
-                        <outlet property="backButton" destination="Ahk-7V-qt1" id="6wb-Fl-ebg"/>
                         <outlet property="collectionView" destination="fzE-ce-kfu" id="zOB-Ql-3Ac"/>
                         <outlet property="nextButton" destination="eQN-XX-t2z" id="t7c-yg-p4a"/>
                         <outlet property="otherAlbumsButton" destination="PAy-s4-lTj" id="acY-GO-BFp"/>

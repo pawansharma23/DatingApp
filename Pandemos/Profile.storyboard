@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Wj3-gj-kQx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Wj3-gj-kQx">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -271,11 +271,10 @@
                                                     </constraint>
                                                     <constraint firstAttribute="width" constant="110" id="wjJ-Kj-ySH"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="12"/>
                                                 <state key="normal" title="Swap/Add photos"/>
                                                 <connections>
-                                                    <action selector="onSwapButton:" destination="z3C-Zz-vhA" eventType="touchUpInside" id="ICV-aI-zHv"/>
-                                                    <segue destination="aTX-cq-Uce" kind="show" id="JkB-Md-mLb"/>
+                                                    <action selector="onSwapTapped:" destination="z3C-Zz-vhA" eventType="touchUpInside" id="Bgm-ag-cRD"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -365,8 +364,8 @@
                                             <mask key="constraints">
                                                 <exclude reference="Kfa-OW-xCr"/>
                                                 <exclude reference="Ygn-2R-A2C"/>
-                                                <exclude reference="QDw-4Q-IHU"/>
                                                 <exclude reference="IsI-fw-4C2"/>
+                                                <exclude reference="QDw-4Q-IHU"/>
                                                 <exclude reference="zfA-p7-zcp"/>
                                                 <exclude reference="1Zq-a7-bTS"/>
                                                 <exclude reference="8Sj-zm-P8a"/>
@@ -379,10 +378,10 @@
                                                 <include reference="Ygn-2R-A2C"/>
                                                 <exclude reference="f1l-wL-3pM"/>
                                                 <exclude reference="kcI-g8-VXf"/>
-                                                <include reference="QDw-4Q-IHU"/>
-                                                <exclude reference="ljt-dl-E8y"/>
                                                 <include reference="IsI-fw-4C2"/>
                                                 <exclude reference="hi5-xo-J9f"/>
+                                                <include reference="QDw-4Q-IHU"/>
+                                                <exclude reference="ljt-dl-E8y"/>
                                                 <exclude reference="DFL-qZ-M1M"/>
                                             </mask>
                                         </variation>
@@ -417,8 +416,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Preview" id="WDf-5j-KJz">
                             <connections>
-                                <action selector="onPreviewTapped:" destination="z3C-Zz-vhA" id="fZ1-Dj-IHw"/>
-                                <segue destination="uSV-Of-GwX" kind="presentation" id="V97-j8-UH5"/>
+                                <action selector="onPreviewTapped:" destination="z3C-Zz-vhA" id="BtN-Rf-97x"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -445,11 +443,22 @@
                         <outlet property="shareButton" destination="Xfh-U2-BrA" id="z8e-VA-7tX"/>
                         <outlet property="textViewAboutMe" destination="ylY-XR-z1c" id="KLc-xn-IcQ"/>
                         <outlet property="womenButton" destination="R3R-3P-8eX" id="9mW-nv-shn"/>
+                        <segue destination="uSV-Of-GwX" kind="show" identifier="Preview" id="z96-Yc-Nx8"/>
+                        <segue destination="aTX-cq-Uce" kind="show" identifier="Swap" id="TCa-lf-Tkg"/>
+                        <segue destination="hd8-Fz-Jjp" kind="show" identifier="Selected" id="ZWQ-7b-LGz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="He5-uW-Vol" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1206" y="615.75"/>
+        </scene>
+        <!--SelectedImage-->
+        <scene sceneID="aCq-Le-1I3">
+            <objects>
+                <viewControllerPlaceholder storyboardName="SelectedImage" id="hd8-Fz-Jjp" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="I8m-Du-N9X" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1808.25" y="388.5"/>
         </scene>
         <!--UserDetail-->
         <scene sceneID="mFk-NC-3xC">

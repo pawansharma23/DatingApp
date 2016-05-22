@@ -25,13 +25,12 @@ UICollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDataSource,
 LXReorderableCollectionViewDelegateFlowLayout,
 FacebookManagerDelegate,
-UserManagerDelegate>
+UserManagerDelegate,
+PreviewCellDelegate,
+UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *saveImage;
-@property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
-@property (weak, nonatomic) IBOutlet UINavigationItem *navItem;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *profileButton;
 
@@ -50,25 +49,29 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
     self.currentUser = [User currentUser];
 
+    self.navigationController.navigationBarHidden = NO;
     self.navigationItem.title = @"Photo";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 
+    self.navigationController.navigationBar.tintColor = [UIColor colorWithHexValue:@"f1c40f"];
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor],
+                                 NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
+    [self.navigationController.navigationBar setTitleTextAttributes:attributes];
+
+    self.userImage.layer.cornerRadius = 7.5;
     self.userImage.image = [UIImage imageWithString:self.profileImage];
-    self.userImage.layer.cornerRadius = 10;
-    
-    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-    self.backButton.tintColor = [UIColor grayColor];
     
     self.pictures = [NSMutableArray new];
 
-
-
     [UICollectionView setupBorder:self.collectionView];
     [self setupCollectionViewFlowLayout];
+
+
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:YES];
 
     if (self.currentUser)
     {
@@ -86,7 +89,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     }
 }
 
-
 #pragma mark -- COLLECTIONVIEW DELEGATE
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
@@ -99,7 +101,36 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     NSString *image = [self.pictures objectAtIndex:indexPath.item];
     cell.cvImage.image = [UIImage imageWithString:image];
 
+    if (image)
+    {
+        cell.xImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    }
+
     return cell;
+}
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+
+    [self.collectionView performBatchUpdates:^{
+
+        NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0] ;
+        [self.pictures removeObjectAtIndex:indexPath.row];
+        [self.collectionView deleteItemsAtIndexPaths:@[cellIndexPath]];
+
+        [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+            if (succeeded)
+            {
+                NSLog(@"NEW PROFILE IMAGES SAVED TO PARSE");
+            }
+        }];
+
+
+    } completion:nil];
+
+    [self.collectionView reloadData];
 }
 
 -(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath
@@ -124,7 +155,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 #pragma mark -- NAV
 - (IBAction)onBackButton:(UIBarButtonItem *)sender
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    NSLog(@"back");
+    [self.navigationController dismissViewControllerAnimated:YES completion:^{
+
+    }];
 }
 
 - (IBAction)onAddAnother:(UIButton *)sender
@@ -142,46 +176,36 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 {
     [UIButton changeButtonStateForSingleButton:self.saveImage];
 
-    if (self.pictures.count == 0)
+    switch (self.pictures.count)
     {
-        [self saveForImage1];
-        [self.collectionView reloadData];
-    }
-
-    else if (self.pictures.count == 1)
-    {
-        [self saveForImage2];
-        [self.collectionView reloadData];
-    }
-
-    else if (self.pictures.count == 2)
-    {
-        [self saveForImage3];
-        [self.collectionView reloadData];
-    }
-
-    else if (self.pictures.count == 3)
-    {
-        [self saveForImage4];
-        [self.collectionView reloadData];
-    }
-
-    else if (self.pictures.count == 4)
-    {
-        [self saveForImage5];
-        [self.collectionView reloadData];
-    }
-
-    else if (self.pictures.count == 5)
-    {
-        [self saveForImage6];
-        [self.collectionView reloadData];
-    }
-
-    else
-    {
-        NSLog(@"all images Filled");
-        [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
+        case 0:
+            [self saveForImage1];
+            [self.collectionView reloadData];
+            break;
+        case 1:
+            [self saveForImage2];
+            [self.collectionView reloadData];
+            break;
+        case 2:
+            [self saveForImage3];
+            [self.collectionView reloadData];
+            break;
+        case 3:
+            [self saveForImage4];
+            [self.collectionView reloadData];
+            break;
+        case 4:
+            [self saveForImage5];
+            [self.collectionView reloadData];
+            break;
+        case 5:
+            [self saveForImage6];
+            [self.collectionView reloadData];
+            break;
+        default:
+            NSLog(@"all images Filled");
+            [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
+            break;
     }
 }
 
@@ -197,6 +221,19 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     [self.collectionView reloadData];
 }
 
+-(void)previewCellDidReturnButtonAction:(BOOL)action
+{
+    if (action == YES)
+    {
+        [self.collectionView reloadData];
+    }
+}
+
+-(void)didReceiveParsedPhotoSource:(NSString *)photoURL
+{
+    self.profileImage = photoURL;
+}
+
 #pragma mark -- HELPERS
 -(void)setupCollectionViewFlowLayout
 {
@@ -209,7 +246,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage1
 {
-    NSLog(@"1 Empty");
     [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -219,7 +255,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage2
 {
-    NSLog(@"2 Empty");
     [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -229,7 +264,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage3
 {
-    NSLog(@"3 Empty");
     [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -239,7 +273,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage4
 {
-    NSLog(@"4 Empty");
     [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -259,7 +292,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage6
 {
-    NSLog(@"6 Empty");
     [self.pictures addObject:self.profileImage];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
