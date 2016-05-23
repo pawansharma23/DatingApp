@@ -59,7 +59,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
                                  NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
     [self.navigationController.navigationBar setTitleTextAttributes:attributes];
 
-    self.userImage.image = [UIImage imageWithString:self.profileImage];
+    self.userImage.image = [UIImage imageWithData:self.profileImageAsData];
     
     self.pictures = [NSMutableArray new];
 
@@ -81,9 +81,9 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
         [self.userManager loadUserImages:self.currentUser];
 
-        
         [UIButton setUpButton:self.saveImage];
         [UIButton setUpButton:self.addAnother];
+        self.addAnother.hidden = YES;
         [UIButton setUpButton:self.profileButton];
     }
     else
@@ -101,10 +101,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(PreviewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     PreviewCell *cell = (PreviewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kReuseIdentifier forIndexPath:indexPath];
-    NSString *image = [self.pictures objectAtIndex:indexPath.item];
-    cell.cvImage.image = [UIImage imageWithString:image];
+    NSData *imageData = [self.pictures objectAtIndex:indexPath.item];
+    cell.cvImage.image = [UIImage imageWithData:imageData];
 
-    if (image)
+    if (imageData)
     {
         cell.xImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(25.0, 25.0)];
     }
@@ -224,8 +224,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     {
         NSMutableArray *mutArr = [NSMutableArray arrayWithArray:images];
         self.pictures = mutArr;
-
-        [self saveButtonCheck];
     }
 
     [self.collectionView reloadData];
@@ -249,11 +247,8 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 {
     if (self.pictures.count < 6)
     {
-        NSString *okString = @"Looking good, save it!";
-        [self.saveImage setTitle:okString forState:UIControlStateNormal];
-        self.saveImage.backgroundColor = [UIColor whiteColor];
-        [self.saveImage setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
-        [self.saveImage sizeToFit];
+        self.saveImage.hidden = YES;
+        self.addAnother.hidden = NO;
     }
     else
     {
@@ -283,9 +278,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         [self saveButtonCheck];
     });
 }
+
 -(void)saveForImage1
 {
-    [self.pictures addObject:self.profileImage];
+    [self.pictures addObject:self.profileImageAsData];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 1 Set" forState:UIControlStateNormal];
@@ -296,7 +292,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage2
 {
-    [self.pictures addObject:self.profileImage];
+    [self.pictures addObject:self.profileImageAsData];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 2 Set" forState:UIControlStateNormal];
@@ -307,7 +303,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage3
 {
-    [self.pictures addObject:self.profileImage];
+    [self.pictures addObject:self.profileImageAsData];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 3 Set" forState:UIControlStateNormal];
@@ -318,7 +314,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage4
 {
-    [self.pictures addObject:self.profileImage];
+    [self.pictures addObject:self.profileImageAsData];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 4 Set" forState:UIControlStateNormal];
@@ -330,7 +326,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(void)saveForImage5
 {
     NSLog(@"5 Empty");
-    [self.pictures addObject:self.profileImage];
+    [self.pictures addObject:self.profileImageAsData];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 5 Set" forState:UIControlStateNormal];
@@ -341,7 +337,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage6
 {
-    [self.pictures addObject:self.profileImage];
+    [self.pictures addObject:self.profileImageAsData];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [self.saveImage setTitle:@"Image 6 Set" forState:UIControlStateNormal];

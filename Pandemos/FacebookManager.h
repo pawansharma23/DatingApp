@@ -29,6 +29,7 @@
 -(void)didReceiveParsedAlbumPaging:(NSArray *)albumPaging;
 -(void)failedToReceiveParsedAlbumPaging:(NSError *)error;
 -(void)didReceiveParsedPhotoSource:(NSString*)photoURL;
+-(void)didReceiveParsedPhotoSourceData:(NSData*)photoData;
 -(void)didReceiveNextPagePhotos:(NSArray*)nextPhotos;
 @end
 

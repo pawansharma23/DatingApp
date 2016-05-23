@@ -101,6 +101,12 @@ UIImagePickerControllerDelegate>
     {
         self.textViewAboutMe.text = aboutMeDescription;
     }
+
+
+    if (self.dataImage)
+    {
+        [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+    }
 }
 
 #pragma mark -- CLLOCATION
@@ -240,13 +246,11 @@ UIImagePickerControllerDelegate>
 
     if (orginalImage)
     {
-
         self.dataImage = [[NSData alloc] init];
         self.dataImage = UIImagePNGRepresentation(orginalImage);
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];
-    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
 }
 
 #pragma mark -- SEGUE
@@ -254,9 +258,8 @@ UIImagePickerControllerDelegate>
 {
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
-
-        //SelectedImageViewController *sivc = segue.destinationViewController;
-        //sivc.imageAsData = self.dataImage;
+        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+        sivc.profileImageAsData = self.dataImage;
     }
 }
 -

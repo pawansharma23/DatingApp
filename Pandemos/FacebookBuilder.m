@@ -81,9 +81,6 @@
             face.likes = likes;
 
         }
-
-
-
             Facebook *face = [Facebook new];
 
             face.givenName = name;
@@ -164,6 +161,8 @@
             NSDictionary *picture = imageData[@"picture"];
             NSDictionary *data = picture[@"data"];
             face.albumImageURL = data[@"url"];
+            NSURL *url = [NSURL URLWithString:data[@"url"]];
+            face.albumImageData = [NSData dataWithContentsOfURL:url];
 
             [parsedData addObject:face];
         }
@@ -190,6 +189,8 @@
         {
             Facebook *face = [Facebook new];
             face.albumImageURL = dict[@"source"];
+            NSURL *url = [NSURL URLWithString:dict[@"source"]];
+            face.albumImageData = [NSData dataWithContentsOfURL:url];
             face.albumtimestamp = dict[@"updated_time"];
             face.albumImageID = dict[@"id"];
 

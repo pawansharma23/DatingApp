@@ -30,6 +30,7 @@ FacebookManagerDelegate>
 @property (strong, nonatomic) NSString *nextURL;
 @property (strong, nonatomic) NSString *previousURL;
 @property (strong, nonatomic) NSString *selectedImage;
+@property (strong, nonatomic) NSData *selectedImageData;
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) FacebookManager *manager;
 @property (strong, nonatomic) NSMutableArray *photos;
@@ -62,9 +63,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
     self.photos = [NSMutableArray new];
     self.albumPages = [NSArray new];
-
-
-
+    
     self.collectionView.delegate = self;
     [UICollectionView setupBorder:self.collectionView];
     [self setupCollectionViewFlowLayout];
@@ -100,8 +99,8 @@ static NSString * const reuseIdentifier = @"FaceCell";
 {
     FacebookCVCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     Facebook *face = [self.photos objectAtIndex:indexPath.item];
-    cell.image.image = [UIImage imageWithString:face.albumImageURL];
-
+    //cell.image.image = [UIImage imageWithString:face.albumImageURL];
+    cell.image.image = [UIImage imageWithData:face.albumImageData];
     return cell;
 }
 
@@ -136,6 +135,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
     {
         SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
         sivc.profileImage = self.selectedImage;
+        sivc.profileImageAsData = self.selectedImageData;
     }
         else
         {
@@ -157,12 +157,18 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.nextURL = nextPage.nextPage;
 }
 
--(void)didReceiveParsedPhotoSource:(NSString *)photoURL
-{
-    self.selectedImage = photoURL;
-    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
-}
+//-(void)didReceiveParsedPhotoSource:(NSString *)photoURL
+//{
+//    self.selectedImage = photoURL;
+//    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+//}
 
+-(void)didReceiveParsedPhotoSourceData:(NSData *)photoData
+{
+    self.selectedImageData = photoData;
+    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+
+}
 -(void)didReceiveNextPagePhotos:(NSArray *)nextPhotos
 {
     [self.photos removeAllObjects];

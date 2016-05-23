@@ -174,8 +174,8 @@ UserManagerDelegate>
 {
     static NSString *cellIdentifier = @"SettingCell";
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    NSString *photoString = [self.profileImages objectAtIndex:indexPath.item];
-    cell.userImage.image = [UIImage imageWithString:photoString];
+    NSData *photoData = [self.profileImages objectAtIndex:indexPath.item];
+    cell.userImage.image = [UIImage imageWithData:photoData];
 
     return cell;
 }
