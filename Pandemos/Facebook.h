@@ -34,13 +34,13 @@
 @property (strong, nonatomic) NSString *albumId;
 @property (strong, nonatomic) NSString *albumImageCount;
 @property (strong, nonatomic) NSString *albumImageURL;
+@property (strong, nonatomic) NSData *albumImageData;
 @property (strong, nonatomic) NSString *albumtimestamp;
 @property (strong, nonatomic) NSString *albumImageID;
 //PAGINATION
 @property (strong, nonatomic) NSString *nextPage;
 @property (strong, nonatomic) NSString *previousPage;
 @property (strong, nonatomic) NSString *photoCount;
-
 
 -(NSData *)stringURLToData:(NSString *)urlString;
 -(NSString *)ageFromBirthday:(NSString *)birthday;

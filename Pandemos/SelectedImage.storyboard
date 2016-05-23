@@ -137,18 +137,13 @@
                                                 <variation key="heightClass=regular-widthClass=compact">
                                                     <mask key="constraints">
                                                         <include reference="Zff-S3-frZ"/>
+                                                        <exclude reference="hD1-mf-5Y6"/>
                                                     </mask>
                                                 </variation>
                                                 <connections>
                                                     <action selector="onSaveImage:" destination="bjx-ua-bLW" eventType="touchUpInside" id="vp5-Qz-1hp"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Edit profile images" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VrU-zd-8ei">
-                                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
-                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
-                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dg9-IA-saE">
                                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                 <constraints>
@@ -173,6 +168,25 @@
                                                     <action selector="onAddAnother:" destination="bjx-ua-bLW" eventType="touchUpInside" id="4Jv-xP-rpm"/>
                                                 </connections>
                                             </button>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tig-ld-aHd">
+                                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="22" id="5q5-OG-RoH"/>
+                                                    <constraint firstAttribute="width" constant="20" id="O1J-64-Lkn"/>
+                                                </constraints>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="5q5-OG-RoH"/>
+                                                        <exclude reference="O1J-64-Lkn"/>
+                                                    </mask>
+                                                </variation>
+                                                <variation key="heightClass=regular-widthClass=compact">
+                                                    <mask key="constraints">
+                                                        <include reference="5q5-OG-RoH"/>
+                                                        <include reference="O1J-64-Lkn"/>
+                                                    </mask>
+                                                </variation>
+                                            </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ng6-Uy-IUm">
                                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                 <constraints>
@@ -180,7 +194,7 @@
                                                     <constraint firstAttribute="width" constant="60" id="vcC-lV-qzK"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="13"/>
-                                                <state key="normal" title="Profile&gt;"/>
+                                                <state key="normal" title="Profile"/>
                                                 <variation key="default">
                                                     <mask key="constraints">
                                                         <exclude reference="C01-vU-Xf8"/>
@@ -200,69 +214,61 @@
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="cP6-f1-VS5" secondAttribute="trailing" id="DPh-n2-Tql"/>
+                                            <constraint firstItem="tig-ld-aHd" firstAttribute="leading" secondItem="Dg9-IA-saE" secondAttribute="trailing" constant="39" id="8gH-bL-vbv">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
+                                            <constraint firstItem="tig-ld-aHd" firstAttribute="top" secondItem="Dg9-IA-saE" secondAttribute="top" id="EB9-Ii-nEa"/>
                                             <constraint firstItem="cP6-f1-VS5" firstAttribute="leading" secondItem="dwW-1b-qax" secondAttribute="leading" constant="8" id="Gmg-yr-0Or"/>
-                                            <constraint firstItem="Dg9-IA-saE" firstAttribute="centerX" secondItem="dwW-1b-qax" secondAttribute="centerX" id="KUc-0j-ZgM"/>
-                                            <constraint firstItem="VrU-zd-8ei" firstAttribute="top" secondItem="cP6-f1-VS5" secondAttribute="bottom" constant="8" id="PB8-1e-8TZ">
-                                                <variation key="heightClass=regular-widthClass=compact" constant="5"/>
-                                            </constraint>
+                                            <constraint firstItem="tig-ld-aHd" firstAttribute="top" secondItem="cP6-f1-VS5" secondAttribute="bottom" constant="8" id="Hcp-V7-6fZ"/>
                                             <constraint firstAttribute="trailing" secondItem="9Eb-bR-MoX" secondAttribute="trailing" constant="8" id="Rfe-zp-hsJ"/>
-                                            <constraint firstItem="IRu-fR-6Zx" firstAttribute="centerX" secondItem="dwW-1b-qax" secondAttribute="centerX" id="TaJ-QK-Y1J"/>
-                                            <constraint firstAttribute="trailing" secondItem="IRu-fR-6Zx" secondAttribute="trailing" constant="5" id="U5L-R5-DDJ"/>
                                             <constraint firstAttribute="trailing" secondItem="cP6-f1-VS5" secondAttribute="trailing" constant="8" id="a6s-Pg-fqb"/>
-                                            <constraint firstItem="Dg9-IA-saE" firstAttribute="top" secondItem="VrU-zd-8ei" secondAttribute="bottom" constant="8" id="f1v-Ur-6uB"/>
+                                            <constraint firstItem="IRu-fR-6Zx" firstAttribute="centerX" secondItem="dwW-1b-qax" secondAttribute="centerX" id="bt4-LN-YN8"/>
+                                            <constraint firstItem="ng6-Uy-IUm" firstAttribute="top" secondItem="tig-ld-aHd" secondAttribute="top" id="ebK-4V-LO2"/>
+                                            <constraint firstItem="tig-ld-aHd" firstAttribute="centerX" secondItem="dwW-1b-qax" secondAttribute="centerX" id="fs0-A0-Qc5"/>
                                             <constraint firstItem="cP6-f1-VS5" firstAttribute="top" secondItem="IRu-fR-6Zx" secondAttribute="bottom" constant="8" id="ghv-Gh-pvb"/>
-                                            <constraint firstAttribute="trailing" secondItem="ng6-Uy-IUm" secondAttribute="trailing" priority="250" constant="8" id="gq9-36-a0n">
-                                                <variation key="heightClass=regular-widthClass=compact" constant="20"/>
-                                            </constraint>
                                             <constraint firstItem="9Eb-bR-MoX" firstAttribute="top" secondItem="dwW-1b-qax" secondAttribute="top" constant="8" id="hF2-l2-pTr">
                                                 <variation key="heightClass=regular-widthClass=compact" constant="0.0"/>
                                             </constraint>
-                                            <constraint firstItem="IRu-fR-6Zx" firstAttribute="centerX" secondItem="dwW-1b-qax" secondAttribute="centerX" priority="750" id="jjm-H0-Did"/>
-                                            <constraint firstItem="cP6-f1-VS5" firstAttribute="leading" secondItem="dwW-1b-qax" secondAttribute="leading" id="oKp-6b-K3p"/>
-                                            <constraint firstItem="ng6-Uy-IUm" firstAttribute="top" secondItem="9Eb-bR-MoX" secondAttribute="bottom" constant="7.5" id="on4-MT-kMG"/>
                                             <constraint firstItem="IRu-fR-6Zx" firstAttribute="top" secondItem="9Eb-bR-MoX" secondAttribute="bottom" constant="8" id="p8M-PR-GLz"/>
-                                            <constraint firstItem="VrU-zd-8ei" firstAttribute="centerX" secondItem="dwW-1b-qax" secondAttribute="centerX" id="pOp-fn-oPZ"/>
+                                            <constraint firstItem="ng6-Uy-IUm" firstAttribute="leading" secondItem="tig-ld-aHd" secondAttribute="trailing" constant="35" id="sVR-On-KQZ">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
                                             <constraint firstItem="9Eb-bR-MoX" firstAttribute="leading" secondItem="dwW-1b-qax" secondAttribute="leading" constant="8" id="teB-Fa-cuM"/>
                                         </constraints>
                                         <variation key="default">
                                             <mask key="subviews">
-                                                <exclude reference="VrU-zd-8ei"/>
                                                 <exclude reference="Dg9-IA-saE"/>
+                                                <exclude reference="tig-ld-aHd"/>
                                                 <exclude reference="ng6-Uy-IUm"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <exclude reference="KUc-0j-ZgM"/>
-                                                <exclude reference="f1v-Ur-6uB"/>
-                                                <exclude reference="gq9-36-a0n"/>
-                                                <exclude reference="on4-MT-kMG"/>
-                                                <exclude reference="PB8-1e-8TZ"/>
-                                                <exclude reference="pOp-fn-oPZ"/>
+                                                <exclude reference="bt4-LN-YN8"/>
                                                 <exclude reference="Gmg-yr-0Or"/>
                                                 <exclude reference="a6s-Pg-fqb"/>
-                                                <exclude reference="TaJ-QK-Y1J"/>
-                                                <exclude reference="jjm-H0-Did"/>
+                                                <exclude reference="8gH-bL-vbv"/>
+                                                <exclude reference="EB9-Ii-nEa"/>
+                                                <exclude reference="Hcp-V7-6fZ"/>
+                                                <exclude reference="fs0-A0-Qc5"/>
+                                                <exclude reference="ebK-4V-LO2"/>
+                                                <exclude reference="sVR-On-KQZ"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
                                             <mask key="subviews">
-                                                <include reference="VrU-zd-8ei"/>
                                                 <include reference="Dg9-IA-saE"/>
+                                                <include reference="tig-ld-aHd"/>
                                                 <include reference="ng6-Uy-IUm"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <include reference="KUc-0j-ZgM"/>
-                                                <include reference="f1v-Ur-6uB"/>
-                                                <include reference="gq9-36-a0n"/>
-                                                <include reference="on4-MT-kMG"/>
-                                                <include reference="PB8-1e-8TZ"/>
-                                                <include reference="pOp-fn-oPZ"/>
-                                                <exclude reference="DPh-n2-Tql"/>
+                                                <include reference="bt4-LN-YN8"/>
                                                 <include reference="Gmg-yr-0Or"/>
                                                 <include reference="a6s-Pg-fqb"/>
-                                                <exclude reference="oKp-6b-K3p"/>
-                                                <include reference="TaJ-QK-Y1J"/>
-                                                <exclude reference="U5L-R5-DDJ"/>
+                                                <include reference="8gH-bL-vbv"/>
+                                                <include reference="EB9-Ii-nEa"/>
+                                                <include reference="Hcp-V7-6fZ"/>
+                                                <include reference="fs0-A0-Qc5"/>
+                                                <include reference="ebK-4V-LO2"/>
+                                                <include reference="sVR-On-KQZ"/>
                                             </mask>
                                         </variation>
                                     </view>
@@ -301,11 +307,13 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
+                        <outlet property="addAnother" destination="Dg9-IA-saE" id="WT7-tg-3WM"/>
                         <outlet property="collectionView" destination="cP6-f1-VS5" id="scV-0J-L7k"/>
                         <outlet property="profileButton" destination="ng6-Uy-IUm" id="G5b-9G-0g5"/>
                         <outlet property="saveImage" destination="IRu-fR-6Zx" id="mFj-Um-uL4"/>
                         <outlet property="userImage" destination="9Eb-bR-MoX" id="owW-TM-XEY"/>
                         <segue destination="2df-yx-Czd" kind="show" identifier="Profile" id="Gsi-Xi-pxZ"/>
+                        <segue destination="sER-xk-5qK" kind="show" identifier="FacebookAlbums" id="uqJ-U1-Mf9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YhC-QF-ZYj" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -319,6 +327,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vyi-wT-UUu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="6585" y="-80.25"/>
+        </scene>
+        <!--FacebookAlbums-->
+        <scene sceneID="uEm-RD-hx6">
+            <objects>
+                <viewControllerPlaceholder storyboardName="FacebookAlbums" id="sER-xk-5qK" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HYe-oj-KQe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6633" y="63"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="eZy-s3-s1U">

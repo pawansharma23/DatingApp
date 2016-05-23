@@ -148,6 +148,8 @@
     {
         Facebook *face = [Facebook new];
         face.albumImageURL = sourceURL[@"source"];
+        NSURL *url = [NSURL URLWithString:sourceURL[@"source"]];
+        face.albumImageData = [NSData dataWithContentsOfURL:url];
         face.albumImageID = sourceURL[@"id"];
         face.nextPage = objects[@"next"];
         face.previousPage = objects[@"previous"];

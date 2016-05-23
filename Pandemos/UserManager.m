@@ -299,7 +299,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
         if (objects)
         {
             userDict(objects.firstObject, nil);
-            [self.delegate didReceiveUserImages:objects.firstObject[@"profileImages"]];
+            //[self.delegate didReceiveUserImages:objects.firstObject[@"profileImages"]];
         }
         else
         {

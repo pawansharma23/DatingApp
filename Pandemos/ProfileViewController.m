@@ -427,6 +427,7 @@ UserManagerDelegate>
     {
         SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
         sivc.profileImage = self.selectedImage;
+        //sivc.profileImageAsData =
     }
 
 }
