@@ -172,16 +172,18 @@ static NSString * const kParsePublic                       = @"publicProfile";
     [query whereKey:@"userAge" greaterThan:min];
     [query whereKey:@"userAge" lessThan:max];
     //[query whereKey:miles nearGeoPoint:nil withinMiles:user.milesAwayInt];
+    // there has not been a pfrelation established yet
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 
         if (objects)
         {
+            self.allMatchedUsers = objects;
             [self.delegate didReceivePotentialMatchData:objects];
         }
         else
         {
             [self.delegate failedToFetchPotentialMatchData:error];
-            [self.delegate failedToFetchPotentialMatchImages:error];
+            //[self.delegate failedToFetchPotentialMatchImages:error];
         }
     }];
 }
@@ -189,11 +191,14 @@ static NSString * const kParsePublic                       = @"publicProfile";
 -(void)loadMatchedUsers:(resultBlockWithArray)result
 {
     PFQuery *query = [PFQuery queryWithClassName:@"MatchRequest"];
-    [query whereKey:@"status" equalTo:@"pending"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
+
+    [query whereKey:@"status" equalTo:@"pending"] || [query whereKey:@"status" equalTo:@"denied"] || [query whereKey:@"status" equalTo:@"blocked"] || [query whereKey:@"status" equalTo:@"boyYes"] || [query whereKey:@"status" equalTo:@"girlYes"] || [query whereKey:@"status" equalTo:@"confidantApproved"];
+
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (objects)
         {
+            self.alreadySeenUsers = objects;
             result(objects, nil);
         }
     }];
@@ -248,7 +253,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
         }
     }];
 }
-
+//no one should see this method until final confirmation from confidant
 -(void)updateMatchRequest:(MatchRequest *)request withResponse:(NSString *)response withSuccess:(resultBlockWithUser)result
 {
     User *fromUser = request.fromUser;
@@ -294,6 +299,24 @@ static NSString * const kParsePublic                       = @"publicProfile";
 {
     PFQuery *query = [PFUser query];
     [query whereKey:@"objectId" equalTo:objectId];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+
+        if (objects)
+        {
+            userDict(objects.firstObject, nil);
+            //[self.delegate didReceiveUserImages:objects.firstObject[@"profileImages"]];
+        }
+        else
+        {
+            NSLog(@"error querying for User data: %@", error);
+        }
+    }];
+}
+
+-(void)queryForMatchedUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict
+{
+    PFQuery *query = [PFUser query];
+    [query whereKey:@"objectId" notEqualTo:objectId];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 
         if (objects)

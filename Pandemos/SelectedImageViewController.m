@@ -60,12 +60,16 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     [self.navigationController.navigationBar setTitleTextAttributes:attributes];
 
     self.userImage.image = [UIImage imageWithData:self.profileImageAsData];
-    
+    self.userImage.layer.cornerRadius = 7.0;
+    self.userImage.layer.masksToBounds = YES;
+
     self.pictures = [NSMutableArray new];
 
     [UICollectionView setupBorder:self.collectionView];
     [self setupCollectionViewFlowLayout];
 
+    [self.saveImage sizeToFit];
+    [self.saveImage setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
     self.sizeAttributes = @{NSForegroundColorAttributeName:[UIColor mikeGray],
                             NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:14.0]};
 }
@@ -147,13 +151,11 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath
 {
-
     NSLog(@"dragging cell begun");
 }
 
 - (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath
 {
-
     NSLog(@"dragging has stopped");
 }
 
@@ -255,8 +257,8 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         NSString *okString = @"Delete an Image, then save!";
         [self.saveImage setTitle:okString forState:UIControlStateNormal];
         self.saveImage.backgroundColor = [UIColor whiteColor];
-        [self.saveImage setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
         [self.saveImage sizeToFit];
+        [self.saveImage setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
     }
 }
 
@@ -265,7 +267,9 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-    flowlayouts.sectionInset = UIEdgeInsetsMake(5, 0, 5, 0);
+    flowlayouts.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    flowlayouts.headerReferenceSize = CGSizeZero;
+    flowlayouts.footerReferenceSize = CGSizeZero;
     [self.collectionView setCollectionViewLayout:flowlayouts];
 }
 

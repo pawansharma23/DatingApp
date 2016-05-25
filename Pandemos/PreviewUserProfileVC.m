@@ -76,10 +76,6 @@ UserManagerDelegate>
     UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(25.0, 25.0)];
     [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
     self.closeBarButton.tintColor = [UIColor darkGrayColor];
-     //to get your location
-    //PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
-//  using age object instead
-//    NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -88,14 +84,13 @@ UserManagerDelegate>
 
     self.count = 0;
 
-    [self setLightForImage:self.count];
+    [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
 
     [self.userImage setUserInteractionEnabled:YES];
     UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureUp:)];
     [swipeGestureUp setDelegate:self];
     swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
     [self.userImage addGestureRecognizer:swipeGestureUp];
-    //down
     UISwipeGestureRecognizer *swipeGestureDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureDown:)];
     [swipeGestureDown setDelegate:self];
     swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
@@ -114,29 +109,24 @@ UserManagerDelegate>
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionUp)
     {
-        NSLog(@"swipe up");
-    
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
             self.count++;
 
             if (self.count < self.profileImages.count - 1)
             {
-                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
+                NSData *imageData = [self.profileImages objectAtIndex:self.count];
+                self.userImage.image = [UIImage imageWithData:imageData];
 
-                [self setLightForImage:self.count];
-
+                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
                 self.fullDescView.hidden = YES;
-
             }
             else if (self.count == self.profileImages.count - 1)
             {
-                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
+                NSData *imageData = [self.profileImages objectAtIndex:self.count];
+                self.userImage.image = [UIImage imageWithData:imageData];
 
-                NSLog(@"last image, count: %zd", self.count);
-
-                [self setLightForImage:self.count];
-
+                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
                 [self lastImageBringUpDesciptionView];
             }
         } completion:^(BOOL finished) {
@@ -157,20 +147,18 @@ UserManagerDelegate>
 
             if (self.count == 0)
             {
-                NSLog(@"first image, count: %zd", self.count);
-                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
-                //indicator lights
-                [self setLightForImage:self.count];
-                //re-hide full view on the way back up
-                self.fullDescView.hidden = YES;
+                NSData *imageData = [self.profileImages objectAtIndex:self.count];
+                self.userImage.image = [UIImage imageWithData:imageData];
 
+                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
+                self.fullDescView.hidden = YES;
             }
             else if(self.count > 0)
             {
-                self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
+                NSData *imageData = [self.profileImages objectAtIndex:self.count];
+                self.userImage.image = [UIImage imageWithData:imageData];
 
-                [self setLightForImage:self.count];
-
+                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
                 self.fullDescView.hidden = YES;
             }
         } completion:^(BOOL finished) {
@@ -188,8 +176,9 @@ UserManagerDelegate>
 -(void)didReceiveUserImages:(NSArray *)images
 {
     self.profileImages = [NSMutableArray arrayWithArray:images];
-    self.userImage.image = [UIImage imageWithString:[self.profileImages objectAtIndex:self.count]];
-    [self loadIndicatorLights:(int)self.profileImages.count];
+    NSData *imageData = [self.profileImages objectAtIndex:self.count];
+    self.userImage.image = [UIImage imageWithData:imageData];
+    [UIButton loadIndicatorLightsForProfileImages:_image1Indicator image2:_image1Indicator image3:_image3Indicator image4:_image4Indicator image5:_image5Indicator image6:_image6Indicator imageCount:(int)self.profileImages.count];
     self.image1Indicator.backgroundColor = [UIColor rubyRed];
 }
 
@@ -232,6 +221,15 @@ UserManagerDelegate>
     [UIButton circleButtonEdges:self.image6Indicator];
 }
 
+-(void)queryAndSetLocation
+{
+    //to get your location
+    //PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
+    //  using age object instead
+    //    NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
+
+}
+
 -(void)setupLocationInDelegate:(CLLocation*)location
 {
 
@@ -254,151 +252,6 @@ UserManagerDelegate>
             self.currentCityAndState = [NSString stringWithFormat:@"%@, %@", city, state];
         }
     }];
-}
-
--(void)loadIndicatorLights:(int)profileImageCount
-{
-    switch (profileImageCount)
-    {
-        case 0:
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image3Indicator.hidden = YES;
-            self.image2Indicator.hidden = YES;
-            self.image1Indicator.hidden = YES;
-            break;
-        case 1:
-            [UIButton circleButtonEdges:self.image1Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image3Indicator.hidden = YES;
-            self.image2Indicator.hidden = YES;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 2:
-            [UIButton circleButtonEdges:self.image1Indicator];
-            [UIButton circleButtonEdges:self.image2Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image3Indicator.hidden = YES;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 3:
-            [UIButton circleButtonEdges:self.image1Indicator];
-            [UIButton circleButtonEdges:self.image2Indicator];
-            [UIButton circleButtonEdges:self.image3Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = YES;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 4:
-            [UIButton circleButtonEdges:self.image1Indicator];
-            [UIButton circleButtonEdges:self.image2Indicator];
-            [UIButton circleButtonEdges:self.image3Indicator];
-            [UIButton circleButtonEdges:self.image4Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = YES;
-            self.image4Indicator.hidden = NO;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 5:
-            [UIButton circleButtonEdges:self.image1Indicator];
-            [UIButton circleButtonEdges:self.image2Indicator];
-            [UIButton circleButtonEdges:self.image3Indicator];
-            [UIButton circleButtonEdges:self.image4Indicator];
-            [UIButton circleButtonEdges:self.image5Indicator];
-            self.image6Indicator.hidden = YES;
-            self.image5Indicator.hidden = NO;
-            self.image4Indicator.hidden = NO;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        case 6:
-            [UIButton circleButtonEdges:self.image1Indicator];
-            [UIButton circleButtonEdges:self.image2Indicator];
-            [UIButton circleButtonEdges:self.image3Indicator];
-            [UIButton circleButtonEdges:self.image4Indicator];
-            [UIButton circleButtonEdges:self.image5Indicator];
-            [UIButton circleButtonEdges:self.image6Indicator];
-            self.image6Indicator.hidden = NO;
-            self.image5Indicator.hidden = NO;
-            self.image4Indicator.hidden = NO;
-            self.image3Indicator.hidden = NO;
-            self.image2Indicator.hidden = NO;
-            self.image1Indicator.hidden = NO;
-            break;
-        default:
-            NSLog(@"indicator light error");
-            break;
-    }
-}
-
--(void)setLightForImage:(long)count
-{
-    switch (count)
-    {
-        case 0:
-            self.image1Indicator.backgroundColor = [UIColor rubyRed];
-            self.image2Indicator.backgroundColor = nil;
-            self.image3Indicator.backgroundColor = nil;
-            self.image4Indicator.backgroundColor = nil;
-            self.image5Indicator.backgroundColor = nil;
-            self.image6Indicator.backgroundColor = nil;
-            break;
-        case 1:
-            self.image1Indicator.backgroundColor = nil;
-            self.image2Indicator.backgroundColor = [UIColor rubyRed];
-            self.image3Indicator.backgroundColor = nil;
-            self.image4Indicator.backgroundColor = nil;
-            self.image5Indicator.backgroundColor = nil;
-            self.image6Indicator.backgroundColor = nil;
-            break;
-        case 2:
-            self.image1Indicator.backgroundColor = nil;
-            self.image2Indicator.backgroundColor = nil;
-            self.image3Indicator.backgroundColor = [UIColor rubyRed];
-            self.image4Indicator.backgroundColor = nil;
-            self.image5Indicator.backgroundColor = nil;
-            self.image6Indicator.backgroundColor = nil;
-            break;
-        case 3:
-            self.image1Indicator.backgroundColor = nil;
-            self.image2Indicator.backgroundColor = nil;
-            self.image3Indicator.backgroundColor = nil;
-            self.image4Indicator.backgroundColor = [UIColor rubyRed];
-            self.image5Indicator.backgroundColor = nil;
-            self.image6Indicator.backgroundColor = nil;
-            break;
-        case 4:
-            self.image1Indicator.backgroundColor = nil;
-            self.image2Indicator.backgroundColor = nil;
-            self.image3Indicator.backgroundColor = nil;
-            self.image4Indicator.backgroundColor = nil;
-            self.image5Indicator.backgroundColor = [UIColor rubyRed];
-            self.image6Indicator.backgroundColor = nil;
-            break;
-        case 5:
-            self.image1Indicator.backgroundColor = nil;
-            self.image2Indicator.backgroundColor = nil;
-            self.image3Indicator.backgroundColor = nil;
-            self.image4Indicator.backgroundColor = nil;
-            self.image5Indicator.backgroundColor = nil;
-            self.image6Indicator.backgroundColor = [UIColor rubyRed];
-            break;
-        default:
-            NSLog(@"image beyond bounds");
-            break;
-    }
 }
 
 -(void)lastImageBringUpDesciptionView

@@ -27,7 +27,7 @@
         [self.container addGestureRecognizer:singleFingerTap];
 
         self.image.layer.masksToBounds = YES;
-        self.image.layer.cornerRadius = self.image.frame.size.height *.5f;
+        self.image.layer.cornerRadius = self.image.frame.size.height * .5f;
     }
     
     return self;

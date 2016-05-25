@@ -40,10 +40,12 @@
 @interface UserManager : NSObject
 typedef void (^resultBlockWithMatchRequest)(MatchRequest *matchRequest, NSError *error);
 typedef void (^resultBlockWithUser)(User *users, NSError *error);
-typedef void (^resultBlockWithArray)(NSArray *user, NSError *error);
+typedef void (^resultBlockWithArray)(NSArray *users, NSError *error);
 typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 
-@property(nonatomic, strong)NSMutableArray<User*> *pendingUsers;
+@property(nonatomic, strong)NSMutableArray<User*> *allUsers;
+@property(nonatomic, strong)NSArray<User*> *allMatchedUsers;
+@property(nonatomic, strong)NSArray<User*> *alreadySeenUsers;
 
 @property (weak, nonatomic) id<UserManagerDelegate>delegate;
 
@@ -58,4 +60,5 @@ typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 -(void)loadMatchedUsers:(resultBlockWithArray)result;
 -(void)fromMessaging:(User*)user;
 -(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict;
+-(void)queryForMatchedUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict;
 @end

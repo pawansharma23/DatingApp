@@ -21,11 +21,9 @@ typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 @property(nonatomic, strong)NSArray *matches;
 @property(nonatomic, strong)LYRClient *layerClient;
 
--(void)launchApp;
 -(void)sendInitialMessage:(User*)recipient;
 -(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text;
 -(void)queryIfChatExists:(User*)recipient currentUser:(User*)user withSuccess:(resultBlockWithSuccess)success;
--(void)deleteConversation:(LYRConversation*)conversation withResult:(resultBlockWithSuccess)result;
 -(void)queryForChats:(resultBlockWithConversations)conversations;
 -(void)queryForMatches:(resultBlockWithMatches)matches;
 -(void)queryForChattersImage:(resultBlockWithConversations)conversation;

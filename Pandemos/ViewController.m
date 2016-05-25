@@ -23,7 +23,7 @@
 #import <MDCSwipeToChoose/MDCSwipeToChoose.h>
 #import "ChooseMatchView.h"
 #import "MessageManager.h"
-
+#import "Match.h"
 //static const CGFloat ChooseUserButtonHorizontalPadding = 80.f;
 //static const CGFloat ChooseUserButtonVerticalPadding = 20.f;
 
@@ -63,12 +63,12 @@ MDCSwipeToChooseDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
 @property (weak, nonatomic) IBOutlet UILabel *matchedLabel;
 
+@property (weak, nonatomic) IBOutlet UITextView *fullDescriptionTextView;
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *currentMatch;
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) MessageManager *messageManager;
 @property (strong, nonatomic) NSArray<User*> *potentialMatchData;
-@property (strong, nonatomic) NSArray<User*> *rawUserMatchData;
 
 @property int userCount;
 @property long imageArrayCount;
@@ -123,19 +123,10 @@ MDCSwipeToChooseDelegate>
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    MessageManager *messageManager = [MessageManager new];
-    [messageManager launchApp];
-    
-    self.image1Indicator.hidden = YES;
-    self.image2Indicator.hidden = YES;
-    self.image3Indicator.hidden = YES;
-    self.image4Indicator.hidden = YES;
-    self.image5Indicator.hidden = YES;
-    self.image6Indicator.hidden = YES;
-    self.fullDescView.hidden = YES;
-    self.matchView.hidden = YES;
+    [self hideButtonsAndViews];
 
     self.currentUser = [User currentUser];
+
     if (self.currentUser)
     {
         NSLog(@"user: %@(%@) logged in", self.currentUser.givenName, self.currentUser.objectId);
@@ -146,7 +137,6 @@ MDCSwipeToChooseDelegate>
         self.userCount = 0;
         self.matchedUsersCount = 0;
 
-        self.rawUserMatchData = [NSArray new];
         self.potentialMatchData = [NSArray new];
 
         [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
@@ -189,9 +179,9 @@ MDCSwipeToChooseDelegate>
 
 #pragma mark -- CLLOCATION
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
-    {
+{
     CLLocation *currentLocation = [locations firstObject];
-  //  NSLog(@"did update locations delegate method: %@", currentLocation);
+    //  NSLog(@"did update locations delegate method: %@", currentLocation);
 
     [self.locationManager stopUpdatingLocation];
     //get city and location from a CLPlacemark object
@@ -288,18 +278,18 @@ MDCSwipeToChooseDelegate>
 #pragma mark -- BUTTONS
 - (IBAction)onYesButton:(UIButton *)sender
 {
-   // NSLog(@"user accepting: %@", [self.potentialMatchData objectAtIndex:self.userCount]);
-    NSString *givenName = [self.rawUserMatchData objectAtIndex:self.userCount].givenName;
+    // NSLog(@"user accepting: %@", [self.potentialMatchData objectAtIndex:self.userCount]);
+    NSString *givenName = [self.userManager.allMatchedUsers objectAtIndex:self.userCount].givenName;
     NSLog(@"user accpting: %@", givenName);
-    
-    [self.userManager createMatchRequest:[self.rawUserMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+
+    [self.userManager createMatchRequest:[self.userManager.allMatchedUsers objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
     }];
 
     [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
 
         [self nextPotentialMatchUp];
 
-        } completion:^(BOOL finished) {
+    } completion:^(BOOL finished) {
     }];
 }
 
@@ -312,7 +302,7 @@ MDCSwipeToChooseDelegate>
 
         [self nextPotentialMatchUp];
 
-        } completion:^(BOOL finished) {
+    } completion:^(BOOL finished) {
     }];
 }
 
@@ -368,6 +358,7 @@ MDCSwipeToChooseDelegate>
     self.milesAway = userData[@"milesAway"];
     self.minAge = userData[@"minAge"];
     self.maxAge = userData[@"maxAge"];
+    //this method take user preferences and returns allMatchedUsers
     [self.userManager loadUsersUnseenPotentialMatches:self.sexPref minAge:self.minAge maxAge:self.maxAge];
 }
 
@@ -378,55 +369,57 @@ MDCSwipeToChooseDelegate>
 
 -(void)didReceivePotentialMatchData:(NSArray *)data
 {
-    NSMutableArray *array = [NSMutableArray new];
-    self.rawUserMatchData = data;
+    //loop through all matched users and compare to all current matches
+    [self.userManager loadMatchedUsers:^(NSArray *users, NSError *error) {
 
-    for (NSDictionary *dict in data)
-    {
-        User *user = [User new];
-        user.objectId = dict[@"objectId"];
-        user.work = dict[@"work"];
-        user.birthday = dict[@"birthday"];
-        user.givenName = dict[@"givenName"];
-        user.age = dict[@"userAge"];
-        user.profileImages = dict[@"profileImages"];
+    NSMutableArray *intersectionArray = [NSMutableArray arrayWithArray:self.userManager.allMatchedUsers];
 
-        [array addObject:user];
-    }
-    //1st match
-    self.potentialMatchData = array;
-    self.currentMatch = [array objectAtIndex:0];
-    self.nameAndAge.text = [NSString stringWithFormat:@"%@,%@", self.currentMatch.givenName, self.currentMatch.age];
-    self.jobLabel.text = self.currentMatch.work;
-    self.educationLabel.text = self.currentMatch.lastSchool;
+            for (User *user in self.userManager.allMatchedUsers)
+            {
+                NSLog(@"match: %@", user.givenName);
 
-    [UIButton loadIndicatorLightsForProfileImages:self.image1Indicator image2:self.image2Indicator image3:self.image3Indicator image4:self.image4Indicator image5:self.image5Indicator image6:self.image6Indicator imageCount:(int)self.currentMatch.profileImages.count];
-    self.image1Indicator.backgroundColor = [UIColor rubyRed];
-    self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages firstObject]];
+                for (NSDictionary *matchRequest in users)//self.userManager.alreadySeenUser
+                {
+                    User *userObjectFrom = matchRequest[@"fromUser"];
+                    NSString *seenIdFrom = userObjectFrom.objectId;
+                    User *userObjectTo = matchRequest[@"toUser"];
+                    NSString *seenIdTo = userObjectTo.objectId;
+
+                if ([user.objectId isEqualToString:seenIdFrom] || [user.objectId isEqualToString:seenIdTo])
+                {
+//                    [intersectionArray addObject:user.objectId];
+                    NSLog(@"intersection array count: %d", (int)intersectionArray.count);
+                    [intersectionArray removeObject:user];
+                }
+            }
+        }
+
+        if (intersectionArray.count > 0)
+        {
+            [self loadInitialMatch:intersectionArray];
+            self.potentialMatchData = intersectionArray;
+        }
+        else
+        {
+            NSLog(@"no user match in your area");
+        }
+
+    }];
 }
 
 -(void)failedToFetchPotentialMatchData:(NSError *)error
 {
-    NSLog(@"failed to fetch match data: %@", error);
-}
-
--(void)didReceivePotentialMatchImages:(NSArray *)images
-{
-    //vacated for now with data and images both being sent to didReceivePotentialMatchData
-}
-
--(void)failedToFetchPotentialMatchImages:(NSError *)error
-{
-    NSLog(@"failed to fetch match images: %@", error);
+    NSLog(@"NO POTENTIAL MATCHES FOR USER TO SEE: %@", error);
 }
 
 -(void)didCreateMatchRequest:(MatchRequest *)matchRequest
 {
+    //only used on the backside to confirm a request, could be used here if a femail confirms and has confidant confirm
     [self.userManager updateMatchRequest:matchRequest withResponse:@"pending" withSuccess:^(User *user, NSError *error){
         if (!error)
         {
             //adds PFRelation to the MatchRequest
-            NSLog(@"update worked");
+            NSLog(@"update worked added PFRelation");
         }
     }];
 }
@@ -439,15 +432,15 @@ MDCSwipeToChooseDelegate>
 {
 
     NSLog(@"to user: %@", user.givenName);
-//    [self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
-//        NSLog(@"convo object: %@", conversation);
-//    }];
+    //    [self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
+    //        NSLog(@"convo object: %@", conversation);
+    //    }];
 
 
     //this starts the convo even though we need another layer of authentication to go through so this method should live in a launch app or pending match screen, or even in the MessageController
     //[self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
 
-//    }];
+    //    }];
 
 }
 
@@ -467,6 +460,31 @@ MDCSwipeToChooseDelegate>
 }
 
 #pragma mark -- HELPERS
+-(void)loadInitialMatch:(NSArray*)matchArray
+{
+    NSDictionary *matchDict = matchArray.firstObject;
+
+    self.currentMatch = matchArray.firstObject;
+    self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", matchDict[@"givenName"], matchDict[@"userAge"]];
+    self.jobLabel.text = matchDict[@"work"];
+    self.educationLabel.text = matchDict[@"lastSchool"];
+    [UIButton loadIndicatorLightsForProfileImages:self.image1Indicator image2:self.image2Indicator image3:self.image3Indicator image4:self.image4Indicator image5:self.image5Indicator image6:self.image6Indicator imageCount:(int)self.currentMatch.profileImages.count];
+    self.image1Indicator.backgroundColor = [UIColor rubyRed];
+    self.userImage.image = [UIImage imageWithString:[matchDict[@"profileImages"] firstObject]];
+}
+
+-(void)hideButtonsAndViews
+{
+    self.image1Indicator.hidden = YES;
+    self.image2Indicator.hidden = YES;
+    self.image3Indicator.hidden = YES;
+    self.image4Indicator.hidden = YES;
+    self.image5Indicator.hidden = YES;
+    self.image6Indicator.hidden = YES;
+    self.fullDescView.hidden = YES;
+    self.matchView.hidden = YES;
+}
+
 -(void)loadLocation
 {
     //location
@@ -485,7 +503,7 @@ MDCSwipeToChooseDelegate>
 
 -(void)nextPotentialMatchUp
 {
-    if (self.count < self.rawUserMatchData.count)
+    if (self.count < self.userManager.allMatchedUsers.count)
     {
         self.userCount++;
         User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
@@ -503,7 +521,7 @@ MDCSwipeToChooseDelegate>
 
         self.count = 0;
     }
-    else if(self.count == self.rawUserMatchData.count)
+    else if(self.count == self.userManager.allMatchedUsers.count)
     {
         NSLog(@"last match");
     }
@@ -527,7 +545,7 @@ MDCSwipeToChooseDelegate>
         self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages objectAtIndex:self.count]];
         self.fullDescView.hidden = YES;
         [UIButton setIndicatorLight:self.image1Indicator l2:self.image2Indicator l3:self.image3Indicator l4:self.image4Indicator l5:self.image5Indicator l6:self.image6Indicator forCount:self.count];
-        self.fullDescView.hidden = YES;
+        self.userInfoView.hidden = NO;
     }
 }
 
@@ -539,13 +557,14 @@ MDCSwipeToChooseDelegate>
         self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages objectAtIndex:self.count]];
         [UIButton setIndicatorLight:self.image1Indicator l2:self.image2Indicator l3:self.image3Indicator l4:self.image4Indicator l5:self.image5Indicator l6:self.image6Indicator forCount:self.count];
         self.fullDescView.hidden = YES;
+        self.userInfoView.hidden = NO;
     }
     else if (self.count == self.currentMatch.profileImages.count - 1)
     {
         NSLog(@"last image");
-        
+
         self.userImage.image = [UIImage imageWithString:[self.currentMatch.profileImages objectAtIndex:self.count]];
-        [self lastImageBringUpDesciptionView];
+        [self lastImageLoadFullDescView];
         [UIButton setIndicatorLight:self.image1Indicator l2:self.image2Indicator l3:self.image3Indicator l4:self.image4Indicator l5:self.image5Indicator l6:self.image6Indicator forCount:self.count];
         //get the fullDesc to appear after the last image
         //self.fullDescView.hidden = NO;
@@ -583,15 +602,17 @@ MDCSwipeToChooseDelegate>
     [self.matchView addSubview:matchedImage];
 }
 
--(void)lastImageBringUpDesciptionView
+-(void)lastImageLoadFullDescView
 {
     User *user = [User new];
+    self.userInfoView.hidden = YES;
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
     self.fullAboutMe.text = user.aboutMe;
     NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", user.givenName, user.age];
     self.fullDescNameAndAge.text = nameAndAge;
     self.fullMilesAway.text = user.milesAway;
+    self.fullDescriptionTextView.text = user.aboutMe;
 }
 
 -(void) sendEmailForApproval

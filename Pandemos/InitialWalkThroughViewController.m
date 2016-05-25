@@ -21,6 +21,7 @@
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
 #import "UITextView+Additions.h"
+#import "UIImage+Additions.h"
 #import "SelectedImageViewController.h"
 
 @interface InitialWalkThroughViewController ()<
@@ -240,14 +241,12 @@ UIImagePickerControllerDelegate>
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
     UIImage *orginalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    //UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
-    //set image no need to scale _profilePicture.image = scaledImage;
-    //_backgroundProfileView.image = scaledImage;
+    UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
 
-    if (orginalImage)
+    if (scaledImage)
     {
         self.dataImage = [[NSData alloc] init];
-        self.dataImage = UIImagePNGRepresentation(orginalImage);
+        self.dataImage = UIImagePNGRepresentation(scaledImage);
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];

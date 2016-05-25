@@ -11,6 +11,7 @@
 		2601A3401CEDF55F0041B17F /* SelectedImage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2601A33F1CEDF55F0041B17F /* SelectedImage.storyboard */; };
 		260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 260317B91CE2338800C37C67 /* MessagerProfileVC.m */; };
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
+		261ADA331CF5F74C00C7ECCD /* Match.m in Sources */ = {isa = PBXBuildFile; fileRef = 261ADA321CF5F74C00C7ECCD /* Match.m */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
 		2653C0361CD7859B00DDBD65 /* MatchesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0351CD7859B00DDBD65 /* MatchesCell.m */; };
 		2653C03A1CDA357200DDBD65 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0391CDA357200DDBD65 /* NSData+Additions.m */; };
@@ -104,6 +105,8 @@
 		2614A70F1CA1EBF200D6F6AA /* FacebookBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookBuilder.m; sourceTree = "<group>"; };
 		2614A7111CA1EF4E00D6F6AA /* FacebookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookManager.h; sourceTree = "<group>"; };
 		2614A7121CA1EF4E00D6F6AA /* FacebookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookManager.m; sourceTree = "<group>"; };
+		261ADA311CF5F74C00C7ECCD /* Match.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Match.h; sourceTree = "<group>"; };
+		261ADA321CF5F74C00C7ECCD /* Match.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Match.m; sourceTree = "<group>"; };
 		264445191CB5699B00A0381B /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		2644451A1CB5699B00A0381B /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		2653C0341CD7859B00DDBD65 /* MatchesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchesCell.h; sourceTree = "<group>"; };
@@ -457,6 +460,8 @@
 			children = (
 				26EC33031C76AFF8009E821D /* Facebook.h */,
 				26EC33041C76AFF8009E821D /* Facebook.m */,
+				261ADA311CF5F74C00C7ECCD /* Match.h */,
+				261ADA321CF5F74C00C7ECCD /* Match.m */,
 				268BA10C1C25AFE10054414E /* User.h */,
 				268BA10D1C25AFE10054414E /* User.m */,
 			);
@@ -859,6 +864,7 @@
 				260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
+				261ADA331CF5F74C00C7ECCD /* Match.m in Sources */,
 				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,
 				26C70EC31CA5B18F00E9B98F /* MessagingCell.m in Sources */,
 				26C70EC41CA5B18F00E9B98F /* MessagingViewController.m in Sources */,

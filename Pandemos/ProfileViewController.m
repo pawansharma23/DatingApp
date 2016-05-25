@@ -70,6 +70,7 @@ UserManagerDelegate>
 @property (strong, nonatomic) NSMutableArray *profileImages;
 @property (strong, nonatomic) FacebookManager *manager;
 @property (strong, nonatomic) UserManager *userManager;
+@property (strong, nonatomic) NSData *selectedImageData;
 
 @end
 
@@ -204,7 +205,7 @@ UserManagerDelegate>
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedImage = [self.profileImages objectAtIndex:indexPath.item];
+    self.selectedImageData = [self.profileImages objectAtIndex:indexPath.item];
     [self performSegueWithIdentifier:@"Selected" sender:self];
 }
 
@@ -426,8 +427,8 @@ UserManagerDelegate>
     if ([segue.identifier isEqualToString:@"Selected"])
     {
         SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-        sivc.profileImage = self.selectedImage;
-        //sivc.profileImageAsData =
+        //sivc.profileImage = self.selectedImage;
+        sivc.profileImageAsData = self.selectedImageData;
     }
 
 }
@@ -469,7 +470,9 @@ UserManagerDelegate>
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
-    flowlayouts.sectionInset = UIEdgeInsetsMake(2, 2, 2, 2);//buffer in: top, left, bottom, right format
+    flowlayouts.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    flowlayouts.headerReferenceSize = CGSizeZero;
+    flowlayouts.footerReferenceSize = CGSizeZero;
     [self.collectionView setCollectionViewLayout:flowlayouts];
 }
 
