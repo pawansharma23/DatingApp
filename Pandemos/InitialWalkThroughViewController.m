@@ -103,7 +103,6 @@ UIImagePickerControllerDelegate>
         self.textViewAboutMe.text = aboutMeDescription;
     }
 
-
     if (self.dataImage)
     {
         [self performSegueWithIdentifier:@"ChooseImage" sender:self];

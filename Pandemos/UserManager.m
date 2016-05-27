@@ -193,24 +193,23 @@ static NSString * const kParsePublic                       = @"publicProfile";
     PFQuery *query = [PFQuery queryWithClassName:@"MatchRequest"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
 
-    [query whereKey:@"status" equalTo:@"pending"] || [query whereKey:@"status" equalTo:@"denied"] || [query whereKey:@"status" equalTo:@"blocked"] || [query whereKey:@"status" equalTo:@"boyYes"] || [query whereKey:@"status" equalTo:@"girlYes"] || [query whereKey:@"status" equalTo:@"confidantApproved"];
+    [query whereKey:@"status" equalTo:@"boyYes"] || [query whereKey:@"status" equalTo:@"deny"] || [query whereKey:@"status" equalTo:@"girlYes"] || [query whereKey:@"status" equalTo:@"blocked"];
 
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (objects)
         {
             self.alreadySeenUsers = objects;
-            result(objects, nil);
+            [self.delegate didLoadMatchedUsers:objects];
         }
     }];
 }
 
--(void)createMatchRequest:(User *)user withCompletion:(resultBlockWithMatchRequest)result
+-(void)createMatchRequest:(User *)user withStatus:(NSString*)status withCompletion:(resultBlockWithMatchRequest)result
 {
-    //MatchRequest *matchRequest = [MatchRequest object];
     MatchRequest *matchRequest = [MatchRequest objectWithClassName:@"MatchRequest"];
     matchRequest.fromUser = [User currentUser];
     matchRequest.toUser = user;
-    matchRequest.status = @"pending";// set the initial status to pending, also can throw in sex checks in here
+    matchRequest.status = status;
 
     [matchRequest saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 
@@ -227,58 +226,67 @@ static NSString * const kParsePublic                       = @"publicProfile";
     }];
 }
 
--(void)createDenyMatchRequest:(User *)user withCompletion:(resultBlockWithMatchRequest)result
+-(void)createMatchRequestWithStringId:(NSString*)strId withStatus:(NSString*)status withCompletion:(resultBlockWithMatchRequest)result
 {
-    //request them
     MatchRequest *matchRequest = [MatchRequest objectWithClassName:@"MatchRequest"];
     matchRequest.fromUser = [User currentUser];
-    //NSLog(@"from user: %@", match.fromUser.givenName);
-    //selected user is the user at the cell that was selected
-    matchRequest.toUser = user;
-    //NSLog(@"to user: %@ & username: %@", match.toUser.givenName, match.toUser.work);
-    // set the initial status to pending, also can throw in sex checks in here
-    matchRequest.status = @"denied";
+    //matchRequest.toUser = strId;
+    matchRequest.strId = strId;
+    matchRequest.status = status;
 
     [matchRequest saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 
         if (!error)
         {
             result(matchRequest, nil);
-            [self.delegate didCreateDenyMatchRequest:matchRequest];
+            [self.delegate didCreateMatchRequest:matchRequest];
         }
         else
         {
             result(nil, error);
-            [self.delegate failedToCreateDenyMatchRequest:error];
+            [self.delegate failedToCreateMatchRequest:error];
         }
     }];
 }
+
 //no one should see this method until final confirmation from confidant
 -(void)updateMatchRequest:(MatchRequest *)request withResponse:(NSString *)response withSuccess:(resultBlockWithUser)result
 {
-    User *fromUser = request.fromUser;
-    User *toUser = request.toUser;
+   // User *fromUser = request.fromUser;
+    //toUser get full User object
+    [self queryForUserWithObjectId:request.strId completion:^(User *user, NSError *error) {
+
+        NSLog(@"user; %@", user);
+        [self.delegate didFetchUserObjectForFinalMatch:user];
+    }];
+}
+
+-(void)secureMatchWithPFCloudFunction:(User*)recipientUser
+{
     //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
     //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
-    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : request.objectId} block:^(id object, NSError *error)
+    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : [User currentUser].objectId} block:^(id object, NSError *error)
      {
          if (!error)
          {
              //add the from user to the currentUsers friends
              PFRelation *matchRelation = [[User currentUser] relationForKey:@"match"];
-             [matchRelation addObject:fromUser];
+             [matchRelation addObject:[User currentUser]];
 
              //save the current user
-             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
-              {
-                  result(fromUser, error);
-                  [self.delegate didUpdateMatchRequest:toUser];
+             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)    {
+
+                 if (succeeded)
+                 {
+                     NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
+                     //[self.delegate didUpdateMatchRequest:recipientUser];
+                 }
               }];
          }
          else
          {
-             result(nil, error);
-             [self.delegate failedToCreateMatchRequest:error];
+             NSLog(@"failed to save final PFrelation");
+             //[self.delegate failedToCreateMatchRequest:error];
          }
      }];
 }
@@ -294,17 +302,15 @@ static NSString * const kParsePublic                       = @"publicProfile";
         [self.delegate didComeFromMessaging:YES withUser:user];
     }
 }
-
--(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict
+//private
+-(void)queryForUserWithObjectId:(NSString *)objectId completion:(resultBlockWithUser)completion
 {
     PFQuery *query = [PFUser query];
-    [query whereKey:@"objectId" equalTo:objectId];
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-
-        if (objects)
+    [query getObjectInBackgroundWithId:objectId block:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        if ([object isKindOfClass:[User class]])
         {
-            userDict(objects.firstObject, nil);
-            //[self.delegate didReceiveUserImages:objects.firstObject[@"profileImages"]];
+            User *user = (User*)object;
+            completion(user, nil);
         }
         else
         {
@@ -313,16 +319,17 @@ static NSString * const kParsePublic                       = @"publicProfile";
     }];
 }
 
--(void)queryForMatchedUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict
+-(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUser)userDict
 {
     PFQuery *query = [PFUser query];
-    [query whereKey:@"objectId" notEqualTo:objectId];
+    [query whereKey:@"objectId" equalTo:objectId];
+   // [query getObjectInBackgroundWithId:objectId block:^(PFObject * _Nullable object, NSError * _Nullable error) {
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 
         if (objects)
         {
-            userDict(objects.firstObject, nil);
-            //[self.delegate didReceiveUserImages:objects.firstObject[@"profileImages"]];
+            User *dict = objects.firstObject;
+            userDict(dict, nil);
         }
         else
         {

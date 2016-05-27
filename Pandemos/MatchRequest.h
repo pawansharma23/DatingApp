@@ -16,4 +16,5 @@
 @property(nonatomic, strong)User *toUser;
 @property(nonatomic, strong)User *fromUser;
 @property(nonatomic, strong)NSString *status;
+@property(nonatomic, strong)NSString *strId;
 @end

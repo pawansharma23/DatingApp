@@ -19,15 +19,52 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RSC-gd-8eA">
                                 <rect key="frame" x="32" y="75" width="536" height="493"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HOa-hK-MBS">
+                                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="240" id="agv-vq-LNa"/>
+                                            <constraint firstAttribute="height" constant="128" id="fwD-vi-Dba"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="agv-vq-LNa"/>
+                                                <exclude reference="fwD-vi-Dba"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="constraints">
+                                                <include reference="agv-vq-LNa"/>
+                                                <include reference="fwD-vi-Dba"/>
+                                            </mask>
+                                        </variation>
+                                    </imageView>
+                                </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="DZm-Kq-lbv"/>
                                     <constraint firstAttribute="width" constant="240" id="EZX-A3-EW3"/>
+                                    <constraint firstItem="HOa-hK-MBS" firstAttribute="centerY" secondItem="RSC-gd-8eA" secondAttribute="centerY" id="ZrG-Fk-gUO"/>
+                                    <constraint firstItem="HOa-hK-MBS" firstAttribute="centerX" secondItem="RSC-gd-8eA" secondAttribute="centerX" id="e06-b8-ues"/>
                                 </constraints>
                                 <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="HOa-hK-MBS"/>
+                                    </mask>
                                     <mask key="constraints">
                                         <exclude reference="DZm-Kq-lbv"/>
                                         <exclude reference="EZX-A3-EW3"/>
+                                        <exclude reference="ZrG-Fk-gUO"/>
+                                        <exclude reference="e06-b8-ues"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="subviews">
+                                        <include reference="HOa-hK-MBS"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <include reference="ZrG-Fk-gUO"/>
+                                        <include reference="e06-b8-ues"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -433,6 +470,7 @@
                         <outlet property="matchedLabel" destination="hik-6a-c15" id="4z3-aH-YkQ"/>
                         <outlet property="messageButton" destination="wKk-hf-lmf" id="rtz-zO-qhb"/>
                         <outlet property="nameAndAge" destination="rF1-v5-KYp" id="F8t-sw-WpP"/>
+                        <outlet property="noMatchesImage" destination="HOa-hK-MBS" id="2WT-x5-Q2V"/>
                         <outlet property="redButton" destination="XR2-Qv-fsi" id="fL2-Ep-Ts5"/>
                         <outlet property="userImage" destination="pQv-YT-7zK" id="SQC-wu-I9a"/>
                         <outlet property="userImageMatched" destination="Stf-IV-aYp" id="JNB-uZ-JYG"/>

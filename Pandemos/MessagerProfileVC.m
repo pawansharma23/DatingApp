@@ -237,8 +237,9 @@ UserManagerDelegate>
 #pragma mark -- HELPERS
 -(void)setupManagersProfileVCForCurrentUser
 {
-    [self.userManager queryForUserData:self.messagingUser.objectId withUser:^(NSDictionary *userDict, NSError *error) {
+    [self.userManager queryForUserData:self.messagingUser.objectId withUser:^(User *users, NSError *error) {
 
+        NSDictionary *userDict = users;
         NSString *bday = userDict[@"birthday"];
         self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %@", userDict[@"givenName"], [bday ageFromBirthday:bday]];
         self.nameAndAge.text = self.nameAndAgeGlobal;

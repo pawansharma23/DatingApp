@@ -13,7 +13,7 @@
 @dynamic fromUser;
 @dynamic toUser;
 @dynamic status;
-
+@dynamic strId;
 + (NSString *)parseClassName
 {
     return @"MatchRequest";

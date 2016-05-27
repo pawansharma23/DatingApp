@@ -28,6 +28,7 @@
 -(void)didReceivePotentialMatchImages:(NSArray *)images;
 -(void)failedToFetchPotentialMatchImages:(NSError*)error;
 //match Requests
+-(void)didLoadMatchedUsers:(NSArray<User*>*)users;
 -(void)didCreateMatchRequest:(MatchRequest*)matchRequest;
 -(void)failedToCreateMatchRequest:(NSError*)error;
 -(void)didUpdateMatchRequest:(User *)user;
@@ -35,11 +36,12 @@
 -(void)didCreateDenyMatchRequest:(MatchRequest*)matchRequest;
 -(void)failedToCreateDenyMatchRequest:(NSError*)error;
 -(void)didComeFromMessaging:(BOOL)fromMessaging withUser:(User*)user;
+-(void)didFetchUserObjectForFinalMatch:(User*)user;
 @end
 
 @interface UserManager : NSObject
 typedef void (^resultBlockWithMatchRequest)(MatchRequest *matchRequest, NSError *error);
-typedef void (^resultBlockWithUser)(User *users, NSError *error);
+typedef void (^resultBlockWithUser)(User *user, NSError *error);
 typedef void (^resultBlockWithArray)(NSArray *users, NSError *error);
 typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 
@@ -52,13 +54,21 @@ typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 -(void)signUp:(PFUser*)user;
 -(void)loadUserData:(User *)user;
 -(void)loadUserImages:(User *)user;
--(void)loadUsersUnseenPotentialMatches:(NSString *)sexPref minAge:(NSString *)min maxAge:(NSString *)max;
+-(void)loadUsersUnseenPotentialMatches:(NSString *)sexPref
+                                minAge:(NSString *)min
+                                maxAge:(NSString *)max;
 -(void)createMatchRequest:(User*)user
+               withStatus:(NSString*)status
            withCompletion:(resultBlockWithMatchRequest)result;
--(void)createDenyMatchRequest:(User *)user withCompletion:(resultBlockWithMatchRequest)result;
--(void)updateMatchRequest:(MatchRequest*)matchRequest withResponse:(NSString*)response withSuccess:(resultBlockWithUser)result;
+-(void)updateMatchRequest:(MatchRequest*)matchRequest
+             withResponse:(NSString*)response
+              withSuccess:(resultBlockWithUser)result;
 -(void)loadMatchedUsers:(resultBlockWithArray)result;
 -(void)fromMessaging:(User*)user;
--(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict;
--(void)queryForMatchedUserData:(NSString *)objectId withUser:(resultBlockWithUserData)userDict;
+-(void)queryForUserData:(NSString *)objectId
+               withUser:(resultBlockWithUser)userDict;
+-(void)createMatchRequestWithStringId:(NSString*)strId
+                           withStatus:(NSString*)status
+                       withCompletion:(resultBlockWithMatchRequest)result;
+-(void)secureMatchWithPFCloudFunction:(User*)recipientUser;
 @end

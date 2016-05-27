@@ -19,6 +19,7 @@
 #import "UIImage+Additions.h"
 #import "UICollectionView+Pandemos.h"
 #import "SelectedImageViewController.h"
+#import "HeaderForProfileVC.h"
 
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
@@ -32,8 +33,10 @@ LXReorderableCollectionViewDelegateFlowLayout,
 LXReorderableCollectionViewDataSource,
 UIPopoverPresentationControllerDelegate,
 UserManagerDelegate>
-
-
+{
+    UIImagePickerController *ipc;
+}
+//View Properties
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
@@ -42,10 +45,10 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *maximumAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *milesAwayLabel;
-
 @property (weak, nonatomic) IBOutlet UILabel *jobLabel;
-@property (weak, nonatomic) IBOutlet UIButton *SwapAddPhotoButton;
 @property (weak, nonatomic) IBOutlet UILabel *educationLabel;
+
+@property (weak, nonatomic) IBOutlet UIButton *SwapAddPhotoButton;
 @property (weak, nonatomic) IBOutlet UIButton *feedbackButton;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 @property (weak, nonatomic) IBOutlet UIButton *menButton;
@@ -53,11 +56,13 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *bothButton;
 @property (weak, nonatomic) IBOutlet UIButton *logoutButton;
 @property (weak, nonatomic) IBOutlet UIButton *deleteButton;
+@property (weak, nonatomic) IBOutlet UIButton *facebookAlbumsButton;
+
 @property (weak, nonatomic) IBOutlet UISwitch *publicProfileSwitch;
 @property (weak, nonatomic) IBOutlet UISlider *milesAwaySlider;
 @property (weak, nonatomic) IBOutlet UISlider *minimumAgeSlider;
 @property (weak, nonatomic) IBOutlet UISlider *maximumAgeSlider;
-
+//strong global properties
 @property (strong, nonatomic) NSString *aboutMe;
 @property (strong, nonatomic) NSString *sexPref;
 @property (strong, nonatomic) NSString *minAge;
@@ -108,9 +113,26 @@ UserManagerDelegate>
 {
     [super viewDidAppear:YES];
 
+    //NSLog(@"view height: %d, view Width: %d", (int)self.view.frame.size.height, (int)self.view.frame.size.width);
+    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 950)];
+
     [self setupManagersProfileVC];
 
     [UIButton setUpButton:self.SwapAddPhotoButton];
+    [UIButton setUpButton:self.facebookAlbumsButton];
+    //on reload scroll to top
+    self.scrollView.scrollsToTop = YES;
+
+    if (self.selectedImageData)
+    {
+        [self performSegueWithIdentifier:@"Selected" sender:self];
+    }
+
+}
+
+-(BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
+{
+    return NO;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -134,7 +156,6 @@ UserManagerDelegate>
             [textView resignFirstResponder];
             NSLog(@"editing: %@", textView.text);
         }
-
     }
     else if (location != NSNotFound)
     {
@@ -163,7 +184,23 @@ UserManagerDelegate>
 #pragma mark -- COLLECTIONVIEW DELEGATE
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
-    return CGSizeMake(0, 0);
+    return CGSizeMake(300, 20);
+}
+
+-(HeaderForProfileVC *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    HeaderForProfileVC *header = nil;
+    static NSString *imagesDesc = @"*Hold and drag photos to change their order";
+    static NSString *identifier = @"ImageDescription";
+
+    if (kind == UICollectionElementKindSectionHeader)
+    {
+        HeaderForProfileVC *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:identifier forIndexPath:indexPath];
+        headerView.headerTitle.text = imagesDesc;
+        header = headerView;
+    }
+
+    return header;
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -181,10 +218,10 @@ UserManagerDelegate>
     return cell;
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionView *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 5; // This is the minimum inter item spacing, can be more
-}
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionView *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+//{
+//    return 2; // This is the minimum inter item spacing, can be more
+//}
 
 -(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath
 {
@@ -262,12 +299,9 @@ UserManagerDelegate>
     [self changeButtonState:self.bothButton sexString:@"male female" otherButton1:self.menButton otherButton2:self.womenButton];
 }
 
-//5) Miles away
 - (IBAction)milesAwaySlider:(UISlider *)sender
 {
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesAwaySlider.value];
-    NSLog(@"miles away string to save: %@", milesAwayStr);
-
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
     self.milesAwayLabel.text = milesAway;
     [self.currentUser setObject:milesAwayStr forKey:@"milesAway"];
@@ -279,7 +313,7 @@ UserManagerDelegate>
         }
         else
         {
-            NSLog(@"saved: %s", succeeded ? "true" : "false");
+            NSLog(@"SAVED:%@ %s", milesAwayStr, succeeded ? "true" : "false");
         }
     }];
 }
@@ -430,7 +464,12 @@ UserManagerDelegate>
         //sivc.profileImage = self.selectedImage;
         sivc.profileImageAsData = self.selectedImageData;
     }
+}
 
+- (IBAction)onFacebookAlbums:(UIButton *)sender
+{
+    [self performSegueWithIdentifier:@"Swap" sender:self];
+    [UIButton changeButtonStateForSingleButton:self.facebookAlbumsButton];
 }
 
 - (IBAction)onPreviewTapped:(UIBarButtonItem *)sender
@@ -441,7 +480,51 @@ UserManagerDelegate>
 - (IBAction)onSwapTapped:(UIButton *)sender
 {
     [UIButton changeButtonStateForSingleButton:self.SwapAddPhotoButton];
-    [self performSegueWithIdentifier:@"Swap" sender:self];
+    ipc = [[UIImagePickerController alloc] init];
+    ipc.delegate = (id)self;
+
+    UIAlertController *alertController = [UIAlertController
+                                          alertControllerWithTitle:nil
+                                          message:nil
+                                          preferredStyle:UIAlertControllerStyleActionSheet];
+
+    UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                       ipc.sourceType = UIImagePickerControllerSourceTypeCamera;
+                                       [self presentViewController:ipc animated:YES completion:nil];
+                                   }];
+
+    UIAlertAction *libraryAction = [UIAlertAction actionWithTitle:@"Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action)  {
+                                        ipc.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                                        [self presentViewController:ipc animated:YES completion:nil];
+                                    }];
+
+    UIAlertAction *savedPhotosAction = [UIAlertAction actionWithTitle:@"Saved" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                            ipc.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+                                            [self presentViewController:ipc animated:YES completion:nil];
+                                        }];
+
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+    [alertController addAction:cameraAction];
+    [alertController addAction:libraryAction];
+    [alertController addAction:savedPhotosAction];
+    [alertController addAction:cancelAction];
+
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
+    UIImage *orginalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
+
+    if (scaledImage)
+    {
+        self.selectedImageData = [[NSData alloc] init];
+        self.selectedImageData = UIImagePNGRepresentation(scaledImage);
+    }
+
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -- HELPERS
@@ -454,7 +537,6 @@ UserManagerDelegate>
     [UIButton setUpButton:self.deleteButton];
     [UIButton setUpButton:self.shareButton];
     [UIButton setUpButton:self.feedbackButton];
-    [UIButton setUpButton:self.SwapAddPhotoButton];
 
     self.textViewAboutMe.layer.cornerRadius = 10;
     [self.textViewAboutMe.layer setBorderWidth:1.0];
@@ -464,16 +546,19 @@ UserManagerDelegate>
 -(void)setFlowLayout
 {
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
-    layout.minimumInteritemSpacing = 10;
+    layout.minimumInteritemSpacing = 5;
     layout.minimumLineSpacing = 2;
+    layout.headerReferenceSize = CGSizeMake(300, 20);
 
     LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
     [flowlayouts setItemSize:CGSizeMake(100, 100)];
     [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
     flowlayouts.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    flowlayouts.headerReferenceSize = CGSizeZero;
+    flowlayouts.headerReferenceSize = CGSizeMake(300, 20);
     flowlayouts.footerReferenceSize = CGSizeZero;
+
     [self.collectionView setCollectionViewLayout:flowlayouts];
+    self.collectionView.contentInset = UIEdgeInsetsZero;
 }
 
 -(void)setupManagersProfileVC

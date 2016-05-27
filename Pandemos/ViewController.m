@@ -38,6 +38,7 @@ MDCSwipeToChooseDelegate>
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIImageView *matchedImage;
 @property (weak, nonatomic) IBOutlet UIImageView *userImageMatched;
+@property (weak, nonatomic) IBOutlet UIImageView *noMatchesImage;
 
 @property (weak, nonatomic) IBOutlet UIButton *image1Indicator;
 @property (weak, nonatomic) IBOutlet UIButton *image2Indicator;
@@ -64,13 +65,16 @@ MDCSwipeToChooseDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *matchedLabel;
 
 @property (weak, nonatomic) IBOutlet UITextView *fullDescriptionTextView;
-@property (strong, nonatomic) User *currentUser;
-@property (strong, nonatomic) User *currentMatch;
+
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) MessageManager *messageManager;
+
 @property (strong, nonatomic) NSArray<User*> *potentialMatchData;
+@property (strong, nonatomic) User *currentUser;
+@property (strong, nonatomic) User *currentMatch;
 
 @property int userCount;
+@property long count;
 @property long imageArrayCount;
 @property (strong, nonatomic) NSString *currentCityAndState;
 //@property (strong, nonatomic) ChooseMatchView *frontCardView;
@@ -78,13 +82,12 @@ MDCSwipeToChooseDelegate>
 //@property (strong, nonatomic) NSString *nameAndAgeGlobal;
 
 //Matching
+@property (strong, nonatomic) NSString *gender;
 @property (strong, nonatomic) NSString *sexPref;
 @property (strong, nonatomic) NSString *milesAway;
 @property (strong, nonatomic) NSString *minAge;
 @property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *userImageForMatching;
-@property long count;
-@property long matchedUsersCount;
 //Location
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
@@ -135,7 +138,6 @@ MDCSwipeToChooseDelegate>
 
         self.count = 0;
         self.userCount = 0;
-        self.matchedUsersCount = 0;
 
         self.potentialMatchData = [NSArray new];
 
@@ -241,11 +243,21 @@ MDCSwipeToChooseDelegate>
 
 - (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender
 {
-    [self.userManager createMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-    }];
+    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
+    NSLog(@"user accepting: %@", matchedObject.givenName);
+
+    if ([self.gender isEqualToString:@"male"])
+    {
+        [self.userManager createMatchRequest:matchedObject withStatus:@"boyYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+        }];
+    }
+    else if ([self.gender isEqualToString:@"female"])
+    {
+        [self.userManager createMatchRequest:matchedObject withStatus:@"girlYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+        }];
+    }
 
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-
     if (direction == UISwipeGestureRecognizerDirectionRight)
     {
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
@@ -259,11 +271,13 @@ MDCSwipeToChooseDelegate>
 
 - (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender
 {
-    [self.userManager createDenyMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
+    NSLog(@"user denied: %@", matchedObject.givenName);
+
+    [self.userManager createMatchRequest:matchedObject withStatus:@"Deny" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
     }];
 
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-
     if (direction == UISwipeGestureRecognizerDirectionLeft)
     {
         [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
@@ -276,26 +290,44 @@ MDCSwipeToChooseDelegate>
 }
 
 #pragma mark -- BUTTONS
+//ACCEPTED
 - (IBAction)onYesButton:(UIButton *)sender
 {
-    // NSLog(@"user accepting: %@", [self.potentialMatchData objectAtIndex:self.userCount]);
-    NSString *givenName = [self.userManager.allMatchedUsers objectAtIndex:self.userCount].givenName;
-    NSLog(@"user accpting: %@", givenName);
+    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
+    NSLog(@"user accepting: %@", matchedObject.givenName);
 
-    [self.userManager createMatchRequest:[self.userManager.allMatchedUsers objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-    }];
+//    [self.userManager queryForUserData:matchedObject.objectId withUser:^(User *users, NSError *error) {
+//
+//        NSLog(@"usre: %@", users);
+//    }];
+
+    if ([self.gender isEqualToString:@"male"])
+    {
+        //matchObject.objectId is a hack using a string objectId we nneeeeeeeeed to use the User object but keep getting PFCOnsistneyAssertion errors!!!!!???!??!?!?!
+        [self.userManager createMatchRequestWithStringId:matchedObject.objectId withStatus:@"boyYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+
+        }];
+    }
+    else if ([self.gender isEqualToString:@"female"])
+    {
+        [self.userManager createMatchRequest:matchedObject withStatus:@"girlYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+        }];
+    }
 
     [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
 
         [self nextPotentialMatchUp];
 
-    } completion:^(BOOL finished) {
+        } completion:^(BOOL finished) {
     }];
 }
-
+//DENIED
 - (IBAction)onXButton:(UIButton *)sender
 {
-    [self.userManager createDenyMatchRequest:[self.potentialMatchData objectAtIndex:self.userCount] withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
+    NSLog(@"user denied: %@", matchedObject.givenName);
+
+    [self.userManager createMatchRequest:matchedObject withStatus:@"Deny" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
     }];
 
     [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
@@ -358,6 +390,7 @@ MDCSwipeToChooseDelegate>
     self.milesAway = userData[@"milesAway"];
     self.minAge = userData[@"minAge"];
     self.maxAge = userData[@"maxAge"];
+    self.gender = userData[@"gender"];
     //this method take user preferences and returns allMatchedUsers
     [self.userManager loadUsersUnseenPotentialMatches:self.sexPref minAge:self.minAge maxAge:self.maxAge];
 }
@@ -369,42 +402,50 @@ MDCSwipeToChooseDelegate>
 
 -(void)didReceivePotentialMatchData:(NSArray *)data
 {
-    //loop through all matched users and compare to all current matches
     [self.userManager loadMatchedUsers:^(NSArray *users, NSError *error) {
 
+    }];
+}
+
+-(void)didLoadMatchedUsers:(NSArray<User *> *)users
+{
+    //loop through all matched users and compare to all current matches
     NSMutableArray *intersectionArray = [NSMutableArray arrayWithArray:self.userManager.allMatchedUsers];
 
-            for (User *user in self.userManager.allMatchedUsers)
+    for (User *user in self.userManager.allMatchedUsers)
+    {
+        NSLog(@"match: %@", user.givenName);
+
+        for (NSDictionary *matchRequest in users)//self.userManager.alreadySeenUser
+        {
+            User *userObjectFrom = matchRequest[@"fromUser"];
+
+            NSString *seenIdFrom = userObjectFrom.objectId;
+            NSString *strIdTo = matchRequest[@"strId"];
+            //NSString *seenIdTo = userObjectTo.objectId;
+
+            if ([user.objectId isEqualToString:seenIdFrom] || [user.objectId isEqualToString:strIdTo])
             {
-                NSLog(@"match: %@", user.givenName);
+                //                    [intersectionArray addObject:user.objectId];
+                NSLog(@"filtered matches to remove: %@", user.givenName);
+                [intersectionArray removeObject:user];
 
-                for (NSDictionary *matchRequest in users)//self.userManager.alreadySeenUser
-                {
-                    User *userObjectFrom = matchRequest[@"fromUser"];
-                    NSString *seenIdFrom = userObjectFrom.objectId;
-                    User *userObjectTo = matchRequest[@"toUser"];
-                    NSString *seenIdTo = userObjectTo.objectId;
-
-                if ([user.objectId isEqualToString:seenIdFrom] || [user.objectId isEqualToString:seenIdTo])
-                {
-//                    [intersectionArray addObject:user.objectId];
-                    NSLog(@"intersection array count: %d", (int)intersectionArray.count);
-                    [intersectionArray removeObject:user];
-                }
             }
         }
+    }
 
-        if (intersectionArray.count > 0)
-        {
-            [self loadInitialMatch:intersectionArray];
-            self.potentialMatchData = intersectionArray;
-        }
-        else
-        {
-            NSLog(@"no user match in your area");
-        }
-
-    }];
+    if (intersectionArray.count > 0)
+    {
+        self.potentialMatchData = intersectionArray;
+        [self loadInitialMatch:intersectionArray];
+        NSLog(@"filtered matches: %d", (int)self.potentialMatchData.count);
+    }
+    else
+    {
+        NSLog(@"no user match in your area");
+        self.noMatchesImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(240.0, 128.0)];
+        [self.view insertSubview:self.activityView aboveSubview:self.userImage];
+    }
 }
 
 -(void)failedToFetchPotentialMatchData:(NSError *)error
@@ -414,34 +455,27 @@ MDCSwipeToChooseDelegate>
 
 -(void)didCreateMatchRequest:(MatchRequest *)matchRequest
 {
-    //only used on the backside to confirm a request, could be used here if a femail confirms and has confidant confirm
-    [self.userManager updateMatchRequest:matchRequest withResponse:@"pending" withSuccess:^(User *user, NSError *error){
+    NSLog(@"match Request class successfully created: %@", matchRequest);
+
+    //now passes on to get toUser User Object from UserManager private method
+
+    [self.userManager updateMatchRequest:matchRequest withResponse:@"lastStep" withSuccess:^(User *user, NSError *error){
         if (!error)
         {
-            //adds PFRelation to the MatchRequest
             NSLog(@"update worked added PFRelation");
+            //calls didFetchUserObjectForFinalMatch
         }
     }];
 }
 
+-(void)didFetchUserObjectForFinalMatch:(User *)user
+{
+    //*************Final Security to added the PF RELATION*******************//
+    [self.userManager secureMatchWithPFCloudFunction:user];
+}
 -(void)failedToCreateMatchRequest:(NSError *)error
 {
     NSLog(@"failed to create match request: %@", error);
-}
--(void)didUpdateMatchRequest:(User *)user
-{
-
-    NSLog(@"to user: %@", user.givenName);
-    //    [self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
-    //        NSLog(@"convo object: %@", conversation);
-    //    }];
-
-
-    //this starts the convo even though we need another layer of authentication to go through so this method should live in a launch app or pending match screen, or even in the MessageController
-    //[self.messageManager createConversationWithUsers:@[user.objectId] withCompletion:^(LYRConversation *conversation, NSError *error) {
-
-    //    }];
-
 }
 
 -(void)failedToUpdateMatchRequest:(NSError *)error
@@ -503,7 +537,7 @@ MDCSwipeToChooseDelegate>
 
 -(void)nextPotentialMatchUp
 {
-    if (self.count < self.userManager.allMatchedUsers.count)
+    if (self.userCount < self.potentialMatchData.count)
     {
         self.userCount++;
         User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
@@ -515,10 +549,10 @@ MDCSwipeToChooseDelegate>
 
         self.fullDescView.hidden = YES;
         self.userImage.image = [UIImage imageWithString:self.currentMatch.profileImages.firstObject];
-        self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", matchedUser.givenName, matchedUser.age];
+        self.nameAndAge.text = [NSString stringWithFormat:@"%@, %@", matchedUser.givenName, [matchedUser ageFromBirthday:matchedUser.birthday]];
         self.jobLabel.text = matchedUser.work;
         self.educationLabel.text = matchedUser.lastSchool;
-
+        //set image array to zero
         self.count = 0;
     }
     else if(self.count == self.userManager.allMatchedUsers.count)
@@ -609,8 +643,7 @@ MDCSwipeToChooseDelegate>
     self.fullDescView.hidden = NO;
     self.fullDescView.layer.cornerRadius = 10;
     self.fullAboutMe.text = user.aboutMe;
-    NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", user.givenName, user.age];
-    self.fullDescNameAndAge.text = nameAndAge;
+    self.fullDescNameAndAge.text = [NSString stringWithFormat:@"%@, %@", user.givenName, user.age];;
     self.fullMilesAway.text = user.milesAway;
     self.fullDescriptionTextView.text = user.aboutMe;
 }
@@ -686,263 +719,3 @@ MDCSwipeToChooseDelegate>
 
 
 @end
-
-//#pragma mark -- MDC DELEGATE
-//
-//// This is called when a user didn't fully swipe left or right.
-//- (void)viewDidCancelSwipe:(UIView *)view
-//{
-//    NSLog(@"You couldn't decide on %@.", self.currentMatch.username);
-//}
-//
-//// This is called then a user swipes the view fully left or right.
-//- (void)view:(UIView *)view wasChosenWithDirection:(MDCSwipeDirection)direction
-//{
-//    // MDCSwipeToChooseView shows "NOPE" on swipes to the left,
-//    // and "LIKED" on swipes to the right.
-//    if (direction == MDCSwipeDirectionLeft)
-//    {
-//        NSLog(@"You noped %@.", self.currentMatch.username);
-//    } else
-//    {
-//        NSLog(@"You liked %@.", self.currentMatch.username);
-//    }
-//
-//    // MDCSwipeToChooseView removes the view from the view hierarchy
-//    // after it is swiped (this behavior can be customized via the
-//    // MDCSwipeOptions class). Since the front card view is gone, we
-//    // move the back card to the front, and create a new back card.
-//    self.frontCardView = self.backCardView;
-//    if ((self.backCardView = [self popPersonViewWithFrame:[self backCardViewFrame]])) {
-//        // Fade the back card into view.
-//        self.backCardView.alpha = 0.f;
-//        [self.view insertSubview:self.backCardView belowSubview:self.frontCardView];
-//        [UIView animateWithDuration:0.5
-//                              delay:0.0
-//                            options:UIViewAnimationOptionCurveEaseInOut
-//                         animations:^{
-//                             self.backCardView.alpha = 1.f;
-//                         } completion:nil];
-//    }
-//}
-//#pragma mark -- MDC
-//- (void)setFrontCardView:(ChooseMatchView *)frontCardView
-//{
-//    // Keep track of the person currently being chosen.
-//    // Quick and dirty, just for the purposes of this sample app.
-//    _frontCardView = frontCardView;
-//    self.currentMatch = frontCardView.user;
-//}
-//
-//- (ChooseMatchView *)popPersonViewWithFrame:(CGRect)frame
-//{
-//    if ([self.people count] == 0)
-//    {
-//        return nil;
-//    }
-//
-//    // UIView+MDCSwipeToChoose and MDCSwipeToChooseView are heavily customizable.
-//    // Each take an "options" argument. Here, we specify the view controller as
-//    // a delegate, and provide a custom callback that moves the back card view
-//    // based on how far the user has panned the front card view.
-//    MDCSwipeToChooseViewOptions *options = [MDCSwipeToChooseViewOptions new];
-//    options.delegate = self;
-//    options.threshold = 160.f;
-//    options.onPan = ^(MDCPanState *state){
-//        CGRect frame = [self backCardViewFrame];
-//        self.backCardView.frame = CGRectMake(frame.origin.x,
-//                                             frame.origin.y - (state.thresholdRatio * 10.f),
-//                                             CGRectGetWidth(frame),
-//                                             CGRectGetHeight(frame));
-//    };
-//
-//    // Create a personView with the top person in the people array, then pop
-//    // that person off the stack.
-//    ChooseMatchView *userView = [[ChooseMatchView alloc] initWithFrame:frame
-//                                                                    user:self.people[0]
-//                                                                   options:options];
-//    [self.people removeObjectAtIndex:0];
-//    return userView;
-//}
-//
-//#pragma mark View Contruction
-//
-//- (CGRect)frontCardViewFrame
-//{
-//    CGFloat horizontalPadding = 20.f;
-//    CGFloat topPadding = 60.f;
-//    CGFloat bottomPadding = 200.f;
-//    return CGRectMake(horizontalPadding,
-//                      topPadding,
-//                      CGRectGetWidth(self.view.frame) - (horizontalPadding * 2),
-//                      CGRectGetHeight(self.view.frame) - bottomPadding);
-//}
-//
-//- (CGRect)backCardViewFrame
-//{
-//    CGRect frontFrame = [self frontCardViewFrame];
-//    return CGRectMake(frontFrame.origin.x,
-//                      frontFrame.origin.y + 10.f,
-//                      CGRectGetWidth(frontFrame),
-//                      CGRectGetHeight(frontFrame));
-//}
-//
-//// Create and add the "nope" button.
-//- (void)constructNopeButton
-//{
-//    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    UIImage *image = [UIImage imageNamed:@"nope"];
-//    button.frame = CGRectMake(ChooseUserButtonHorizontalPadding,
-//                              CGRectGetMaxY(self.frontCardView.frame) + ChooseUserButtonVerticalPadding,
-//                              image.size.width,
-//                              image.size.height);
-//    [button setImage:image forState:UIControlStateNormal];
-//    [button setTintColor:[UIColor colorWithRed:247.f/255.f
-//                                         green:91.f/255.f
-//                                          blue:37.f/255.f
-//                                         alpha:1.f]];
-//    [button addTarget:self
-//               action:@selector(nopeFrontCardView)
-//     forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button];
-//}
-//
-//// Create and add the "like" button.
-//- (void)constructLikedButton
-//{
-//    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    UIImage *image = [UIImage imageNamed:@"liked"];
-//    button.frame = CGRectMake(CGRectGetMaxX(self.view.frame) - image.size.width - ChooseUserButtonHorizontalPadding,
-//                              CGRectGetMaxY(self.frontCardView.frame) + ChooseUserButtonVerticalPadding,
-//                              image.size.width,
-//                              image.size.height);
-//    [button setImage:image forState:UIControlStateNormal];
-//    [button setTintColor:[UIColor colorWithRed:29.f/255.f
-//                                         green:245.f/255.f
-//                                          blue:106.f/255.f
-//                                         alpha:1.f]];
-//    [button addTarget:self
-//               action:@selector(likeFrontCardView)
-//     forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:button];
-//}
-//
-//// Programmatically "nopes" the front card view.
-//- (void)nopeFrontCardView
-//{
-//    [self.frontCardView mdc_swipe:MDCSwipeDirectionLeft];
-//}
-//
-//// Programmatically "likes" the front card view.
-//- (void)likeFrontCardView
-//{
-//    [self.frontCardView mdc_swipe:MDCSwipeDirectionRight];
-//}
-
-
-
-
-
-//    PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-//    NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
-//
-//    NSString *confidantEmail = [self.currentUser objectForKey:@"confidantEmail"];
-//    NSLog(@"confidant email: %@", confidantEmail);
-//    NSString *firstNameOfUser = [self.currentUser objectForKey:@"firstName"];
-//    NSString *userNeedsHelp = [NSString stringWithFormat:@"%@ needs your approval", firstNameOfUser];
-//    //relation info for email
-//    PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-//    PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
-//    [approvedRela addObject:approvedMatchUser];
-//
-//    NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/%@", approvedRela];
-//    NSString *cssButton = [NSString stringWithFormat:@"button"];
-//    NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, firstNameOFMatch, firstNameOfUser];
-//
-//    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": userNeedsHelp, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
-//        if (error) {
-//            NSLog(@"error cloud js code: %@", error);
-//        } else {
-//            NSLog(@"result :%@", result);
-//        }
-//    }];
-//
-//
-//
-//    NSLog(@"swipe right");
-//    self.count = 1;
-//    [self.imageArray removeAllObjects];
-//
-//
-//
-//    [UIView transitionWithView:self.userImage duration:0.1 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
-//
-//        //Set relational data to accepted throw a notification to user skip to next user
-//        if (self.matchedUsersCount == self.objectsArray.count - 1)
-//        {
-//
-//            NSLog(@"last match in queue");
-//            //bring up the new user Data
-//            [self matchedView:self.objectsArray user:self.matchedUsersCount + 1];
-//
-//
-//            //make a new image that takes over the
-//            // [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-//            // [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
-//
-//            //chgange the view for matches up
-//            self.userImage.image = [UIImage imageNamed:@"cupid-icon"];
-//            self.userInfoView.hidden = YES;
-//            self.redButton.hidden = YES;
-//            self.greenButton.hidden = YES;
-//
-//            //save the relation to Parse
-//            PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-//            PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
-//            [matchWithoutConfirm addObject:currentMatchUser];
-//
-//            //for logging purposes
-//            NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-//            NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-//            NSLog(@"It's Match Between: %@ and %@",fullName, fullNameOfCurrentMatch);
-//
-//            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//                if (error) {
-//                    NSLog(@"error: %@", error);
-//                }
-//            }];
-//            //send the email for confirmation
-//            //[PFCloud callfun]
-//
-//        } else {
-//            User *user = [User new];
-//            //view elements, shows next user
-//            self.matchedUsersCount++;
-////            [self checkAndGetImages:self.objectsArray user:self.matchedUsersCount];
-////            [self checkAndGetUserData:self.objectsArray user:self.matchedUsersCount];
-//
-//            //bring up Matched View
-//            [self matchedView:self.objectsArray user:self.matchedUsersCount];
-//
-//            //assign a relationship between current user and swiped right user
-//            PFUser *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount -1];
-//            PFRelation *matchWithoutConfirm = [self.currentUser relationForKey:@"matchNotConfirmed"];
-//            [matchWithoutConfirm addObject:currentMatchUser];
-//
-//            //for logging purposes
-//            //NSString *fullName = [self.currentUser objectForKey:@"fullName"];
-//            NSString *fullNameOfCurrentMatch = [currentMatchUser objectForKey:@"fullName"];
-//            NSLog(@"It's Match Between: %@ and %@", user.givenName, fullNameOfCurrentMatch);
-//
-//            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//
-//                if (error) {
-//                    NSLog(@"error saving relation: %@", error);
-//                } else{
-//                    NSLog(@"succeeded in matching: %@ & %@ and saving match: %s", user.givenName, fullNameOfCurrentMatch, succeeded ? "true" : "false");
-//                }
-//            }];
-//        }
-//    } completion:^(BOOL finished) {
-//        NSLog(@"animatd");
-// }];

@@ -253,8 +253,9 @@ MatchViewDelegate>
 -(void)loadUserData
 {
     UserManager *userManager = [UserManager new];
-    [userManager queryForUserData:self.recipient.objectId withUser:^(NSDictionary *userDict, NSError *error) {
+    [userManager queryForUserData:self.recipient.objectId withUser:^(User *users, NSError *error) {
 
+        NSDictionary *userDict = users;
         self.userGiven = userDict[@"givenName"];
         NSArray *array = userDict[@"profileImages"];
         self.userImage = array.firstObject;

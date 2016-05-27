@@ -26,11 +26,14 @@
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="yfG-Kl-yAT">
                                                 <rect key="frame" x="0.0" y="8" width="600" height="215"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="215" id="Ydb-IL-857"/>
+                                                    <constraint firstAttribute="height" constant="215" id="Ydb-IL-857">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="250"/>
+                                                    </constraint>
                                                 </constraints>
-                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6cG-Z3-eZ3">
+                                                <inset key="scrollIndicatorInsets" minX="0.0" minY="-20" maxX="0.0" maxY="0.0"/>
+                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="6cG-Z3-eZ3">
                                                     <size key="itemSize" width="100" height="100"/>
-                                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                    <size key="headerReferenceSize" width="300" height="20"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                                     <inset key="sectionInset" minX="8" minY="0.0" maxX="8" maxY="0.0"/>
                                                 </collectionViewFlowLayout>
@@ -53,6 +56,64 @@
                                                         </connections>
                                                     </collectionViewCell>
                                                 </cells>
+                                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageDescription" id="yTi-7q-6VQ" customClass="HeaderForProfileVC">
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sCQ-Sg-U13">
+                                                            <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="15" id="Ktq-s4-6KR"/>
+                                                                <constraint firstAttribute="width" constant="205" id="Mas-Zb-8JF">
+                                                                    <variation key="heightClass=regular-widthClass=compact" constant="300"/>
+                                                                </constraint>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="12"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                            <variation key="default">
+                                                                <mask key="constraints">
+                                                                    <exclude reference="Ktq-s4-6KR"/>
+                                                                    <exclude reference="Mas-Zb-8JF"/>
+                                                                </mask>
+                                                            </variation>
+                                                            <variation key="heightClass=regular-widthClass=compact">
+                                                                <mask key="constraints">
+                                                                    <include reference="Ktq-s4-6KR"/>
+                                                                    <include reference="Mas-Zb-8JF"/>
+                                                                </mask>
+                                                            </variation>
+                                                        </label>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="sCQ-Sg-U13" firstAttribute="top" secondItem="yTi-7q-6VQ" secondAttribute="top" constant="8" id="VmM-KW-llB">
+                                                            <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                                        </constraint>
+                                                        <constraint firstItem="sCQ-Sg-U13" firstAttribute="leading" secondItem="yTi-7q-6VQ" secondAttribute="leading" constant="8" id="cYf-tD-fAn">
+                                                            <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                                        </constraint>
+                                                    </constraints>
+                                                    <variation key="default">
+                                                        <mask key="subviews">
+                                                            <exclude reference="sCQ-Sg-U13"/>
+                                                        </mask>
+                                                        <mask key="constraints">
+                                                            <exclude reference="VmM-KW-llB"/>
+                                                            <exclude reference="cYf-tD-fAn"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <variation key="heightClass=regular-widthClass=compact">
+                                                        <mask key="subviews">
+                                                            <include reference="sCQ-Sg-U13"/>
+                                                        </mask>
+                                                        <mask key="constraints">
+                                                            <include reference="VmM-KW-llB"/>
+                                                            <include reference="cYf-tD-fAn"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <connections>
+                                                        <outlet property="headerTitle" destination="sCQ-Sg-U13" id="GN0-EZ-51h"/>
+                                                    </connections>
+                                                </collectionReusableView>
                                                 <connections>
                                                     <outlet property="dataSource" destination="z3C-Zz-vhA" id="6BK-OX-GOh"/>
                                                     <outlet property="delegate" destination="z3C-Zz-vhA" id="FMt-Sq-5Mk"/>
@@ -70,9 +131,9 @@
                                                     <outlet property="delegate" destination="z3C-Zz-vhA" id="w0R-UM-HdO"/>
                                                 </connections>
                                             </textView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Minimum Age" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oJA-aV-j4F">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Minimum Age" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oJA-aV-j4F">
                                                 <rect key="frame" x="8" y="375" width="584" height="17.5"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -82,9 +143,9 @@
                                                     <action selector="onMinAgeSliderChange:" destination="z3C-Zz-vhA" eventType="valueChanged" id="BN8-S4-SdA"/>
                                                 </connections>
                                             </slider>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Maximum Age" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gcN-Gc-G5e">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Maximum Age" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gcN-Gc-G5e">
                                                 <rect key="frame" x="8" y="428" width="584" height="17.5"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -100,9 +161,9 @@
                                                     <action selector="milesAwaySlider:" destination="z3C-Zz-vhA" eventType="valueChanged" id="DGn-ey-IaU"/>
                                                 </connections>
                                             </slider>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDw-uM-xxz">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDw-uM-xxz">
                                                 <rect key="frame" x="8" y="487" width="584" height="17.5"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -112,7 +173,7 @@
                                                     <constraint firstAttribute="height" constant="30" id="QRz-8P-tF6"/>
                                                     <constraint firstAttribute="width" constant="75" id="ilq-3J-dcj"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <state key="normal" title="Boys">
                                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
@@ -126,7 +187,7 @@
                                                     <constraint firstAttribute="width" constant="75" id="Lls-Rs-u5Z"/>
                                                     <constraint firstAttribute="height" constant="30" id="P5i-ua-UQp"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <state key="normal" title="Both">
                                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
@@ -140,7 +201,7 @@
                                                     <constraint firstAttribute="width" constant="75" id="QPv-2A-QeQ"/>
                                                     <constraint firstAttribute="height" constant="30" id="XcL-xe-XiK"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <state key="normal" title="Girls">
                                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
@@ -148,25 +209,25 @@
                                                     <action selector="onWomensButton:" destination="z3C-Zz-vhA" eventType="touchUpInside" id="jKE-Hh-gv9"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4B-Dv-03z">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4B-Dv-03z">
                                                 <rect key="frame" x="8" y="547" width="584" height="17.5"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show results within 50 miles of here" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ijG-Fe-MwA">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show results within 50 miles of here" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ijG-Fe-MwA">
                                                 <rect key="frame" x="8" y="564" width="584" height="13"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="11"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Public Profile" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pY2-kS-Jrb">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Public Profile" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pY2-kS-Jrb">
                                                 <rect key="frame" x="8" y="624" width="227" height="17.5"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="110" id="PMI-DH-olN"/>
                                                     <constraint firstAttribute="width" constant="227" id="bag-qg-iwF"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                                 <variation key="default">
@@ -181,15 +242,15 @@
                                                     <action selector="publicProfileSwitch:" destination="z3C-Zz-vhA" eventType="valueChanged" id="Qa0-Mv-bfI"/>
                                                 </connections>
                                             </switch>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Job" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3zh-sK-oKJ">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Job" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3zh-sK-oKJ">
                                                 <rect key="frame" x="8" y="657" width="584" height="17.5"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="School" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sSQ-Ny-hHG">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="School" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sSQ-Ny-hHG">
                                                 <rect key="frame" x="8" y="682" width="584" height="17.5"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -197,8 +258,12 @@
                                                 <rect key="frame" x="265" y="730" width="70" height="45"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="70" id="AxQ-oG-fkL"/>
-                                                    <constraint firstAttribute="height" constant="45" id="rTy-Sa-nkv"/>
+                                                    <constraint firstAttribute="width" constant="70" id="AxQ-oG-fkL">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="20"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="height" constant="45" id="rTy-Sa-nkv">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="20"/>
+                                                    </constraint>
                                                 </constraints>
                                             </view>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0zP-vU-Q1f">
@@ -207,7 +272,7 @@
                                                     <constraint firstAttribute="height" constant="30" id="Zod-a0-23i"/>
                                                     <constraint firstAttribute="width" constant="100" id="stv-Ny-cOQ"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <state key="normal" title="Feedback">
                                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
@@ -220,7 +285,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="100" id="A2z-kh-Dq4"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <state key="normal" title="Logout">
                                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
@@ -234,7 +299,7 @@
                                                     <constraint firstAttribute="width" constant="100" id="SJN-LI-p08"/>
                                                     <constraint firstAttribute="height" constant="30" id="m7e-CF-1ya"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <state key="normal" title="Share">
                                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
@@ -244,22 +309,32 @@
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="100" id="Qyb-Dz-ePx"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <state key="normal" title="Delete">
                                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </state>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="*Hold and drag photos to change their order" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ANL-Zp-Woy">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add or Swap Photos:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ANL-Zp-Woy">
                                                 <rect key="frame" x="197" y="225" width="205" height="12"/>
                                                 <constraints>
+                                                    <constraint firstAttribute="width" constant="130" id="7ct-Ru-nNG"/>
                                                     <constraint firstAttribute="width" constant="205" id="mnC-bl-2Cf"/>
+                                                    <constraint firstAttribute="height" constant="20" id="nRe-fO-NWc"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="13"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="7ct-Ru-nNG"/>
+                                                        <exclude reference="nRe-fO-NWc"/>
+                                                    </mask>
+                                                </variation>
                                                 <variation key="heightClass=regular-widthClass=compact">
                                                     <mask key="constraints">
+                                                        <include reference="7ct-Ru-nNG"/>
                                                         <exclude reference="mnC-bl-2Cf"/>
+                                                        <include reference="nRe-fO-NWc"/>
                                                     </mask>
                                                 </variation>
                                             </label>
@@ -269,14 +344,51 @@
                                                     <constraint firstAttribute="height" constant="15" id="781-sW-2BX">
                                                         <variation key="heightClass=regular-widthClass=compact" constant="30"/>
                                                     </constraint>
-                                                    <constraint firstAttribute="width" constant="110" id="wjJ-Kj-ySH"/>
+                                                    <constraint firstAttribute="width" constant="110" id="wjJ-Kj-ySH">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="100"/>
+                                                    </constraint>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="12"/>
-                                                <state key="normal" title="Swap/Add photos"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
+                                                <state key="normal" title="From Phone"/>
                                                 <connections>
                                                     <action selector="onSwapTapped:" destination="z3C-Zz-vhA" eventType="touchUpInside" id="Bgm-ag-cRD"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBB-Rj-yC2">
+                                                <rect key="frame" x="486" y="223" width="110" height="15"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="110" id="D2w-BP-ebZ">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="110"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="height" constant="15" id="LoS-ZP-zNU">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="30"/>
+                                                    </constraint>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
+                                                <state key="normal" title="From Facebook"/>
+                                                <connections>
+                                                    <action selector="onFacebookAlbums:" destination="z3C-Zz-vhA" eventType="touchUpInside" id="uBd-8E-XDe"/>
+                                                </connections>
+                                            </button>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Rbi-4k-ttd">
+                                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="20" id="eXP-3a-V1U"/>
+                                                    <constraint firstAttribute="width" constant="20" id="orf-8m-CMg"/>
+                                                </constraints>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="eXP-3a-V1U"/>
+                                                        <exclude reference="orf-8m-CMg"/>
+                                                    </mask>
+                                                </variation>
+                                                <variation key="heightClass=regular-widthClass=compact">
+                                                    <mask key="constraints">
+                                                        <include reference="eXP-3a-V1U"/>
+                                                        <include reference="orf-8m-CMg"/>
+                                                    </mask>
+                                                </variation>
+                                            </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -288,19 +400,27 @@
                                             <constraint firstItem="agC-qe-oPD" firstAttribute="top" secondItem="ijG-Fe-MwA" secondAttribute="bottom" constant="3" id="62q-xl-H42"/>
                                             <constraint firstItem="R3R-3P-8eX" firstAttribute="top" secondItem="RDw-uM-xxz" secondAttribute="bottom" constant="5" id="8NW-Db-gQu"/>
                                             <constraint firstItem="R3R-3P-8eX" firstAttribute="top" secondItem="RDw-uM-xxz" secondAttribute="bottom" constant="5" id="8Sj-zm-P8a"/>
+                                            <constraint firstItem="Xfh-U2-BrA" firstAttribute="top" secondItem="fWw-6I-8co" secondAttribute="top" id="8fD-tl-2X8"/>
                                             <constraint firstItem="ijG-Fe-MwA" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="9ap-rW-Pw6"/>
+                                            <constraint firstItem="Rbi-4k-ttd" firstAttribute="top" secondItem="ANL-Zp-Woy" secondAttribute="bottom" constant="5" id="BA9-CI-fLA">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="6"/>
+                                            </constraint>
                                             <constraint firstItem="pY2-kS-Jrb" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="BIp-7Q-fNo"/>
                                             <constraint firstItem="ANL-Zp-Woy" firstAttribute="top" secondItem="yfG-Kl-yAT" secondAttribute="bottom" constant="2" id="Bsq-tK-zbc">
-                                                <variation key="heightClass=regular-widthClass=compact" constant="1"/>
+                                                <variation key="heightClass=regular-widthClass=compact" constant="2"/>
                                             </constraint>
                                             <constraint firstItem="HGx-JF-at7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ANL-Zp-Woy" secondAttribute="trailing" priority="750" constant="4" id="DFL-qZ-M1M"/>
                                             <constraint firstItem="Y4B-Dv-03z" firstAttribute="top" secondItem="R3R-3P-8eX" secondAttribute="bottom" constant="8" id="Dd2-xL-Ozr"/>
-                                            <constraint firstItem="fWw-6I-8co" firstAttribute="top" secondItem="sSQ-Ny-hHG" secondAttribute="bottom" constant="30" id="ELT-Bj-Cjm"/>
+                                            <constraint firstItem="fWw-6I-8co" firstAttribute="top" secondItem="sSQ-Ny-hHG" secondAttribute="bottom" constant="30" id="ELT-Bj-Cjm">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="15"/>
+                                            </constraint>
                                             <constraint firstItem="NvY-aO-j9Y" firstAttribute="top" secondItem="gcN-Gc-G5e" secondAttribute="bottom" constant="3" id="GUa-go-wvW"/>
-                                            <constraint firstItem="0Ky-yY-wqU" firstAttribute="leading" secondItem="fWw-6I-8co" secondAttribute="trailing" constant="30" id="Gh4-OP-WqX"/>
+                                            <constraint firstItem="0Ky-yY-wqU" firstAttribute="leading" secondItem="fWw-6I-8co" secondAttribute="trailing" constant="30" id="Gh4-OP-WqX">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
                                             <constraint firstItem="pY2-kS-Jrb" firstAttribute="top" secondItem="agC-qe-oPD" secondAttribute="bottom" constant="14" id="HjW-Hs-koQ"/>
                                             <constraint firstItem="ylY-XR-z1c" firstAttribute="top" secondItem="HGx-JF-at7" secondAttribute="bottom" constant="1" id="IsI-fw-4C2">
-                                                <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                                <variation key="heightClass=regular-widthClass=compact" constant="7"/>
                                             </constraint>
                                             <constraint firstItem="oJA-aV-j4F" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="JIf-mO-Hxf"/>
                                             <constraint firstItem="oJA-aV-j4F" firstAttribute="top" secondItem="ylY-XR-z1c" secondAttribute="bottom" constant="8" id="Jpc-Vr-OD5"/>
@@ -309,21 +429,33 @@
                                                 <variation key="heightClass=regular-widthClass=compact" constant="5"/>
                                             </constraint>
                                             <constraint firstAttribute="trailing" secondItem="RDw-uM-xxz" secondAttribute="trailing" constant="8" id="Nl8-CS-TpR"/>
+                                            <constraint firstItem="HGx-JF-at7" firstAttribute="top" secondItem="Rbi-4k-ttd" secondAttribute="top" id="OKw-y3-ZVk"/>
                                             <constraint firstItem="RDw-uM-xxz" firstAttribute="top" secondItem="NvY-aO-j9Y" secondAttribute="bottom" constant="8" id="OPX-eh-3zm"/>
                                             <constraint firstAttribute="trailing" secondItem="guT-Mj-LvI" secondAttribute="trailing" constant="8" id="Obw-Qi-RY6"/>
                                             <constraint firstAttribute="trailing" secondItem="agC-qe-oPD" secondAttribute="trailing" constant="8" id="PO9-Ax-fjR"/>
                                             <constraint firstItem="ANL-Zp-Woy" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="QDw-4Q-IHU"/>
                                             <constraint firstAttribute="trailing" secondItem="Y4B-Dv-03z" secondAttribute="trailing" constant="8" id="QoF-gq-M0i"/>
+                                            <constraint firstItem="HGx-JF-at7" firstAttribute="leading" secondItem="Rbi-4k-ttd" secondAttribute="trailing" constant="85" id="SAD-fZ-0re">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
                                             <constraint firstItem="Y4B-Dv-03z" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="SFe-7W-Uqt"/>
-                                            <constraint firstItem="0Ky-yY-wqU" firstAttribute="top" secondItem="Xfh-U2-BrA" secondAttribute="bottom" constant="44" id="SUA-iI-7O6"/>
-                                            <constraint firstItem="Xfh-U2-BrA" firstAttribute="leading" secondItem="fWw-6I-8co" secondAttribute="trailing" constant="30" id="Tpa-Ms-vpA"/>
+                                            <constraint firstItem="0Ky-yY-wqU" firstAttribute="top" secondItem="Xfh-U2-BrA" secondAttribute="bottom" constant="44" id="SUA-iI-7O6">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="30"/>
+                                            </constraint>
+                                            <constraint firstItem="Rbi-4k-ttd" firstAttribute="top" secondItem="YBB-Rj-yC2" secondAttribute="top" id="SlN-HC-VrE"/>
+                                            <constraint firstItem="Xfh-U2-BrA" firstAttribute="leading" secondItem="fWw-6I-8co" secondAttribute="trailing" constant="30" id="Tpa-Ms-vpA">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
                                             <constraint firstAttribute="trailing" secondItem="pY2-kS-Jrb" secondAttribute="trailing" constant="365" id="Tt6-ox-f8O"/>
                                             <constraint firstAttribute="trailing" secondItem="ijG-Fe-MwA" secondAttribute="trailing" constant="8" id="U6X-Ly-Aa9"/>
                                             <constraint firstItem="gcN-Gc-G5e" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="Uoj-6A-gws"/>
                                             <constraint firstAttribute="trailing" secondItem="sSQ-Ny-hHG" secondAttribute="trailing" constant="8" id="VdH-U9-2wX"/>
                                             <constraint firstItem="sSQ-Ny-hHG" firstAttribute="top" secondItem="3zh-sK-oKJ" secondAttribute="bottom" constant="8" id="XDs-MP-tgw"/>
                                             <constraint firstItem="yfG-Kl-yAT" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="Ygn-2R-A2C"/>
-                                            <constraint firstItem="fWw-6I-8co" firstAttribute="leading" secondItem="0zP-vU-Q1f" secondAttribute="trailing" constant="30" id="Zks-RP-rkC"/>
+                                            <constraint firstItem="Rbi-4k-ttd" firstAttribute="centerX" secondItem="M2O-H8-XX8" secondAttribute="centerX" id="ZSf-f3-Ugs"/>
+                                            <constraint firstItem="fWw-6I-8co" firstAttribute="leading" secondItem="0zP-vU-Q1f" secondAttribute="trailing" constant="30" id="Zks-RP-rkC">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
                                             <constraint firstItem="XSb-d7-zxF" firstAttribute="leading" secondItem="R3R-3P-8eX" secondAttribute="trailing" constant="40" id="aAm-QI-K5U"/>
                                             <constraint firstItem="HGx-JF-at7" firstAttribute="top" secondItem="yfG-Kl-yAT" secondAttribute="bottom" id="aG8-fS-wDT">
                                                 <variation key="heightClass=regular-widthClass=compact" constant="8"/>
@@ -342,10 +474,15 @@
                                             </constraint>
                                             <constraint firstAttribute="trailing" secondItem="oJA-aV-j4F" secondAttribute="trailing" constant="8" id="i51-Dr-4hG"/>
                                             <constraint firstItem="3zh-sK-oKJ" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="icH-XJ-ufh"/>
+                                            <constraint firstItem="Rbi-4k-ttd" firstAttribute="leading" secondItem="YBB-Rj-yC2" secondAttribute="trailing" constant="75" id="ixx-ts-2Ta">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
                                             <constraint firstItem="ijG-Fe-MwA" firstAttribute="top" secondItem="Y4B-Dv-03z" secondAttribute="bottom" id="jxq-eP-zpJ"/>
                                             <constraint firstItem="3zh-sK-oKJ" firstAttribute="top" secondItem="4VG-Dg-VaD" secondAttribute="bottom" constant="8" id="kC3-al-IGI"/>
+                                            <constraint firstItem="fWw-6I-8co" firstAttribute="top" secondItem="0zP-vU-Q1f" secondAttribute="top" id="kbJ-jY-UqN"/>
                                             <constraint firstItem="yfG-Kl-yAT" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" id="kcI-g8-VXf"/>
                                             <constraint firstItem="ANL-Zp-Woy" firstAttribute="centerX" secondItem="M2O-H8-XX8" secondAttribute="centerX" priority="750" id="ljt-dl-E8y"/>
+                                            <constraint firstItem="ANL-Zp-Woy" firstAttribute="centerX" secondItem="M2O-H8-XX8" secondAttribute="centerX" id="mNY-w2-JVd"/>
                                             <constraint firstItem="ylY-XR-z1c" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="mZU-0q-3Bg"/>
                                             <constraint firstItem="0zP-vU-Q1f" firstAttribute="top" secondItem="sSQ-Ny-hHG" secondAttribute="bottom" constant="15" id="mfP-Lj-1rC"/>
                                             <constraint firstItem="NvY-aO-j9Y" firstAttribute="leading" secondItem="M2O-H8-XX8" secondAttribute="leading" constant="8" id="npo-5r-INi"/>
@@ -353,36 +490,70 @@
                                             <constraint firstItem="gcN-Gc-G5e" firstAttribute="top" secondItem="guT-Mj-LvI" secondAttribute="bottom" constant="3" id="o30-mU-1Z0"/>
                                             <constraint firstItem="guT-Mj-LvI" firstAttribute="top" secondItem="oJA-aV-j4F" secondAttribute="bottom" constant="3" id="ofF-SD-kgZ"/>
                                             <constraint firstItem="R3R-3P-8eX" firstAttribute="bottom" secondItem="QZA-F9-dJ9" secondAttribute="bottom" id="pQw-lN-pBA"/>
-                                            <constraint firstItem="z04-lY-gAe" firstAttribute="top" secondItem="0zP-vU-Q1f" secondAttribute="bottom" constant="45" id="ppV-ES-xvD"/>
+                                            <constraint firstItem="z04-lY-gAe" firstAttribute="top" secondItem="0zP-vU-Q1f" secondAttribute="bottom" constant="45" id="ppV-ES-xvD">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="30"/>
+                                            </constraint>
                                             <constraint firstItem="4VG-Dg-VaD" firstAttribute="top" secondItem="agC-qe-oPD" secondAttribute="bottom" constant="8" id="rr6-xx-c49"/>
                                             <constraint firstItem="yfG-Kl-yAT" firstAttribute="top" secondItem="M2O-H8-XX8" secondAttribute="top" constant="8" id="tkg-zz-vSp"/>
-                                            <constraint firstItem="fWw-6I-8co" firstAttribute="leading" secondItem="z04-lY-gAe" secondAttribute="trailing" constant="30" id="ur3-fd-EhD"/>
+                                            <constraint firstItem="fWw-6I-8co" firstAttribute="leading" secondItem="z04-lY-gAe" secondAttribute="trailing" constant="30" id="ur3-fd-EhD">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                            </constraint>
                                             <constraint firstItem="XSb-d7-zxF" firstAttribute="bottom" secondItem="R3R-3P-8eX" secondAttribute="bottom" id="xjo-lC-k8v"/>
                                             <constraint firstItem="oJA-aV-j4F" firstAttribute="top" secondItem="ylY-XR-z1c" secondAttribute="bottom" constant="16" id="zfA-p7-zcp"/>
                                         </constraints>
                                         <variation key="default">
+                                            <mask key="subviews">
+                                                <exclude reference="YBB-Rj-yC2"/>
+                                                <exclude reference="Rbi-4k-ttd"/>
+                                            </mask>
                                             <mask key="constraints">
                                                 <exclude reference="Kfa-OW-xCr"/>
                                                 <exclude reference="Ygn-2R-A2C"/>
-                                                <exclude reference="IsI-fw-4C2"/>
                                                 <exclude reference="QDw-4Q-IHU"/>
+                                                <exclude reference="mNY-w2-JVd"/>
+                                                <exclude reference="IsI-fw-4C2"/>
+                                                <exclude reference="BA9-CI-fLA"/>
+                                                <exclude reference="SlN-HC-VrE"/>
+                                                <exclude reference="ZSf-f3-Ugs"/>
+                                                <exclude reference="ixx-ts-2Ta"/>
+                                                <exclude reference="OKw-y3-ZVk"/>
+                                                <exclude reference="SAD-fZ-0re"/>
                                                 <exclude reference="zfA-p7-zcp"/>
                                                 <exclude reference="1Zq-a7-bTS"/>
                                                 <exclude reference="8Sj-zm-P8a"/>
                                                 <exclude reference="Tt6-ox-f8O"/>
+                                                <exclude reference="kbJ-jY-UqN"/>
+                                                <exclude reference="8fD-tl-2X8"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="subviews">
+                                                <include reference="YBB-Rj-yC2"/>
+                                                <include reference="Rbi-4k-ttd"/>
+                                            </mask>
                                             <mask key="constraints">
                                                 <include reference="Kfa-OW-xCr"/>
                                                 <include reference="Ygn-2R-A2C"/>
                                                 <exclude reference="f1l-wL-3pM"/>
                                                 <exclude reference="kcI-g8-VXf"/>
+                                                <exclude reference="QDw-4Q-IHU"/>
+                                                <exclude reference="ljt-dl-E8y"/>
+                                                <include reference="mNY-w2-JVd"/>
                                                 <include reference="IsI-fw-4C2"/>
                                                 <exclude reference="hi5-xo-J9f"/>
-                                                <include reference="QDw-4Q-IHU"/>
-                                                <exclude reference="ljt-dl-E8y"/>
+                                                <include reference="BA9-CI-fLA"/>
+                                                <include reference="SlN-HC-VrE"/>
+                                                <include reference="ZSf-f3-Ugs"/>
+                                                <include reference="ixx-ts-2Ta"/>
                                                 <exclude reference="DFL-qZ-M1M"/>
+                                                <exclude reference="LFh-Xu-P67"/>
+                                                <include reference="OKw-y3-ZVk"/>
+                                                <include reference="SAD-fZ-0re"/>
+                                                <exclude reference="aG8-fS-wDT"/>
+                                                <exclude reference="mfP-Lj-1rC"/>
+                                                <include reference="kbJ-jY-UqN"/>
+                                                <include reference="8fD-tl-2X8"/>
+                                                <exclude reference="eEf-uj-Wdq"/>
                                             </mask>
                                         </variation>
                                     </view>
@@ -421,12 +592,15 @@
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="400" height="950"/>
                     <connections>
                         <outlet property="SwapAddPhotoButton" destination="HGx-JF-at7" id="7Yq-5x-Eyt"/>
                         <outlet property="bothButton" destination="XSb-d7-zxF" id="Vuc-kw-xLK"/>
                         <outlet property="collectionView" destination="yfG-Kl-yAT" id="PWl-9D-RBb"/>
                         <outlet property="deleteButton" destination="0Ky-yY-wqU" id="wwv-Uq-7Rx"/>
                         <outlet property="educationLabel" destination="sSQ-Ny-hHG" id="TMM-Ur-JJr"/>
+                        <outlet property="facebookAlbumsButton" destination="YBB-Rj-yC2" id="uQP-jt-ihv"/>
                         <outlet property="feedbackButton" destination="0zP-vU-Q1f" id="z3U-hw-iTE"/>
                         <outlet property="jobLabel" destination="3zh-sK-oKJ" id="zSI-Ty-6CB"/>
                         <outlet property="locationLabel" destination="Y4B-Dv-03z" id="kwo-Dj-B6b"/>
