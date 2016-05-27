@@ -97,6 +97,8 @@ UIImagePickerControllerDelegate>
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 650)];
+
     NSString *aboutMeDescription = [self.currentUser objectForKey:@"aboutMe"];
     if (aboutMeDescription)
     {

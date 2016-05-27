@@ -24,6 +24,7 @@
 #import "ChooseMatchView.h"
 #import "MessageManager.h"
 #import "Match.h"
+#import "SVProgressHUD.h"
 //static const CGFloat ChooseUserButtonHorizontalPadding = 80.f;
 //static const CGFloat ChooseUserButtonVerticalPadding = 20.f;
 
@@ -126,6 +127,9 @@ MDCSwipeToChooseDelegate>
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:YES];
+
+    [SVProgressHUD show];
     [self hideButtonsAndViews];
 
     self.currentUser = [User currentUser];
@@ -154,23 +158,6 @@ MDCSwipeToChooseDelegate>
         [self setupGestureRight];
 
         [UIButton setIndicatorLight:self.image1Indicator l2:self.image2Indicator l3:self.image3Indicator l4:self.image4Indicator l5:self.image5Indicator l6:self.image6Indicator forCount:self.count];
-
-
-        //    // Display the first ChoosePersonView in front. Users can swipe to indicate
-        //    // whether they like or dislike the person displayed.
-        //    self.frontCardView = [self popPersonViewWithFrame:[self frontCardViewFrame]];
-        //    [self.view addSubview:self.frontCardView];
-        //
-        //    // Display the second ChoosePersonView in back. This view controller uses
-        //    // the MDCSwipeToChooseDelegate protocol methods to update the front and
-        //    // back views after each user swipe.
-        //    self.backCardView = [self popPersonViewWithFrame:[self backCardViewFrame]];
-        //    [self.view insertSubview:self.backCardView belowSubview:self.frontCardView];
-        //
-        //    // Add buttons to programmatically swipe the view left or right.
-        //    // See the `nopeFrontCardView` and `likeFrontCardView` methods.
-        //    [self constructNopeButton];
-        //    [self constructLikedButton];
     }
     else
     {
@@ -246,16 +233,7 @@ MDCSwipeToChooseDelegate>
     User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
     NSLog(@"user accepting: %@", matchedObject.givenName);
 
-    if ([self.gender isEqualToString:@"male"])
-    {
-        [self.userManager createMatchRequest:matchedObject withStatus:@"boyYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-        }];
-    }
-    else if ([self.gender isEqualToString:@"female"])
-    {
-        [self.userManager createMatchRequest:matchedObject withStatus:@"girlYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-        }];
-    }
+    [self setYesStatusForMatchRequestObject:matchedObject];
 
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
     if (direction == UISwipeGestureRecognizerDirectionRight)
@@ -274,7 +252,7 @@ MDCSwipeToChooseDelegate>
     User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
     NSLog(@"user denied: %@", matchedObject.givenName);
 
-    [self.userManager createMatchRequest:matchedObject withStatus:@"Deny" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    [self.userManager createMatchRequestWithStringId:matchedObject.objectId withStatus:@"denied" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
     }];
 
     UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
@@ -296,23 +274,7 @@ MDCSwipeToChooseDelegate>
     User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
     NSLog(@"user accepting: %@", matchedObject.givenName);
 
-//    [self.userManager queryForUserData:matchedObject.objectId withUser:^(User *users, NSError *error) {
-//
-//        NSLog(@"usre: %@", users);
-//    }];
-
-    if ([self.gender isEqualToString:@"male"])
-    {
-        //matchObject.objectId is a hack using a string objectId we nneeeeeeeeed to use the User object but keep getting PFCOnsistneyAssertion errors!!!!!???!??!?!?!
-        [self.userManager createMatchRequestWithStringId:matchedObject.objectId withStatus:@"boyYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-
-        }];
-    }
-    else if ([self.gender isEqualToString:@"female"])
-    {
-        [self.userManager createMatchRequest:matchedObject withStatus:@"girlYes" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-        }];
-    }
+    [self setYesStatusForMatchRequestObject:matchedObject];
 
     [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
 
@@ -327,7 +289,7 @@ MDCSwipeToChooseDelegate>
     User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
     NSLog(@"user denied: %@", matchedObject.givenName);
 
-    [self.userManager createMatchRequest:matchedObject withStatus:@"Deny" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    [self.userManager createMatchRequestWithStringId:matchedObject.objectId withStatus:@"denied" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
     }];
 
     [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
@@ -341,11 +303,12 @@ MDCSwipeToChooseDelegate>
 - (IBAction)onKeepPlaying:(UIButton *)sender
 {
     self.matchView.hidden = YES;
+    NSLog(@"next match up");
 }
 
 - (IBAction)onMessage:(UIButton *)sender
 {
-    [self performSegueWithIdentifier:@"Messages" sender:self];
+    [self performSegueWithIdentifier:@"Messaging" sender:self];
 }
 
 #pragma mark -- NAV
@@ -382,7 +345,7 @@ MDCSwipeToChooseDelegate>
     }
 }
 
-#pragma mark - USER MANAGER DELEGATE
+#pragma mark - USER MANAGER DELEGATES
 -(void)didReceiveUserData:(NSArray *)data
 {
     NSDictionary *userData = [data firstObject];
@@ -429,22 +392,27 @@ MDCSwipeToChooseDelegate>
                 //                    [intersectionArray addObject:user.objectId];
                 NSLog(@"filtered matches to remove: %@", user.givenName);
                 [intersectionArray removeObject:user];
-
             }
         }
     }
 
     if (intersectionArray.count > 0)
     {
+        [SVProgressHUD dismiss];
+
         self.potentialMatchData = intersectionArray;
         [self loadInitialMatch:intersectionArray];
         NSLog(@"filtered matches: %d", (int)self.potentialMatchData.count);
     }
     else
     {
-        NSLog(@"no user match in your area");
+        [SVProgressHUD dismiss];
+
         self.noMatchesImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(240.0, 128.0)];
         [self.view insertSubview:self.activityView aboveSubview:self.userImage];
+        self.userInfoView.hidden = YES;
+        self.greenButton.hidden = YES;
+        self.redButton.hidden = YES;
     }
 }
 
@@ -458,8 +426,7 @@ MDCSwipeToChooseDelegate>
     NSLog(@"match Request class successfully created: %@", matchRequest);
 
     //now passes on to get toUser User Object from UserManager private method
-
-    [self.userManager updateMatchRequest:matchRequest withResponse:@"lastStep" withSuccess:^(User *user, NSError *error){
+    [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(User *user, NSError *error){
         if (!error)
         {
             NSLog(@"update worked added PFRelation");
@@ -471,7 +438,31 @@ MDCSwipeToChooseDelegate>
 -(void)didFetchUserObjectForFinalMatch:(User *)user
 {
     //*************Final Security to added the PF RELATION*******************//
-    [self.userManager secureMatchWithPFCloudFunction:user];
+    for (NSDictionary *dict in self.userManager.alreadySeenUsers)
+    {
+        User *userObjId = dict[@"fromUser"];
+        NSString *status = dict[@"status"];
+        //need to change to user being a girl and status = "confidantApproved"
+
+        if ([userObjId.objectId isEqualToString:[User currentUser].objectId] && [status isEqualToString:@"boyYes"])
+        {
+            NSLog(@"print matches: %@", dict[@"strId"]);
+            //*******************allow users to talk****************complete approval******************:
+            [self matchedView:[self.potentialMatchData objectAtIndex:self.userCount]];
+        }
+        else
+        {   //need to be female, male for testing
+            if ([self.gender isEqualToString:@"male"])
+            {
+                //send email for approval
+                [self sendEmailForApproval];
+                NSLog(@"still need anther level of approval to start chatting");
+
+            }
+        }
+    }
+
+    //[self.userManager secureMatchWithPFCloudFunction:user];
 }
 -(void)failedToCreateMatchRequest:(NSError *)error
 {
@@ -494,6 +485,24 @@ MDCSwipeToChooseDelegate>
 }
 
 #pragma mark -- HELPERS
+-(void)setYesStatusForMatchRequestObject:(User*)potentialMatch
+{
+    if ([self.gender isEqualToString:@"male"])
+    {
+        [self matchStatus:@"boyYes" potentialMatch:potentialMatch];
+    }
+    else if ([self.gender isEqualToString:@"female"])
+    {
+        [self matchStatus:@"girlYes" potentialMatch:potentialMatch];
+    }
+}
+
+-(void)matchStatus:(NSString*)status potentialMatch:(User*)potMatch
+{
+    [self.userManager createMatchRequestWithStringId:potMatch.objectId withStatus:status withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+    }];
+}
+
 -(void)loadInitialMatch:(NSArray*)matchArray
 {
     NSDictionary *matchDict = matchArray.firstObject;
@@ -537,7 +546,7 @@ MDCSwipeToChooseDelegate>
 
 -(void)nextPotentialMatchUp
 {
-    if (self.userCount < self.potentialMatchData.count)
+    if (self.userCount < self.potentialMatchData.count - 1)
     {
         self.userCount++;
         User *matchedUser = [self.potentialMatchData objectAtIndex:self.userCount];
@@ -555,9 +564,11 @@ MDCSwipeToChooseDelegate>
         //set image array to zero
         self.count = 0;
     }
-    else if(self.count == self.userManager.allMatchedUsers.count)
+    else if(self.count == self.potentialMatchData.count - 1)
     {
-        NSLog(@"last match");
+        NSLog(@"no user match in your area");
+        self.noMatchesImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(240.0, 128.0)];
+        [self.view insertSubview:self.activityView aboveSubview:self.userImage];
     }
     else
     {
@@ -612,18 +623,20 @@ MDCSwipeToChooseDelegate>
     [self.userManager loadUserData:self.currentUser];
 }
 
--(void)matchedView:(NSArray *)objectsArray user:(NSInteger)userNumber
+-(void)matchedView:(User *)matchedUserProfile
 {
+    [self matchedViewSetUp:self.userImageMatched andMatchImage:_matchedImage];
     self.matchView.hidden = NO;
-    PFUser *userForImageAndName = [objectsArray objectAtIndex:userNumber - 1];
-    NSString *image = [userForImageAndName objectForKey:@"image1"];
-    NSString *firstName = [userForImageAndName objectForKey:@"firstName"];
-    self.matchedImage.image = [UIImage imageWithString:image];
-    self.matchedLabel.text = firstName;
-    self.userImageMatched.image = [UIImage imageWithString:self.userImageForMatching];
+    //User *userForImageAndName = [objectsArray objectAtIndex:userNumber - 1];
+    NSArray *images = [matchedUserProfile objectForKey:@"profileImages"];
+    NSString *firstUserImage = images.firstObject;
+    //NSData *firstUserData = images.firstObject;
+    self.matchedImage.image = [UIImage imageWithString:firstUserImage];
+    self.matchedLabel.text = matchedUserProfile.givenName;
+    self.userImageMatched.image = [UIImage imageWithData:[User currentUser].profileImages.firstObject];
 }
 
--(void)matchViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage
+-(void)matchedViewSetUp:(UIImageView *)userImage andMatchImage:(UIImageView *)matchedImage
 {
     self.matchView.backgroundColor = [UIColor blackColor];
     self.matchView.alpha = 0.80;
@@ -648,7 +661,7 @@ MDCSwipeToChooseDelegate>
     self.fullDescriptionTextView.text = user.aboutMe;
 }
 
--(void) sendEmailForApproval
+-(void)sendEmailForApproval
 {
     NSString *emailTitle = @"Feedback";
     NSString *messageBody = @"<h1>Matched User's Name</h1>";

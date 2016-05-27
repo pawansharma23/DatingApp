@@ -32,6 +32,10 @@
     return [UIColor colorWithRed:102.0/255.0 green:102.0/255.0 blue:102.0/255.0 alpha:1.0];
 }
 
++(UIColor *)spartyGreen
+{
+    return [UIColor colorWithRed:24.0/255.0 green:69.0/255.0 blue:59.0/255.0 alpha:1.0];
+}
 + (UIColor*)colorWithHexValue:(NSString*)hexValue
 {
     UIColor *defaultResult = [UIColor blackColor];

@@ -8,7 +8,7 @@
         <!--Profile View Controller-->
         <scene sceneID="mgj-JW-whA">
             <objects>
-                <viewController id="z3C-Zz-vhA" customClass="ProfileViewController" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="z3C-Zz-vhA" customClass="ProfileViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="xoS-fE-gUG"/>
                         <viewControllerLayoutGuide type="bottom" id="p3O-LS-Hae"/>
@@ -161,7 +161,7 @@
                                                     <action selector="milesAwaySlider:" destination="z3C-Zz-vhA" eventType="valueChanged" id="DGn-ey-IaU"/>
                                                 </connections>
                                             </slider>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDw-uM-xxz">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Interested in:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDw-uM-xxz">
                                                 <rect key="frame" x="8" y="487" width="584" height="17.5"/>
                                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>

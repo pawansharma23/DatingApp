@@ -60,7 +60,7 @@ typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 -(void)createMatchRequest:(User*)user
                withStatus:(NSString*)status
            withCompletion:(resultBlockWithMatchRequest)result;
--(void)updateMatchRequest:(MatchRequest*)matchRequest
+-(void)updateMatchRequestWithRetrivalUserObject:(MatchRequest*)matchRequest
              withResponse:(NSString*)response
               withSuccess:(resultBlockWithUser)result;
 -(void)loadMatchedUsers:(resultBlockWithArray)result;

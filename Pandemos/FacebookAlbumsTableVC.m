@@ -13,6 +13,7 @@
 #import "Facebook.h"
 #import "FacebookManager.h"
 #import "User.h"
+#import "SVProgressHUD.h"
 
 @interface FacebookAlbumsTableVC ()<FacebookManagerDelegate>
 @property (weak, nonatomic) IBOutlet UINavigationItem *navBar;
@@ -45,6 +46,9 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:YES];
+    [SVProgressHUD show];
+
     if (self.currentUser)
     {
         self.manager = [FacebookManager new];
@@ -117,5 +121,6 @@
 {
     self.albums = photoAlbums;
     [self.tableView reloadData];
+    [SVProgressHUD dismiss];
 }
 @end

@@ -162,9 +162,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 #pragma mark -- NAV
 - (IBAction)onBackButton:(UIBarButtonItem *)sender
 {
-    NSLog(@"back");
     [self.navigationController dismissViewControllerAnimated:YES completion:^{
-
     }];
 }
 

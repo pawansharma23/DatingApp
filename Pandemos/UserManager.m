@@ -250,13 +250,12 @@ static NSString * const kParsePublic                       = @"publicProfile";
 }
 
 //no one should see this method until final confirmation from confidant
--(void)updateMatchRequest:(MatchRequest *)request withResponse:(NSString *)response withSuccess:(resultBlockWithUser)result
+-(void)updateMatchRequestWithRetrivalUserObject:(MatchRequest *)request withResponse:(NSString *)response withSuccess:(resultBlockWithUser)result
 {
    // User *fromUser = request.fromUser;
     //toUser get full User object
     [self queryForUserWithObjectId:request.strId completion:^(User *user, NSError *error) {
 
-        NSLog(@"user; %@", user);
         [self.delegate didFetchUserObjectForFinalMatch:user];
     }];
 }

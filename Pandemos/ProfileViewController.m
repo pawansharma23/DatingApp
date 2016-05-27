@@ -20,6 +20,7 @@
 #import "UICollectionView+Pandemos.h"
 #import "SelectedImageViewController.h"
 #import "HeaderForProfileVC.h"
+#import "SVProgressHUD.h"
 
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
@@ -76,6 +77,7 @@ UserManagerDelegate>
 @property (strong, nonatomic) FacebookManager *manager;
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) NSData *selectedImageData;
+@property (strong, nonatomic) NSData *selectedPhoneImageData;
 
 @end
 
@@ -88,7 +90,10 @@ UserManagerDelegate>
 
     if (self.currentUser)
     {
-        self.locationLabel.text = self.cityAndState;
+        //self.locationLabel.text = self.cityAndState;
+        //placeholder
+        self.locationLabel.text = @"Location";
+
         self.navigationItem.title = @"Settings";
         self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
 
@@ -113,8 +118,10 @@ UserManagerDelegate>
 {
     [super viewDidAppear:YES];
 
+    [SVProgressHUD show];
+
     //NSLog(@"view height: %d, view Width: %d", (int)self.view.frame.size.height, (int)self.view.frame.size.width);
-    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 950)];
+    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 900)];
 
     [self setupManagersProfileVC];
 
@@ -123,7 +130,7 @@ UserManagerDelegate>
     //on reload scroll to top
     self.scrollView.scrollsToTop = YES;
 
-    if (self.selectedImageData)
+    if (self.selectedPhoneImageData)
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
@@ -197,6 +204,7 @@ UserManagerDelegate>
     {
         HeaderForProfileVC *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:identifier forIndexPath:indexPath];
         headerView.headerTitle.text = imagesDesc;
+        headerView.backgroundColor = [UIColor lightGrayColor];
         header = headerView;
     }
 
@@ -301,6 +309,7 @@ UserManagerDelegate>
 
 - (IBAction)milesAwaySlider:(UISlider *)sender
 {
+    NSLog(@"miles value: %d", (int)sender);
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesAwaySlider.value];
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
     self.milesAwayLabel.text = milesAway;
@@ -449,23 +458,33 @@ UserManagerDelegate>
 {
     self.profileImages = [NSMutableArray arrayWithArray:images];
     [self.collectionView reloadData];
+    [SVProgressHUD dismiss];
 }
 
 -(void)failedToFetchImages:(NSError *)error
 {
     NSLog(@"failed to fetch profile images: %@", error);
 }
-#pragma mark -- NAV
+
+#pragma mark -- SEGUE
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"Selected"])
     {
-        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-        //sivc.profileImage = self.selectedImage;
-        sivc.profileImageAsData = self.selectedImageData;
+        if (self.selectedPhoneImageData)
+        {
+            SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+            sivc.profileImageAsData = self.selectedPhoneImageData;
+        }
+        else
+        {
+            SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+            sivc.profileImageAsData = self.selectedImageData;
+        }
     }
 }
 
+#pragma mark -- NAV
 - (IBAction)onFacebookAlbums:(UIButton *)sender
 {
     [self performSegueWithIdentifier:@"Swap" sender:self];
@@ -520,8 +539,8 @@ UserManagerDelegate>
 
     if (scaledImage)
     {
-        self.selectedImageData = [[NSData alloc] init];
-        self.selectedImageData = UIImagePNGRepresentation(scaledImage);
+        self.selectedPhoneImageData = [[NSData alloc] init];
+        self.selectedPhoneImageData = UIImagePNGRepresentation(scaledImage);
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -588,8 +607,7 @@ UserManagerDelegate>
 {
     CGFloat away = (CGFloat)[milesAway floatValue];
     self.milesAwaySlider.value = away;
-    NSLog(@"miles away: %f", away);
-    NSString *milesAwayStr = [NSString stringWithFormat:@"Minimum Age: %.f", away];
+    NSString *milesAwayStr = [NSString stringWithFormat:@"Within: %.f miles of you", away];
     self.milesAwayLabel.text = milesAwayStr;
 }
 

@@ -69,7 +69,6 @@ UICollectionViewDataSource>
     [self setupMatches];
 }
 
-
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -119,8 +118,6 @@ UICollectionViewDataSource>
             [self performSegueWithIdentifier:@"detailMessage" sender:self];
         }
     }];
-
-
 }
 
 #pragma mark -- TABLEVIEW DELEGATE

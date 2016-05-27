@@ -16,6 +16,7 @@
 #import "UIButton+Additions.h"
 #import "UIColor+Pandemos.h"
 #import "UICollectionView+Pandemos.h"
+#import "SVProgressHUD.h"
 
 @interface AlbumDetailViewController ()
 <UICollectionViewDataSource,
@@ -71,6 +72,11 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:YES];
+    [SVProgressHUD show];
+    [SVProgressHUD setForegroundColor:[UIColor whiteColor]];
+    [SVProgressHUD setBackgroundColor:[UIColor spartyGreen]];
+
     if (self.currentUser)
     {
         self.manager = [FacebookManager new];
@@ -124,6 +130,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
 - (IBAction)onNextButton:(UIButton *)sender
 {
+    [SVProgressHUD show];
     [self selectButtonStateForSingleButton:self.nextButton];
     [self.manager loadNextPage:self.nextURL];
 }
@@ -148,6 +155,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
 {
     self.photos = [NSMutableArray arrayWithArray:album];
     [self.collectionView reloadData];
+    [SVProgressHUD dismiss];
 }
 
 -(void)didReceiveParsedAlbumPaging:(NSArray *)albumPaging
@@ -175,6 +183,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.photos = [NSMutableArray arrayWithArray:nextPhotos];
     [self deselectButtonStateForSingleButton:self.nextButton];
     [self.collectionView reloadData];
+    [SVProgressHUD dismiss];
 }
 
 #pragma mark -- HELPERS
