@@ -304,7 +304,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
 //private
 -(void)queryForUserWithObjectId:(NSString *)objectId completion:(resultBlockWithUser)completion
 {
-    PFQuery *query = [PFUser query];
+    PFQuery *query = [User query];
     [query getObjectInBackgroundWithId:objectId block:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if ([object isKindOfClass:[User class]])
         {
@@ -320,7 +320,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
 
 -(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUser)userDict
 {
-    PFQuery *query = [PFUser query];
+    PFQuery *query = [User query];
     [query whereKey:@"objectId" equalTo:objectId];
    // [query getObjectInBackgroundWithId:objectId block:^(PFObject * _Nullable object, NSError * _Nullable error) {
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
@@ -329,6 +329,24 @@ static NSString * const kParsePublic                       = @"publicProfile";
         {
             User *dict = objects.firstObject;
             userDict(dict, nil);
+        }
+        else
+        {
+            NSLog(@"error querying for User data: %@", error);
+        }
+    }];
+}
+
+-(void)queryForUsersConfidant:(resultBlockWithUserConfidant)confidant
+{
+    PFQuery *query = [User query];
+    [query whereKeyExists:@"confidantEmail"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+
+        if (objects)
+        {
+            User *dict = objects.firstObject;
+            confidant(dict[@"confidantEmail"], nil);
         }
         else
         {

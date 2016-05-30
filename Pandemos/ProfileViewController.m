@@ -39,6 +39,7 @@ UserManagerDelegate>
 }
 //View Properties
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UIView *viewInsideScrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
 
@@ -60,7 +61,7 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *facebookAlbumsButton;
 
 @property (weak, nonatomic) IBOutlet UISwitch *publicProfileSwitch;
-@property (weak, nonatomic) IBOutlet UISlider *milesAwaySlider;
+@property (weak, nonatomic) IBOutlet UISlider *milesSlider;
 @property (weak, nonatomic) IBOutlet UISlider *minimumAgeSlider;
 @property (weak, nonatomic) IBOutlet UISlider *maximumAgeSlider;
 //strong global properties
@@ -94,6 +95,9 @@ UserManagerDelegate>
         //placeholder
         self.locationLabel.text = @"Location";
 
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor unitedNationBlue],
+                                     NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
+        [self.navigationController.navigationBar setTitleTextAttributes:attributes];
         self.navigationItem.title = @"Settings";
         self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
 
@@ -103,14 +107,14 @@ UserManagerDelegate>
         self.navigationItem.rightBarButtonItem.tintColor = [UIColor mikeGray];
 
         self.profileImages = [NSMutableArray new];
-        self.scrollView.delegate = self;
         self.textViewAboutMe.delegate = self;
 
         [UICollectionView setupBorder:self.collectionView];
         self.collectionView.delegate = self;
-        [self setFlowLayout];
 
+        [self setFlowLayout];
         [self setupButtonsAndTextView];
+
     }
 }
 
@@ -120,21 +124,38 @@ UserManagerDelegate>
 
     [SVProgressHUD show];
 
-    //NSLog(@"view height: %d, view Width: %d", (int)self.view.frame.size.height, (int)self.view.frame.size.width);
+    //CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, 900);
+    //[self.view setFrame:frame];
+
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.scrollView.delegate = self;
+    self.scrollView.scrollEnabled = YES;
+    [self.scrollView addSubview:self.viewInsideScrollView];
     [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 900)];
+    self.scrollView.scrollsToTop = YES;
+
+
+
+
 
     [self setupManagersProfileVC];
 
     [UIButton setUpButton:self.SwapAddPhotoButton];
     [UIButton setUpButton:self.facebookAlbumsButton];
     //on reload scroll to top
-    self.scrollView.scrollsToTop = YES;
+    [self.milesSlider setUserInteractionEnabled:YES];
+    [self.minimumAgeSlider setUserInteractionEnabled:YES];
+    [self.maximumAgeSlider setUserInteractionEnabled:YES];
 
     if (self.selectedPhoneImageData)
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
+}
 
+- (BOOL)touchesShouldCancelInContentView:(UIView *)view
+{
+    return NO;
 }
 
 -(BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
@@ -306,11 +327,10 @@ UserManagerDelegate>
 {
     [self changeButtonState:self.bothButton sexString:@"male female" otherButton1:self.menButton otherButton2:self.womenButton];
 }
-
-- (IBAction)milesAwaySlider:(UISlider *)sender
+- (IBAction)onMilesSliderChanged:(UISlider *)sender
 {
     NSLog(@"miles value: %d", (int)sender);
-    NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesAwaySlider.value];
+    NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
     NSString *milesAway = [NSString stringWithFormat:@"Show results within %@ miles of here", milesAwayStr];
     self.milesAwayLabel.text = milesAway;
     [self.currentUser setObject:milesAwayStr forKey:@"milesAway"];
@@ -410,9 +430,7 @@ UserManagerDelegate>
 
 - (IBAction)onBackButton:(id)sender
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-
-    }];
+    [self performSegueWithIdentifier:@"BackToMain" sender:self];
 }
 
 - (IBAction)userViewButton:(UIButton *)sender
@@ -471,6 +489,7 @@ UserManagerDelegate>
 {
     if ([segue.identifier isEqualToString:@"Selected"])
     {
+        [SVProgressHUD dismiss];
         if (self.selectedPhoneImageData)
         {
             SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
@@ -606,7 +625,7 @@ UserManagerDelegate>
 -(void)setMilesAway:(NSString *)milesAway
 {
     CGFloat away = (CGFloat)[milesAway floatValue];
-    self.milesAwaySlider.value = away;
+    self.milesSlider.value = away;
     NSString *milesAwayStr = [NSString stringWithFormat:@"Within: %.f miles of you", away];
     self.milesAwayLabel.text = milesAwayStr;
 }

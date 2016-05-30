@@ -29,16 +29,21 @@ UserManagerDelegate,
 PreviewCellDelegate,
 UINavigationControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *saveImage;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *profileButton;
 @property (weak, nonatomic) IBOutlet UIButton *addAnother;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
 
-@property (strong, nonatomic) NSMutableArray *pictures;
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) UserManager *userManager;
+
+@property (strong, nonatomic) NSMutableArray *pictures;
 @property (strong, nonatomic) NSDictionary *sizeAttributes;
+@property (strong, nonatomic) NSString *continueSegueIdentifier;
+@property BOOL fromInitialSetup;
 @end
 
 @implementation SelectedImageViewController
@@ -51,14 +56,20 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
     self.currentUser = [User currentUser];
 
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 700)];
+
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.title = @"Photo";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 
-    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor],
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor unitedNationBlue],
                                  NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
     [self.navigationController.navigationBar setTitleTextAttributes:attributes];
 
+    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    self.backButton.tintColor = [UIColor mikeGray];
+    
     self.userImage.image = [UIImage imageWithData:self.profileImageAsData];
     self.userImage.layer.cornerRadius = 7.0;
     self.userImage.layer.masksToBounds = YES;
@@ -89,6 +100,19 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         [UIButton setUpButton:self.addAnother];
         self.addAnother.hidden = YES;
         [UIButton setUpButton:self.profileButton];
+        [self.profileButton setNeedsLayout];
+
+       [self.userManager queryForUsersConfidant:^(NSString *confidant, NSError *error) {
+
+           if (confidant.length > 4)
+           {
+               [self makeProfileButton];
+           }
+           else
+           {
+               [self makeInitialSetupButton];
+           }
+       }];
     }
     else
     {
@@ -132,10 +156,8 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
             {
                 NSLog(@"NEW PROFILE IMAGES SAVED TO PARSE");
                 [self saveButtonCheck];
-
             }
         }];
-
 
     } completion:nil];
 
@@ -175,7 +197,15 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 - (IBAction)onContinueButton:(UIButton *)sender
 {
     [UIButton changeButtonStateForSingleButton:self.profileButton];
-    [self performSegueWithIdentifier:@"Profile" sender:self];
+
+    if (self.fromInitialSetup)
+    {
+        [self performSegueWithIdentifier:@"InitialSetup" sender:self];
+    }
+    else
+    {
+        [self performSegueWithIdentifier:@"Profile" sender:self];
+    }
 }
 
 - (IBAction)onSaveImage:(UIButton *)sender
@@ -185,31 +215,30 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     switch (self.pictures.count)
     {
         case 0:
-            [self saveForImage1];
+            [self saveForImage:@"Image 1 Set"];
             [self.collectionView reloadData];
             break;
         case 1:
-            [self saveForImage2];
+            [self saveForImage:@"Image 2 Set"];
             [self.collectionView reloadData];
             break;
         case 2:
-            [self saveForImage3];
+            [self saveForImage:@"Image 3 Set"];
             [self.collectionView reloadData];
             break;
         case 3:
-            [self saveForImage4];
+            [self saveForImage:@"Image 4 Set"];
             [self.collectionView reloadData];
             break;
         case 4:
-            [self saveForImage5];
+            [self saveForImage:@"Image 5 Set"];
             [self.collectionView reloadData];
             break;
         case 5:
-            [self saveForImage6];
+            [self saveForImage:@"Image 6 Set"];
             [self.collectionView reloadData];
             break;
         default:
-            NSLog(@"all images Filled");
             [self.saveImage setTitle:@"All Full :)" forState:UIControlStateNormal];
             break;
     }
@@ -243,6 +272,28 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 }
 
 #pragma mark -- HELPERS
+-(void)makeProfileButton
+{
+    NSString *profile = @"Back to profile";
+    self.continueSegueIdentifier = @"Profile";
+    self.fromInitialSetup = NO;
+    [self.profileButton setTitle:profile forState:UIControlStateNormal];
+    self.profileButton.backgroundColor = [UIColor whiteColor];
+    [self.profileButton sizeToFit];
+    [self.profileButton setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
+}
+
+-(void)makeInitialSetupButton
+{
+    NSString *profile = @"Continue setup";
+    self.continueSegueIdentifier = @"InitialSetup";
+    self.fromInitialSetup = YES;
+    [self.profileButton setTitle:profile forState:UIControlStateNormal];
+    self.profileButton.backgroundColor = [UIColor whiteColor];
+    [self.profileButton sizeToFit];
+    [self.profileButton setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
+}
+
 -(void)saveButtonCheck
 {
     if (self.pictures.count < 6)
@@ -281,70 +332,17 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     });
 }
 
--(void)saveForImage1
+-(void)saveForImage:(NSString*)image
 {
     [self.pictures addObject:self.profileImageAsData];
     [self.currentUser setObject:self.pictures forKey:@"profileImages"];
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self.saveImage setTitle:@"Image 1 Set" forState:UIControlStateNormal];
 
-        [self delayAndCheckImageCount];
-    }];
-}
-
--(void)saveForImage2
-{
-    [self.pictures addObject:self.profileImageAsData];
-    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self.saveImage setTitle:@"Image 2 Set" forState:UIControlStateNormal];
-
-        [self delayAndCheckImageCount];
-    }];
-}
-
--(void)saveForImage3
-{
-    [self.pictures addObject:self.profileImageAsData];
-    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self.saveImage setTitle:@"Image 3 Set" forState:UIControlStateNormal];
-
-        [self delayAndCheckImageCount];
-    }];
-}
-
--(void)saveForImage4
-{
-    [self.pictures addObject:self.profileImageAsData];
-    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self.saveImage setTitle:@"Image 4 Set" forState:UIControlStateNormal];
-
-        [self delayAndCheckImageCount];
-    }];
-}
-
--(void)saveForImage5
-{
-    NSLog(@"5 Empty");
-    [self.pictures addObject:self.profileImageAsData];
-    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self.saveImage setTitle:@"Image 5 Set" forState:UIControlStateNormal];
-
-        [self delayAndCheckImageCount];
-    }];
-}
-
--(void)saveForImage6
-{
-    [self.pictures addObject:self.profileImageAsData];
-    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        [self.saveImage setTitle:@"Image 6 Set" forState:UIControlStateNormal];
-
-        [self delayAndCheckImageCount];
+        if (succeeded)
+        {
+            [self.saveImage setTitle:image forState:UIControlStateNormal];
+            [self delayAndCheckImageCount];
+        }
     }];
 }
 @end

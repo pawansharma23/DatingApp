@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -18,19 +18,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="JZE-zD-8Fe">
-                                <rect key="frame" x="100" y="124.5" width="400" height="350"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo2" translatesAutoresizingMaskIntoConstraints="NO" id="JZE-zD-8Fe">
+                                <rect key="frame" x="180" y="163.5" width="240" height="200"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="350" id="B3b-Gn-m6e"/>
+                                    <constraint firstAttribute="height" constant="200" id="B3b-Gn-m6e"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="480" id="IdH-YP-o9q"/>
                                     <constraint firstAttribute="width" secondItem="JZE-zD-8Fe" secondAttribute="height" multiplier="8:7" id="WrG-AG-2cB"/>
                                     <constraint firstAttribute="width" secondItem="JZE-zD-8Fe" secondAttribute="height" multiplier="160:129" id="ld0-B4-lQh"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="256" id="pyd-EG-B9I"/>
-                                    <constraint firstAttribute="width" constant="400" id="rms-xU-EtE"/>
+                                    <constraint firstAttribute="width" constant="240" id="rms-xU-EtE"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="IdH-YP-o9q"/>
+                                        <exclude reference="WrG-AG-2cB"/>
                                         <exclude reference="ld0-B4-lQh"/>
                                         <exclude reference="pyd-EG-B9I"/>
                                     </mask>
@@ -39,10 +40,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="JZE-zD-8Fe" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="773-89-7gY"/>
+                            <constraint firstItem="JZE-zD-8Fe" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-36.5" id="773-89-7gY"/>
                             <constraint firstItem="JZE-zD-8Fe" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="n9U-z9-6Kc"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="launchAppImage" destination="JZE-zD-8Fe" id="fL3-tx-aZz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -50,6 +54,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="placeholder" width="420" height="420"/>
+        <image name="Logo2" width="100" height="100"/>
     </resources>
 </document>

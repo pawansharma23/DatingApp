@@ -16,10 +16,11 @@
 #import "User.h"
 #import "UserManager.h"
 #import "UIColor+Pandemos.h"
+#import "InitialWalkThroughViewController.h"
 
 @interface PFLoginViewController ()
+
 @property (weak, nonatomic) IBOutlet UIView *footerView;
-@property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) UserManager *userManager;
 @end
 
@@ -50,28 +51,12 @@
         else
         {
             NSLog(@"User logged in through Facebook!");
-            self.currentUser = [User currentUser];
         }
     }];
+}
 
+- (IBAction)onInitialWalkThrough:(UIButton *)sender
+{
     [self performSegueWithIdentifier:@"LoggedIn" sender:self];
 }
-
-- (void)saveToUserDefaultsWithObject:(id)object andKey:(NSString*)key
-{
-    [[NSUserDefaults standardUserDefaults] setObject:object forKey:key];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    NSLog(@"SAVED %@ TO USER DEFAULTS", object);
-}
-//-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-//    //check idenifier if more than one
-//    ViewController *vc = segue.destinationViewController;
-//
-//    if ([segue.identifier isEqualToString:@"LoggedIn"]) {
-//  //      [segue.destinationViewController setHidesBottomBarWhenPushed:YES];
-//        vc.pfUser = self.pfUser;
-//    }
-//}
-
-
 @end

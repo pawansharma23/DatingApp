@@ -44,6 +44,7 @@ typedef void (^resultBlockWithMatchRequest)(MatchRequest *matchRequest, NSError 
 typedef void (^resultBlockWithUser)(User *user, NSError *error);
 typedef void (^resultBlockWithArray)(NSArray *users, NSError *error);
 typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
+typedef void (^resultBlockWithUserConfidant)(NSString *confidant, NSError *error);
 
 @property(nonatomic, strong)NSMutableArray<User*> *allUsers;
 @property(nonatomic, strong)NSArray<User*> *allMatchedUsers;
@@ -67,6 +68,7 @@ typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 -(void)fromMessaging:(User*)user;
 -(void)queryForUserData:(NSString *)objectId
                withUser:(resultBlockWithUser)userDict;
+-(void)queryForUsersConfidant:(resultBlockWithUserConfidant)confidant;
 -(void)createMatchRequestWithStringId:(NSString*)strId
                            withStatus:(NSString*)status
                        withCompletion:(resultBlockWithMatchRequest)result;

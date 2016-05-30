@@ -16,5 +16,6 @@
 +(UIColor *)yellowGreen;
 +(UIColor *)mikeGray;
 +(UIColor *)spartyGreen;
-+ (UIColor*)colorWithHexValue:(NSString*)hexValue;
++(UIColor *)colorWithHexValue:(NSString*)hexValue;
++(UIColor *)unitedNationBlue;
 @end

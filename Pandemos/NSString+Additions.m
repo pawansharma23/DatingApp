@@ -23,4 +23,43 @@
 
     return ageStr;
 }
+
++(NSString *)timeFromData:(NSDate*)date
+{
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    [formatter setDateFormat:@"MMM dd hh:mm a"];
+
+//    NSDateFormatter *format = [NSDateFormatter new];
+//    [format setDateFormat:@"EEE MMM dd Hh:mm: a"];
+
+
+    float timingDiff = [[NSDate date] timeIntervalSinceDate:date];
+
+    if (timingDiff < 1)
+    {
+        return [NSString stringWithFormat:@"just now"];
+    }
+    else if (timingDiff < 60)
+    {
+        return [NSString stringWithFormat:@"%f secs ago",timingDiff];
+    }
+    else if (timingDiff < 3600)
+    {
+        int diffRound = round(timingDiff / 60);
+        return [NSString stringWithFormat:@"%d mins ago", diffRound];
+    }
+    else if (timingDiff < 86400)
+    {
+        int diffRound = round(timingDiff / 60 / 60);
+        int secs = (int)timingDiff;
+        int mins = (secs / 60) % 60;
+        return [NSString stringWithFormat:@"%d hours %d mins ago", diffRound, mins];
+    }
+    else
+    {
+        return [formatter stringFromDate:date];
+    }
+    return @"a long time ago";
+}
+
 @end

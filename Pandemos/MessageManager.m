@@ -136,16 +136,16 @@
     }];
 }
 
--(void)queryForChatTextAndTimeOnly:(User*)recipient andConvo:(resultBlockWithConversations)conversation
+-(void)queryForChatTextAndTime:(User*)recipient andConvo:(resultBlockWithConversations)conversation
 {
     PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
     [query whereKey:@"toUser" equalTo:recipient];
     [query orderByDescending:@"updatedAt"];
 
-    query.cachePolicy = kPFCachePolicyCacheThenNetwork;
-    [query orderByAscending:@"createdAt"];
-    NSLog(@"Trying to retrieve from cache");
+//    query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+//    [query orderByAscending:@"createdAt"];
+//    NSLog(@"Trying to retrieve from cache");
 
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
 
@@ -181,63 +181,3 @@
     }];
 }
 @end
-
-
-
-//-(void)createConversationWithUsers:(NSArray*)users withCompletion:(resultBlockWithConversation)result
-//{
-//    NSError *error = nil;
-//
-//    if (users.count == 1)
-//    {
-//        User *userObjectId = users.lastObject;
-//        BOOL deliveryReceiptsEnabled = false;
-//        BOOL uniqueConvoBetweenParticipants = YES;
-//        NSDictionary *dict = @{LYRConversationOptionsDeliveryReceiptsEnabledKey: @(deliveryReceiptsEnabled),
-//                               LYRConversationOptionsDeliveryReceiptsEnabledKey: @(uniqueConvoBetweenParticipants)};
-////        LYRConversation *newConvo = [self.layerClient newConversationWithParticipants:[NSSet setWithObjects:userObjectId, nil] options:dict error:&error];
-//
-//        if (!error)
-//        {
-//            //failing here not being sent a valid newConvo object
-//            [self sendInitialMessage:newConvo withText:@"Hello" withCompletion:^(BOOL success, NSError *error) {
-//
-//                if (success)
-//                {
-//                    NSLog(@"layer sent message");
-//                }
-//                else
-//                {
-//                    NSLog(@"no message sent %@", error);
-//                }
-//            }];
-//
-//            result(newConvo,nil);
-//        }
-//        else
-//        {
-//            result(nil, error);
-//            NSLog(@"error: %@", error);
-//        }
-//    }
-//    else if (users.count > 1)
-//    {
-//        NSMutableSet *set = [NSMutableSet new];
-//        for (User *user in users)
-//        {
-//            [set addObject:user.objectId];
-//        }
-//        BOOL deliveryReceiptsEnabled = NO;
-//        LYRConversation *newConvo = [self.layerClient newConversationWithParticipants:set options:@{LYRConversationOptionsDeliveryReceiptsEnabledKey: @(deliveryReceiptsEnabled) } error:&error];
-//
-//        if (!error)
-//        {
-//            result(newConvo,nil);
-//        }
-//        else
-//        {
-//            result(nil, error);
-//        }
-//    }
-//}
-

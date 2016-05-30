@@ -16,8 +16,6 @@
 
 @interface AppDelegate ()
 
-@property (nonatomic) LYRClient *layerClient;
-
 @end
 
 @implementation AppDelegate
@@ -27,33 +25,14 @@
     //conenct to FB
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
-    //connect to parse
+    //Parse id's
     [Parse setApplicationId:@"dCNWcarB6Tv1iW8vCT1c7UATrEwZ3AFq7OzwAs7A" clientKey:@"Fm7fN3AP4Efbcq6265D8Bh4ReICvjbHkgmRiQucl"];
     [User registerSubclass];
     [MatchRequest registerSubclass];
 
-    //initialize the FB Parse plugin
     [PFFacebookUtils initialize];
     [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
 
-    //layer-- need the cloud code set up to run this for production environment
-//    NSURL *appID = [NSURL URLWithString:@"layer:///apps/staging/8b0e6db8-0cab-11e6-b294-424d000047e5"];
-//    self.layerClient = [LYRClient clientWithAppID:appID];
-//    [self.layerClient connectWithCompletion:^(BOOL success, NSError *error) {
-//        if (!success) {
-//            NSLog(@"Failed to connect to Layer: %@", error);
-//        } else {
-//            // For the purposes of this Quick Start project, let's authenticate as a user named 'Device'.  Alternatively, you can authenticate as a user named 'Simulator' if you're running on a Simulator.
-//            NSString *userIDString = @"Device";
-//            // Once connected, authenticate user.
-//            // Check Authenticate step for authenticateLayerWithUserID source
-//            [self authenticateLayerWithUserID:userIDString completion:^(BOOL success, NSError *error) {
-//                if (!success) {
-//                    NSLog(@"Failed Authenticating Layer Client with error:%@", error);
-//                }
-//            }];
-//        }
-//    }];
     return YES;
 }
 
@@ -69,8 +48,9 @@
             ];
 }
 
-//app events
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
     [FBSDKAppEvents activateApp];
 }
 

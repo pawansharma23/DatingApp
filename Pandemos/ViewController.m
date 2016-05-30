@@ -115,9 +115,11 @@ MDCSwipeToChooseDelegate>
 {
     [super viewDidLoad];
     self.navigationItem.title = APP_TITLE;
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor unitedNationBlue]}];
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
+    //self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"Logo2"] scaledToSize:CGSizeMake(30.0, 30.0)]];
     //setup swipe buttons
     [UIButton setUpButton:self.keepPlayingButton];
     [UIButton setUpButton:self.messageButton];
@@ -138,19 +140,17 @@ MDCSwipeToChooseDelegate>
     {
         NSLog(@"user: %@(%@) logged in", self.currentUser.givenName, self.currentUser.objectId);
 
-        [self setupManagersProfileVC];
-
         self.count = 0;
         self.userCount = 0;
-
         self.potentialMatchData = [NSArray new];
-
-        [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
-        self.fullDescView.layer.cornerRadius = 10;
 
         [UIImageView setupFullSizedImage:self.userImage];
 
         [self.userImage setUserInteractionEnabled:YES];
+
+        [self setupManagersProfileVC];
+
+        [self setupUserInfoAndFullViews];
 
         [self setupGestureUp];
         [self setupGestureDown];
@@ -161,6 +161,7 @@ MDCSwipeToChooseDelegate>
     }
     else
     {
+        [SVProgressHUD dismiss];
         [self performSegueWithIdentifier:@"NoUser" sender:self];
     }
 }
@@ -622,7 +623,16 @@ MDCSwipeToChooseDelegate>
     self.userManager.delegate = self;
     [self.userManager loadUserData:self.currentUser];
 }
+//VIEWS
+-(void)setupUserInfoAndFullViews
+{
+    [self.view insertSubview:self.userInfoView aboveSubview:self.userImage];
+    self.fullDescView.layer.cornerRadius = 8;
+    self.fullDescView.layer.masksToBounds = YES;
 
+    self.userInfoView.layer.cornerRadius = 8;
+    self.userInfoView.layer.masksToBounds = YES;
+}
 -(void)matchedView:(User *)matchedUserProfile
 {
     [self matchedViewSetUp:self.userImageMatched andMatchImage:_matchedImage];

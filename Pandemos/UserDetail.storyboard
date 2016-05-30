@@ -137,7 +137,9 @@
                                     <constraint firstItem="0PO-rA-6cp" firstAttribute="leading" secondItem="T83-ho-rgK" secondAttribute="leading" constant="5" id="eBO-ol-owU"/>
                                     <constraint firstItem="qgJ-Rs-BPF" firstAttribute="top" secondItem="bkr-4x-sc9" secondAttribute="bottom" constant="2" id="kFa-wF-qBf"/>
                                     <constraint firstAttribute="trailing" secondItem="bkr-4x-sc9" secondAttribute="trailing" constant="5" id="kdk-zr-iay"/>
-                                    <constraint firstAttribute="height" constant="80" id="o6d-sl-ikk"/>
+                                    <constraint firstAttribute="height" constant="80" id="o6d-sl-ikk">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="71"/>
+                                    </constraint>
                                     <constraint firstItem="bkr-4x-sc9" firstAttribute="top" secondItem="T83-ho-rgK" secondAttribute="top" constant="5" id="vhi-sR-8DT"/>
                                 </constraints>
                             </view>
@@ -149,7 +151,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="20.5" id="F7x-hc-nVg"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                                        <fontDescription key="fontDescription" name="GeezaPro-Bold" family="Geeza Pro" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="default">
@@ -168,7 +170,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="17.5" id="LwU-c0-vXk"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="15"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="default">
@@ -182,12 +184,12 @@
                                             </mask>
                                         </variation>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MWP-uv-6zG">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MWP-uv-6zG">
                                         <rect key="frame" x="8" y="20" width="544" height="0.0"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="15.5" id="69W-JY-ZRC"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                        <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="13"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="default">
@@ -201,19 +203,68 @@
                                             </mask>
                                         </variation>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h5v-bE-Hma">
+                                        <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="Uhv-gi-UUm"/>
+                                            <constraint firstAttribute="width" constant="80" id="k6t-TO-0o7">
+                                                <variation key="heightClass=regular-widthClass=compact" constant="100"/>
+                                            </constraint>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="GeezaPro-Bold" family="Geeza Pro" pointSize="15"/>
+                                        <state key="normal" title="Block User"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="Uhv-gi-UUm"/>
+                                                <exclude reference="k6t-TO-0o7"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=compact">
+                                            <mask key="constraints">
+                                                <include reference="Uhv-gi-UUm"/>
+                                                <include reference="k6t-TO-0o7"/>
+                                            </mask>
+                                        </variation>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="h5v-bE-Hma" secondAttribute="trailing" constant="8" id="BrS-nv-kqM"/>
                                     <constraint firstItem="pDH-gv-hvU" firstAttribute="leading" secondItem="kVr-jf-Qps" secondAttribute="leading" constant="8" id="Eef-Wu-wQ1"/>
                                     <constraint firstAttribute="trailing" secondItem="MWP-uv-6zG" secondAttribute="trailing" constant="8" id="FS0-MT-2Q1"/>
                                     <constraint firstAttribute="trailing" secondItem="pIe-hu-1RV" secondAttribute="trailing" constant="8" id="I3V-lh-GLk"/>
                                     <constraint firstItem="pIe-hu-1RV" firstAttribute="top" secondItem="pDH-gv-hvU" secondAttribute="bottom" constant="6" id="OOq-2Z-eTv"/>
                                     <constraint firstItem="MWP-uv-6zG" firstAttribute="leading" secondItem="kVr-jf-Qps" secondAttribute="leading" constant="8" id="Usj-5s-ldT"/>
+                                    <constraint firstItem="h5v-bE-Hma" firstAttribute="centerX" secondItem="kVr-jf-Qps" secondAttribute="centerX" id="dQl-8W-2RN"/>
+                                    <constraint firstAttribute="bottom" secondItem="h5v-bE-Hma" secondAttribute="bottom" constant="148" id="gA0-Er-obj"/>
                                     <constraint firstItem="pDH-gv-hvU" firstAttribute="top" secondItem="kVr-jf-Qps" secondAttribute="top" constant="8" id="gJA-Ag-elz"/>
                                     <constraint firstAttribute="trailing" secondItem="pDH-gv-hvU" secondAttribute="trailing" constant="8" id="iiO-bZ-c1L"/>
                                     <constraint firstItem="pIe-hu-1RV" firstAttribute="leading" secondItem="kVr-jf-Qps" secondAttribute="leading" constant="8" id="km2-sD-VLl"/>
+                                    <constraint firstItem="h5v-bE-Hma" firstAttribute="leading" secondItem="kVr-jf-Qps" secondAttribute="leading" constant="8" id="uNF-pb-dki"/>
                                     <constraint firstItem="MWP-uv-6zG" firstAttribute="top" secondItem="pIe-hu-1RV" secondAttribute="bottom" constant="6" id="w9e-BB-ekc"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="h5v-bE-Hma"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="BrS-nv-kqM"/>
+                                        <exclude reference="dQl-8W-2RN"/>
+                                        <exclude reference="gA0-Er-obj"/>
+                                        <exclude reference="uNF-pb-dki"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="subviews">
+                                        <include reference="h5v-bE-Hma"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="BrS-nv-kqM"/>
+                                        <include reference="dQl-8W-2RN"/>
+                                        <include reference="gA0-Er-obj"/>
+                                        <exclude reference="uNF-pb-dki"/>
+                                    </mask>
+                                </variation>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

@@ -62,21 +62,17 @@ UserManagerDelegate>
 
     self.userManager = [UserManager new];
     self.userManager.delegate = self;
+
     self.currentUser = [User currentUser];
-    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-    self.fullDescView.hidden = YES;
     self.profileImages = [NSMutableArray new];
 
+    self.fullDescView.hidden = YES;
+    self.userInfoView.layer.cornerRadius = 8;
+
     [self setupManagersProfileVCForCurrentUser];
-
-    self.userInfoView.layer.cornerRadius = 10;
-
     [self setupButtonsAndViews];
-
-    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(25.0, 25.0)];
-    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
-    self.closeBarButton.tintColor = [UIColor darkGrayColor];
-}
+    [self navBarSetup];
+ }
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -262,5 +258,17 @@ UserManagerDelegate>
     self.fullAboutMe.text = aboutMe;
     self.fullNameAndAge.text = self.nameAndAgeGlobal;
     self.fullMilesAway.text = self.currentCityAndState;
+}
+
+-(void)navBarSetup
+{
+    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor unitedNationBlue],
+                                 NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
+    [self.navigationController.navigationBar setTitleTextAttributes:attributes];
+
+    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+    self.closeBarButton.tintColor = [UIColor darkGrayColor];
 }
 @end

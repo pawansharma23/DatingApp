@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <LayerKit/LayerKit.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

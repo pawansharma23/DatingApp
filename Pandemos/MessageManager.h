@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "User.h"
-#import <LayerKit/LayerKit.h>
 
-typedef void (^resultBlockWithMessage) (LYRMessage *message, NSError *error);
 typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
 typedef void (^resultBlockWithResult)(NSArray *result, NSError *error);
 typedef void (^resultBlockWithConversations)(NSArray *result, NSError *error);
@@ -19,7 +17,6 @@ typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 @interface MessageManager : NSObject
 
 @property(nonatomic, strong)NSArray *matches;
-@property(nonatomic, strong)LYRClient *layerClient;
 
 -(void)sendInitialMessage:(User*)recipient;
 -(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text;
@@ -27,5 +24,5 @@ typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 -(void)queryForChats:(resultBlockWithConversations)conversations;
 -(void)queryForMatches:(resultBlockWithMatches)matches;
 -(void)queryForChattersImage:(resultBlockWithConversations)conversation;
--(void)queryForChatTextAndTimeOnly:(User*)recipient andConvo:(resultBlockWithConversations)conversation;
+-(void)queryForChatTextAndTime:(User*)recipient andConvo:(resultBlockWithConversations)conversation;
 @end

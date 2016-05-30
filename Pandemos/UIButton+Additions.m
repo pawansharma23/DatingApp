@@ -20,8 +20,8 @@
 +(UIButton*)circleButtonEdges:(UIButton *)button
 {
     button.layer.masksToBounds = YES;
-    button.layer.cornerRadius = button.frame.size.height *.5f;
-    button.layer.cornerRadius = button.bounds.size.width *.5f;
+    button.layer.cornerRadius = button.frame.size.height * .5f;
+    button.layer.cornerRadius = button.bounds.size.width * .5f;
     button.clipsToBounds = YES;
     [button.layer setBorderWidth:1.0];
     [button.layer setBorderColor:[UIColor uclaBlue].CGColor];

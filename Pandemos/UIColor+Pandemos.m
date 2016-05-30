@@ -36,6 +36,12 @@
 {
     return [UIColor colorWithRed:24.0/255.0 green:69.0/255.0 blue:59.0/255.0 alpha:1.0];
 }
+
++(UIColor *)unitedNationBlue
+{
+    return [UIColor colorWithRed:88.0/255.0 green:144.0/255.0 blue:232.0/255.0 alpha:1.0];
+}
+
 + (UIColor*)colorWithHexValue:(NSString*)hexValue
 {
     UIColor *defaultResult = [UIColor blackColor];

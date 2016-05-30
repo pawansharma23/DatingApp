@@ -19,6 +19,7 @@
 #import "UIImage+Additions.h"
 #import "MessagerProfileVC.h"
 #import "MatchView.h"
+#import "NSString+Additions.h"
 
 #define TABBAR_HEIGHT 49.0f
 #define TEXTFIELD_HEIGHT 70.0f
@@ -136,35 +137,29 @@ MatchViewDelegate>
     NSDictionary *chatText = [self.chatData objectAtIndex:indexPath.row];
     [self setupImageInCell:cell];
     NSUInteger row = [_chatData count]-[indexPath row]-1;
-    User *user = [self.chatData objectAtIndex:indexPath.row];
-    User *userObject = user[@"fromUser"];
-    //incoming vs. outgoing
-    if ([[User currentUser].objectId isEqualToString:userObject.objectId])
-    {
+    User *fromUser = chatText[@"fromUser"];
+    User *toUser = chatText[@"toUser"];
+
         cell.imageView.image = [UIImage imageWithString:self.lastObject[@"fromImage"]];
         //[UIImage imageWithData:[self stringURLToData:self.lastObject[@"fromImage"]]];
 
         if (row < _chatData.count)
         {
-            //NSString *chatText = [[_chatData objectAtIndex:indexPath.row] objectForKey:@"text"];
-
-            if (chatText)
+            if (chatText && [fromUser.objectId isEqualToString:[User currentUser].objectId])
             {
-                [self setupCellForText:cell andChat:chatText index:indexPath];
+                [self outgoingCellForText:cell andChat:chatText index:indexPath];
+            }
+            else if(chatText && [toUser.objectId isEqualToString:self.recipient.objectId])
+            {
+                [self incomingCellForText:cell andChat:chatText index:indexPath];
             }
             else
             {
                 [cell removeFromSuperview];
             }
         }
-    }
-    else
-    {
-        NSLog(@"incoming message");
-        NSLog(@"user objectID: %@", user[@"fromUser"]);
-        cell.textLabel.textAlignment = NSTextAlignmentRight;
-        [self setupCellForText:cell andChat:chatText index:indexPath];
-    }
+
+
 
     return cell;
 }
@@ -233,7 +228,7 @@ MatchViewDelegate>
 #pragma mark -- HELPERS
 -(void)loadChat
 {
-    [self.messageManager queryForChatTextAndTimeOnly:self.recipient andConvo:^(NSArray *result, NSError *error) {
+    [self.messageManager queryForChatTextAndTime:self.recipient andConvo:^(NSArray *result, NSError *error) {
 
         self.chatData = [NSMutableArray arrayWithArray:result];
         [self.tableView reloadData];
@@ -280,7 +275,7 @@ MatchViewDelegate>
     cell.imageView.clipsToBounds = YES;
 }
 
--(void)setupCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
+-(void)outgoingCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
 {
     NSString *text = chatDict[@"text"];
 
@@ -291,6 +286,42 @@ MatchViewDelegate>
     }
     else
     {
+        //cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+        cell.textLabel.textAlignment = NSTextAlignmentRight;
+        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        CGSize size = CGSizeMake(10.0, 10.0);
+        cell.textLabel.frame = CGRectMake(175, 14, size.width +20, size.height + 20);
+        cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
+        cell.textLabel.text = chatDict[@"text"];
+        [cell.textLabel sizeToFit];
+
+        //[self formatDate:cell atIndexPath:indexPath];
+        //cell.detailTextLabel.text = [NSString timeFromData:[[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"]];
+
+//        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 100, 30)];
+//        label.textAlignment = NSTextAlignmentRight;
+//        label.lineBreakMode = NSLineBreakByWordWrapping;
+//        [label sizeToFit];
+//        label.backgroundColor = [UIColor purpleColor];
+//        label.textColor = [UIColor blackColor];
+        cell.detailTextLabel.text = [NSString timeFromData:[[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"]];
+        //[cell.contentView addSubview:label];
+
+    }
+}
+
+-(void)incomingCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
+{
+    NSString *text = chatDict[@"text"];
+
+    if (text.length == 0)
+    {
+        [_chatData removeObjectAtIndex:indexPath.row];
+        [self.tableView reloadData];
+    }
+    else
+    {
+        cell.textLabel.textAlignment = NSTextAlignmentLeft;
         cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         CGSize size = CGSizeMake(10.0, 10.0);
         cell.textLabel.frame = CGRectMake(75, 14, size.width +20, size.height + 20);
@@ -298,13 +329,19 @@ MatchViewDelegate>
         cell.textLabel.text = chatDict[@"text"];
         [cell.textLabel sizeToFit];
 
-        NSDate *theDate = [[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"HH:mm a"];
-        NSString *timeString = [formatter stringFromDate:theDate];
-        cell.detailTextLabel.text = timeString;
+        //[self formatDate:cell atIndexPath:indexPath];
     }
 }
+
+//-(void)formatDate:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)iPath
+//{
+//    NSDate *theDate = [[self.chatData objectAtIndex:iPath.row] objectForKey:@"timestamp"];
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setDateFormat:@"HH:mm a"];
+//    NSString *timeString = [formatter stringFromDate:theDate];
+//    cell.detailTextLabel.text = timeString;
+//}
+
 
 #pragma mark -- MATCHVIEW DELEGATE
 -(void)didPressMatchView

@@ -1,3 +1,4 @@
+
 //
 //  MessagingViewController.m
 //  Pandemos
@@ -67,6 +68,8 @@ UICollectionViewDataSource>
     self.automaticallyAdjustsScrollViewInsets = NO;
 
     [self setupMatches];
+
+
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -136,11 +139,22 @@ UICollectionViewDataSource>
     return self.chatters.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+-(MessagingCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessagingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     NSDictionary *chat = [self.chatters objectAtIndex:indexPath.row];
-    [self setupConversationCell:cell withUserData:chat];
+    [self setupChatterImage:cell withUserData:chat];
+
+//    User *user = [self.chatters objectAtIndex:indexPath.row];
+
+//    [self.messageManager queryForChatTextAndTime:user[@"toUser"] andConvo:^(NSArray *result, NSError *error) {
+//
+//        NSDictionary *chatDict = result.firstObject;
+//        NSLog(@"chat: %@", chatDict[@"text"]);
+//        User *userName = chatDict[@"toUser"];
+//        cell.lastMessage.text = userName.givenName;
+//        cell.lastMessageTime.text = chatDict[@"text"];
+//    }];
 
     return cell;
 }
@@ -197,7 +211,7 @@ UICollectionViewDataSource>
 
 -(void)setupChatters
 {
-    //only the first send chat to get the user data from for the tableview
+    //only the first sent chat to get the user data from for the tableview
     [self.messageManager queryForChattersImage:^(NSArray *result, NSError *error) {
 
         self.chatters = result;
@@ -205,21 +219,12 @@ UICollectionViewDataSource>
     }];
 }
 
--(void)setupConversationCell:(MessagingCell*)cell withUserData:(NSDictionary*)chatter
+-(void)setupChatterImage:(MessagingCell*)cell withUserData:(NSDictionary*)chatter
 {
     cell.userImage.contentMode = UIViewContentModeScaleAspectFill;
     cell.userImage.layer.cornerRadius = 22.0 / 2.0f;
     cell.userImage.clipsToBounds = YES;
-    cell.lastMessage.text = chatter[@"repName"];
-    cell.lastMessageTime.text = chatter[@"text"];
     cell.userImage.image = [UIImage imageWithString:chatter[@"repImage"]];
-
-    //data unique to individual chat
-//    NSDate *theDate = [user objectForKey:@"timestamp"];
-//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat:@"HH:mm a"];
-//    NSString *timeString = [formatter stringFromDate:theDate];
-//    [user objectForKey:@"text"];
 }
 
 -(void)setupCVCell:(MatchesCell*)cell

@@ -37,8 +37,6 @@
     UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
-    //self.navigationItem.rightBarButtonItem.tintColor = [UIColor mikeGray];
-
 
     self.albums = [NSArray new];
     self.currentUser = [User currentUser];
@@ -48,6 +46,8 @@
 {
     [super viewDidAppear:YES];
     [SVProgressHUD show];
+    [SVProgressHUD setForegroundColor:[UIColor whiteColor]];
+    [SVProgressHUD setBackgroundColor:[UIColor spartyGreen]];
 
     if (self.currentUser)
     {

@@ -98,6 +98,7 @@ UIImagePickerControllerDelegate>
 -(void)viewDidAppear:(BOOL)animated
 {
     [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 650)];
+    [UIButton setUpButton:self.continueButton];
 
     NSString *aboutMeDescription = [self.currentUser objectForKey:@"aboutMe"];
     if (aboutMeDescription)
@@ -265,6 +266,7 @@ UIImagePickerControllerDelegate>
 -
 (IBAction)onContinueTapped:(UIButton *)sender
 {
+    [UIButton changeButtonStateForSingleButton:self.continueButton];
     [self performSegueWithIdentifier:@"ConfidantEmail" sender:self];
 }
 
@@ -428,7 +430,6 @@ UIImagePickerControllerDelegate>
     [UIButton setUpButton:self.womensInterestButton];
     [UIButton setUpButton:self.bothSexesButton];
     [UIButton setUpButton:self.suggestionsButton];
-    [UIButton setUpButton:self.continueButton];
     [UIButton setUpButton:self.imagesFromPhoneButton];
     self.facebookAlbumBUtton.layer.cornerRadius = 16.0 / 2.0;
     self.facebookAlbumBUtton.clipsToBounds = YES;

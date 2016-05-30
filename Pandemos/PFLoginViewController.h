@@ -10,6 +10,6 @@
 #import <Parse/PFUser.h>
 
 
-@interface PFLoginViewController : ViewController
+@interface PFLoginViewController : UIViewController
 
 @end
