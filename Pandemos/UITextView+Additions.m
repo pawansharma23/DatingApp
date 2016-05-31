@@ -6,6 +6,8 @@
 //  Copyright © 2016 Michael Sevy. All rights reserved.
 //
 
+#import <CoreGraphics/CoreGraphics.h>
+#import "AppDelegate.h"
 #import "UITextView+Additions.h"
 
 @implementation UITextView (Additions)

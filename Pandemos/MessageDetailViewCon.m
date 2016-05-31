@@ -7,7 +7,6 @@
 //
 
 #import "MessageDetailViewCon.h"
-#import "MessageDetailCell.h"
 #import "MessagingViewController.h"
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
@@ -20,6 +19,7 @@
 #import "MessagerProfileVC.h"
 #import "MatchView.h"
 #import "NSString+Additions.h"
+#import "MessageCell.h"
 
 #define TABBAR_HEIGHT 49.0f
 #define TEXTFIELD_HEIGHT 70.0f
@@ -35,10 +35,10 @@ MatchViewDelegate>
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backToMessaging;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardToUserDetail;
+
 @property BOOL reloading;
 @property (strong, nonatomic) NSMutableArray *chatData;
 @property (strong, nonatomic) NSDictionary *lastObject;
-
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) MessageManager *messageManager;
 
@@ -131,17 +131,14 @@ MatchViewDelegate>
     return self.chatData.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+-(MessageCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier: @"Cell"];
+    MessageCell *cell = (MessageCell *)[tableView dequeueReusableCellWithIdentifier: @"Cell"];
     NSDictionary *chatText = [self.chatData objectAtIndex:indexPath.row];
-    [self setupImageInCell:cell];
+
     NSUInteger row = [_chatData count]-[indexPath row]-1;
     User *fromUser = chatText[@"fromUser"];
     User *toUser = chatText[@"toUser"];
-
-        cell.imageView.image = [UIImage imageWithString:self.lastObject[@"fromImage"]];
-        //[UIImage imageWithData:[self stringURLToData:self.lastObject[@"fromImage"]]];
 
         if (row < _chatData.count)
         {
@@ -268,14 +265,7 @@ MatchViewDelegate>
     [matchView setMatchViewWithChatterDetailImage:self.userImage];
 }
 
--(void)setupImageInCell:(UITableViewCell*)cell
-{
-    cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
-    cell.imageView.layer.cornerRadius = 22.0 / 2.0f;
-    cell.imageView.clipsToBounds = YES;
-}
-
--(void)outgoingCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
+-(void)outgoingCellForText:(MessageCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
 {
     NSString *text = chatDict[@"text"];
 
@@ -287,13 +277,21 @@ MatchViewDelegate>
     else
     {
         //cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
-        cell.textLabel.textAlignment = NSTextAlignmentRight;
-        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        CGSize size = CGSizeMake(10.0, 10.0);
-        cell.textLabel.frame = CGRectMake(175, 14, size.width +20, size.height + 20);
-        cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
-        cell.textLabel.text = chatDict[@"text"];
-        [cell.textLabel sizeToFit];
+//        cell.textLabel.textAlignment = NSTextAlignmentRight;
+//        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//        CGSize size = CGSizeMake(10.0, 10.0);
+//        cell.textLabel.frame = CGRectMake(175, 14, size.width +20, size.height + 20);
+//        cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
+//        cell.textLabel.text = chatDict[@"text"];
+//        [cell.textLabel sizeToFit];
+
+//        cell.textView.text = chatDict[@"text"];
+//        CGSize textViewSize = CGSizeMake(cell.textView.contentSize.width, cell.textView.contentSize.height);
+//        [cell addSubview:textViewSize];
+
+        [cell setCellForMessage:text];
+        cell.indexPath = indexPath;
+        cell.transform = self.tableView.transform;
 
         //[self formatDate:cell atIndexPath:indexPath];
         //cell.detailTextLabel.text = [NSString timeFromData:[[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"]];
@@ -304,11 +302,20 @@ MatchViewDelegate>
 //        [label sizeToFit];
 //        label.backgroundColor = [UIColor purpleColor];
 //        label.textColor = [UIColor blackColor];
-        cell.detailTextLabel.text = [NSString timeFromData:[[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"]];
-        //[cell.contentView addSubview:label];
+
+
+
+//        cell.outgoingTimeLabel.text = [NSString timeFromData:[[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"]];
+//        cell.incomingTimeLabel.hidden = YES;
 
     }
 }
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [indexPath row] * 20;
+}
+
 
 -(void)incomingCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
 {
@@ -332,16 +339,6 @@ MatchViewDelegate>
         //[self formatDate:cell atIndexPath:indexPath];
     }
 }
-
-//-(void)formatDate:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)iPath
-//{
-//    NSDate *theDate = [[self.chatData objectAtIndex:iPath.row] objectForKey:@"timestamp"];
-//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat:@"HH:mm a"];
-//    NSString *timeString = [formatter stringFromDate:theDate];
-//    cell.detailTextLabel.text = timeString;
-//}
-
 
 #pragma mark -- MATCHVIEW DELEGATE
 -(void)didPressMatchView
