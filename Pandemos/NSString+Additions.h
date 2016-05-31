@@ -11,8 +11,6 @@
 @interface NSString (Additions)
 
 +(NSString *)timeFromData:(NSDate*)date;
-
-
 -(NSString *)ageFromBirthday:(NSString *)birthday;
 
 @end

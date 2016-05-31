@@ -21,7 +21,10 @@ typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 -(void)sendInitialMessage:(User*)recipient;
 -(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text;
 -(void)queryIfChatExists:(User*)recipient currentUser:(User*)user withSuccess:(resultBlockWithSuccess)success;
--(void)queryForChats:(resultBlockWithConversations)conversations;
+
+-(void)queryForOutgoingMessages:(User*)recipientUser withBlock:(resultBlockWithConversations)messages;
+-(void)queryForIncomingMessages:(User*)recipientUser withBlock:(resultBlockWithConversations)messages;
+
 -(void)queryForMatches:(resultBlockWithMatches)matches;
 -(void)queryForChattersImage:(resultBlockWithConversations)conversation;
 -(void)queryForChatTextAndTime:(User*)recipient andConvo:(resultBlockWithConversations)conversation;

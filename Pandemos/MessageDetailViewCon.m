@@ -19,7 +19,8 @@
 #import "MessagerProfileVC.h"
 #import "MatchView.h"
 #import "NSString+Additions.h"
-#import "MessageCell.h"
+#import "IncomingCell.h"
+#import "OutgoingCell.h"
 
 #define TABBAR_HEIGHT 49.0f
 #define TEXTFIELD_HEIGHT 70.0f
@@ -37,7 +38,8 @@ MatchViewDelegate>
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardToUserDetail;
 
 @property BOOL reloading;
-@property (strong, nonatomic) NSMutableArray *chatData;
+@property (strong, nonatomic) NSMutableArray *incomingChatData;
+@property (strong, nonatomic) NSMutableArray *outgoingChatData;
 @property (strong, nonatomic) NSDictionary *lastObject;
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) MessageManager *messageManager;
@@ -45,7 +47,6 @@ MatchViewDelegate>
 @property (strong, nonatomic) NSString *userImage;
 @property (strong, nonatomic) NSString *userGiven;
 @property (strong, nonatomic) NSString *user;
-
 
 @end
 
@@ -58,7 +59,7 @@ MatchViewDelegate>
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
     self.lastObject = [NSDictionary new];
-    self.chatData = [NSMutableArray new];
+
 
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     //self.forwardToUserDetail.tintColor = [UIColor mikeGray];
@@ -75,10 +76,13 @@ MatchViewDelegate>
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.chatData = [NSMutableArray new];
-    [self loadChat];
+    self.incomingChatData = [NSMutableArray new];
+    self.outgoingChatData = [NSMutableArray new];
+
     [self loadChatWithImage];
-    [self loadUserData];
+    [self loadRecipientUserData];
+    [self loadIncomingMessages];
+    [self loadOutgoingMessages];
 }
 
 - (void)viewDidUnload
@@ -102,7 +106,7 @@ MatchViewDelegate>
         NSArray *keys = [NSArray arrayWithObjects:@"text", @"userName", @"date", nil];
         NSArray *objects = [NSArray arrayWithObjects:textField.text, self.currentUser, [NSDate date], nil];
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-        [self.chatData addObject:dictionary];
+        [self.outgoingChatData addObject:dictionary];
 
         NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
         NSIndexPath *newPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -121,44 +125,59 @@ MatchViewDelegate>
     }
 
     // reload the data
-    [self loadChat];
+    [self loadOutgoingMessages];
+    [self loadIncomingMessages];
     return NO;
 }
 
 #pragma mark -- TABLEVIEW DELEGATE
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.chatData.count;
+    return self.outgoingChatData.count;
 }
 
--(MessageCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+-(IncomingCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MessageCell *cell = (MessageCell *)[tableView dequeueReusableCellWithIdentifier: @"Cell"];
-    NSDictionary *chatText = [self.chatData objectAtIndex:indexPath.row];
 
-    NSUInteger row = [_chatData count]-[indexPath row]-1;
-    User *fromUser = chatText[@"fromUser"];
-    User *toUser = chatText[@"toUser"];
+    NSUInteger inRow = [_incomingChatData count]-[indexPath row]-1;
+    NSUInteger outRow = [_outgoingChatData count]-[indexPath row]-1;
+    
 
-        if (row < _chatData.count)
+    IncomingCell *inCell = (IncomingCell *)[tableView dequeueReusableCellWithIdentifier: @"Incoming"];
+
+    if (self.incomingChatData.count > 0)
+    {
+        NSDictionary *inChatText = [self.incomingChatData objectAtIndex:indexPath.row];
+
+        if (inRow < _incomingChatData.count)
         {
-            if (chatText && [fromUser.objectId isEqualToString:[User currentUser].objectId])
-            {
-                [self outgoingCellForText:cell andChat:chatText index:indexPath];
-            }
-            else if(chatText && [toUser.objectId isEqualToString:self.recipient.objectId])
-            {
-                [self incomingCellForText:cell andChat:chatText index:indexPath];
-            }
-            else
-            {
-                [cell removeFromSuperview];
-            }
+            inCell.textLabel.text = inChatText[@"text"];
+            inCell.messageLabel.textAlignment = NSTextAlignmentLeft;
+            inCell.timeLabel.textAlignment = NSTextAlignmentLeft;
+            inCell.timeLabel.text = [NSString timeFromData:inChatText[@"timestamp"]];
         }
+    }
+
+    if (self.outgoingChatData.count > 0)
+    {
+        NSDictionary *outChatText = [self.outgoingChatData objectAtIndex:indexPath.row];
+        NSString *text = outChatText[@"text"];
+
+        if (outRow < _outgoingChatData.count)
+        {
+
+            inCell.timeLabel.textAlignment = NSTextAlignmentRight;
+            inCell.messageLabel.textAlignment = NSTextAlignmentRight;
+ //           inCell.messageLabel.layer.cornerRadius = 8;
+//                inCell.messageLabel.backgroundColor = [UIColor unitedNationBlue];
+            inCell.messageLabel.text = text;
+            inCell.timeLabel.text = [NSString timeFromData:outChatText[@"timestamp"]];
 
 
+        }
+}
 
-    return cell;
+    return inCell;
 }
 
 -(void)doneLoadingCollectionViewData
@@ -223,26 +242,34 @@ MatchViewDelegate>
 }
 
 #pragma mark -- HELPERS
--(void)loadChat
+-(void)loadIncomingMessages
 {
-    [self.messageManager queryForChatTextAndTime:self.recipient andConvo:^(NSArray *result, NSError *error) {
+    [self.messageManager queryForIncomingMessages:self.recipient withBlock:^(NSArray *result, NSError *error) {
 
-        self.chatData = [NSMutableArray arrayWithArray:result];
+        self.incomingChatData = [NSMutableArray arrayWithArray:result];
+        [self.tableView reloadData];
+    }];
+}
+
+-(void)loadOutgoingMessages
+{
+    [self.messageManager queryForOutgoingMessages:self.recipient withBlock:^(NSArray *result, NSError *error) {
+
+        self.outgoingChatData = [NSMutableArray arrayWithArray:result];
         [self.tableView reloadData];
     }];
 }
 
 -(void)loadChatWithImage
 {
-    [self.messageManager queryForChats:^(NSArray *result, NSError *error) {
+    [self.messageManager queryForChattersImage:^(NSArray *result, NSError *error) {
 
         self.lastObject = result.lastObject;
         self.navigationItem.title = self.lastObject[@"repName"];
-        [self.tableView reloadData];
     }];
 }
 
--(void)loadUserData
+-(void)loadRecipientUserData
 {
     UserManager *userManager = [UserManager new];
     [userManager queryForUserData:self.recipient.objectId withUser:^(User *users, NSError *error) {
@@ -263,81 +290,6 @@ MatchViewDelegate>
     matchView.delegate = self;
     [matchView setMatchViewWithChatter:self.userGiven];
     [matchView setMatchViewWithChatterDetailImage:self.userImage];
-}
-
--(void)outgoingCellForText:(MessageCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
-{
-    NSString *text = chatDict[@"text"];
-
-    if (text.length == 0)
-    {
-        [_chatData removeObjectAtIndex:indexPath.row];
-        [self.tableView reloadData];
-    }
-    else
-    {
-        //cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
-//        cell.textLabel.textAlignment = NSTextAlignmentRight;
-//        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-//        CGSize size = CGSizeMake(10.0, 10.0);
-//        cell.textLabel.frame = CGRectMake(175, 14, size.width +20, size.height + 20);
-//        cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
-//        cell.textLabel.text = chatDict[@"text"];
-//        [cell.textLabel sizeToFit];
-
-//        cell.textView.text = chatDict[@"text"];
-//        CGSize textViewSize = CGSizeMake(cell.textView.contentSize.width, cell.textView.contentSize.height);
-//        [cell addSubview:textViewSize];
-
-        [cell setCellForMessage:text];
-        cell.indexPath = indexPath;
-        cell.transform = self.tableView.transform;
-
-        //[self formatDate:cell atIndexPath:indexPath];
-        //cell.detailTextLabel.text = [NSString timeFromData:[[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"]];
-
-//        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 100, 30)];
-//        label.textAlignment = NSTextAlignmentRight;
-//        label.lineBreakMode = NSLineBreakByWordWrapping;
-//        [label sizeToFit];
-//        label.backgroundColor = [UIColor purpleColor];
-//        label.textColor = [UIColor blackColor];
-
-
-
-//        cell.outgoingTimeLabel.text = [NSString timeFromData:[[self.chatData objectAtIndex:indexPath.row] objectForKey:@"timestamp"]];
-//        cell.incomingTimeLabel.hidden = YES;
-
-    }
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [indexPath row] * 20;
-}
-
-
--(void)incomingCellForText:(UITableViewCell*)cell andChat:(NSDictionary*)chatDict index:(NSIndexPath*)indexPath
-{
-    NSString *text = chatDict[@"text"];
-
-    if (text.length == 0)
-    {
-        [_chatData removeObjectAtIndex:indexPath.row];
-        [self.tableView reloadData];
-    }
-    else
-    {
-        cell.textLabel.textAlignment = NSTextAlignmentLeft;
-        cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        CGSize size = CGSizeMake(10.0, 10.0);
-        cell.textLabel.frame = CGRectMake(75, 14, size.width +20, size.height + 20);
-        cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:14.0];
-        cell.textLabel.text = chatDict[@"text"];
-        [cell.textLabel sizeToFit];
-
-        //[self formatDate:cell atIndexPath:indexPath];
-    }
 }
 
 #pragma mark -- MATCHVIEW DELEGATE

@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Messaging View Controller-->
@@ -237,17 +238,106 @@
                                     <action selector="textFieldDoneEditing:" destination="EDn-T0-e2S" eventType="editingDidEnd" id="YZS-Db-dFR"/>
                                 </connections>
                             </textField>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="59" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bjW-mX-cBV">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bjW-mX-cBV">
                                 <rect key="frame" x="0.0" y="72" width="600" height="482"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="59" id="ayU-qB-3M3" customClass="MessageCell">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Incoming" rowHeight="60" id="N6c-L9-3SK" customClass="IncomingCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ayU-qB-3M3" id="7Q4-Tk-CUm">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="N6c-L9-3SK" id="UoH-au-j1x">
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o2r-gK-zdO">
+                                                    <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="16"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Q8-9p-Inw">
+                                                    <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="120" id="9EZ-tk-AZU"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="11"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="9EZ-tk-AZU"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <variation key="heightClass=regular-widthClass=compact">
+                                                        <mask key="constraints">
+                                                            <exclude reference="9EZ-tk-AZU"/>
+                                                        </mask>
+                                                    </variation>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="9Q8-9p-Inw" secondAttribute="trailing" constant="8" id="2dh-ZT-na0"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="9Q8-9p-Inw" secondAttribute="trailing" id="3gG-GG-PdM"/>
+                                                <constraint firstItem="o2r-gK-zdO" firstAttribute="leading" secondItem="UoH-au-j1x" secondAttribute="leading" constant="8" id="Bzj-Rh-8qW"/>
+                                                <constraint firstItem="o2r-gK-zdO" firstAttribute="leading" secondItem="UoH-au-j1x" secondAttribute="leading" constant="8" id="Jlp-lb-61L"/>
+                                                <constraint firstItem="9Q8-9p-Inw" firstAttribute="leading" secondItem="UoH-au-j1x" secondAttribute="leading" constant="8" id="QeL-lG-h1a"/>
+                                                <constraint firstItem="o2r-gK-zdO" firstAttribute="centerX" secondItem="UoH-au-j1x" secondAttribute="centerX" id="bXb-kE-V9y"/>
+                                                <constraint firstItem="9Q8-9p-Inw" firstAttribute="leading" secondItem="UoH-au-j1x" secondAttribute="leading" constant="8" id="eZb-Yv-29n"/>
+                                                <constraint firstAttribute="bottom" secondItem="9Q8-9p-Inw" secondAttribute="bottom" priority="250" constant="8.5" id="hNT-uZ-FyM"/>
+                                                <constraint firstItem="o2r-gK-zdO" firstAttribute="top" secondItem="UoH-au-j1x" secondAttribute="top" priority="750" constant="8" id="rEt-dw-fq4"/>
+                                                <constraint firstAttribute="trailing" secondItem="o2r-gK-zdO" secondAttribute="trailing" constant="8" id="tcA-tg-hXV"/>
+                                                <constraint firstItem="9Q8-9p-Inw" firstAttribute="top" secondItem="o2r-gK-zdO" secondAttribute="bottom" constant="9.5" id="vxh-fI-vnJ">
+                                                    <variation key="heightClass=regular-widthClass=compact" constant="5"/>
+                                                </constraint>
+                                                <constraint firstAttribute="trailing" secondItem="o2r-gK-zdO" secondAttribute="trailing" constant="8" id="w6B-pO-bdp"/>
+                                                <constraint firstItem="9Q8-9p-Inw" firstAttribute="centerX" secondItem="UoH-au-j1x" secondAttribute="centerX" id="xva-Lx-sjB"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="subviews">
+                                                    <exclude reference="o2r-gK-zdO"/>
+                                                    <exclude reference="9Q8-9p-Inw"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <exclude reference="Bzj-Rh-8qW"/>
+                                                    <exclude reference="Jlp-lb-61L"/>
+                                                    <exclude reference="bXb-kE-V9y"/>
+                                                    <exclude reference="rEt-dw-fq4"/>
+                                                    <exclude reference="tcA-tg-hXV"/>
+                                                    <exclude reference="w6B-pO-bdp"/>
+                                                    <exclude reference="2dh-ZT-na0"/>
+                                                    <exclude reference="3gG-GG-PdM"/>
+                                                    <exclude reference="QeL-lG-h1a"/>
+                                                    <exclude reference="eZb-Yv-29n"/>
+                                                    <exclude reference="hNT-uZ-FyM"/>
+                                                    <exclude reference="vxh-fI-vnJ"/>
+                                                    <exclude reference="xva-Lx-sjB"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="heightClass=regular-widthClass=compact">
+                                                <mask key="subviews">
+                                                    <include reference="o2r-gK-zdO"/>
+                                                    <include reference="9Q8-9p-Inw"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <include reference="Bzj-Rh-8qW"/>
+                                                    <exclude reference="Jlp-lb-61L"/>
+                                                    <exclude reference="bXb-kE-V9y"/>
+                                                    <include reference="rEt-dw-fq4"/>
+                                                    <exclude reference="tcA-tg-hXV"/>
+                                                    <include reference="w6B-pO-bdp"/>
+                                                    <include reference="2dh-ZT-na0"/>
+                                                    <exclude reference="3gG-GG-PdM"/>
+                                                    <include reference="QeL-lG-h1a"/>
+                                                    <exclude reference="eZb-Yv-29n"/>
+                                                    <include reference="hNT-uZ-FyM"/>
+                                                    <include reference="vxh-fI-vnJ"/>
+                                                    <exclude reference="xva-Lx-sjB"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="messageLabel" destination="o2r-gK-zdO" id="Nn4-9g-Sid"/>
+                                            <outlet property="timeLabel" destination="9Q8-9p-Inw" id="HwB-3o-uIA"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>

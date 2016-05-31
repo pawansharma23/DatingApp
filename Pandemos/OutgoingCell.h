@@ -1,5 +1,5 @@
 //
-//  MessageTableView.h
+//  OutgoingCell.h
 //  Pandemos
 //
 //  Created by Michael Sevy on 5/31/16.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MessageTableView : UITableView
+@interface OutgoingCell : UITableViewCell
 
 @end

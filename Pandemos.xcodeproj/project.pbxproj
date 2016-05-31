@@ -68,10 +68,8 @@
 		26C70ED81CA5B18F00E9B98F /* UIColor+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */; };
 		26C70ED91CA5B18F00E9B98F /* RangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 260799061C29CB4600B364C8 /* RangeSlider.m */; };
 		26C70EDA1CA5B18F00E9B98F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
-		26CB15801CFCE5AA005CD680 /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB157F1CFCE5AA005CD680 /* MessageCell.m */; };
-		26CB15831CFCFD64005CD680 /* MessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15821CFCFD64005CD680 /* MessageTextView.m */; };
-		26CB15861CFD0119005CD680 /* MessageTextView+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15851CFD0119005CD680 /* MessageTextView+Pandemos.m */; };
-		26CB158A1CFDB73E005CD680 /* MessageTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15891CFDB73E005CD680 /* MessageTableView.m */; };
+		26CB15801CFCE5AA005CD680 /* IncomingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB157F1CFCE5AA005CD680 /* IncomingCell.m */; };
+		26CB158D1CFDCA3F005CD680 /* OutgoingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */; };
 		26F7E4C11CD29935002F8BFC /* MessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E4C01CD29935002F8BFC /* MessageManager.m */; };
 		B6D0576735DD6374DE9CF23F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E7EAF390F8A69E1F0F90DF /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -186,15 +184,11 @@
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
 		26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuggestionsViewController.m; sourceTree = "<group>"; };
-		26CB157E1CFCE5AA005CD680 /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
-		26CB157F1CFCE5AA005CD680 /* MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCell.m; sourceTree = "<group>"; };
-		26CB15811CFCFD64005CD680 /* MessageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageTextView.h; sourceTree = "<group>"; };
-		26CB15821CFCFD64005CD680 /* MessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTextView.m; sourceTree = "<group>"; };
-		26CB15841CFD0119005CD680 /* MessageTextView+Pandemos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MessageTextView+Pandemos.h"; sourceTree = "<group>"; };
-		26CB15851CFD0119005CD680 /* MessageTextView+Pandemos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MessageTextView+Pandemos.m"; sourceTree = "<group>"; };
+		26CB157E1CFCE5AA005CD680 /* IncomingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IncomingCell.h; sourceTree = "<group>"; };
+		26CB157F1CFCE5AA005CD680 /* IncomingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IncomingCell.m; sourceTree = "<group>"; };
 		26CB15871CFD02FA005CD680 /* AppConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
-		26CB15881CFDB73E005CD680 /* MessageTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageTableView.h; sourceTree = "<group>"; };
-		26CB15891CFDB73E005CD680 /* MessageTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTableView.m; sourceTree = "<group>"; };
+		26CB158B1CFDCA3F005CD680 /* OutgoingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutgoingCell.h; sourceTree = "<group>"; };
+		26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutgoingCell.m; sourceTree = "<group>"; };
 		26CC6A351C7CF31F000F3BAC /* UIColor+Pandemos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Pandemos.h"; sourceTree = "<group>"; };
 		26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Pandemos.m"; sourceTree = "<group>"; };
 		26CC6A381C7CF3E1000F3BAC /* PotentialMatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PotentialMatch.h; sourceTree = "<group>"; };
@@ -375,12 +369,10 @@
 		2655A4821CE95CBC00838853 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				26CB15811CFCFD64005CD680 /* MessageTextView.h */,
-				26CB15821CFCFD64005CD680 /* MessageTextView.m */,
-				26CB157E1CFCE5AA005CD680 /* MessageCell.h */,
-				26CB157F1CFCE5AA005CD680 /* MessageCell.m */,
-				26CB15881CFDB73E005CD680 /* MessageTableView.h */,
-				26CB15891CFDB73E005CD680 /* MessageTableView.m */,
+				26CB157E1CFCE5AA005CD680 /* IncomingCell.h */,
+				26CB157F1CFCE5AA005CD680 /* IncomingCell.m */,
+				26CB158B1CFDCA3F005CD680 /* OutgoingCell.h */,
+				26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -583,8 +575,6 @@
 				26AC54631CAED17A005AD536 /* UITextView+Additions.m */,
 				2601A33A1CECD8A70041B17F /* UICollectionView+Pandemos.h */,
 				2601A33B1CECD8A70041B17F /* UICollectionView+Pandemos.m */,
-				26CB15841CFD0119005CD680 /* MessageTextView+Pandemos.h */,
-				26CB15851CFD0119005CD680 /* MessageTextView+Pandemos.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -869,7 +859,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26CB15861CFD0119005CD680 /* MessageTextView+Pandemos.m in Sources */,
 				26C70EB51CA5B18F00E9B98F /* AppDelegate.m in Sources */,
 				26C70EB61CA5B18F00E9B98F /* FriendEmailViewController.m in Sources */,
 				26C70EB71CA5B18F00E9B98F /* SuggestionsViewController.m in Sources */,
@@ -884,11 +873,9 @@
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */,
 				260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */,
-				26CB158A1CFDB73E005CD680 /* MessageTableView.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
 				261ADA331CF5F74C00C7ECCD /* Match.m in Sources */,
-				26CB15831CFCFD64005CD680 /* MessageTextView.m in Sources */,
 				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,
 				26C70EC31CA5B18F00E9B98F /* MessagingCell.m in Sources */,
 				26C70EC41CA5B18F00E9B98F /* MessagingViewController.m in Sources */,
@@ -905,7 +892,7 @@
 				26C70ECF1CA5B18F00E9B98F /* User.m in Sources */,
 				26C70ED01CA5B18F00E9B98F /* Facebook.m in Sources */,
 				26C70ED11CA5B18F00E9B98F /* FacebookBuilder.m in Sources */,
-				26CB15801CFCE5AA005CD680 /* MessageCell.m in Sources */,
+				26CB15801CFCE5AA005CD680 /* IncomingCell.m in Sources */,
 				2657ABCC1CCE5E2100629437 /* ChooseMatchView.m in Sources */,
 				26C70ED21CA5B18F00E9B98F /* PotentialMatch.m in Sources */,
 				26AC54641CAED17A005AD536 /* UITextView+Additions.m in Sources */,
@@ -917,6 +904,7 @@
 				26C70ED71CA5B18F00E9B98F /* UIButton+Additions.m in Sources */,
 				2653C03A1CDA357200DDBD65 /* NSData+Additions.m in Sources */,
 				26C70ED81CA5B18F00E9B98F /* UIColor+Pandemos.m in Sources */,
+				26CB158D1CFDCA3F005CD680 /* OutgoingCell.m in Sources */,
 				26C70ED91CA5B18F00E9B98F /* RangeSlider.m in Sources */,
 				26C70EDA1CA5B18F00E9B98F /* main.m in Sources */,
 			);

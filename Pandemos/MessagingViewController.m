@@ -77,7 +77,6 @@ UICollectionViewDataSource>
     [super viewDidAppear:animated];
 
     [self setupMatches];
-    [self setupConversationList];
     [self setupChatters];
 }
 
@@ -188,24 +187,6 @@ UICollectionViewDataSource>
 
         self.matches = result;
         [self.collectionView reloadData];
-    }];
-}
-
--(void)setupConversationList
-{
-    //every chat object, filtered to take out blank string chats
-    [self.messageManager queryForChats:^(NSArray *result, NSError *error) {
-
-        //the chatter object shuld query the [PFUser query] PFRelation with the updated status string from line 108
-
-        for (NSDictionary *dict in result)
-        {
-            //only grabbing last object in result array
-            self.lastLines = dict[@"text"];
-
-        }
-
-        [self.tableView reloadData];
     }];
 }
 
