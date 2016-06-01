@@ -75,7 +75,7 @@
     switch (count)
     {
         case 0:
-            light.backgroundColor = [UIColor rubyRed];
+            light.backgroundColor = [UIColor yellowGreen];
             light2.backgroundColor = nil;
             light3.backgroundColor = nil;
             light4.backgroundColor = nil;
@@ -84,7 +84,7 @@
             break;
         case 1:
             light.backgroundColor = nil;
-            light2.backgroundColor = [UIColor rubyRed];
+            light2.backgroundColor = [UIColor yellowGreen];
             light3.backgroundColor = nil;
             light4.backgroundColor = nil;
             light5.backgroundColor = nil;
@@ -93,7 +93,7 @@
         case 2:
             light.backgroundColor = nil;
             light2.backgroundColor = nil;
-            light3.backgroundColor = [UIColor rubyRed];
+            light3.backgroundColor = [UIColor yellowGreen];
             light4.backgroundColor = nil;
             light5.backgroundColor = nil;
             light6.backgroundColor = nil;
@@ -102,7 +102,7 @@
             light.backgroundColor = nil;
             light2.backgroundColor = nil;
             light3.backgroundColor = nil;
-            light4.backgroundColor = [UIColor rubyRed];
+            light4.backgroundColor = [UIColor yellowGreen];
             light5.backgroundColor = nil;
             light6.backgroundColor = nil;
             break;
@@ -111,7 +111,7 @@
             light2.backgroundColor = nil;
             light3.backgroundColor = nil;
             light4.backgroundColor = nil;
-            light5.backgroundColor = [UIColor rubyRed];
+            light5.backgroundColor = [UIColor yellowGreen];
             light6.backgroundColor = nil;
             break;
         case 5:
@@ -120,7 +120,7 @@
             light3.backgroundColor = nil;
             light4.backgroundColor = nil;
             light5.backgroundColor = nil;
-            light6.backgroundColor = [UIColor rubyRed];
+            light6.backgroundColor = [UIColor yellowGreen];
             break;
         default:
             NSLog(@"image beyond bounds");

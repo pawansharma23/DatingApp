@@ -70,6 +70,9 @@
 		26C70EDA1CA5B18F00E9B98F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
 		26CB15801CFCE5AA005CD680 /* IncomingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB157F1CFCE5AA005CD680 /* IncomingCell.m */; };
 		26CB158D1CFDCA3F005CD680 /* OutgoingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */; };
+		26CB15981CFE1924005CD680 /* DraggableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15951CFE1924005CD680 /* DraggableView.m */; };
+		26CB15991CFE1924005CD680 /* DraggableViewBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15971CFE1924005CD680 /* DraggableViewBackground.m */; };
+		26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB159B1CFE1930005CD680 /* OverlayView.m */; };
 		26F7E4C11CD29935002F8BFC /* MessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E4C01CD29935002F8BFC /* MessageManager.m */; };
 		B6D0576735DD6374DE9CF23F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E7EAF390F8A69E1F0F90DF /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -189,6 +192,12 @@
 		26CB15871CFD02FA005CD680 /* AppConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
 		26CB158B1CFDCA3F005CD680 /* OutgoingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutgoingCell.h; sourceTree = "<group>"; };
 		26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutgoingCell.m; sourceTree = "<group>"; };
+		26CB15941CFE1924005CD680 /* DraggableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraggableView.h; sourceTree = "<group>"; };
+		26CB15951CFE1924005CD680 /* DraggableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraggableView.m; sourceTree = "<group>"; };
+		26CB15961CFE1924005CD680 /* DraggableViewBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraggableViewBackground.h; sourceTree = "<group>"; };
+		26CB15971CFE1924005CD680 /* DraggableViewBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraggableViewBackground.m; sourceTree = "<group>"; };
+		26CB159A1CFE1930005CD680 /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
+		26CB159B1CFE1930005CD680 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
 		26CC6A351C7CF31F000F3BAC /* UIColor+Pandemos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Pandemos.h"; sourceTree = "<group>"; };
 		26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Pandemos.m"; sourceTree = "<group>"; };
 		26CC6A381C7CF3E1000F3BAC /* PotentialMatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PotentialMatch.h; sourceTree = "<group>"; };
@@ -641,6 +650,12 @@
 		26F22BF41C6FAF0E00D86343 /* Matches */ = {
 			isa = PBXGroup;
 			children = (
+				26CB15961CFE1924005CD680 /* DraggableViewBackground.h */,
+				26CB15971CFE1924005CD680 /* DraggableViewBackground.m */,
+				26CB15941CFE1924005CD680 /* DraggableView.h */,
+				26CB15951CFE1924005CD680 /* DraggableView.m */,
+				26CB159A1CFE1930005CD680 /* OverlayView.h */,
+				26CB159B1CFE1930005CD680 /* OverlayView.m */,
 				268BA08F1C1DB53F0054414E /* ViewController.h */,
 				268BA0901C1DB53F0054414E /* ViewController.m */,
 			);
@@ -873,7 +888,9 @@
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */,
 				260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */,
+				26CB15981CFE1924005CD680 /* DraggableView.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
+				26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
 				261ADA331CF5F74C00C7ECCD /* Match.m in Sources */,
 				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,
@@ -892,6 +909,7 @@
 				26C70ECF1CA5B18F00E9B98F /* User.m in Sources */,
 				26C70ED01CA5B18F00E9B98F /* Facebook.m in Sources */,
 				26C70ED11CA5B18F00E9B98F /* FacebookBuilder.m in Sources */,
+				26CB15991CFE1924005CD680 /* DraggableViewBackground.m in Sources */,
 				26CB15801CFCE5AA005CD680 /* IncomingCell.m in Sources */,
 				2657ABCC1CCE5E2100629437 /* ChooseMatchView.m in Sources */,
 				26C70ED21CA5B18F00E9B98F /* PotentialMatch.m in Sources */,

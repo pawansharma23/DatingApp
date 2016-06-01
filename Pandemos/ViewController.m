@@ -20,13 +20,11 @@
 #import "UIImage+Additions.h"
 #import "User.h"
 #import "UserManager.h"
-#import <MDCSwipeToChoose/MDCSwipeToChoose.h>
 #import "ChooseMatchView.h"
 #import "MessageManager.h"
 #import "Match.h"
 #import "SVProgressHUD.h"
-//static const CGFloat ChooseUserButtonHorizontalPadding = 80.f;
-//static const CGFloat ChooseUserButtonVerticalPadding = 20.f;
+#import "DraggableViewBackground.h"
 
 @interface ViewController ()<
 UIGestureRecognizerDelegate,
@@ -51,6 +49,7 @@ MDCSwipeToChooseDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *redButton;
 @property (weak, nonatomic) IBOutlet UIButton *messageButton;
 @property (weak, nonatomic) IBOutlet UIButton *keepPlayingButton;
+@property (strong, nonatomic) IBOutlet UIView *mainDragView;
 
 @property (weak, nonatomic) IBOutlet UIView *userInfoView;
 @property (weak, nonatomic) IBOutlet UIView *fullDescView;
@@ -78,17 +77,11 @@ MDCSwipeToChooseDelegate>
 @property long count;
 @property long imageArrayCount;
 @property (strong, nonatomic) NSString *currentCityAndState;
-//@property (strong, nonatomic) ChooseMatchView *frontCardView;
-//@property (strong, nonatomic) ChooseMatchView *backCardView;
-//@property (strong, nonatomic) NSString *nameAndAgeGlobal;
 
-//Matching
 @property (strong, nonatomic) NSString *gender;
-@property (strong, nonatomic) NSString *sexPref;
-@property (strong, nonatomic) NSString *milesAway;
-@property (strong, nonatomic) NSString *minAge;
-@property (strong, nonatomic) NSString *maxAge;
-@property (strong, nonatomic) NSString *userImageForMatching;
+
+
+
 //Location
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *currentLocation;
@@ -103,9 +96,7 @@ MDCSwipeToChooseDelegate>
     self = [super init];
     if (self)
     {
-        // This view controller maintains a list of ChoosePersonView
-        // instances to display.
-        //_people = [self.potentialMatchData mutableCopy];
+
     }
     return self;
 }
@@ -114,12 +105,18 @@ MDCSwipeToChooseDelegate>
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    self.userImage.hidden = YES;
+
+    DraggableViewBackground *draggableBackground = [[DraggableViewBackground alloc]initWithFrame:self.view.frame];
+    [self.view addSubview:draggableBackground];
+
     self.navigationItem.title = APP_TITLE;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor unitedNationBlue]}];
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
-    //self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"Logo2"] scaledToSize:CGSizeMake(30.0, 30.0)]];
+    self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"Ally"] scaledToSize:CGSizeMake(30.0, 30.0)]];
     //setup swipe buttons
     [UIButton setUpButton:self.keepPlayingButton];
     [UIButton setUpButton:self.messageButton];
@@ -131,7 +128,6 @@ MDCSwipeToChooseDelegate>
 {
     [super viewDidAppear:YES];
 
-    [SVProgressHUD show];
     [self hideButtonsAndViews];
 
     self.currentUser = [User currentUser];
@@ -144,18 +140,16 @@ MDCSwipeToChooseDelegate>
         self.userCount = 0;
         self.potentialMatchData = [NSArray new];
 
-        [UIImageView setupFullSizedImage:self.userImage];
+        //[UIImageView setupFullSizedImage:self.userImage];
 
-        [self.userImage setUserInteractionEnabled:YES];
+        //[self.userImage setUserInteractionEnabled:YES];
 
-        [self setupManagersProfileVC];
+        //[self setupUserInfoAndFullViews];
 
-        [self setupUserInfoAndFullViews];
-
-        [self setupGestureUp];
-        [self setupGestureDown];
-        [self setupGestureLeft];
-        [self setupGestureRight];
+//        [self setupGestureUp];
+//        [self setupGestureDown];
+//        [self setupGestureLeft];
+//        [self setupGestureRight];
 
         [UIButton setIndicatorLight:self.image1Indicator l2:self.image2Indicator l3:self.image3Indicator l4:self.image4Indicator l5:self.image5Indicator l6:self.image6Indicator forCount:self.count];
     }
@@ -347,80 +341,77 @@ MDCSwipeToChooseDelegate>
 }
 
 #pragma mark - USER MANAGER DELEGATES
--(void)didReceiveUserData:(NSArray *)data
-{
-    NSDictionary *userData = [data firstObject];
-    self.sexPref = userData[@"sexPref"];
-    self.milesAway = userData[@"milesAway"];
-    self.minAge = userData[@"minAge"];
-    self.maxAge = userData[@"maxAge"];
-    self.gender = userData[@"gender"];
-    //this method take user preferences and returns allMatchedUsers
-    [self.userManager loadUsersUnseenPotentialMatches:self.sexPref minAge:self.minAge maxAge:self.maxAge];
-}
+//-(void)didReceiveUserData:(NSArray *)data
+//{
+//    NSDictionary *userData = [data firstObject];
+//    self.sexPref = userData[@"sexPref"];
+//    self.milesAway = userData[@"milesAway"];
+//    self.minAge = userData[@"minAge"];
+//    self.maxAge = userData[@"maxAge"];
+//    self.gender = userData[@"gender"];
+//    //this method take user preferences and returns allMatchedUsers
+//    [self.userManager loadUsersUnseenPotentialMatches:self.sexPref minAge:self.minAge maxAge:self.maxAge];
+//}
+//
+//-(void)failedToFetchUserData:(NSError *)error
+//{
+//    NSLog(@"failed to fetch Data: %@", error);
+//}
 
--(void)failedToFetchUserData:(NSError *)error
-{
-    NSLog(@"failed to fetch Data: %@", error);
-}
+//-(void)didReceivePotentialMatchData:(NSArray *)data
+//{
+//    [self.userManager loadMatchedUsers:^(NSArray *users, NSError *error) {
+//
+//    }];
+//}
 
--(void)didReceivePotentialMatchData:(NSArray *)data
-{
-    [self.userManager loadMatchedUsers:^(NSArray *users, NSError *error) {
+//-(void)didLoadMatchedUsers:(NSArray<User *> *)users
+//{
+//    //loop through all matched users and compare to all current matches
+//    NSMutableArray *intersectionArray = [NSMutableArray arrayWithArray:self.userManager.allMatchedUsers];
+//
+//    for (User *user in self.userManager.allMatchedUsers)
+//    {
+//        NSLog(@"match: %@", user.givenName);
+//
+//        for (NSDictionary *matchRequest in users)//self.userManager.alreadySeenUser
+//        {
+//            User *userObjectFrom = matchRequest[@"fromUser"];
+//
+//            NSString *seenIdFrom = userObjectFrom.objectId;
+//            NSString *strIdTo = matchRequest[@"strId"];
+//            //NSString *seenIdTo = userObjectTo.objectId;
+//
+//            if ([user.objectId isEqualToString:seenIdFrom] || [user.objectId isEqualToString:strIdTo])
+//            {
+//                //                    [intersectionArray addObject:user.objectId];
+//                NSLog(@"filtered matches to remove: %@", user.givenName);
+//                [intersectionArray removeObject:user];
+//            }
+//        }
+//    }
+//
+//    if (intersectionArray.count > 0)
+//    {
+//        [SVProgressHUD dismiss];
+//
+//        self.potentialMatchData = intersectionArray;
+//        [self loadInitialMatch:intersectionArray];
+//        NSLog(@"filtered matches: %d", (int)self.potentialMatchData.count);
+//    }
+//    else
+//    {
+//        [SVProgressHUD dismiss];
+//
+//        self.noMatchesImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(240.0, 128.0)];
+//        [self.view insertSubview:self.activityView aboveSubview:self.userImage];
+//        self.userInfoView.hidden = YES;
+//        self.greenButton.hidden = YES;
+//        self.redButton.hidden = YES;
+//    }
+//}
 
-    }];
-}
 
--(void)didLoadMatchedUsers:(NSArray<User *> *)users
-{
-    //loop through all matched users and compare to all current matches
-    NSMutableArray *intersectionArray = [NSMutableArray arrayWithArray:self.userManager.allMatchedUsers];
-
-    for (User *user in self.userManager.allMatchedUsers)
-    {
-        NSLog(@"match: %@", user.givenName);
-
-        for (NSDictionary *matchRequest in users)//self.userManager.alreadySeenUser
-        {
-            User *userObjectFrom = matchRequest[@"fromUser"];
-
-            NSString *seenIdFrom = userObjectFrom.objectId;
-            NSString *strIdTo = matchRequest[@"strId"];
-            //NSString *seenIdTo = userObjectTo.objectId;
-
-            if ([user.objectId isEqualToString:seenIdFrom] || [user.objectId isEqualToString:strIdTo])
-            {
-                //                    [intersectionArray addObject:user.objectId];
-                NSLog(@"filtered matches to remove: %@", user.givenName);
-                [intersectionArray removeObject:user];
-            }
-        }
-    }
-
-    if (intersectionArray.count > 0)
-    {
-        [SVProgressHUD dismiss];
-
-        self.potentialMatchData = intersectionArray;
-        [self loadInitialMatch:intersectionArray];
-        NSLog(@"filtered matches: %d", (int)self.potentialMatchData.count);
-    }
-    else
-    {
-        [SVProgressHUD dismiss];
-
-        self.noMatchesImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(240.0, 128.0)];
-        [self.view insertSubview:self.activityView aboveSubview:self.userImage];
-        self.userInfoView.hidden = YES;
-        self.greenButton.hidden = YES;
-        self.redButton.hidden = YES;
-    }
-}
-
--(void)failedToFetchPotentialMatchData:(NSError *)error
-{
-    NSLog(@"NO POTENTIAL MATCHES FOR USER TO SEE: %@", error);
-}
 
 -(void)didCreateMatchRequest:(MatchRequest *)matchRequest
 {
@@ -617,12 +608,6 @@ MDCSwipeToChooseDelegate>
     }
 }
 
--(void)setupManagersProfileVC
-{
-    self.userManager = [UserManager new];
-    self.userManager.delegate = self;
-    [self.userManager loadUserData:self.currentUser];
-}
 //VIEWS
 -(void)setupUserInfoAndFullViews
 {

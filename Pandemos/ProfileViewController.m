@@ -284,6 +284,10 @@ UserManagerDelegate>
     NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
     self.minimumAgeLabel.text = minAge;
 
+    [self.minimumAgeSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
+    self.minimumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
+    self.minimumAgeSlider.thumbTintColor = [UIColor blackColor];
+
     [self.currentUser setObject:minAgeStr forKey:@"minAge"];
 
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -300,6 +304,10 @@ UserManagerDelegate>
     NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maximumAgeSlider.value];
     NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %@", maxAgeStr];
     self.maximumAgeLabel.text = maxAge;
+
+    [self.maximumAgeSlider setThumbImage:[self.maximumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
+    self.maximumAgeSlider.maximumTrackTintColor = [UIColor yellowGreen];
+    self.maximumAgeSlider.thumbTintColor = [UIColor blackColor];
 
     [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
 
@@ -460,8 +468,13 @@ UserManagerDelegate>
 
     NSString *min = userData[@"minAge"];
     NSString *max = userData[@"maxAge"];
-
     [self setMinAndMaxAgeSliders:min andMax:max];
+    [self.minimumAgeSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
+    self.minimumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
+    self.minimumAgeSlider.thumbTintColor = [UIColor blackColor];
+    [self.maximumAgeSlider setThumbImage:[self.maximumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
+    self.maximumAgeSlider.maximumTrackTintColor = [UIColor yellowGreen];
+    self.maximumAgeSlider.thumbTintColor = [UIColor blackColor];
     self.jobLabel.text = userData[@"work"];
     self.educationLabel.text = userData[@"lastSchool"];
     [self setPublicProfile:userData[@"publicProfile"]];
