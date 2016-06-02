@@ -120,8 +120,6 @@ MDCSwipeToChooseDelegate>
     //setup swipe buttons
     [UIButton setUpButton:self.keepPlayingButton];
     [UIButton setUpButton:self.messageButton];
-    [UIButton acceptButton:self.greenButton];
-    [UIButton denyButton:self.redButton];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -146,12 +144,6 @@ MDCSwipeToChooseDelegate>
 
         //[self setupUserInfoAndFullViews];
 
-//        [self setupGestureUp];
-//        [self setupGestureDown];
-//        [self setupGestureLeft];
-//        [self setupGestureRight];
-
-        [UIButton setIndicatorLight:self.image1Indicator l2:self.image2Indicator l3:self.image3Indicator l4:self.image4Indicator l5:self.image5Indicator l6:self.image6Indicator forCount:self.count];
     }
     else
     {

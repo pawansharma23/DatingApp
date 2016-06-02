@@ -16,6 +16,7 @@
 
 #import "UIColor+Pandemos.h"
 #import "DraggableView.h"
+#import "UIButton+Additions.h"
 
 @implementation DraggableView
 {
@@ -30,13 +31,22 @@
 @synthesize information;
 @synthesize overlayView;
 @synthesize schoolLabel;
+@synthesize b1;
+@synthesize b2;
+@synthesize b3;
+@synthesize b4;
+@synthesize b5;
+@synthesize b6;
+@synthesize noButton;
+@synthesize yesButton;
+@synthesize profileImageView;
+@synthesize imageScroll;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         [self setupView];
-        self.backgroundColor = [UIColor whiteColor];
 
         UIView *matchDescView = [[UIView alloc]init];
         matchDescView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -45,64 +55,151 @@
         matchDescView.layer.cornerRadius = 8;
         [self addSubview:matchDescView];
 
-        NSArray *constraint_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView(80)]"
+        NSArray *constraint_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView(70)]"
                                                                         options:0
                                                                         metrics:nil
                                                                           views:viewsDictionary];
-
-//        NSArray *constraint_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[matchView(200)]"
-//                                                                        options:0
-//                                                                        metrics:nil
-//                                                                          views:viewsDictionary];
 
         NSArray *constraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView]-15-|"
                                                                             options:0
                                                                             metrics:nil
                                                                               views:viewsDictionary];
 
-        NSArray *constraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[matchView]-20-|"
+        NSArray *constraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-32-[matchView]-32-|"
                                                                             options:0
                                                                             metrics:nil
                                                                               views:viewsDictionary];
-
-  //      child cons
+        //view specific constraints
         [matchDescView addConstraints:constraint_H];
-        //[matchDescView addConstraints:constraint_V];
-//        parent to child cons
+        //superView contraints
         [self addConstraints:constraint_POS_H];
         [self addConstraints:constraint_POS_V];
 
         information = [UILabel new];
         information.translatesAutoresizingMaskIntoConstraints = NO;
-        [matchDescView addSubview:information];
+        [matchDescView insertSubview:information aboveSubview:matchDescView];
         [information setFont:[UIFont fontWithName:@"GeezaPro" size:18.0]];
-        information.text = @"Loading...";
         [information setTextAlignment:NSTextAlignmentCenter];
-        [self setNameAndAgeLabel:information andSuperView:matchDescView];
+        [self addNameAndAgeLabelConstraints:information andSuperView:matchDescView];
 
         schoolLabel = [UILabel new];
         schoolLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [matchDescView addSubview:schoolLabel];
         [schoolLabel setFont:[UIFont fontWithName:@"GeezaPro" size:16.0]];
         schoolLabel.text = @"Loading...";
+        schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        schoolLabel.numberOfLines = 0;
         [schoolLabel setTextAlignment:NSTextAlignmentCenter];
-        [self setSchoolLabel:schoolLabel andSuperView:matchDescView];
+        [self addSchoolLabelConstraints:schoolLabel andSuperView:matchDescView];
 
-
-
-
-
-
-        
         panGestureRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(beingDragged:)];
-
         [self addGestureRecognizer:panGestureRecognizer];
+
+        imageScroll = [[ImageScroll alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        imageScroll.backgroundColor = [UIColor blueColor];
+        imageScroll.alpha = 0.3;
+        imageScroll.delegate = self;
+        imageScroll.pagingEnabled = YES;
+        imageScroll.scrollEnabled = YES;
+        imageScroll.userInteractionEnabled = YES;
+        [self addSubview:imageScroll];
+        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *2);//multiplied by profileimages.count
+
+        //load view for all the proffile images but that data is in draggableviewbackgroud
+
+
+
+
+
+
 
         overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
         overlayView.alpha = 1;
         [self addSubview:overlayView];
 
-//        [potentialMatchView addSubview:overlayView];
+        b1 = [UIButton new];
+        b1.translatesAutoresizingMaskIntoConstraints = NO;
+        b1.layer.masksToBounds = YES;
+        b1.layer.cornerRadius = 6;
+        [self addSubview:b1];
+        [self addButton1Constraints:b1 withSuper:self];
+
+        b2 = [UIButton new];
+        b2.translatesAutoresizingMaskIntoConstraints = NO;
+        b2.layer.masksToBounds = YES;
+        b2.layer.cornerRadius = 6;
+        [self addSubview:b2];
+        [self addButton2Constraints:b2 withSuper:self];
+
+        b3 = [UIButton new];
+        b3.translatesAutoresizingMaskIntoConstraints = NO;
+        b3.layer.masksToBounds = YES;
+        b3.layer.cornerRadius = 6;
+        [self addSubview:b3];
+        [self addButton3Constraints:b3 withSuper:self];
+
+        b4 = [UIButton new];
+        b4.translatesAutoresizingMaskIntoConstraints = NO;
+        b4.layer.masksToBounds = YES;
+        b4.layer.cornerRadius = 6;
+        [self addSubview:b4];
+        [self addButton4Constraints:b4 withSuper:self];
+
+        b5 = [UIButton new];
+        b5.translatesAutoresizingMaskIntoConstraints = NO;
+        b5.layer.masksToBounds = YES;
+        b5.layer.cornerRadius = 6;
+        [self addSubview:b5];
+        [self addButton5Constraints:b5 withSuper:self];
+
+        b6 = [UIButton new];
+        b6.layer.masksToBounds = YES;
+        b6.layer.cornerRadius = 6;
+        b6.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:b6];
+        [self addButton6Constraints:b6 withSuper:self];
+
+        noButton = [UIButton new];
+        noButton.translatesAutoresizingMaskIntoConstraints = NO;
+        noButton.layer.masksToBounds = YES;
+        noButton.layer.cornerRadius = 25;
+        [UIButton noButton:noButton];
+        [noButton setTitle:@"✖️" forState:UIControlStateNormal];
+        noButton.titleLabel.text = @"X";
+        noButton.backgroundColor = [UIColor redColor];
+        noButton.layer.borderWidth = 1.0;
+        noButton.layer.borderColor = [UIColor blackColor].CGColor;
+        [self addSubview:noButton];
+        [self addNoButtonConstraints:noButton withSuper:self];
+
+        yesButton = [UIButton new];
+        yesButton.translatesAutoresizingMaskIntoConstraints = NO;
+        yesButton.layer.masksToBounds = YES;
+        yesButton.layer.cornerRadius = 25;
+        [UIButton yesButton:yesButton];
+        [yesButton setTitle:@"✔️" forState:UIControlStateNormal];
+        yesButton.backgroundColor = [UIColor greenColor];
+        yesButton.layer.borderWidth = 1.0;
+        yesButton.layer.borderColor = [UIColor blackColor].CGColor;
+        [self addSubview:yesButton];
+        [self addYesButtonConstraints:yesButton withSuper:self];
+
+        profileImageView = [UIImageView new];
+        profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self insertSubview:profileImageView belowSubview:matchDescView];
+
+        NSDictionary *imageDict = @{@"imageView":profileImageView};
+        NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[imageView]-0-|"
+                                                                               options:0
+                                                                               metrics:nil
+                                                                                 views:imageDict];
+
+        NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView]-0-|"
+                                                                               options:0
+                                                                               metrics:nil
+                                                                                 views:imageDict];
+        [self addConstraints:imgConstraint_POS_H];
+        [self addConstraints:imgConstraint_POS_V];
     }
     return self;
 }
@@ -115,23 +212,46 @@
     self.layer.shadowOffset = CGSizeMake(1, 1);
 }
 
+#pragma mark SCROLLVIEW DELEGATES
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    NSLog(@"page up on scrollview");
+    if (scrollView.contentOffset.y > self.frame.size.height)//and less than third image
+    {
+        NSLog(@"load image 2");
+    }
+}
+
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    NSLog(@"dragging in scroll view");
+}
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    NSLog(@"Did end decelerating");
+    //do your code here
+}
+
 //%%% called when you move your finger across the screen.
 // called many times a second
 -(void)beingDragged:(UIPanGestureRecognizer *)gestureRecognizer
 {
     //%%% this extracts the coordinate data from your swipe movement. (i.e. How much did you move?)
     xFromCenter = [gestureRecognizer translationInView:self].x; //%%% positive for right swipe, negative for left
-    yFromCenter = [gestureRecognizer translationInView:self].y; //%%% positive for up, negative for down
+    //yFromCenter = [gestureRecognizer translationInView:self].y; //%%% positive for up, negative for down
 
     //%%% checks what state the gesture is in. (are you just starting, letting go, or in the middle of a swipe?)
-    switch (gestureRecognizer.state) {
-            //%%% just started swiping
-        case UIGestureRecognizerStateBegan:{
+    switch (gestureRecognizer.state)
+    {
+        case UIGestureRecognizerStateBegan:
+        {
             self.originalPoint = self.center;
             break;
         };
             //%%% in the middle of a swipe
-        case UIGestureRecognizerStateChanged:{
+        case UIGestureRecognizerStateChanged:
+        {
             //%%% dictates rotation (see ROTATION_MAX and ROTATION_STRENGTH for details)
             CGFloat rotationStrength = MIN(xFromCenter / ROTATION_STRENGTH, ROTATION_MAX);
 
@@ -142,8 +262,8 @@
             CGFloat scale = MAX(1 - fabs(rotationStrength) / SCALE_STRENGTH, SCALE_MAX);
 
             //%%% move the object's center by center + gesture coordinate
-            self.center = CGPointMake(self.originalPoint.x + xFromCenter, self.originalPoint.y + yFromCenter);
-
+            self.center = CGPointMake(self.originalPoint.x + xFromCenter, self.originalPoint.y);
+    
             //%%% rotate by certain amount
             CGAffineTransform transform = CGAffineTransformMakeRotation(rotationAngel);
 
@@ -190,14 +310,14 @@
     {
         [self leftAction];
     }
-    else if (yFromCenter > ACTION_MARGIN)
-    {
-        [self downImageAction];
-    }
-    else if(yFromCenter < -ACTION_MARGIN)
-    {
-        [self upImageAction];
-    }
+//    else if (yFromCenter > ACTION_MARGIN)
+//    {
+//        [self downImageAction];
+//    }
+//    else if(yFromCenter < -ACTION_MARGIN)
+//    {
+//        [self upImageAction];
+//    }
     else
     { //%%% resets the card
         [UIView animateWithDuration:0.3
@@ -241,37 +361,6 @@
     NSLog(@"NO");
 }
 
--(void)upImageAction
-{
-    CGPoint finishPoint = CGPointMake(self.originalPoint.y, -700);
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         self.center = finishPoint;
-                     }completion:^(BOOL complete){
-                         [self removeFromSuperview];
-                     }];
-
-    [delegate cardSwipedUp:self];
-
-    NSLog(@"Up: Next Image");
-}
-
-
--(void)downImageAction
-{
-    CGPoint finishPoint = CGPointMake(self.originalPoint.y, 500);
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         self.center = finishPoint;
-                     }completion:^(BOOL complete){
-                         [self removeFromSuperview];
-                     }];
-
-    [delegate cardSwipedDown:self];
-
-    NSLog(@"Down: Previous Image");
-}
-
 -(void)rightClickAction
 {
     CGPoint finishPoint = CGPointMake(600, self.center.y);
@@ -304,8 +393,13 @@
     NSLog(@"NO");
 }
 
+-(void)imagesForMatch:(NSArray *)images
+{
+    NSLog(@"images: %@", images);
+}
+
 #pragma mark -- VIEW HELPERS
--(void)setNameAndAgeLabel:(UIView*)view andSuperView:(UIView*)superView
+-(void)addNameAndAgeLabelConstraints:(UIView*)view andSuperView:(UIView*)superView
 {
     NSDictionary *informationDict = @{@"info":information};
 
@@ -328,25 +422,218 @@
     [superView addConstraints:infoCon_PosV];
 }
 
--(void)setSchoolLabel:(UIView*)view andSuperView:(UIView*)superView
+-(void)addSchoolLabelConstraints:(UIView*)view andSuperView:(UIView*)superView
 {
 
     NSDictionary *informationDict = @{@"school": schoolLabel, @"info":information};
-    NSArray *infoCon_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[school(20)]"
-                                                                 options:0
-                                                                 metrics:nil
-                                                                   views:informationDict];
-
-    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[school]-5-|"
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[school]-15-|"
                                                                     options:0
                                                                     metrics:nil
                                                                       views:informationDict];
 
-    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-23-[school]"
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-25-[school]"
                                                                     options:0
                                                                     metrics:nil
                                                                       views:informationDict];
-    [schoolLabel addConstraints:infoCon_H];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+
+-(void)addButton1Constraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"b1": b1};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b1(12)]"
+                                                                     options:0
+                                                                     metrics:nil
+                                                                       views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b1(12)]"
+                                                                     options:0
+                                                                     metrics:nil
+                                                                       views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b1]-10-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-32-[b1]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                    views:buttonDict];
+    [b1 addConstraints:buttonHeight];
+    [b1 addConstraints:buttonWidth];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+
+-(void)addButton2Constraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"b2": b2};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b2(12)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b2(12)]"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b2]-10-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-47-[b2]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    [b2 addConstraints:buttonHeight];
+    [b2 addConstraints:buttonWidth];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+
+-(void)addButton3Constraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"b3": b3};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b3(12)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b3(12)]"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b3]-10-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-62-[b3]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    [b3 addConstraints:buttonHeight];
+    [b3 addConstraints:buttonWidth];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+
+-(void)addButton4Constraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"b4": b4};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b4(12)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b4(12)]"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b4]-10-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-77-[b4]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    [b4 addConstraints:buttonHeight];
+    [b4 addConstraints:buttonWidth];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+-(void)addButton5Constraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"b5": b5};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b5(12)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b5(12)]"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b5]-10-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-92-[b5]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    [b5 addConstraints:buttonHeight];
+    [b5 addConstraints:buttonWidth];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+
+-(void)addButton6Constraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"b6": b6};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b6(12)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b6(12)]"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b6]-10-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-107-[b6]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    [b6 addConstraints:buttonHeight];
+    [b6 addConstraints:buttonWidth];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+
+-(void)addNoButtonConstraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"noButton": noButton};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[noButton(50)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[noButton(50)]"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(-13)-[noButton]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[noButton]-20-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    [noButton addConstraints:buttonHeight];
+    [noButton addConstraints:buttonWidth];
+    [superView addConstraints:infoCon_PosH];
+    [superView addConstraints:infoCon_PosV];
+}
+
+-(void)addYesButtonConstraints:(UIButton*)button withSuper:(UIView*)superView
+{
+    NSDictionary *buttonDict = @{@"yesButton": yesButton};
+    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[yesButton(50)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[yesButton(50)]"
+                                                                   options:0
+                                                                   metrics:nil
+                                                                     views:buttonDict];
+    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[yesButton]-(-10)-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[yesButton]-20-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:buttonDict];
+    [yesButton addConstraints:buttonHeight];
+    [yesButton addConstraints:buttonWidth];
     [superView addConstraints:infoCon_PosH];
     [superView addConstraints:infoCon_PosV];
 }

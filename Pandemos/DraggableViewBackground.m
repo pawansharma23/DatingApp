@@ -9,33 +9,37 @@
 #import "DraggableViewBackground.h"
 #import "UserManager.h"
 #import "User.h"
+#import "UIButton+Additions.h"
+#import "AppConstants.h"
+#import "UIImage+Additions.h"
 
-@interface DraggableViewBackground()<
-UserManagerDelegate>
+@interface DraggableViewBackground()<DraggableViewDelegate>
 
 @property (strong, nonatomic) UserManager *userManager;
-
 @property (strong, nonatomic) NSString *gender;
 @property (strong, nonatomic) NSString *sexPref;
 @property (strong, nonatomic) NSString *milesAway;
 @property (strong, nonatomic) NSString *minAge;
 @property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *userImageForMatching;
+@property (strong, nonatomic) DraggableView *dragView;
+@property int imageCount;
 @end
-@implementation DraggableViewBackground{
+
+@implementation DraggableViewBackground
+{
+    NSInteger imagesLoadedIndex;
+    NSMutableArray *loadedProfileCards;
     NSInteger cardsLoadedIndex; //%%% the index of the card you have loaded into the loadedCards array last
     NSMutableArray *loadedCards; //%%% the array of card loaded (change max_buffer_size to increase or decrease the number of cards this holds)
-
-    UIButton* menuButton;
-    UIButton* messageButton;
-    UIButton* checkButton;
-    UIButton* xButton;
 }
 //this makes it so only two cards are loaded at a time to
 //avoid performance and memory costs
 static const int MAX_BUFFER_SIZE = 2; //%%% max number of cards loaded at any given time, must be greater than 1
-static const float CARD_HEIGHT = 386; //%%% height of the draggable card
-static const float CARD_WIDTH = 290; //%%% width of the draggable card
+static float CARD_HEIGHT;
+//= 386; //%%% height of the draggable card
+static float CARD_WIDTH;
+//= 290; //%%% width of the draggable card
 
 @synthesize potentialMatchData; //%%% all the labels I'm using as example data at the moment
 @synthesize allCards;//%%% all the cards
@@ -46,7 +50,6 @@ static const float CARD_WIDTH = 290; //%%% width of the draggable card
     if (self)
     {
         [super layoutSubviews];
-        [self setupView];
         //1) load current user search constraints
         self.potentialMatchData = [NSMutableArray new];
         self.userManager = [UserManager new];
@@ -55,40 +58,57 @@ static const float CARD_WIDTH = 290; //%%% width of the draggable card
     
         loadedCards = [[NSMutableArray alloc] init];
         allCards = [[NSMutableArray alloc] init];
+        loadedProfileCards = [[NSMutableArray alloc]init];
+
         cardsLoadedIndex = 0;
+        imagesLoadedIndex = 0;
+
+        self.backgroundColor = [UIColor colorWithRed:.92 green:.93 blue:.95 alpha:1]; //the gray background colors
+        [self.dragView.noButton addTarget:self action:@selector(swipeLeft) forControlEvents:UIControlEventTouchUpInside];
+        [self.dragView.yesButton addTarget:self action:@selector(swipeRight) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
 
-//%%% sets up the extra buttons on the screen
--(void)setupView
-{
-    self.backgroundColor = [UIColor colorWithRed:.92 green:.93 blue:.95 alpha:1]; //the gray background colors
-    menuButton = [[UIButton alloc]initWithFrame:CGRectMake(17, 34, 22, 15)];
-    [menuButton setImage:[UIImage imageNamed:@"menuButton"] forState:UIControlStateNormal];
-    messageButton = [[UIButton alloc]initWithFrame:CGRectMake(284, 34, 18, 18)];
-    [messageButton setImage:[UIImage imageNamed:@"messageButton"] forState:UIControlStateNormal];
-    xButton = [[UIButton alloc]initWithFrame:CGRectMake(60, 485, 59, 59)];
-    [xButton setImage:[UIImage imageNamed:@"xButton"] forState:UIControlStateNormal];
-    [xButton addTarget:self action:@selector(swipeLeft) forControlEvents:UIControlEventTouchUpInside];
-    checkButton = [[UIButton alloc]initWithFrame:CGRectMake(200, 485, 59, 59)];
-    [checkButton setImage:[UIImage imageNamed:@"checkButton"] forState:UIControlStateNormal];
-    [checkButton addTarget:self action:@selector(swipeRight) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:menuButton];
-    [self addSubview:messageButton];
-    [self addSubview:xButton];
-    [self addSubview:checkButton];
-}
-
 -(DraggableView *)createDraggableViewWithDataAtIndex:(NSInteger)index
 {
-    DraggableView *draggableView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH)/2, (self.frame.size.height - CARD_HEIGHT)/2, CARD_WIDTH, CARD_HEIGHT)];
+    if (IS_IPHONE4)
+    {
+        CARD_HEIGHT = 400;
+        CARD_WIDTH = 280;
+    }
+    else if (IS_IPHONE5)
+    {
+        CARD_WIDTH = 280;
+        CARD_HEIGHT = 500;
+    }
+    else if (IS_IPHONE6)
+    {
+        CARD_WIDTH = 330;
+        CARD_HEIGHT = 570;
+    }
+    else if (IS_IPHONE6PLUS)
+    {
+        CARD_WIDTH = 390;
+        CARD_HEIGHT = 680;
+    }
+    self.dragView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH)/2, (self.frame.size.height - CARD_HEIGHT)/1.25, CARD_WIDTH, CARD_HEIGHT)];
     User *user = [self.potentialMatchData objectAtIndex:index];
+    self.dragView.profileImageView.image = [UIImage imageWithString:user.profileImages.firstObject];
     NSString *infoText = [NSString stringWithFormat:@"%@, %@", user.givenName, [user ageFromBirthday:user.birthday]];
-    draggableView.information.text = infoText;
-    draggableView.schoolLabel.text = user.lastSchool;
-    draggableView.delegate = self;
-    return draggableView;
+    self.dragView.information.text = infoText;
+    self.dragView.schoolLabel.text = user.lastSchool;
+    //set current users images
+    //[self.delegate imagesForMatch:user.profileImages];
+//    matchProfileImages = user.profileImages;
+
+    [UIButton loadIndicatorLightsForProfileImages:self.dragView.b1 image2:self.dragView.b2 image3:self.dragView.b3 image4:self.dragView.b4 image5:self.dragView.b5 image6:self.dragView.b6 imageCount:(int)user.profileImages.count];
+
+    [UIButton setIndicatorLight:self.dragView.b1 l2:self.dragView.b2 l3:self.dragView.b3 l4:self.dragView.b4 l5:self.dragView.b5 l6:self.dragView.b6 forCount:0];
+    
+    self.dragView.delegate = self;
+    
+    return self.dragView;
 }
 
 //%%% loads all the cards and puts the first x in the "loaded cards" array
@@ -99,28 +119,36 @@ static const float CARD_WIDTH = 290; //%%% width of the draggable card
         NSInteger numLoadedCardsCap =(([self.potentialMatchData count] > MAX_BUFFER_SIZE)?MAX_BUFFER_SIZE:[self.potentialMatchData count]);
         //%%% if the buffer size is greater than the data size, there will be an array error, so this makes sure that doesn't happen
 
-        //%%% loops through the exampleCardsLabels array to create a card for each label.  This should be customized by removing "exampleCardLabels" with your own array of data
+        //%%% loops through all potential matches to create a card for each match
         for (int i = 0; i<[self.potentialMatchData count]; i++)
         {
-            DraggableView* newCard = [self createDraggableViewWithDataAtIndex:i];
+            DraggableView *newCard = [self createDraggableViewWithDataAtIndex:i];
             [allCards addObject:newCard];
 
-            if (i<numLoadedCardsCap) {
+            if (i<numLoadedCardsCap)
+            {
                 //%%% adds a small number of cards to be loaded
                 [loadedCards addObject:newCard];
             }
         }
-
         //%%% displays the small number of loaded cards dictated by MAX_BUFFER_SIZE so that not all the cards
         // are showing at once and clogging a ton of data
-        for (int i = 0; i<[loadedCards count]; i++) {
-            if (i>0) {
+        for (int i = 0; i<[loadedCards count]; i++)
+        {
+            if (i>0)
+            {
                 [self insertSubview:[loadedCards objectAtIndex:i] belowSubview:[loadedCards objectAtIndex:i-1]];
-            } else {
+            }
+            else
+            {
                 [self addSubview:[loadedCards objectAtIndex:i]];
             }
             cardsLoadedIndex++; //%%% we loaded a card into loaded cards, so we have to increment
         }
+    }
+    else
+    {
+        NSLog(@"out of matches");
     }
 }
 
@@ -132,7 +160,8 @@ static const float CARD_WIDTH = 290; //%%% width of the draggable card
 
     [loadedCards removeObjectAtIndex:0]; //%%% card was swiped, so it's no longer a "loaded card"
 
-    if (cardsLoadedIndex < [allCards count]) { //%%% if we haven't reached the end of all cards, put another into the loaded cards
+    if (cardsLoadedIndex < [allCards count])
+    { //%%% if we haven't reached the end of all cards, put another into the loaded cards
         [loadedCards addObject:[allCards objectAtIndex:cardsLoadedIndex]];
         cardsLoadedIndex++;//%%% loaded a card, so have to increment count
         [self insertSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-1)] belowSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-2)]];
@@ -146,23 +175,13 @@ static const float CARD_WIDTH = 290; //%%% width of the draggable card
 
     [loadedCards removeObjectAtIndex:0]; //%%% card was swiped, so it's no longer a "loaded card"
 
-    if (cardsLoadedIndex < [allCards count]) { //%%% if we haven't reached the end of all cards, put another into the loaded cards
+    if (cardsLoadedIndex < [allCards count])
+    { //%%% if we haven't reached the end of all cards, put another into the loaded cards
         [loadedCards addObject:[allCards objectAtIndex:cardsLoadedIndex]];
         cardsLoadedIndex++;//%%% loaded a card, so have to increment count
         [self insertSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-1)] belowSubview:[loadedCards objectAtIndex:(MAX_BUFFER_SIZE-2)]];
     }
 
-}
-
--(void)cardSwipedUp:(UIView *)card
-{
-    //call up action for new image
-    NSLog(@"card swiped up");
-}
-
--(void)cardSwipedDown:(UIView *)card
-{
-    NSLog(@"card swiped down");
 }
 
 //%%% when you hit the right button, this is called and substitutes the swipe
@@ -245,23 +264,22 @@ static const float CARD_WIDTH = 290; //%%% width of the draggable card
 
         self.potentialMatchData = intersectionArray;
         [self loadCards];
-        //[self loadInitialMatch:intersectionArray];
-        //NSLog(@"filtered matches: %d", (int)self.potentialMatchData.count);
     }
     else
     {
         //no matches left
         NSLog(@"no cards left");
-//        self.noMatchesImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(240.0, 128.0)];
-//        [self.view insertSubview:self.activityView aboveSubview:self.userImage];
-//        self.userInfoView.hidden = YES;
-//        self.greenButton.hidden = YES;
-//        self.redButton.hidden = YES;
     }
 }
 
 -(void)failedToFetchPotentialMatchData:(NSError *)error
 {
     NSLog(@"NO POTENTIAL MATCHES FOR USER TO SEE: %@", error);
+}
+
+#pragma mark -- HELPERS
+-(void)swipeUpForNextImage
+{
+
 }
 @end

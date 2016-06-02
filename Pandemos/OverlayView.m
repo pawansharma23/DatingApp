@@ -15,8 +15,9 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+    if (self)
+    {
+        //self.backgroundColor = [UIColor blueColor];
         imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"noButton"]];
         [self addSubview:imageView];
     }
@@ -31,18 +32,21 @@
     
     _mode = mode;
     
-    if(mode == GGOverlayViewModeLeft) {
-        imageView.image = [UIImage imageNamed:@"noButton"];
-    } else {
-        imageView.image = [UIImage imageNamed:@"yesButton"];
+    if(mode == GGOverlayViewModeLeft)
+    {
+        imageView.image = [UIImage imageNamed:@"red-circle-icone-5751-64"];
+    }
+    else
+    {
+        imageView.image = [UIImage imageNamed:@"green-circle-icone-4156-64"];
     }
 }
 
--(void)layoutSubviews
-{
-    [super layoutSubviews];
-    imageView.frame = CGRectMake(50, 50, 100, 100);
-}
+//-(void)layoutSubviews
+//{
+//    [super layoutSubviews];
+//    imageView.frame = CGRectMake(50, 50, 100, 100);
+//}
 
 /*
 // Only override drawRect: if you perform custom drawing.

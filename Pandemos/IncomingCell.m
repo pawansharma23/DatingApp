@@ -8,7 +8,6 @@
 
 #import "IncomingCell.h"
 
-static CGFloat MinimumHeight = 45.0;
 
 @implementation IncomingCell
 
