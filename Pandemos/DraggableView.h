@@ -26,6 +26,9 @@
 @property (nonatomic, strong)UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic)CGPoint originalPoint;
 @property (nonatomic,strong)UIImageView *profileImageView;
+@property (nonatomic,strong)UIImageView *profileImageView2;
+@property (nonatomic,strong)UIImageView *profileImageView3;
+
 @property (nonatomic,strong)OverlayView* overlayView;
 @property (nonatomic,strong)UILabel *information;
 @property (nonatomic,strong)UILabel *schoolLabel;
@@ -38,6 +41,7 @@
 @property (nonatomic,strong)UIButton *noButton;
 @property (nonatomic,strong)UIButton *yesButton;
 @property (nonatomic, strong)ImageScroll *imageScroll;
+@property (nonatomic, strong)UIView *matchDescView;
 
 -(void)leftClickAction;
 -(void)rightClickAction;

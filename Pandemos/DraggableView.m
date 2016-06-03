@@ -17,6 +17,7 @@
 #import "UIColor+Pandemos.h"
 #import "DraggableView.h"
 #import "UIButton+Additions.h"
+#import "AppConstants.h"
 
 @implementation DraggableView
 {
@@ -24,6 +25,10 @@
     CGFloat yFromCenter;
 }
 
+static float CARD_HEIGHT;
+//= 386; //%%% height of the draggable card
+static float CARD_WIDTH;
+//= 290; //%%% width of the
 //delegate is instance of ViewController
 @synthesize delegate;
 
@@ -41,6 +46,9 @@
 @synthesize yesButton;
 @synthesize profileImageView;
 @synthesize imageScroll;
+@synthesize profileImageView2;
+@synthesize profileImageView3;
+@synthesize matchDescView;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -48,36 +56,50 @@
     if (self) {
         [self setupView];
 
-        UIView *matchDescView = [[UIView alloc]init];
+        if (IS_IPHONE4)
+        {
+            CARD_HEIGHT = 400;
+            CARD_WIDTH = 280;
+        }
+        else if (IS_IPHONE5)
+        {
+            CARD_WIDTH = 280;
+            CARD_HEIGHT = 500;
+        }
+        else if (IS_IPHONE6)
+        {
+            CARD_WIDTH = 330;
+            CARD_HEIGHT = 570;
+        }
+        else if (IS_IPHONE6PLUS)
+        {
+            CARD_WIDTH = 390;
+            CARD_HEIGHT = 680;
+        }
+
+        panGestureRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(beingDragged:)];
+        [self addGestureRecognizer:panGestureRecognizer];
+
+        imageScroll = [[ImageScroll alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        [self addSubview:imageScroll];
+        imageScroll.layer.cornerRadius = 8;
+        imageScroll.delegate = self;
+        imageScroll.pagingEnabled = YES;
+        imageScroll.scrollEnabled = YES;
+        imageScroll.userInteractionEnabled = YES;
+        imageScroll.scrollsToTop = NO;
+        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *2);//multiplied by profileimages.count
+        
+        matchDescView = [[UIView alloc]init];
         matchDescView.translatesAutoresizingMaskIntoConstraints = NO;
-        NSDictionary *viewsDictionary = @{@"matchView":matchDescView};
-        matchDescView.backgroundColor = [UIColor lightGrayColor];
         matchDescView.layer.cornerRadius = 8;
+        matchDescView.backgroundColor = [UIColor grayColor];
         [self addSubview:matchDescView];
-
-        NSArray *constraint_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView(70)]"
-                                                                        options:0
-                                                                        metrics:nil
-                                                                          views:viewsDictionary];
-
-        NSArray *constraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView]-15-|"
-                                                                            options:0
-                                                                            metrics:nil
-                                                                              views:viewsDictionary];
-
-        NSArray *constraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-32-[matchView]-32-|"
-                                                                            options:0
-                                                                            metrics:nil
-                                                                              views:viewsDictionary];
-        //view specific constraints
-        [matchDescView addConstraints:constraint_H];
-        //superView contraints
-        [self addConstraints:constraint_POS_H];
-        [self addConstraints:constraint_POS_V];
+        [self addMatchViewConstraints:matchDescView];
 
         information = [UILabel new];
         information.translatesAutoresizingMaskIntoConstraints = NO;
-        [matchDescView insertSubview:information aboveSubview:matchDescView];
+        [matchDescView addSubview:information];
         [information setFont:[UIFont fontWithName:@"GeezaPro" size:18.0]];
         [information setTextAlignment:NSTextAlignmentCenter];
         [self addNameAndAgeLabelConstraints:information andSuperView:matchDescView];
@@ -92,26 +114,19 @@
         [schoolLabel setTextAlignment:NSTextAlignmentCenter];
         [self addSchoolLabelConstraints:schoolLabel andSuperView:matchDescView];
 
-        panGestureRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(beingDragged:)];
-        [self addGestureRecognizer:panGestureRecognizer];
 
-        imageScroll = [[ImageScroll alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-        imageScroll.backgroundColor = [UIColor blueColor];
-        imageScroll.alpha = 0.3;
-        imageScroll.delegate = self;
-        imageScroll.pagingEnabled = YES;
-        imageScroll.scrollEnabled = YES;
-        imageScroll.userInteractionEnabled = YES;
-        [self addSubview:imageScroll];
-        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *2);//multiplied by profileimages.count
+        //load view for all the profile images but that data is in draggableviewbackgroud
+        profileImageView = [UIImageView new];
+        profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [imageScroll addSubview:profileImageView];
+        //profileImageView.backgroundColor = [UIColor blueColor];
+        [self addProfileImage1Constraints];
 
-        //load view for all the proffile images but that data is in draggableviewbackgroud
-
-
-
-
-
-
+        profileImageView2 = [UIImageView new];
+        profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
+        [imageScroll insertSubview:profileImageView2 belowSubview:matchDescView];
+        profileImageView2.backgroundColor = [UIColor redColor];
+        [self addProfileImage2Constraints];
 
         overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
         overlayView.alpha = 1;
@@ -183,24 +198,8 @@
         yesButton.layer.borderColor = [UIColor blackColor].CGColor;
         [self addSubview:yesButton];
         [self addYesButtonConstraints:yesButton withSuper:self];
-
-        profileImageView = [UIImageView new];
-        profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self insertSubview:profileImageView belowSubview:matchDescView];
-
-        NSDictionary *imageDict = @{@"imageView":profileImageView};
-        NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[imageView]-0-|"
-                                                                               options:0
-                                                                               metrics:nil
-                                                                                 views:imageDict];
-
-        NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView]-0-|"
-                                                                               options:0
-                                                                               metrics:nil
-                                                                                 views:imageDict];
-        [self addConstraints:imgConstraint_POS_H];
-        [self addConstraints:imgConstraint_POS_V];
     }
+
     return self;
 }
 
@@ -393,12 +392,36 @@
     NSLog(@"NO");
 }
 
--(void)imagesForMatch:(NSArray *)images
+#pragma mark -- DELEGATES
+-(void)didFetchImagesForMatchedProfile:(NSArray *)profileImages
 {
-    NSLog(@"images: %@", images);
+    NSLog(@"profile images: %@", profileImages);
 }
 
 #pragma mark -- VIEW HELPERS
+-(void)addMatchViewConstraints:(UIView*)view
+{
+    NSDictionary *viewsDictionary = @{@"matchView":matchDescView};
+    NSArray *constraint_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView(70)]"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:viewsDictionary];
+
+    NSArray *constraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView]-15-|"
+                                                                        options:0
+                                                                        metrics:nil
+                                                                          views:viewsDictionary];
+
+    NSArray *constraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-32-[matchView]-32-|"
+                                                                        options:0
+                                                                        metrics:nil
+                                                                          views:viewsDictionary];
+    //view specific constraints
+    [view addConstraints:constraint_H];
+    //superView contraints
+    [self addConstraints:constraint_POS_H];
+    [self addConstraints:constraint_POS_V];
+}
 -(void)addNameAndAgeLabelConstraints:(UIView*)view andSuperView:(UIView*)superView
 {
     NSDictionary *informationDict = @{@"info":information};
@@ -438,6 +461,51 @@
     [superView addConstraints:infoCon_PosH];
     [superView addConstraints:infoCon_PosV];
 }
+
+-(void)addProfileImage1Constraints
+{
+    NSDictionary *imageDict = @{@"imageView":profileImageView};
+    NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(width)]"
+                                                                           options:0
+                                                                           metrics:@{@"width":@(CARD_WIDTH)}
+                                                                             views:imageDict];
+
+    NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView(height)]"
+                                                                           options:0
+                                                                           metrics:@{@"height":@(CARD_HEIGHT)}
+                                                                             views:imageDict];
+
+    [profileImageView addConstraints:imgConstraint_POS_H];
+    [profileImageView addConstraints:imgConstraint_POS_V];
+}
+
+-(void)addProfileImage2Constraints
+{
+    NSDictionary *imageDict = @{@"imageView1": profileImageView, @"imageView2":profileImageView2};
+    NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView2(width)]"
+                                                                           options:0
+                                                                           metrics:@{@"width":@(CARD_WIDTH)}
+                                                                             views:imageDict];
+
+    NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView2(height)]"
+                                                                           options:0
+                                                                           metrics:@{@"height":@(CARD_HEIGHT)}
+                                                                             views:imageDict];
+
+    NSArray *twoViewsCons = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[imageView1]-2-[imageView2]-10-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:imageDict];
+
+    [profileImageView2 addConstraints:imgConstraint_POS_H];
+    [profileImageView2 addConstraints:imgConstraint_POS_V];
+    [imageScroll addConstraints:twoViewsCons];
+}
+
+
+
+
+
 
 -(void)addButton1Constraints:(UIButton*)button withSuper:(UIView*)superView
 {

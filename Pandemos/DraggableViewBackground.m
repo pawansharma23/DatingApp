@@ -64,8 +64,8 @@ static float CARD_WIDTH;
         imagesLoadedIndex = 0;
 
         self.backgroundColor = [UIColor colorWithRed:.92 green:.93 blue:.95 alpha:1]; //the gray background colors
-        [self.dragView.noButton addTarget:self action:@selector(swipeLeft) forControlEvents:UIControlEventTouchUpInside];
-        [self.dragView.yesButton addTarget:self action:@selector(swipeRight) forControlEvents:UIControlEventTouchUpInside];
+        [self.dragView.noButton addTarget:self action:@selector(onSwipeLeft:) forControlEvents:UIControlEventTouchUpInside];
+        [self.dragView.yesButton addTarget:self action:@selector(onSwipeRight) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
@@ -99,8 +99,9 @@ static float CARD_WIDTH;
     self.dragView.information.text = infoText;
     self.dragView.schoolLabel.text = user.lastSchool;
     //set current users images
-    //[self.delegate imagesForMatch:user.profileImages];
+//    [self.delegate didFetchImagesForMatchedProfile:user.profileImages];
 //    matchProfileImages = user.profileImages;
+ //   self.dragView.profileImageView2.image = [UIImage imageWithString:[user.profileImages objectAtIndex:1]];
 
     [UIButton loadIndicatorLightsForProfileImages:self.dragView.b1 image2:self.dragView.b2 image3:self.dragView.b3 image4:self.dragView.b4 image5:self.dragView.b5 image6:self.dragView.b6 imageCount:(int)user.profileImages.count];
 
@@ -185,7 +186,7 @@ static float CARD_WIDTH;
 }
 
 //%%% when you hit the right button, this is called and substitutes the swipe
--(void)swipeRight
+-(void)onSwipeRight
 {
     DraggableView *dragView = [loadedCards firstObject];
     dragView.overlayView.mode = GGOverlayViewModeRight;
@@ -196,14 +197,17 @@ static float CARD_WIDTH;
 }
 
 //%%% when you hit the left button, this is called and substitutes the swipe
--(void)swipeLeft
+- (void)onSwipeLeft:(UIButton *)sender
 {
-    DraggableView *dragView = [loadedCards firstObject];
-    dragView.overlayView.mode = GGOverlayViewModeLeft;
-    [UIView animateWithDuration:0.2 animations:^{
-        dragView.overlayView.alpha = 1;
-    }];
-    [dragView leftClickAction];
+    if (sender.selected)
+    {
+        DraggableView *dragView = [loadedCards firstObject];
+        dragView.overlayView.mode = GGOverlayViewModeLeft;
+        [UIView animateWithDuration:0.2 animations:^{
+            dragView.overlayView.alpha = 1;
+        }];
+            [dragView leftClickAction];
+    }
 }
 
 #pragma mark - USER MANAGER DELEGATES
