@@ -38,7 +38,7 @@ UserManagerDelegate>
     UIImagePickerController *ipc;
 }
 //View Properties
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIView *viewInsideScrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
@@ -124,15 +124,15 @@ UserManagerDelegate>
 
     [SVProgressHUD show];
 
-    //CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, 900);
-    //[self.view setFrame:frame];
-
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.scrollView.delegate = self;
     self.scrollView.scrollEnabled = YES;
+    self.scrollView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.viewInsideScrollView];
     [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 900)];
     self.scrollView.scrollsToTop = YES;
+    self.scrollView.clipsToBounds = YES;
+    
 
 
 

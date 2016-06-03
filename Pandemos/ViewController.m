@@ -410,7 +410,8 @@ MDCSwipeToChooseDelegate>
     NSLog(@"match Request class successfully created: %@", matchRequest);
 
     //now passes on to get toUser User Object from UserManager private method
-    [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(User *user, NSError *error){
+    [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(NSDictionary *userDict, NSError *error) {
+
         if (!error)
         {
             NSLog(@"update worked added PFRelation");

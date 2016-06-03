@@ -89,13 +89,13 @@ static float CARD_WIDTH;
         imageScroll.clipsToBounds = NO;
         imageScroll.userInteractionEnabled = YES;
         imageScroll.scrollsToTop = NO;
-        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *2);//multiplied by profileimages.count
+        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *3);//multiplied by profileimages.count
         
         matchDescView = [[UIView alloc]init];
+        [self addSubview:matchDescView];
         matchDescView.translatesAutoresizingMaskIntoConstraints = NO;
         matchDescView.layer.cornerRadius = 8;
         matchDescView.backgroundColor = [UIColor grayColor];
-        [self addSubview:matchDescView];
         [self addMatchViewConstraints:matchDescView];
 
         information = [UILabel new];
@@ -120,17 +120,19 @@ static float CARD_WIDTH;
         profileImageView = [UIImageView new];
         [imageScroll addSubview:profileImageView];
         profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        //profileImageView.backgroundColor = [UIColor blueColor];
+        profileImageView.layer.cornerRadius = 8;
         [self addProfileImage1Constraints];
 
         profileImageView2 = [UIImageView new];
         profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
         [imageScroll addSubview:profileImageView2];
+        profileImageView.layer.cornerRadius = 8;
         [self addProfileImage2Constraints];
 
         profileImageView3 = [UIImageView new];
         [imageScroll addSubview:profileImageView3];
         profileImageView3.translatesAutoresizingMaskIntoConstraints = NO;
+        profileImageView.layer.cornerRadius = 8;
         [self addProfileImage3Constraints];
 
         overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
@@ -138,71 +140,71 @@ static float CARD_WIDTH;
         [self addSubview:overlayView];
 
         b1 = [UIButton new];
+        [imageScroll addSubview:b1];
         b1.translatesAutoresizingMaskIntoConstraints = NO;
         b1.layer.masksToBounds = YES;
         b1.layer.cornerRadius = 6;
-        [self addSubview:b1];
-        [self addButton1Constraints:b1 withSuper:self];
+        [self addButton1Constraints];
 
         b2 = [UIButton new];
+        [imageScroll addSubview:b2];
         b2.translatesAutoresizingMaskIntoConstraints = NO;
         b2.layer.masksToBounds = YES;
         b2.layer.cornerRadius = 6;
-        [self addSubview:b2];
-        [self addButton2Constraints:b2 withSuper:self];
+        [self addButton2Constraints];
 
         b3 = [UIButton new];
+        [imageScroll addSubview:b3];
         b3.translatesAutoresizingMaskIntoConstraints = NO;
         b3.layer.masksToBounds = YES;
         b3.layer.cornerRadius = 6;
-        [self addSubview:b3];
-        [self addButton3Constraints:b3 withSuper:self];
+        [self addButton3Constraints];
 
         b4 = [UIButton new];
+        [imageScroll addSubview:b4];
         b4.translatesAutoresizingMaskIntoConstraints = NO;
         b4.layer.masksToBounds = YES;
         b4.layer.cornerRadius = 6;
-        [self addSubview:b4];
-        [self addButton4Constraints:b4 withSuper:self];
+        [self addButton4Constraints];
 
         b5 = [UIButton new];
+        [imageScroll addSubview:b5];
         b5.translatesAutoresizingMaskIntoConstraints = NO;
         b5.layer.masksToBounds = YES;
         b5.layer.cornerRadius = 6;
-        [self addSubview:b5];
-        [self addButton5Constraints:b5 withSuper:self];
+        [self addButton5Constraints];
 
         b6 = [UIButton new];
+        [imageScroll addSubview:b6];
         b6.layer.masksToBounds = YES;
         b6.layer.cornerRadius = 6;
         b6.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:b6];
-        [self addButton6Constraints:b6 withSuper:self];
+        [self addButton6Constraints];
 
         noButton = [UIButton new];
+        [imageScroll addSubview:noButton];
         noButton.translatesAutoresizingMaskIntoConstraints = NO;
         noButton.layer.masksToBounds = YES;
         noButton.layer.cornerRadius = 25;
-        [UIButton noButton:noButton];
+        [UIButton rotateLeftButton:noButton];
         [noButton setTitle:@"✖️" forState:UIControlStateNormal];
         noButton.titleLabel.text = @"X";
         noButton.backgroundColor = [UIColor redColor];
         noButton.layer.borderWidth = 1.0;
         noButton.layer.borderColor = [UIColor blackColor].CGColor;
-        [self addSubview:noButton];
-        [self addNoButtonConstraints:noButton withSuper:self];
+        [self addNoButtonConstraints];
 
         yesButton = [UIButton new];
+        [imageScroll addSubview:yesButton];
         yesButton.translatesAutoresizingMaskIntoConstraints = NO;
         yesButton.layer.masksToBounds = YES;
         yesButton.layer.cornerRadius = 25;
-        [UIButton yesButton:yesButton];
+        [UIButton rotateRightButton:yesButton];
         [yesButton setTitle:@"✔️" forState:UIControlStateNormal];
         yesButton.backgroundColor = [UIColor greenColor];
         yesButton.layer.borderWidth = 1.0;
         yesButton.layer.borderColor = [UIColor blackColor].CGColor;
-        [self addSubview:yesButton];
-        [self addYesButtonConstraints:yesButton withSuper:self];
+        [self addYesButtonConstraints];
     }
 
     return self;
@@ -467,6 +469,8 @@ static float CARD_WIDTH;
     [superView addConstraints:infoCon_PosV];
 }
 
+
+
 -(void)addProfileImage1Constraints
 {
     NSDictionary *imageDict = @{@"imageView":profileImageView};
@@ -542,7 +546,7 @@ static float CARD_WIDTH;
 
 
 
--(void)addButton1Constraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addButton1Constraints
 {
     NSDictionary *buttonDict = @{@"b1": b1};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b1(12)]"
@@ -563,11 +567,11 @@ static float CARD_WIDTH;
                                                                     views:buttonDict];
     [b1 addConstraints:buttonHeight];
     [b1 addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
 
--(void)addButton2Constraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addButton2Constraints
 {
     NSDictionary *buttonDict = @{@"b2": b2};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b2(12)]"
@@ -588,11 +592,11 @@ static float CARD_WIDTH;
                                                                       views:buttonDict];
     [b2 addConstraints:buttonHeight];
     [b2 addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
 
--(void)addButton3Constraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addButton3Constraints
 {
     NSDictionary *buttonDict = @{@"b3": b3};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b3(12)]"
@@ -613,11 +617,11 @@ static float CARD_WIDTH;
                                                                       views:buttonDict];
     [b3 addConstraints:buttonHeight];
     [b3 addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
 
--(void)addButton4Constraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addButton4Constraints
 {
     NSDictionary *buttonDict = @{@"b4": b4};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b4(12)]"
@@ -638,10 +642,10 @@ static float CARD_WIDTH;
                                                                       views:buttonDict];
     [b4 addConstraints:buttonHeight];
     [b4 addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
--(void)addButton5Constraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addButton5Constraints
 {
     NSDictionary *buttonDict = @{@"b5": b5};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b5(12)]"
@@ -662,11 +666,11 @@ static float CARD_WIDTH;
                                                                       views:buttonDict];
     [b5 addConstraints:buttonHeight];
     [b5 addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
 
--(void)addButton6Constraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addButton6Constraints
 {
     NSDictionary *buttonDict = @{@"b6": b6};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b6(12)]"
@@ -687,11 +691,11 @@ static float CARD_WIDTH;
                                                                       views:buttonDict];
     [b6 addConstraints:buttonHeight];
     [b6 addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
 
--(void)addNoButtonConstraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addNoButtonConstraints
 {
     NSDictionary *buttonDict = @{@"noButton": noButton};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[noButton(50)]"
@@ -712,11 +716,11 @@ static float CARD_WIDTH;
                                                                       views:buttonDict];
     [noButton addConstraints:buttonHeight];
     [noButton addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
 
--(void)addYesButtonConstraints:(UIButton*)button withSuper:(UIView*)superView
+-(void)addYesButtonConstraints
 {
     NSDictionary *buttonDict = @{@"yesButton": yesButton};
     NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[yesButton(50)]"
@@ -737,8 +741,8 @@ static float CARD_WIDTH;
                                                                       views:buttonDict];
     [yesButton addConstraints:buttonHeight];
     [yesButton addConstraints:buttonWidth];
-    [superView addConstraints:infoCon_PosH];
-    [superView addConstraints:infoCon_PosV];
+    [imageScroll addConstraints:infoCon_PosH];
+    [imageScroll addConstraints:infoCon_PosV];
 }
 @end
 

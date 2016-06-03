@@ -74,6 +74,7 @@
 		26CB15991CFE1924005CD680 /* DraggableViewBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15971CFE1924005CD680 /* DraggableViewBackground.m */; };
 		26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB159B1CFE1930005CD680 /* OverlayView.m */; };
 		26D6B15E1D0097D900C94B16 /* ImageScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D6B15D1D0097D900C94B16 /* ImageScroll.m */; };
+		26D6B1611D01CDD700C94B16 /* ProfileImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D6B1601D01CDD700C94B16 /* ProfileImageView.m */; };
 		26F7E4C11CD29935002F8BFC /* MessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F7E4C01CD29935002F8BFC /* MessageManager.m */; };
 		B6D0576735DD6374DE9CF23F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2E7EAF390F8A69E1F0F90DF /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -207,6 +208,8 @@
 		26D314731C976CE70045BB22 /* UIButton+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Additions.m"; sourceTree = "<group>"; };
 		26D6B15C1D0097D900C94B16 /* ImageScroll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScroll.h; sourceTree = "<group>"; };
 		26D6B15D1D0097D900C94B16 /* ImageScroll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScroll.m; sourceTree = "<group>"; };
+		26D6B15F1D01CDD700C94B16 /* ProfileImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileImageView.h; sourceTree = "<group>"; };
+		26D6B1601D01CDD700C94B16 /* ProfileImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileImageView.m; sourceTree = "<group>"; };
 		26DBD03C1C4747B700944300 /* MessagingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagingCell.h; sourceTree = "<group>"; };
 		26DBD03D1C4747B700944300 /* MessagingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagingCell.m; sourceTree = "<group>"; };
 		26DBD03F1C4748F700944300 /* MessageDetailViewCon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDetailViewCon.h; sourceTree = "<group>"; };
@@ -262,6 +265,8 @@
 				2655A4831CE95CC900838853 /* MatchViewXib */,
 				260317B81CE2338800C37C67 /* MessagerProfileVC.h */,
 				260317B91CE2338800C37C67 /* MessagerProfileVC.m */,
+				26D6B15F1D01CDD700C94B16 /* ProfileImageView.h */,
+				26D6B1601D01CDD700C94B16 /* ProfileImageView.m */,
 			);
 			name = MessagerProfile;
 			sourceTree = "<group>";
@@ -591,6 +596,19 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		26D6B1621D01CF5300C94B16 /* DraggableViews */ = {
+			isa = PBXGroup;
+			children = (
+				26CB159A1CFE1930005CD680 /* OverlayView.h */,
+				26CB159B1CFE1930005CD680 /* OverlayView.m */,
+				26CB15961CFE1924005CD680 /* DraggableViewBackground.h */,
+				26CB15971CFE1924005CD680 /* DraggableViewBackground.m */,
+				26CB15941CFE1924005CD680 /* DraggableView.h */,
+				26CB15951CFE1924005CD680 /* DraggableView.m */,
+			);
+			name = DraggableViews;
+			sourceTree = "<group>";
+		};
 		26F22BEC1C6FAD7000D86343 /* FacebookLogin */ = {
 			isa = PBXGroup;
 			children = (
@@ -653,14 +671,9 @@
 		26F22BF41C6FAF0E00D86343 /* Matches */ = {
 			isa = PBXGroup;
 			children = (
-				26CB15961CFE1924005CD680 /* DraggableViewBackground.h */,
-				26CB15971CFE1924005CD680 /* DraggableViewBackground.m */,
-				26CB15941CFE1924005CD680 /* DraggableView.h */,
-				26CB15951CFE1924005CD680 /* DraggableView.m */,
+				26D6B1621D01CF5300C94B16 /* DraggableViews */,
 				26D6B15C1D0097D900C94B16 /* ImageScroll.h */,
 				26D6B15D1D0097D900C94B16 /* ImageScroll.m */,
-				26CB159A1CFE1930005CD680 /* OverlayView.h */,
-				26CB159B1CFE1930005CD680 /* OverlayView.m */,
 				268BA08F1C1DB53F0054414E /* ViewController.h */,
 				268BA0901C1DB53F0054414E /* ViewController.m */,
 			);
@@ -898,6 +911,7 @@
 				26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
 				26D6B15E1D0097D900C94B16 /* ImageScroll.m in Sources */,
+				26D6B1611D01CDD700C94B16 /* ProfileImageView.m in Sources */,
 				261ADA331CF5F74C00C7ECCD /* Match.m in Sources */,
 				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,
 				26C70EC31CA5B18F00E9B98F /* MessagingCell.m in Sources */,

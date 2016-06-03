@@ -55,13 +55,13 @@
     [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
 }
 
-+(void)yesButton:(UIButton *)button
++(void)rotateRightButton:(UIButton *)button
 {
     button.transform = CGAffineTransformMakeRotation(M_PI / 180 * 10);
     button.layer.cornerRadius = 20;
 }
 
-+(void)noButton:(UIButton *)button
++(void)rotateLeftButton:(UIButton *)button
 {
     button.transform = CGAffineTransformMakeRotation(M_PI / 180 * -10);
     button.layer.cornerRadius = 20;

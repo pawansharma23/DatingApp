@@ -37,14 +37,15 @@
 -(void)failedToCreateDenyMatchRequest:(NSError*)error;
 -(void)didComeFromMessaging:(BOOL)fromMessaging withUser:(User*)user;
 -(void)didFetchUserObjectForFinalMatch:(User*)user;
+-(void)didReturnImageDataCount:(NSDictionary*)userDict;
 @end
 
 @interface UserManager : NSObject
 typedef void (^resultBlockWithMatchRequest)(MatchRequest *matchRequest, NSError *error);
-typedef void (^resultBlockWithUser)(User *user, NSError *error);
 typedef void (^resultBlockWithArray)(NSArray *users, NSError *error);
 typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 typedef void (^resultBlockWithUserConfidant)(NSString *confidant, NSError *error);
+typedef void (^resultBlockWithUser)(User *user, NSError *error);
 
 @property(nonatomic, strong)NSMutableArray<User*> *allUsers;
 @property(nonatomic, strong)NSArray<User*> *allMatchedUsers;
@@ -63,14 +64,15 @@ typedef void (^resultBlockWithUserConfidant)(NSString *confidant, NSError *error
            withCompletion:(resultBlockWithMatchRequest)result;
 -(void)updateMatchRequestWithRetrivalUserObject:(MatchRequest*)matchRequest
              withResponse:(NSString*)response
-              withSuccess:(resultBlockWithUser)result;
+              withSuccess:(resultBlockWithUserData)result;
 -(void)loadMatchedUsers:(resultBlockWithArray)result;
 -(void)fromMessaging:(User*)user;
 -(void)queryForUserData:(NSString *)objectId
-               withUser:(resultBlockWithUser)userDict;
+               withUser:(resultBlockWithUser)user;
 -(void)queryForUsersConfidant:(resultBlockWithUserConfidant)confidant;
 -(void)createMatchRequestWithStringId:(NSString*)strId
                            withStatus:(NSString*)status
                        withCompletion:(resultBlockWithMatchRequest)result;
 -(void)secureMatchWithPFCloudFunction:(User*)recipientUser;
+-(void)queryForImageCount:(NSString *)objectId;
 @end

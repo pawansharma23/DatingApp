@@ -62,7 +62,7 @@ UserManagerDelegate>
 
     self.userManager = [UserManager new];
     self.userManager.delegate = self;
-
+    
     self.currentUser = [User currentUser];
     self.profileImages = [NSMutableArray new];
 

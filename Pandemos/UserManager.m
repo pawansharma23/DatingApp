@@ -250,7 +250,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
 }
 
 //no one should see this method until final confirmation from confidant
--(void)updateMatchRequestWithRetrivalUserObject:(MatchRequest *)request withResponse:(NSString *)response withSuccess:(resultBlockWithUser)result
+-(void)updateMatchRequestWithRetrivalUserObject:(MatchRequest *)request withResponse:(NSString *)response withSuccess:(resultBlockWithUserData)result
 {
    // User *fromUser = request.fromUser;
     //toUser get full User object
@@ -318,7 +318,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
     }];
 }
 
--(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUser)userDict
+-(void)queryForUserData:(NSString *)objectId withUser:(resultBlockWithUser)user
 {
     PFQuery *query = [User query];
     [query whereKey:@"objectId" equalTo:objectId];
@@ -327,8 +327,25 @@ static NSString * const kParsePublic                       = @"publicProfile";
 
         if (objects)
         {
-            User *dict = objects.firstObject;
-            userDict(dict, nil);
+//            User *dict = objects.firstObject;
+            user(objects.firstObject, nil);
+        }
+        else
+        {
+            NSLog(@"error querying for User data: %@", error);
+        }
+    }];
+}
+
+-(void)queryForImageCount:(NSString *)objectId
+{
+    PFQuery *query = [User query];
+    [query whereKey:@"objectId" equalTo:objectId];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+
+        if (objects)
+        {
+            [self.delegate didReturnImageDataCount:objects.firstObject];
         }
         else
         {
