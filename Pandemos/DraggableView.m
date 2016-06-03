@@ -86,6 +86,7 @@ static float CARD_WIDTH;
         imageScroll.delegate = self;
         imageScroll.pagingEnabled = YES;
         imageScroll.scrollEnabled = YES;
+        imageScroll.clipsToBounds = NO;
         imageScroll.userInteractionEnabled = YES;
         imageScroll.scrollsToTop = NO;
         imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *2);//multiplied by profileimages.count
@@ -117,16 +118,20 @@ static float CARD_WIDTH;
 
         //load view for all the profile images but that data is in draggableviewbackgroud
         profileImageView = [UIImageView new];
-        profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
         [imageScroll addSubview:profileImageView];
+        profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
         //profileImageView.backgroundColor = [UIColor blueColor];
         [self addProfileImage1Constraints];
 
         profileImageView2 = [UIImageView new];
         profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
-        [imageScroll insertSubview:profileImageView2 belowSubview:matchDescView];
-        profileImageView2.backgroundColor = [UIColor redColor];
+        [imageScroll addSubview:profileImageView2];
         [self addProfileImage2Constraints];
+
+        profileImageView3 = [UIImageView new];
+        [imageScroll addSubview:profileImageView3];
+        profileImageView3.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addProfileImage3Constraints];
 
         overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
         overlayView.alpha = 1;
@@ -465,6 +470,11 @@ static float CARD_WIDTH;
 -(void)addProfileImage1Constraints
 {
     NSDictionary *imageDict = @{@"imageView":profileImageView};
+    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView]-0-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
     NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(width)]"
                                                                            options:0
                                                                            metrics:@{@"width":@(CARD_WIDTH)}
@@ -474,14 +484,19 @@ static float CARD_WIDTH;
                                                                            options:0
                                                                            metrics:@{@"height":@(CARD_HEIGHT)}
                                                                              views:imageDict];
-
+    [imageScroll addConstraints:xPosition];
     [profileImageView addConstraints:imgConstraint_POS_H];
     [profileImageView addConstraints:imgConstraint_POS_V];
 }
 
 -(void)addProfileImage2Constraints
 {
-    NSDictionary *imageDict = @{@"imageView1": profileImageView, @"imageView2":profileImageView2};
+    NSDictionary *imageDict = @{@"imageView2":profileImageView2};
+    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView2]-0-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
     NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView2(width)]"
                                                                            options:0
                                                                            metrics:@{@"width":@(CARD_WIDTH)}
@@ -491,18 +506,38 @@ static float CARD_WIDTH;
                                                                            options:0
                                                                            metrics:@{@"height":@(CARD_HEIGHT)}
                                                                              views:imageDict];
+    [imageScroll addConstraints:xPosition];
+    [profileImageView2 addConstraints:imgConstraint_POS_H];
+    [profileImageView2 addConstraints:imgConstraint_POS_V];
+}
 
-    NSArray *twoViewsCons = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[imageView1]-2-[imageView2]-10-|"
+-(void)addProfileImage3Constraints
+{
+    NSDictionary *imageDict = @{@"imageView1": profileImageView, @"imageView2": profileImageView2, @"imageView3": profileImageView3};
+    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView3]-0-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
+    NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView3(width)]"
+                                                                           options:0
+                                                                           metrics:@{@"width":@(CARD_WIDTH)}
+                                                                             views:imageDict];
+
+    NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView3(height)]"
+                                                                           options:0
+                                                                           metrics:@{@"height":@(CARD_HEIGHT)}
+                                                                             views:imageDict];
+
+    NSArray *threeViewsCons = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[imageView1]-2-[imageView2]-2-[imageView3]-2-|"
                                                                     options:0
                                                                     metrics:nil
                                                                       views:imageDict];
-
-    [profileImageView2 addConstraints:imgConstraint_POS_H];
-    [profileImageView2 addConstraints:imgConstraint_POS_V];
-    [imageScroll addConstraints:twoViewsCons];
+    [imageScroll addConstraints:xPosition];
+    [profileImageView3 addConstraints:imgConstraint_POS_H];
+    [profileImageView3 addConstraints:imgConstraint_POS_V];
+    [imageScroll addConstraints:threeViewsCons];
 }
-
-
 
 
 
