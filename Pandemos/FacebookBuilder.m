@@ -60,6 +60,8 @@
     {
         NSString *faceID = userDict[@"id"];
         NSString *name = userDict[@"first_name"];
+        //print out 
+        NSString *lastName = userDict[@"last_name"];
         NSString *gender = userDict[@"gender"];
         NSString *birthday = userDict[@"birthday"];
         NSString *location = userDict[@"location"][@"name"];
@@ -84,6 +86,7 @@
             Facebook *face = [Facebook new];
 
             face.givenName = name;
+            face.lastName = lastName;
             face.identification = faceID;
             face.work = placeOfWork;
             face.school = lastSchool;

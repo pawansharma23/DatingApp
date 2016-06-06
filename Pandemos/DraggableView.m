@@ -26,9 +26,8 @@
 }
 
 static float CARD_HEIGHT;
-//= 386; //%%% height of the draggable card
 static float CARD_WIDTH;
-//= 290; //%%% width of the
+
 //delegate is instance of ViewController
 @synthesize delegate;
 
@@ -36,18 +35,22 @@ static float CARD_WIDTH;
 @synthesize information;
 @synthesize overlayView;
 @synthesize schoolLabel;
-@synthesize b1;
-@synthesize b2;
-@synthesize b3;
-@synthesize b4;
-@synthesize b5;
-@synthesize b6;
-@synthesize noButton;
-@synthesize yesButton;
 @synthesize profileImageView;
-@synthesize imageScroll;
 @synthesize profileImageView2;
 @synthesize profileImageView3;
+@synthesize profileImageView4;
+@synthesize profileImageView5;
+@synthesize profileImageView6;
+@synthesize v1;
+@synthesize v2;
+@synthesize v3;
+@synthesize v4;
+@synthesize v5;
+@synthesize v6;
+@synthesize imageCount;
+@synthesize noButton;
+@synthesize yesButton;
+@synthesize imageScroll;
 @synthesize matchDescView;
 
 - (id)initWithFrame:(CGRect)frame
@@ -89,8 +92,8 @@ static float CARD_WIDTH;
         imageScroll.clipsToBounds = NO;
         imageScroll.userInteractionEnabled = YES;
         imageScroll.scrollsToTop = NO;
-        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *3);//multiplied by profileimages.count
-        
+//        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *3);//multiplied by profileimages.count
+
         matchDescView = [[UIView alloc]init];
         [self addSubview:matchDescView];
         matchDescView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -99,15 +102,15 @@ static float CARD_WIDTH;
         [self addMatchViewConstraints:matchDescView];
 
         information = [UILabel new];
-        information.translatesAutoresizingMaskIntoConstraints = NO;
         [matchDescView addSubview:information];
+        information.translatesAutoresizingMaskIntoConstraints = NO;
         [information setFont:[UIFont fontWithName:@"GeezaPro" size:18.0]];
         [information setTextAlignment:NSTextAlignmentCenter];
         [self addNameAndAgeLabelConstraints:information andSuperView:matchDescView];
 
         schoolLabel = [UILabel new];
-        schoolLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [matchDescView addSubview:schoolLabel];
+        schoolLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [schoolLabel setFont:[UIFont fontWithName:@"GeezaPro" size:16.0]];
         schoolLabel.text = @"Loading...";
         schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -115,96 +118,99 @@ static float CARD_WIDTH;
         [schoolLabel setTextAlignment:NSTextAlignmentCenter];
         [self addSchoolLabelConstraints:schoolLabel andSuperView:matchDescView];
 
+        overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
+        overlayView.alpha = 1;
+        [self addSubview:overlayView];
 
-        //load view for all the profile images but that data is in draggableviewbackgroud
         profileImageView = [UIImageView new];
         [imageScroll addSubview:profileImageView];
         profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        profileImageView.layer.cornerRadius = 8;
         [self addProfileImage1Constraints];
 
         profileImageView2 = [UIImageView new];
-        profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
         [imageScroll addSubview:profileImageView2];
-        profileImageView.layer.cornerRadius = 8;
+        profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
         [self addProfileImage2Constraints];
 
         profileImageView3 = [UIImageView new];
         [imageScroll addSubview:profileImageView3];
         profileImageView3.translatesAutoresizingMaskIntoConstraints = NO;
-        profileImageView.layer.cornerRadius = 8;
         [self addProfileImage3Constraints];
 
-        overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
-        overlayView.alpha = 1;
-        [self addSubview:overlayView];
+        profileImageView4 = [UIImageView new];
+        [imageScroll addSubview:profileImageView4];
+        profileImageView4.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addProfileImage4Constraints];
 
-        b1 = [UIButton new];
-        [imageScroll addSubview:b1];
-        b1.translatesAutoresizingMaskIntoConstraints = NO;
-        b1.layer.masksToBounds = YES;
-        b1.layer.cornerRadius = 6;
-        [self addButton1Constraints];
+        profileImageView5 = [UIImageView new];
+        [imageScroll addSubview:profileImageView5];
+        profileImageView5.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addProfileImage5Constraints];
 
-        b2 = [UIButton new];
-        [imageScroll addSubview:b2];
-        b2.translatesAutoresizingMaskIntoConstraints = NO;
-        b2.layer.masksToBounds = YES;
-        b2.layer.cornerRadius = 6;
-        [self addButton2Constraints];
+        profileImageView6 = [UIImageView new];
+        [imageScroll addSubview:profileImageView6];
+        profileImageView6.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addProfileImage6Constraints];
 
-        b3 = [UIButton new];
-        [imageScroll addSubview:b3];
-        b3.translatesAutoresizingMaskIntoConstraints = NO;
-        b3.layer.masksToBounds = YES;
-        b3.layer.cornerRadius = 6;
-        [self addButton3Constraints];
+        //View Indicator for scrolling profileImages
+//        imageCount = 0;
+//
+//        v1 = [UIView new];
+//        [self addSubview:v1];
+//        [self setForViewIndicator:v1];
+//        [self addView1Constraints];
+//        //v1.backgroundColor = [UIColor whiteColor];
+//
+//        v2 = [UIView new];
+//        [self addSubview:v2];
+//        [self setForViewIndicator:v2];
+//        [self addView2Constraints];
+//
+//        v3 = [UIView new];
+//        [self addSubview:v3];
+//        [self setForViewIndicator:v3];
+//        [self addView3Constraints];
+//
+//        v4 = [UIView new];
+//        [self addSubview:v4];
+//        [self setForViewIndicator:v4];
+//        [self addView4Constraints];
+//
+//        v5 = [UIView new];
+//        [self addSubview:v5];
+//        [self setForViewIndicator:v5];
+//        [self addView5Constraints];
+//
+//        v6 = [UIView new];
+//        [self addSubview:v6];
+//        [self setForViewIndicator:v6];
+//        [self addView6Constraints];
 
-        b4 = [UIButton new];
-        [imageScroll addSubview:b4];
-        b4.translatesAutoresizingMaskIntoConstraints = NO;
-        b4.layer.masksToBounds = YES;
-        b4.layer.cornerRadius = 6;
-        [self addButton4Constraints];
 
-        b5 = [UIButton new];
-        [imageScroll addSubview:b5];
-        b5.translatesAutoresizingMaskIntoConstraints = NO;
-        b5.layer.masksToBounds = YES;
-        b5.layer.cornerRadius = 6;
-        [self addButton5Constraints];
-
-        b6 = [UIButton new];
-        [imageScroll addSubview:b6];
-        b6.layer.masksToBounds = YES;
-        b6.layer.cornerRadius = 6;
-        b6.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addButton6Constraints];
-
-        noButton = [UIButton new];
-        [imageScroll addSubview:noButton];
-        noButton.translatesAutoresizingMaskIntoConstraints = NO;
-        noButton.layer.masksToBounds = YES;
-        noButton.layer.cornerRadius = 25;
-        [UIButton rotateLeftButton:noButton];
-        [noButton setTitle:@"✖️" forState:UIControlStateNormal];
-        noButton.titleLabel.text = @"X";
-        noButton.backgroundColor = [UIColor redColor];
-        noButton.layer.borderWidth = 1.0;
-        noButton.layer.borderColor = [UIColor blackColor].CGColor;
-        [self addNoButtonConstraints];
-
-        yesButton = [UIButton new];
-        [imageScroll addSubview:yesButton];
-        yesButton.translatesAutoresizingMaskIntoConstraints = NO;
-        yesButton.layer.masksToBounds = YES;
-        yesButton.layer.cornerRadius = 25;
-        [UIButton rotateRightButton:yesButton];
-        [yesButton setTitle:@"✔️" forState:UIControlStateNormal];
-        yesButton.backgroundColor = [UIColor greenColor];
-        yesButton.layer.borderWidth = 1.0;
-        yesButton.layer.borderColor = [UIColor blackColor].CGColor;
-        [self addYesButtonConstraints];
+//        noButton = [UIButton new];
+//        [matchDescView addSubview:noButton];
+//        noButton.translatesAutoresizingMaskIntoConstraints = NO;
+//        noButton.layer.masksToBounds = YES;
+//        noButton.layer.cornerRadius = 25;
+//        [UIButton rotateLeftButton:noButton];
+//        [noButton setTitle:@"✖️" forState:UIControlStateNormal];
+//        noButton.titleLabel.text = @"X";
+//        noButton.backgroundColor = [UIColor redColor];
+//        noButton.layer.borderWidth = 1.0;
+//        noButton.layer.borderColor = [UIColor blackColor].CGColor;
+//        [self addNoButtonConstraints];
+//
+//        yesButton = [UIButton new];
+//        [matchDescView addSubview:yesButton];
+//        yesButton.translatesAutoresizingMaskIntoConstraints = NO;
+//        yesButton.layer.masksToBounds = YES;
+//        yesButton.layer.cornerRadius = 25;
+//        [UIButton rotateRightButton:yesButton];
+//        [yesButton setTitle:@"✔️" forState:UIControlStateNormal];
+//        yesButton.backgroundColor = [UIColor greenColor];
+//        yesButton.layer.borderWidth = 1.0;
+//        yesButton.layer.borderColor = [UIColor blackColor].CGColor;
+//        [self addYesButtonConstraints];
     }
 
     return self;
@@ -218,26 +224,89 @@ static float CARD_WIDTH;
     self.layer.shadowOffset = CGSizeMake(1, 1);
 }
 
+-(void)setForViewIndicator:(UIView*)view
+{
+    view.translatesAutoresizingMaskIntoConstraints = NO;
+    view.layer.masksToBounds = YES;
+    view.layer.cornerRadius = 6;
+    view.layer.borderWidth = 1.0;
+    view.layer.borderColor = [UIColor yellowGreen].CGColor;
+}
+
 #pragma mark SCROLLVIEW DELEGATES
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    NSLog(@"page up on scrollview");
-    if (scrollView.contentOffset.y > self.frame.size.height)//and less than third image
-    {
-        NSLog(@"load image 2");
-    }
-}
+//-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+//{
+//    NSLog(@"dragging in scroll view");
+//}
+//
+//-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{
+//    NSLog(@"Did end decelerating");
+//    //do your code here
+//}
 
--(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    NSLog(@"dragging in scroll view");
-}
+//-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+//{
+//    CGFloat pageHeight = CARD_HEIGHT;
+//    float fractionalPage = scrollView.contentOffset.y / pageHeight;
+//    NSInteger page = ceilf(fractionalPage);
+//    NSLog(@"page: %ld", (long)page);
+//
+//    switch (page)
+//    {
+//        case 0:
+//            [v2 setBackgroundColor:nil];
+//            [v1 setBackgroundColor:[UIColor whiteColor]];
+//            [v3 setBackgroundColor:nil];
+//            [v4 setBackgroundColor:nil];
+//            [v5 setBackgroundColor:nil];
+//            [v6 setBackgroundColor:nil];
+//            break;
+//        case 1:
+//            [v1 setBackgroundColor:nil];
+//            [v2 setBackgroundColor:[UIColor whiteColor]];
+//            [v3 setBackgroundColor:nil];
+//            [v4 setBackgroundColor:nil];
+//            [v5 setBackgroundColor:nil];
+//            [v6 setBackgroundColor:nil];
+//            break;
+//        case 2:
+//            [v1 setBackgroundColor:nil];
+//            [v3 setBackgroundColor:[UIColor whiteColor]];
+//            [v2 setBackgroundColor:nil];
+//            [v4 setBackgroundColor:nil];
+//            [v5 setBackgroundColor:nil];
+//            [v6 setBackgroundColor:nil];
+//            break;
+//        case 3:
+//            [v1 setBackgroundColor:nil];
+//            [v4 setBackgroundColor:[UIColor whiteColor]];
+//            [v2 setBackgroundColor:nil];
+//            [v3 setBackgroundColor:nil];
+//            [v5 setBackgroundColor:nil];
+//            [v6 setBackgroundColor:nil];
+//            break;
+//        case 4:
+//            [v1 setBackgroundColor:nil];
+//            [v5 setBackgroundColor:[UIColor whiteColor]];
+//            [v2 setBackgroundColor:nil];
+//            [v4 setBackgroundColor:nil];
+//            [v3 setBackgroundColor:nil];
+//            [v6 setBackgroundColor:nil];
+//            break;
+//        case 5:
+//            [v1 setBackgroundColor:nil];
+//            [v6 setBackgroundColor:[UIColor whiteColor]];
+//            [v2 setBackgroundColor:nil];
+//            [v4 setBackgroundColor:nil];
+//            [v5 setBackgroundColor:nil];
+//            [v3 setBackgroundColor:nil];
+//            break;
+//        default:
+//            break;
+//    }
+//}
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    NSLog(@"Did end decelerating");
-    //do your code here
-}
 
 //%%% called when you move your finger across the screen.
 // called many times a second
@@ -316,14 +385,6 @@ static float CARD_WIDTH;
     {
         [self leftAction];
     }
-//    else if (yFromCenter > ACTION_MARGIN)
-//    {
-//        [self downImageAction];
-//    }
-//    else if(yFromCenter < -ACTION_MARGIN)
-//    {
-//        [self upImageAction];
-//    }
     else
     { //%%% resets the card
         [UIView animateWithDuration:0.3
@@ -405,7 +466,7 @@ static float CARD_WIDTH;
     NSLog(@"profile images: %@", profileImages);
 }
 
-#pragma mark -- VIEW HELPERS
+#pragma mark -- MATCH VIEW CONSTRAINT
 -(void)addMatchViewConstraints:(UIView*)view
 {
     NSDictionary *viewsDictionary = @{@"matchView":matchDescView};
@@ -414,7 +475,7 @@ static float CARD_WIDTH;
                                                                     metrics:nil
                                                                       views:viewsDictionary];
 
-    NSArray *constraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView]-15-|"
+    NSArray *constraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView]-23-|"
                                                                         options:0
                                                                         metrics:nil
                                                                           views:viewsDictionary];
@@ -425,7 +486,6 @@ static float CARD_WIDTH;
                                                                           views:viewsDictionary];
     //view specific constraints
     [view addConstraints:constraint_H];
-    //superView contraints
     [self addConstraints:constraint_POS_H];
     [self addConstraints:constraint_POS_V];
 }
@@ -470,7 +530,7 @@ static float CARD_WIDTH;
 }
 
 
-
+#pragma mark -- PROFILE VIEW CONSTRAINTS
 -(void)addProfileImage1Constraints
 {
     NSDictionary *imageDict = @{@"imageView":profileImageView};
@@ -479,19 +539,20 @@ static float CARD_WIDTH;
                                                                  metrics:nil
                                                                    views:imageDict];
 
-    NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(width)]"
+    NSArray *widthCon = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(width)]"
                                                                            options:0
                                                                            metrics:@{@"width":@(CARD_WIDTH)}
                                                                              views:imageDict];
 
-    NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView(height)]"
+    NSArray *heightCon = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView(height)]"
                                                                            options:0
                                                                            metrics:@{@"height":@(CARD_HEIGHT)}
                                                                              views:imageDict];
     [imageScroll addConstraints:xPosition];
-    [profileImageView addConstraints:imgConstraint_POS_H];
-    [profileImageView addConstraints:imgConstraint_POS_V];
+    [profileImageView addConstraints:widthCon];
+    [profileImageView addConstraints:heightCon];
 }
+
 
 -(void)addProfileImage2Constraints
 {
@@ -500,201 +561,248 @@ static float CARD_WIDTH;
                                                                  options:0
                                                                  metrics:nil
                                                                    views:imageDict];
+    NSArray *widthCon = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView2(width)]"
+                                                                options:0
+                                                                metrics:@{@"width":@(CARD_WIDTH)}
+                                                                  views:imageDict];
 
-    NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView2(width)]"
-                                                                           options:0
-                                                                           metrics:@{@"width":@(CARD_WIDTH)}
-                                                                             views:imageDict];
-
-    NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView2(height)]"
+    NSArray *heightCon = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView2(height)]"
                                                                            options:0
                                                                            metrics:@{@"height":@(CARD_HEIGHT)}
                                                                              views:imageDict];
     [imageScroll addConstraints:xPosition];
-    [profileImageView2 addConstraints:imgConstraint_POS_H];
-    [profileImageView2 addConstraints:imgConstraint_POS_V];
+    [profileImageView2 addConstraints:heightCon];
+    [profileImageView2 addConstraints:widthCon];
 }
 
 -(void)addProfileImage3Constraints
 {
-    NSDictionary *imageDict = @{@"imageView1": profileImageView, @"imageView2": profileImageView2, @"imageView3": profileImageView3};
+    NSDictionary *imageDict = @{@"imageView3":profileImageView3};
     NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView3]-0-|"
                                                                  options:0
                                                                  metrics:nil
                                                                    views:imageDict];
 
-    NSArray *imgConstraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView3(width)]"
-                                                                           options:0
-                                                                           metrics:@{@"width":@(CARD_WIDTH)}
-                                                                             views:imageDict];
-
-    NSArray *imgConstraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView3(height)]"
+    NSArray *heightCon = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView3(height)]"
                                                                            options:0
                                                                            metrics:@{@"height":@(CARD_HEIGHT)}
                                                                              views:imageDict];
 
-    NSArray *threeViewsCons = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[imageView1]-2-[imageView2]-2-[imageView3]-2-|"
+    NSArray *widthCon = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView3(width)]"
+                                                                options:0
+                                                                metrics:@{@"width":@(CARD_WIDTH)}
+                                                                  views:imageDict];
+    [imageScroll addConstraints:xPosition];
+    [profileImageView3 addConstraints:heightCon];
+    [profileImageView3 addConstraints:widthCon];
+}
+
+-(void)addProfileImage4Constraints
+{
+    NSDictionary *imageDict = @{@"imageView4":profileImageView4};
+    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView4]-0-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
+    NSArray *heightCon = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView4(height)]"
+                                                                           options:0
+                                                                           metrics:@{@"height":@(CARD_HEIGHT)}
+                                                                             views:imageDict];
+
+    NSArray *widthCon = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView4(width)]"
+                                                                options:0
+                                                                metrics:@{@"width":@(CARD_WIDTH)}
+                                                                  views:imageDict];
+
+    [imageScroll addConstraints:xPosition];
+    [profileImageView4 addConstraints:heightCon];
+    [profileImageView4 addConstraints:widthCon];
+}
+
+-(void)addProfileImage5Constraints
+{
+    NSDictionary *imageDict = @{@"imageView5":profileImageView5};
+    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView5]-0-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
+    NSArray *heightCon = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView5(height)]"
+                                                                           options:0
+                                                                           metrics:@{@"height":@(CARD_HEIGHT)}
+                                                                             views:imageDict];
+
+    NSArray *widthCon = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView5(width)]"
+                                                                options:0
+                                                                metrics:@{@"width":@(CARD_WIDTH)}
+                                                                  views:imageDict];
+
+    [imageScroll addConstraints:xPosition];
+    [profileImageView5 addConstraints:heightCon];
+    [profileImageView5 addConstraints:widthCon];
+}
+
+-(void)addProfileImage6Constraints
+{
+    NSDictionary *imageDict = @{@"imageView":profileImageView, @"imageView2":profileImageView2, @"imageView3":profileImageView3, @"imageView4": profileImageView4, @"imageView5":profileImageView5, @"imageView6":profileImageView6};
+    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[imageView6]-0-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
+    NSArray *heightCon = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView6(height)]"
+                                                                           options:0
+                                                                           metrics:@{@"height":@(CARD_HEIGHT)}
+                                                                             views:imageDict];
+
+    NSArray *widthCon = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView6(width)]"
+                                                                options:0
+                                                                metrics:@{@"width":@(CARD_WIDTH)}
+                                                                  views:imageDict];
+
+    NSArray *sixViewsCons = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[imageView]-[imageView2]-[imageView3]-[imageView4]-[imageView5]-[imageView6]"
                                                                     options:0
                                                                     metrics:nil
                                                                       views:imageDict];
     [imageScroll addConstraints:xPosition];
-    [profileImageView3 addConstraints:imgConstraint_POS_H];
-    [profileImageView3 addConstraints:imgConstraint_POS_V];
-    [imageScroll addConstraints:threeViewsCons];
+    [profileImageView6 addConstraints:heightCon];
+    [profileImageView6 addConstraints:widthCon];
+    [imageScroll addConstraints:sixViewsCons];
 }
 
-
-
-
--(void)addButton1Constraints
+#pragma mark -- VIEW INDICATOR CONSTRAINTS
+-(void)addView1Constraints
 {
-    NSDictionary *buttonDict = @{@"b1": b1};
-    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b1(12)]"
-                                                                     options:0
-                                                                     metrics:nil
-                                                                       views:buttonDict];
-    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b1(12)]"
-                                                                     options:0
-                                                                     metrics:nil
-                                                                       views:buttonDict];
-    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b1]-10-|"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-32-[b1]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                    views:buttonDict];
-    [b1 addConstraints:buttonHeight];
-    [b1 addConstraints:buttonWidth];
-    [imageScroll addConstraints:infoCon_PosH];
-    [imageScroll addConstraints:infoCon_PosV];
+    NSDictionary *viewDict = @{@"v1": v1};
+    NSArray *viewHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[v1(12)]"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:viewDict];
+    NSArray *viewWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v1(12)]"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    NSArray *trailingH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v1]-12-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    [v1 addConstraints:viewHeight];
+    [v1 addConstraints:viewWidth];
+    [self addConstraints:trailingH];
 }
 
--(void)addButton2Constraints
+-(void)addView2Constraints
 {
-    NSDictionary *buttonDict = @{@"b2": b2};
-    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b2(12)]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b2(12)]"
-                                                                   options:0
-                                                                   metrics:nil
-                                                                     views:buttonDict];
-    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b2]-10-|"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-47-[b2]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    [b2 addConstraints:buttonHeight];
-    [b2 addConstraints:buttonWidth];
-    [imageScroll addConstraints:infoCon_PosH];
-    [imageScroll addConstraints:infoCon_PosV];
+    NSDictionary *viewDict = @{@"v2": v2};
+    NSArray *viewHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[v2(12)]"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:viewDict];
+    NSArray *viewWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v2(12)]"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    NSArray *trailingH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v2]-12-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    [v2 addConstraints:viewHeight];
+    [v2 addConstraints:viewWidth];
+    [self addConstraints:trailingH];
 }
 
--(void)addButton3Constraints
+-(void)addView3Constraints
 {
-    NSDictionary *buttonDict = @{@"b3": b3};
-    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b3(12)]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b3(12)]"
-                                                                   options:0
-                                                                   metrics:nil
-                                                                     views:buttonDict];
-    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b3]-10-|"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-62-[b3]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    [b3 addConstraints:buttonHeight];
-    [b3 addConstraints:buttonWidth];
-    [imageScroll addConstraints:infoCon_PosH];
-    [imageScroll addConstraints:infoCon_PosV];
+    NSDictionary *viewDict = @{@"v3": v3};
+    NSArray *viewHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[v3(12)]"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:viewDict];
+    NSArray *viewWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v3(12)]"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    NSArray *trailingH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v3]-12-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    [v3 addConstraints:viewHeight];
+    [v3 addConstraints:viewWidth];
+    [self addConstraints:trailingH];
 }
 
--(void)addButton4Constraints
+-(void)addView4Constraints
 {
-    NSDictionary *buttonDict = @{@"b4": b4};
-    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b4(12)]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b4(12)]"
-                                                                   options:0
-                                                                   metrics:nil
-                                                                     views:buttonDict];
-    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b4]-10-|"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-77-[b4]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    [b4 addConstraints:buttonHeight];
-    [b4 addConstraints:buttonWidth];
-    [imageScroll addConstraints:infoCon_PosH];
-    [imageScroll addConstraints:infoCon_PosV];
-}
--(void)addButton5Constraints
-{
-    NSDictionary *buttonDict = @{@"b5": b5};
-    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b5(12)]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b5(12)]"
-                                                                   options:0
-                                                                   metrics:nil
-                                                                     views:buttonDict];
-    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b5]-10-|"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-92-[b5]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    [b5 addConstraints:buttonHeight];
-    [b5 addConstraints:buttonWidth];
-    [imageScroll addConstraints:infoCon_PosH];
-    [imageScroll addConstraints:infoCon_PosV];
+    NSDictionary *viewDict = @{@"v4": v4};
+    NSArray *viewHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[v4(12)]"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:viewDict];
+    NSArray *viewWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v4(12)]"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    NSArray *trailingH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v4]-12-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    [v4 addConstraints:viewHeight];
+    [v4 addConstraints:viewWidth];
+    [self addConstraints:trailingH];
 }
 
--(void)addButton6Constraints
+-(void)addView5Constraints
 {
-    NSDictionary *buttonDict = @{@"b6": b6};
-    NSArray *buttonHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[b6(12)]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *buttonWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b6(12)]"
-                                                                   options:0
-                                                                   metrics:nil
-                                                                     views:buttonDict];
-    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[b6]-10-|"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-107-[b6]"
-                                                                    options:0
-                                                                    metrics:nil
-                                                                      views:buttonDict];
-    [b6 addConstraints:buttonHeight];
-    [b6 addConstraints:buttonWidth];
-    [imageScroll addConstraints:infoCon_PosH];
-    [imageScroll addConstraints:infoCon_PosV];
+    NSDictionary *viewDict = @{@"v5": v5};
+    NSArray *viewHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[v5(12)]"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:viewDict];
+    NSArray *viewWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v5(12)]"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    NSArray *trailingH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v5]-12-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    [v5 addConstraints:viewHeight];
+    [v5 addConstraints:viewWidth];
+    [self addConstraints:trailingH];
 }
 
+-(void)addView6Constraints
+{
+    NSDictionary *viewDict = @{@"v1":v1, @"v2":v2, @"v3":v3, @"v4":v4, @"v5":v5, @"v6":v6};
+    NSArray *viewHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[v6(12)]"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:viewDict];
+
+    NSArray *viewWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v6(12)]"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+
+    NSArray *trailingH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[v6]-12-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+
+    NSArray *sixSpaces = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[v1]-2-[v2]-2-[v3]-2-[v4]-2-[v5]-2-[v6]"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:viewDict];
+    [v6 addConstraints:viewHeight];
+    [v6 addConstraints:viewWidth];
+    [self addConstraints:trailingH];
+    [self addConstraints:sixSpaces];
+}
+
+
+
+#pragma mark -- YES & NO BUTTONS
 -(void)addNoButtonConstraints
 {
     NSDictionary *buttonDict = @{@"noButton": noButton};
@@ -745,14 +853,3 @@ static float CARD_WIDTH;
     [imageScroll addConstraints:infoCon_PosV];
 }
 @end
-
-
-
-
-
-
-
-
-
-
-

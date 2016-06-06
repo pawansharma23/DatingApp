@@ -7,10 +7,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Messaging View Controller-->
+        <!--Messaging List-->
         <scene sceneID="BWr-8Y-dWO">
             <objects>
-                <viewController id="EBs-iM-r0e" customClass="MessagingViewController" sceneMemberID="viewController">
+                <viewController id="EBs-iM-r0e" customClass="MessagingList" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1PV-uY-wZa"/>
                         <viewControllerLayoutGuide type="bottom" id="zw8-hZ-gUu"/>
@@ -377,7 +377,7 @@
                         <outlet property="navigationBar" destination="3n8-Uc-OFc" id="dr8-Ff-9Jx"/>
                         <outlet property="tableView" destination="bjW-mX-cBV" id="nSr-gR-vIa"/>
                         <outlet property="textField" destination="47R-B1-Jxi" id="EmZ-b2-m7z"/>
-                        <segue destination="HfP-qY-u8H" kind="show" identifier="toUserDetail" id="NsL-bz-R7W"/>
+                        <segue destination="wHD-Bt-Hz6" kind="show" identifier="toUserInfo" id="HGA-3B-14b"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Czz-2l-2eL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -401,6 +401,46 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0f7-kD-5pl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1170" y="353"/>
+        </scene>
+        <!--Messager Profile Info-->
+        <scene sceneID="abV-Ul-90F">
+            <objects>
+                <tableViewController id="wHD-Bt-Hz6" customClass="MessagerProfileInfo" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="A6j-ri-tYg">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="dJg-Md-8kZ" style="IBUITableViewCellStyleDefault" id="mbl-0P-BRc" customClass="MessagerTopCell">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mbl-0P-BRc" id="jZS-aU-vxC">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dJg-Md-8kZ">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                            <variation key="heightClass=regular-widthClass=compact">
+                                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            </variation>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="wHD-Bt-Hz6" id="TuW-dt-3Su"/>
+                            <outlet property="delegate" destination="wHD-Bt-Hz6" id="jwD-9L-0rZ"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <segue destination="HfP-qY-u8H" kind="show" identifier="toMessagerProfile" id="EeT-I2-g1M"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rl5-HN-HP6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3778.5" y="352.5"/>
         </scene>
         <!--Title-->
         <scene sceneID="rwn-5b-ci4">
@@ -437,18 +477,8 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XQg-45-mKE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <swipeGestureRecognizer direction="right" id="8jB-6e-C56">
-                    <connections>
-                        <action selector="swipeGestureUp:" destination="HfP-qY-u8H" id="Eiy-yw-KlC"/>
-                    </connections>
-                </swipeGestureRecognizer>
-                <swipeGestureRecognizer direction="right" id="9q0-AF-uEV">
-                    <connections>
-                        <action selector="swipeGestureDown:" destination="HfP-qY-u8H" id="yxQ-Tr-vLM"/>
-                    </connections>
-                </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="3673" y="352"/>
+            <point key="canvasLocation" x="4650" y="352.5"/>
         </scene>
     </scenes>
 </document>

@@ -7,7 +7,7 @@
 //
 
 #import "MessageDetailViewCon.h"
-#import "MessagingViewController.h"
+#import "MessagingList.h"
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
 #import <Parse/Parse.h>
@@ -16,11 +16,11 @@
 #import "MessageManager.h"
 #import "UserManager.h"
 #import "UIImage+Additions.h"
-#import "MessagerProfileVC.h"
 #import "MatchView.h"
 #import "NSString+Additions.h"
 #import "IncomingCell.h"
 #import "OutgoingCell.h"
+#import "MessagerProfileInfo.h"
 
 #define TABBAR_HEIGHT 49.0f
 #define TEXTFIELD_HEIGHT 70.0f
@@ -59,11 +59,7 @@ MatchViewDelegate>
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
     self.lastObject = [NSDictionary new];
-
-
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-    //self.forwardToUserDetail.tintColor = [UIColor mikeGray];
-    //self.forwardToUserDetail.image = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.backToMessaging.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.backToMessaging.tintColor = [UIColor mikeGray];
 
@@ -79,7 +75,6 @@ MatchViewDelegate>
     self.incomingChatData = [NSMutableArray new];
     self.outgoingChatData = [NSMutableArray new];
 
-    [self loadChatWithImage];
     [self loadRecipientUserData];
     [self loadIncomingMessages];
     [self loadOutgoingMessages];
@@ -260,23 +255,13 @@ MatchViewDelegate>
     }];
 }
 
--(void)loadChatWithImage
-{
-    [self.messageManager queryForChattersImage:^(NSArray *result, NSError *error) {
-
-        self.lastObject = result.lastObject;
-        self.navigationItem.title = self.lastObject[@"repName"];
-    }];
-}
-
 -(void)loadRecipientUserData
 {
     UserManager *userManager = [UserManager new];
     [userManager queryForUserData:self.recipient.objectId withUser:^(User *users, NSError *error) {
 
-        NSDictionary *userDict = users;
-        self.userGiven = userDict[@"givenName"];
-        NSArray *array = userDict[@"profileImages"];
+        self.userGiven = users[@"givenName"];
+        NSArray *array = users[@"profileImages"];
         self.userImage = array.firstObject;
 
         [self loadMatchView];
@@ -295,16 +280,16 @@ MatchViewDelegate>
 #pragma mark -- MATCHVIEW DELEGATE
 -(void)didPressMatchView
 {
-    [self performSegueWithIdentifier:@"toUserDetail" sender:self];
+    [self performSegueWithIdentifier:@"toUserInfo" sender:self];
 }
 
 #pragma mark - Navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"toUserDetail"])
+    if ([segue.identifier isEqualToString:@"toUserInfo"])
     {
-        MessagerProfileVC *mpvc = [segue destinationViewController];
-        mpvc.messagingUser = self.recipient;
+        MessagerProfileInfo *mpi = [segue destinationViewController];
+        mpi.messagingUser = self.recipient;
     }
 }
 

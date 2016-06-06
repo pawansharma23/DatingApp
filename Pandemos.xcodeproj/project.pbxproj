@@ -35,6 +35,8 @@
 		26B954561CB82202006245EE /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B954551CB82202006245EE /* NSString+Additions.m */; };
 		26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B954581CB82A89006245EE /* UIImageView+Additions.m */; };
 		26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B9545B1CBAD0D5006245EE /* UserBuilder.m */; };
+		26BA6F641D04C45A00745FC9 /* MessagerProfileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6F631D04C45A00745FC9 /* MessagerProfileInfo.m */; };
+		26BA6F6B1D04D2E900745FC9 /* MessagerTopCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6F6A1D04D2E900745FC9 /* MessagerTopCell.m */; };
 		26C1E3D61C3194B10020349A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D51C3194B10020349A /* CoreLocation.framework */; };
 		26C1E3D81C31AB590020349A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D71C31AB590020349A /* MobileCoreServices.framework */; };
 		26C70EAF1CA5B15100E9B98F /* PandemosUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0AE1C1DB53F0054414E /* PandemosUITests.m */; };
@@ -50,7 +52,7 @@
 		26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0C41C21BDF10054414E /* PFLoginViewController.m */; };
 		26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD0401C4748F700944300 /* MessageDetailViewCon.m */; };
 		26C70EC31CA5B18F00E9B98F /* MessagingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26DBD03D1C4747B700944300 /* MessagingCell.m */; };
-		26C70EC41CA5B18F00E9B98F /* MessagingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */; };
+		26C70EC41CA5B18F00E9B98F /* MessagingList.m in Sources */ = {isa = PBXBuildFile; fileRef = 26E3DB8C1C3F4EC700699FA5 /* MessagingList.m */; };
 		26C70EC51CA5B18F00E9B98F /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA1061C25A86C0054414E /* ProfileViewController.m */; };
 		26C70EC61CA5B18F00E9B98F /* AlbumCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266451581C5D78CB00D98136 /* AlbumCustomCell.m */; };
 		26C70EC71CA5B18F00E9B98F /* PreviewUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23ED1C60498300A34C0B /* PreviewUserProfileVC.m */; };
@@ -185,6 +187,10 @@
 		26B954581CB82A89006245EE /* UIImageView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Additions.m"; sourceTree = "<group>"; };
 		26B9545A1CBAD0D5006245EE /* UserBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserBuilder.h; sourceTree = "<group>"; };
 		26B9545B1CBAD0D5006245EE /* UserBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserBuilder.m; sourceTree = "<group>"; };
+		26BA6F621D04C45A00745FC9 /* MessagerProfileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagerProfileInfo.h; sourceTree = "<group>"; };
+		26BA6F631D04C45A00745FC9 /* MessagerProfileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagerProfileInfo.m; sourceTree = "<group>"; };
+		26BA6F691D04D2E900745FC9 /* MessagerTopCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagerTopCell.h; sourceTree = "<group>"; };
+		26BA6F6A1D04D2E900745FC9 /* MessagerTopCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagerTopCell.m; sourceTree = "<group>"; };
 		26C1E3D51C3194B10020349A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
@@ -214,8 +220,8 @@
 		26DBD03D1C4747B700944300 /* MessagingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagingCell.m; sourceTree = "<group>"; };
 		26DBD03F1C4748F700944300 /* MessageDetailViewCon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDetailViewCon.h; sourceTree = "<group>"; };
 		26DBD0401C4748F700944300 /* MessageDetailViewCon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageDetailViewCon.m; sourceTree = "<group>"; };
-		26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagingViewController.h; sourceTree = "<group>"; };
-		26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagingViewController.m; sourceTree = "<group>"; };
+		26E3DB8B1C3F4EC700699FA5 /* MessagingList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagingList.h; sourceTree = "<group>"; };
+		26E3DB8C1C3F4EC700699FA5 /* MessagingList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagingList.m; sourceTree = "<group>"; };
 		26EC33031C76AFF8009E821D /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
 		26EC33041C76AFF8009E821D /* Facebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facebook.m; sourceTree = "<group>"; };
 		26EE23991C42BD7D006F328E /* CVSettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CVSettingCell.h; sourceTree = "<group>"; };
@@ -543,6 +549,17 @@
 			name = Storyboards;
 			sourceTree = "<group>";
 		};
+		26BA6F651D04C46100745FC9 /* MessagerInfoPage */ = {
+			isa = PBXGroup;
+			children = (
+				26BA6F621D04C45A00745FC9 /* MessagerProfileInfo.h */,
+				26BA6F631D04C45A00745FC9 /* MessagerProfileInfo.m */,
+				26BA6F691D04D2E900745FC9 /* MessagerTopCell.h */,
+				26BA6F6A1D04D2E900745FC9 /* MessagerTopCell.m */,
+			);
+			name = MessagerInfoPage;
+			sourceTree = "<group>";
+		};
 		26C62B851CA238F60061B7D7 /* Albums List */ = {
 			isa = PBXGroup;
 			children = (
@@ -660,9 +677,10 @@
 			isa = PBXGroup;
 			children = (
 				2653C0371CD7966500DDBD65 /* Cells */,
-				26E3DB8B1C3F4EC700699FA5 /* MessagingViewController.h */,
-				26E3DB8C1C3F4EC700699FA5 /* MessagingViewController.m */,
+				26E3DB8B1C3F4EC700699FA5 /* MessagingList.h */,
+				26E3DB8C1C3F4EC700699FA5 /* MessagingList.m */,
 				2614A7081CA1DF9F00D6F6AA /* MessagingDetail */,
+				26BA6F651D04C46100745FC9 /* MessagerInfoPage */,
 				260317BB1CE2339F00C37C67 /* MessagerProfile */,
 			);
 			name = Messaging;
@@ -915,7 +933,9 @@
 				261ADA331CF5F74C00C7ECCD /* Match.m in Sources */,
 				26B954591CB82A89006245EE /* UIImageView+Additions.m in Sources */,
 				26C70EC31CA5B18F00E9B98F /* MessagingCell.m in Sources */,
-				26C70EC41CA5B18F00E9B98F /* MessagingViewController.m in Sources */,
+				26C70EC41CA5B18F00E9B98F /* MessagingList.m in Sources */,
+				26BA6F641D04C45A00745FC9 /* MessagerProfileInfo.m in Sources */,
+				26BA6F6B1D04D2E900745FC9 /* MessagerTopCell.m in Sources */,
 				26C70EC51CA5B18F00E9B98F /* ProfileViewController.m in Sources */,
 				2601A33C1CECD8A70041B17F /* UICollectionView+Pandemos.m in Sources */,
 				26C70EC61CA5B18F00E9B98F /* AlbumCustomCell.m in Sources */,

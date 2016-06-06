@@ -24,6 +24,7 @@
 @dynamic image;
 @dynamic faceID;
 @dynamic givenName;
+@dynamic lastName;
 @dynamic birthday;
 @dynamic age;
 @dynamic gender;

@@ -7,7 +7,7 @@
 //  Copyright © 2016 Michael Sevy. All rights reserved.
 //
 
-#import "MessagingViewController.h"
+#import "MessagingList.h"
 #import "MessagingCell.h"
 #import "MatchesCell.h"
 #import "MessageDetailViewCon.h"
@@ -17,7 +17,7 @@
 #import "UIColor+Pandemos.h"
 #import "UIImage+Additions.h"
 
-@interface MessagingViewController ()
+@interface MessagingList ()
 <UITableViewDataSource,
 UITableViewDelegate,
 UserManagerDelegate,
@@ -42,7 +42,7 @@ UICollectionViewDataSource>
 
 @end
 
-@implementation MessagingViewController
+@implementation MessagingList
 
 - (void)viewDidLoad
 {
@@ -68,8 +68,6 @@ UICollectionViewDataSource>
     self.automaticallyAdjustsScrollViewInsets = NO;
 
     [self setupMatches];
-
-
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -115,9 +113,9 @@ UICollectionViewDataSource>
         }
         else
         {
-            [self.messageManager sendInitialMessage:self.recipientUser];
+            //[self.messageManager sendInitialMessage:self.recipientUser];
             NSLog(@"first time chatters send initial message");
-            [self performSegueWithIdentifier:@"detailMessage" sender:self];
+           // [self performSegueWithIdentifier:@"detailMessage" sender:self];
         }
     }];
 }
@@ -167,8 +165,11 @@ UICollectionViewDataSource>
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    MessageDetailViewCon *mdvc = segue.destinationViewController;
-    mdvc.recipient = self.recipientUser;
+    if ([segue.identifier isEqualToString:@"detailMessage"])
+    {
+        MessageDetailViewCon *mdvc = segue.destinationViewController;
+        mdvc.recipient = self.recipientUser;
+    }
 }
 
 - (IBAction)onBackButton:(UIBarButtonItem *)sender

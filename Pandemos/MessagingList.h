@@ -10,7 +10,7 @@
 #import "User.h"
 #import <Parse/Parse.h>
 
-@interface MessagingViewController : UIViewController
+@interface MessagingList : UIViewController
 
 @property (strong, nonatomic) User *pfUser;
 @property (strong, nonatomic) PFRelation *relation;

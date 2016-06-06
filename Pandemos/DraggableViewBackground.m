@@ -12,18 +12,12 @@
 #import "UIButton+Additions.h"
 #import "AppConstants.h"
 #import "UIImage+Additions.h"
+#import "DraggableView.h"
 
 @interface DraggableViewBackground()<DraggableViewDelegate>
 
-@property (strong, nonatomic) UserManager *userManager;
-@property (strong, nonatomic) NSString *gender;
-@property (strong, nonatomic) NSString *sexPref;
-@property (strong, nonatomic) NSString *milesAway;
-@property (strong, nonatomic) NSString *minAge;
-@property (strong, nonatomic) NSString *maxAge;
-@property (strong, nonatomic) NSString *userImageForMatching;
 @property (strong, nonatomic) DraggableView *dragView;
-@property int imageCount;
+
 @end
 
 @implementation DraggableViewBackground
@@ -37,12 +31,18 @@
 //avoid performance and memory costs
 static const int MAX_BUFFER_SIZE = 2; //%%% max number of cards loaded at any given time, must be greater than 1
 static float CARD_HEIGHT;
-//= 386; //%%% height of the draggable card
 static float CARD_WIDTH;
-//= 290; //%%% width of the draggable card
 
 @synthesize potentialMatchData; //%%% all the labels I'm using as example data at the moment
 @synthesize allCards;//%%% all the cards
+@synthesize userManager;
+@synthesize gender;
+@synthesize sexPref;
+@synthesize milesAway;
+@synthesize minAge;
+@synthesize maxAge;
+@synthesize userImageForMatching;
+@synthesize profileImages;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -51,10 +51,10 @@ static float CARD_WIDTH;
     {
         [super layoutSubviews];
         //1) load current user search constraints
-        self.potentialMatchData = [NSMutableArray new];
-        self.userManager = [UserManager new];
-        self.userManager.delegate = self;
-        [self.userManager loadUserData:[User currentUser]];
+        potentialMatchData = [NSMutableArray new];
+        userManager = [UserManager new];
+        userManager.delegate = self;
+        [userManager loadUserData:[User currentUser]];
     
         loadedCards = [[NSMutableArray alloc] init];
         allCards = [[NSMutableArray alloc] init];
@@ -63,10 +63,10 @@ static float CARD_WIDTH;
         cardsLoadedIndex = 0;
         imagesLoadedIndex = 0;
 
-        self.backgroundColor = [UIColor colorWithRed:.92 green:.93 blue:.95 alpha:1]; //the gray background colors
         [self.dragView.noButton addTarget:self action:@selector(onSwipeLeft:) forControlEvents:UIControlEventTouchUpInside];
         [self.dragView.yesButton addTarget:self action:@selector(onSwipeRight) forControlEvents:UIControlEventTouchUpInside];
     }
+
     return self;
 }
 
@@ -94,19 +94,15 @@ static float CARD_WIDTH;
     }
     self.dragView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH)/2, (self.frame.size.height - CARD_HEIGHT)/1.25, CARD_WIDTH, CARD_HEIGHT)];
     User *user = [self.potentialMatchData objectAtIndex:index];
-    self.dragView.profileImageView.image = [UIImage imageWithString:user.profileImages.firstObject];
+
+    //self.dragView.profileImageView.image = [UIImage imageWithString:user.profileImages.firstObject];
+    //load all photo images here?
+    //[self loadProfileImages];
+
     NSString *infoText = [NSString stringWithFormat:@"%@, %@", user.givenName, [user ageFromBirthday:user.birthday]];
     self.dragView.information.text = infoText;
     self.dragView.schoolLabel.text = user.lastSchool;
-    //set current users images
-//    [self.delegate didFetchImagesForMatchedProfile:user.profileImages];
-//    matchProfileImages = user.profileImages;
- //   self.dragView.profileImageView2.image = [UIImage imageWithString:[user.profileImages objectAtIndex:1]];
 
-    [UIButton loadIndicatorLightsForProfileImages:self.dragView.b1 image2:self.dragView.b2 image3:self.dragView.b3 image4:self.dragView.b4 image5:self.dragView.b5 image6:self.dragView.b6 imageCount:(int)user.profileImages.count];
-
-    [UIButton setIndicatorLight:self.dragView.b1 l2:self.dragView.b2 l3:self.dragView.b3 l4:self.dragView.b4 l5:self.dragView.b5 l6:self.dragView.b6 forCount:0];
-    
     self.dragView.delegate = self;
     
     return self.dragView;
@@ -151,6 +147,81 @@ static float CARD_WIDTH;
     {
         NSLog(@"out of matches");
     }
+}
+
+-(void)loadProfileImages
+{
+    User *userDict = [self.potentialMatchData objectAtIndex:0];//changed to current user objectAtIndex
+    NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", userDict[@"givenName"], [userDict[@"birthday"] ageFromBirthday:userDict[@"birthday"]]];
+    self.dragView.information.text = nameAndAge;
+    self.dragView.schoolLabel.text = userDict[@"lastSchool"];
+    //self.dragView.v1.backgroundColor = [UIColor whiteColor];
+    //send a usermanaer delegate the profileimagecount to call in View
+    self.profileImages = userDict[@"profileImages"];
+
+    switch ((int)self.profileImages.count)
+    {
+        case 1:
+            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height);
+            self.dragView.profileImageView.image = [UIImage imageWithImage:[UIImage imageWithString:[self.profileImages objectAtIndex:0]] scaledToSize:CGSizeMake(375, 667)];
+            [self.dragView.v2 removeFromSuperview];
+            [self.dragView.v3 removeFromSuperview];
+            [self.dragView.v4 removeFromSuperview];
+            [self.dragView.v5 removeFromSuperview];
+            [self.dragView.v6 removeFromSuperview];
+            break;
+        case 2:
+            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 2);
+            self.dragView.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+            self.dragView.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+            [self.dragView.v3 removeFromSuperview];
+            [self.dragView.v4 removeFromSuperview];
+            [self.dragView.v5 removeFromSuperview];
+            [self.dragView.v6 removeFromSuperview];
+            break;
+        case 3:
+            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 3);
+            self.dragView.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+            self.dragView.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+            self.dragView.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+            [self.dragView.v4 removeFromSuperview];
+            [self.dragView.v5 removeFromSuperview];
+            [self.dragView.v6 removeFromSuperview];
+            break;
+        case 4:
+            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 4);
+            self.dragView.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+            self.dragView.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+            self.dragView.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+            self.dragView.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
+            [self.dragView.v5 removeFromSuperview];
+            [self.dragView.v6 removeFromSuperview];
+            break;
+        case 5:
+            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 5);
+            self.dragView.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+            self.dragView.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+            self.dragView.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+            self.dragView.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
+            self.dragView.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
+            [self.dragView.v6 removeFromSuperview];
+            break;
+        case 6:
+            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 6);
+            self.dragView.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+            self.dragView.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+            self.dragView.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+            self.dragView.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
+            self.dragView.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
+            self.dragView.profileImageView6.image = [UIImage imageWithString:[self.profileImages objectAtIndex:5]];
+            break;
+        default:
+            NSLog(@"no images for ProfileImageView switch");
+            break;
+    }
+
+    [self loadCards];
+
 }
 
 #pragma mark -- SWIPE DIRECTION ACTIONS
@@ -221,6 +292,7 @@ static float CARD_WIDTH;
     self.maxAge = userData[@"maxAge"];
     self.gender = userData[@"gender"];
 
+
     //this method take user preferences and returns allMatchedUsers
     [self.userManager loadUsersUnseenPotentialMatches:self.sexPref minAge:self.minAge maxAge:self.maxAge];
 }
@@ -267,11 +339,13 @@ static float CARD_WIDTH;
     {
 
         self.potentialMatchData = intersectionArray;
-        [self loadCards];
+        //[self loadCards];
+        [self loadProfileImages];
+
+
     }
     else
     {
-        //no matches left
         NSLog(@"no cards left");
     }
 }
@@ -279,11 +353,5 @@ static float CARD_WIDTH;
 -(void)failedToFetchPotentialMatchData:(NSError *)error
 {
     NSLog(@"NO POTENTIAL MATCHES FOR USER TO SEE: %@", error);
-}
-
-#pragma mark -- HELPERS
--(void)swipeUpForNextImage
-{
-
 }
 @end

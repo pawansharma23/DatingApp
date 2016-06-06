@@ -28,14 +28,12 @@
 @property (nonatomic,strong)UIImageView* profileImageView4;
 @property (nonatomic,strong)UIImageView* profileImageView5;
 @property (nonatomic,strong)UIImageView* profileImageView6;
-@property (nonatomic,strong)UIButton *b1;
-@property (nonatomic,strong)UIButton *b2;
-@property (nonatomic,strong)UIButton *b3;
-@property (nonatomic,strong)UIButton *b4;
-@property (nonatomic,strong)UIButton *b5;
-@property (nonatomic,strong)UIButton *b6;
-@property (nonatomic,strong)NSNumber *imageCount;
-@property (nonatomic,strong)UIView *v1;
 
-@property int count;
+@property (nonatomic,strong)UIView *v1;
+@property (nonatomic,strong)UIView *v2;
+@property (nonatomic,strong)UIView *v3;
+@property (nonatomic,strong)UIView *v4;
+@property (nonatomic,strong)UIView *v5;
+@property (nonatomic,strong)UIView *v6;
+@property unsigned long imageCount;
 @end

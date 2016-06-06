@@ -39,7 +39,7 @@ UserManagerDelegate>
 }
 //View Properties
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIView *viewInsideScrollView;
+@property (strong, nonatomic) IBOutlet UIView *viewInsideScrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
 
@@ -129,14 +129,11 @@ UserManagerDelegate>
     self.scrollView.scrollEnabled = YES;
     self.scrollView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.viewInsideScrollView];
-    [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 900)];
+    [self.scrollView setContentSize:CGSizeMake(self.viewInsideScrollView.frame.size.width, self.viewInsideScrollView.frame.size.height + 400)];
     self.scrollView.scrollsToTop = YES;
     self.scrollView.clipsToBounds = YES;
-    
 
-
-
-
+    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 986)];
 
     [self setupManagersProfileVC];
 
@@ -286,7 +283,8 @@ UserManagerDelegate>
 
     [self.minimumAgeSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
     self.minimumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
-    self.minimumAgeSlider.thumbTintColor = [UIColor blackColor];
+    self.minimumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
+    self.minimumAgeSlider.thumbTintColor = [UIColor facebookBlue];
 
     [self.currentUser setObject:minAgeStr forKey:@"minAge"];
 
@@ -306,8 +304,9 @@ UserManagerDelegate>
     self.maximumAgeLabel.text = maxAge;
 
     [self.maximumAgeSlider setThumbImage:[self.maximumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
-    self.maximumAgeSlider.maximumTrackTintColor = [UIColor yellowGreen];
-    self.maximumAgeSlider.thumbTintColor = [UIColor blackColor];
+    self.maximumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
+    self.maximumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
+    self.maximumAgeSlider.thumbTintColor = [UIColor facebookBlue];
 
     [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
 
@@ -465,19 +464,31 @@ UserManagerDelegate>
 
     NSString *miles = userData[@"milesAway"];
     [self setMilesAway:miles];
+    [self.milesSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
+    self.milesSlider.minimumTrackTintColor = [UIColor yellowGreen];
+    self.milesSlider.maximumTrackTintColor = [UIColor lightGrayColor];
+    self.milesSlider.thumbTintColor = [UIColor facebookBlue];
 
     NSString *min = userData[@"minAge"];
     NSString *max = userData[@"maxAge"];
     [self setMinAndMaxAgeSliders:min andMax:max];
     [self.minimumAgeSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
     self.minimumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
-    self.minimumAgeSlider.thumbTintColor = [UIColor blackColor];
+    self.minimumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
+    self.minimumAgeSlider.thumbTintColor = [UIColor facebookBlue];
+
     [self.maximumAgeSlider setThumbImage:[self.maximumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
-    self.maximumAgeSlider.maximumTrackTintColor = [UIColor yellowGreen];
-    self.maximumAgeSlider.thumbTintColor = [UIColor blackColor];
+    self.maximumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
+    self.maximumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
+    self.maximumAgeSlider.thumbTintColor = [UIColor facebookBlue];
+
     self.jobLabel.text = userData[@"work"];
     self.educationLabel.text = userData[@"lastSchool"];
     [self setPublicProfile:userData[@"publicProfile"]];
+
+
+    //what the viewInside height
+    NSLog(@"viewinside height: %f", self.viewInsideScrollView.frame.size.height);   
 }
 
 -(void)failedToFetchUserData:(NSError *)error

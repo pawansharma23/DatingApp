@@ -11,7 +11,7 @@
 #import "User.h"
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "MessagingViewController.h"
+#import "MessagingList.h"
 #import <MessageUI/MessageUI.h>
 #import "PotentialMatch.h"
 #import "UIColor+Pandemos.h"

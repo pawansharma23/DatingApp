@@ -165,12 +165,6 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.nextURL = nextPage.nextPage;
 }
 
-//-(void)didReceiveParsedPhotoSource:(NSString *)photoURL
-//{
-//    self.selectedImage = photoURL;
-//    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
-//}
-
 -(void)didReceiveParsedPhotoSourceData:(NSData *)photoData
 {
     self.selectedImageData = photoData;

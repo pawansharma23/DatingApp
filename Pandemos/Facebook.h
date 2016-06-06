@@ -14,6 +14,7 @@
 @property (strong, nonatomic) NSString *location;
 @property (strong, nonatomic) NSString *timezone;
 @property (strong, nonatomic) NSString *givenName;
+@property (strong, nonatomic) NSString *lastName;
 @property (strong, nonatomic) NSString *birthday;
 @property (strong, nonatomic) NSString *identification;
 @property (strong, nonatomic) NSString *gender;

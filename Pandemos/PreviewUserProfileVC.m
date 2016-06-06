@@ -10,7 +10,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "MessagingViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"

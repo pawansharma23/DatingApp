@@ -17,6 +17,7 @@
 @property (strong, nonatomic) UIImage *image;
 @property (strong, nonatomic) NSString *faceID;
 @property (strong, nonatomic) NSString *givenName;
+@property (strong, nonatomic) NSString *lastName;
 @property (strong, nonatomic) NSString *birthday;
 @property (strong, nonatomic) NSString *age;
 @property (strong, nonatomic) NSString *gender;
