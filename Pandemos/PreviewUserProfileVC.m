@@ -9,7 +9,6 @@
 #import "PreviewUserProfileVC.h"
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-#import <MobileCoreServices/MobileCoreServices.h>
 #import <MessageUI/MessageUI.h>
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
@@ -18,39 +17,27 @@
 #import "UIImage+Additions.h"
 #import "User.h"
 #import "UserManager.h"
+#import "ProfileImageView.h"
 
 @interface PreviewUserProfileVC ()<
-UIGestureRecognizerDelegate,
+UIScrollViewDelegate,
 UserManagerDelegate>
 
-@property (weak, nonatomic) IBOutlet UIImageView *userImage;
-@property (weak, nonatomic) IBOutlet UIButton *image1Indicator;
-@property (weak, nonatomic) IBOutlet UIButton *image2Indicator;
-@property (weak, nonatomic) IBOutlet UIButton *image3Indicator;
-@property (weak, nonatomic) IBOutlet UIButton *image4Indicator;
-@property (weak, nonatomic) IBOutlet UIButton *image5Indicator;
-@property (weak, nonatomic) IBOutlet UIButton *image6Indicator;
-
-@property (weak, nonatomic) IBOutlet UIView *userInfoView;
-@property (weak, nonatomic) IBOutlet UILabel *nameAndAge;
-@property (weak, nonatomic) IBOutlet UILabel *jobLabel;
-@property (weak, nonatomic) IBOutlet UILabel *educationLabel;
-
-@property (weak, nonatomic) IBOutlet UIView *fullDescView;
-@property (weak, nonatomic) IBOutlet UILabel *fullNameAndAge;
-@property (weak, nonatomic) IBOutlet UILabel *fullAboutMe;
-@property (weak, nonatomic) IBOutlet UILabel *fullMilesAway;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *closeBarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *toMatches;
 
 @property (strong, nonatomic) NSString *currentCityAndState;
 @property (strong, nonatomic) User *currentUser;
-@property (strong, nonatomic) User *passedUser;
+
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) NSMutableArray *profileImages;
-@property (strong, nonatomic) NSString *nameAndAgeGlobal;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
 @property int count;
+
+@property (strong, nonatomic) ProfileImageView *piv;
+@property (strong, nonatomic) UIScrollView *imageScroll;
+
 @end
 
 @implementation PreviewUserProfileVC
@@ -65,11 +52,6 @@ UserManagerDelegate>
     self.currentUser = [User currentUser];
     self.profileImages = [NSMutableArray new];
 
-    self.fullDescView.hidden = YES;
-    self.userInfoView.layer.cornerRadius = 8;
-
-    [self setupManagersProfileVCForCurrentUser];
-    [self setupButtonsAndViews];
     [self navBarSetup];
  }
 
@@ -79,18 +61,98 @@ UserManagerDelegate>
 
     self.count = 0;
 
-    [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
-
-    [self.userImage setUserInteractionEnabled:YES];
-    UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureUp:)];
-    [swipeGestureUp setDelegate:self];
-    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
-    [self.userImage addGestureRecognizer:swipeGestureUp];
-    UISwipeGestureRecognizer *swipeGestureDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureDown:)];
-    [swipeGestureDown setDelegate:self];
-    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.userImage addGestureRecognizer:swipeGestureDown];
+    [self setupManagersProfileVCForCurrentUser];
 }
+
+
+#pragma mark -- USER MANAGER DELEGATE
+-(void)setupManagersProfileVCForCurrentUser
+{
+    self.piv = [[ProfileImageView alloc]initWithFrame:self.view.frame];
+    [self.view addSubview:self.piv];
+
+    [self.userManager queryForUserData:self.currentUser.objectId withUser:^(User *user, NSError *error) {
+
+        NSString *bday = user[@"birthday"];
+        NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", user[@"givenName"], [bday ageFromBirthday:bday]];
+        self.piv.nameLabel.text = nameAndAge;
+        self.piv.schoolLabel.text = user[@"lastSchool"];
+        self.profileImages = user[@"profileImages"];
+
+        switch ((int)self.profileImages.count) {
+            case 1:
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height);
+                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+                [self.piv.v2 removeFromSuperview];
+                [self.piv.v3 removeFromSuperview];
+                [self.piv.v4 removeFromSuperview];
+                [self.piv.v5 removeFromSuperview];
+                [self.piv.v6 removeFromSuperview];
+                break;
+            case 2:
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 2);
+                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+                [self.piv.v3 removeFromSuperview];
+                [self.piv.v4 removeFromSuperview];
+                [self.piv.v5 removeFromSuperview];
+                [self.piv.v6 removeFromSuperview];
+                break;
+            case 3:
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 3);
+                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+                [self.piv.v4 removeFromSuperview];
+                [self.piv.v5 removeFromSuperview];
+                [self.piv.v6 removeFromSuperview];
+                break;
+            case 4:
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 4);
+                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+                self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
+                [self.piv.v5 removeFromSuperview];
+                [self.piv.v6 removeFromSuperview];
+                break;
+            case 5:
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 5);
+                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+                self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
+                self.piv.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
+                [self.piv.v6 removeFromSuperview];
+                break;
+            case 6:
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 6);
+                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+                self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
+                self.piv.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
+                self.piv.profileImageView6.image = [UIImage imageWithString:[self.profileImages objectAtIndex:5]];
+                break;
+            default:
+                NSLog(@"no images for ProfileImageView switch");
+                break;
+        }
+        
+    }];
+}
+
+#pragma mark -- NAV
+- (IBAction)onCloseButton:(UIBarButtonItem *)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)toMatches:(UIBarButtonItem *)sender
+{
+    [self performSegueWithIdentifier:@"toMatches" sender:self];
+}
+
 
 #pragma mark -- CLLocation delegate methods
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
@@ -98,132 +160,7 @@ UserManagerDelegate>
 
 }
 
-#pragma mark -- SWIPE GESTURES
-- (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender
-{
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionUp)
-    {
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
 
-            self.count++;
-
-            if (self.count < self.profileImages.count - 1)
-            {
-                NSData *imageData = [self.profileImages objectAtIndex:self.count];
-                self.userImage.image = [UIImage imageWithData:imageData];
-
-                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
-                self.fullDescView.hidden = YES;
-            }
-            else if (self.count == self.profileImages.count - 1)
-            {
-                NSData *imageData = [self.profileImages objectAtIndex:self.count];
-                self.userImage.image = [UIImage imageWithData:imageData];
-
-                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
-                [self lastImageBringUpDesciptionView];
-            }
-        } completion:^(BOOL finished) {
-        }];
-    }
-}
-
-- (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender
-{
-
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionDown) {
-        NSLog(@"swipe down");
-
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
-
-            self.count--;
-
-            if (self.count == 0)
-            {
-                NSData *imageData = [self.profileImages objectAtIndex:self.count];
-                self.userImage.image = [UIImage imageWithData:imageData];
-
-                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
-                self.fullDescView.hidden = YES;
-            }
-            else if(self.count > 0)
-            {
-                NSData *imageData = [self.profileImages objectAtIndex:self.count];
-                self.userImage.image = [UIImage imageWithData:imageData];
-
-                [UIButton setIndicatorLight:_image1Indicator l2:_image2Indicator l3:_image3Indicator l4:_image4Indicator l5:_image5Indicator l6:_image6Indicator forCount:self.count];
-                self.fullDescView.hidden = YES;
-            }
-        } completion:^(BOOL finished) {
-            NSLog(@"animated");
-        }];
-    }
-}
-
-- (IBAction)onCloseButton:(UIBarButtonItem *)sender
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark -- USER MANAGER DELEGATE
--(void)didReceiveUserImages:(NSArray *)images
-{
-    self.profileImages = [NSMutableArray arrayWithArray:images];
-    NSData *imageData = [self.profileImages objectAtIndex:self.count];
-    self.userImage.image = [UIImage imageWithData:imageData];
-    [UIButton loadIndicatorLightsForProfileImages:_image1Indicator image2:_image1Indicator image3:_image3Indicator image4:_image4Indicator image5:_image5Indicator image6:_image6Indicator imageCount:(int)self.profileImages.count];
-    self.image1Indicator.backgroundColor = [UIColor rubyRed];
-}
-
--(void)failedToFetchImages:(NSError *)error
-{
-    NSLog(@"cannot fetch user profile images: %@", error);
-}
-
--(void)didReceiveUserData:(NSArray *)data
-{
-    NSDictionary *userData = [data firstObject];
-    NSString *bday = userData[@"birthday"];
-    self.nameAndAgeGlobal = [NSString stringWithFormat:@"%@, %@", userData[@"givenName"], [bday ageFromBirthday:bday]];
-    self.nameAndAge.text = self.nameAndAgeGlobal;
-    self.educationLabel.text = userData[@"work"];
-    self.jobLabel.text = userData[@"lastSchool"];
-    self.navigationItem.title = userData[@"givenName"];
-}
-
--(void)failedToFetchUserData:(NSError *)error
-{
-    NSLog(@"failed to fetch data: %@", error);
-}
-
-#pragma mark -- HELPERS
--(void)setupManagersProfileVCForCurrentUser
-{
-    [self.userManager loadUserData:self.currentUser];
-    [self.userManager loadUserImages:self.currentUser];
-}
-
--(void)setupButtonsAndViews
-{
-    [UIImageView setupFullSizedImage:self.userImage];
-    [UIButton circleButtonEdges:self.image1Indicator];
-    [UIButton circleButtonEdges:self.image2Indicator];
-    [UIButton circleButtonEdges:self.image3Indicator];
-    [UIButton circleButtonEdges:self.image4Indicator];
-    [UIButton circleButtonEdges:self.image5Indicator];
-    [UIButton circleButtonEdges:self.image6Indicator];
-}
-
--(void)queryAndSetLocation
-{
-    //to get your location
-    //PFGeoPoint *geo = [self.currentUser objectForKey:@"GeoCode"];
-    //  using age object instead
-    //    NSString *birthdayStr = [self.currentUser objectForKey:@"birthday"];
-
-}
 
 -(void)setupLocationInDelegate:(CLLocation*)location
 {
@@ -249,16 +186,7 @@ UserManagerDelegate>
     }];
 }
 
--(void)lastImageBringUpDesciptionView
-{
-    self.fullDescView.hidden = NO;
-    self.fullDescView.layer.cornerRadius = 10;
-    NSString *aboutMe = [self.currentUser objectForKey:@"aboutMe"];
-    self.fullAboutMe.text = aboutMe;
-    self.fullNameAndAge.text = self.nameAndAgeGlobal;
-    self.fullMilesAway.text = self.currentCityAndState;
-}
-
+#pragma mark -- HELPERS
 -(void)navBarSetup
 {
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
@@ -269,5 +197,11 @@ UserManagerDelegate>
     UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(25.0, 25.0)];
     [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
     self.closeBarButton.tintColor = [UIColor darkGrayColor];
+
+    UIImage *matchesNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Forward"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    [self.navigationItem.rightBarButtonItem setImage:matchesNavBarButton];
+    self.toMatches.tintColor = [UIColor darkGrayColor];
+
+    self.navigationItem.title = @"Your Ally Profile";
 }
 @end

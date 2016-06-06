@@ -43,6 +43,7 @@ UINavigationControllerDelegate>
 @property (strong, nonatomic) NSMutableArray *pictures;
 @property (strong, nonatomic) NSDictionary *sizeAttributes;
 @property (strong, nonatomic) NSString *continueSegueIdentifier;
+@property (strong, nonatomic) NSData *resizedImageAsData;
 @property BOOL fromInitialSetup;
 @end
 
@@ -62,17 +63,41 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.title = @"Photo";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
-
     NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor unitedNationBlue],
                                  NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
     [self.navigationController.navigationBar setTitleTextAttributes:attributes];
 
+
+    self.addAnother.hidden = YES;
     self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.backButton.tintColor = [UIColor mikeGray];
-    
-    self.userImage.image = [UIImage imageWithData:self.profileImageAsData];
-    self.userImage.layer.cornerRadius = 7.0;
+
+    //UIImage *halfSizedImage = [UIImage imageWithImage:[UIImage imageWithData:self.profileImageAsData] scaledToScale:1.0];
+
+//    self.resizedImageAsData = UIImageJPEGRepresentation(halfSizedImage, .01);
+
+    //NSLog(@"File size is : %.2f KB",(float)self.profileImageAsData.length/1024.0f);
+    //NSLog(@"New file size is : %.2f KB",(float)self.resizedImageAsData.length/1024.0f);
+
+    //(halfSizedImage, 0.1);
+//    self.userImage.image = [UIImage imageWithData:self.profileImageAsData];
+
+
+    //self.profileImageFromIPhone = [[NSString alloc]initWithData:self.profileImageAsData encoding:NSUTF8StringEncoding];
+    //NSLog(@"File size STRING is : %.2f KB",(float)self.profileImage.length/1024.0f);
+    self.userImage.layer.cornerRadius = 8;
     self.userImage.layer.masksToBounds = YES;
+
+    if (self.profileImageFromIPhone)
+    {
+        self.userImage.image = [UIImage imageWithString:self.profileImageFromIPhone];
+    }
+    else if(self.profileImage)
+    {
+        self.userImage.image = [UIImage imageWithString:self.profileImage];
+
+    }
+
 
     self.pictures = [NSMutableArray new];
 
@@ -98,7 +123,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
         [UIButton setUpButton:self.saveImage];
         [UIButton setUpButton:self.addAnother];
-        self.addAnother.hidden = YES;
         [UIButton setUpButton:self.profileButton];
         [self.profileButton setNeedsLayout];
 
@@ -129,10 +153,13 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 -(PreviewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     PreviewCell *cell = (PreviewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:kReuseIdentifier forIndexPath:indexPath];
-    NSData *imageData = [self.pictures objectAtIndex:indexPath.item];
-    cell.cvImage.image = [UIImage imageWithData:imageData];
+    NSString *imageStr = [self.pictures objectAtIndex:indexPath.item];
+    cell.cvImage.image = [UIImage imageWithString:imageStr];
 
-    if (imageData)
+//    NSData *imagedata = [self.pictures objectAtIndex:indexPath.item];
+//    cell.cvImage.image = [UIImage imageWithData:imagedata];
+
+    if (imageStr)
     {
         cell.xImage.image = [UIImage imageWithImage:[UIImage imageNamed:@"Close"] scaledToSize:CGSizeMake(25.0, 25.0)];
     }
@@ -332,17 +359,43 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     });
 }
 
--(void)saveForImage:(NSString*)image
+-(void)saveForImage:(NSString *)image
 {
-    [self.pictures addObject:self.profileImageAsData];
-    [self.currentUser setObject:self.pictures forKey:@"profileImages"];
-    [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+    if (self.profileImageFromIPhone)
+    {
+        [self.pictures addObject:self.profileImageFromIPhone];
+        [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 
-        if (succeeded)
-        {
-            [self.saveImage setTitle:image forState:UIControlStateNormal];
-            [self delayAndCheckImageCount];
-        }
-    }];
+            if (succeeded)
+            {
+                [self.saveImage setTitle:image forState:UIControlStateNormal];
+                [self delayAndCheckImageCount];
+            }
+            else
+            {
+                NSLog(@"image too large, Parse couldnt save, size: %f",(float)self.profileImageFromIPhone.length/1024.0f);
+            }
+        }];
+    }
+    else
+    {
+        [self.pictures addObject:self.profileImage];
+        [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+            if (succeeded)
+            {
+                [self.saveImage setTitle:image forState:UIControlStateNormal];
+                [self delayAndCheckImageCount];
+            }
+            else
+            {
+                NSLog(@"image too large, Parse couldnt save, size: %f",(float)self.profileImage.length/1024.0f);
+            }
+        }];
+    }
+
 }
+
 @end

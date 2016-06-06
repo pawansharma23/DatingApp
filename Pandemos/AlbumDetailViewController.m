@@ -105,8 +105,8 @@ static NSString * const reuseIdentifier = @"FaceCell";
 {
     FacebookCVCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     Facebook *face = [self.photos objectAtIndex:indexPath.item];
-    //cell.image.image = [UIImage imageWithString:face.albumImageURL];
-    cell.image.image = [UIImage imageWithData:face.albumImageData];
+    cell.image.image = [UIImage imageWithString:face.albumImageURL];
+    //cell.image.image = [UIImage imageWithData:face.albumImageData];
     return cell;
 }
 
@@ -142,7 +142,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
     {
         SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
         sivc.profileImage = self.selectedImage;
-        sivc.profileImageAsData = self.selectedImageData;
+        //sivc.profileImageAsData = self.selectedImageData;
     }
         else
         {
@@ -165,12 +165,19 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.nextURL = nextPage.nextPage;
 }
 
--(void)didReceiveParsedPhotoSourceData:(NSData *)photoData
-{
-    self.selectedImageData = photoData;
-    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+//-(void)didReceiveParsedPhotoSourceData:(NSData *)photoData
+//{
+//    self.selectedImageData = photoData;
+//    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+//
+//}
 
+-(void)didReceiveParsedPhotoSource:(NSString *)photoURL
+{
+    self.selectedImage = photoURL;
+    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
 }
+
 -(void)didReceiveNextPagePhotos:(NSArray *)nextPhotos
 {
     [self.photos removeAllObjects];

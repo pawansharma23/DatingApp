@@ -25,9 +25,7 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UINavigationItem *navBar;
 
 @property (strong, nonatomic) NSString *currentCityAndState;
-@property (strong, nonatomic) NSString *aboutMe;
-
-@property (strong, nonatomic) User *currentUser;
+//@property (strong, nonatomic) NSString *aboutMe;
 @property (strong, nonatomic) User *passedUser;
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) NSMutableArray *profileImages;
@@ -45,17 +43,16 @@ UserManagerDelegate>
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.userManager = [UserManager new];
-    self.userManager.delegate = self;
-    self.currentUser = [User currentUser];
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-    self.profileImages = [NSMutableArray new];
 
     self.backToConversation.tintColor = [UIColor mikeGray];
     self.backToConversation.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.sendMessage.title = @"Matches";
     self.automaticallyAdjustsScrollViewInsets = NO;
+
+    self.userManager = [UserManager new];
+    self.userManager.delegate = self;
+    self.profileImages = [NSMutableArray new];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -64,7 +61,7 @@ UserManagerDelegate>
 
     self.count = 0;
 
-    [self setupManagersProfileVCForCurrentUser];
+    [self setupManagersProfileVCForMatchedUser];
 
 }
 
@@ -80,7 +77,7 @@ UserManagerDelegate>
 }
 
 #pragma mark -- USER MANAGER DELEGATE
--(void)setupManagersProfileVCForCurrentUser
+-(void)setupManagersProfileVCForMatchedUser
 {
     self.piv = [[ProfileImageView alloc]initWithFrame:self.view.frame];
     [self.view addSubview:self.piv];
@@ -94,7 +91,11 @@ UserManagerDelegate>
         self.navBar.title = user[@"givenName"];
         self.profileImages = user[@"profileImages"];
 
-        switch ((int)self.profileImages.count) {
+        self.piv.tallNameLabel.text = nameAndAge;
+        
+
+        switch ((int)self.profileImages.count)
+        {
             case 1:
                 self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height);
                 self.piv.profileImageView.image = [UIImage imageWithImage:[UIImage imageWithString:[self.profileImages objectAtIndex:0]] scaledToSize:CGSizeMake(375, 667)];

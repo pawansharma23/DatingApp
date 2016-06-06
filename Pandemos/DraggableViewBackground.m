@@ -96,7 +96,7 @@ static float CARD_WIDTH;
     User *user = [self.potentialMatchData objectAtIndex:index];
 
     //self.dragView.profileImageView.image = [UIImage imageWithString:user.profileImages.firstObject];
-    //load all photo images here?
+    //load all photo images for scrool view here?
     //[self loadProfileImages];
 
     NSString *infoText = [NSString stringWithFormat:@"%@, %@", user.givenName, [user ageFromBirthday:user.birthday]];
@@ -151,7 +151,7 @@ static float CARD_WIDTH;
 
 -(void)loadProfileImages
 {
-    User *userDict = [self.potentialMatchData objectAtIndex:0];//changed to current user objectAtIndex
+    User *userDict = [self.potentialMatchData objectAtIndex:0];
     NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", userDict[@"givenName"], [userDict[@"birthday"] ageFromBirthday:userDict[@"birthday"]]];
     self.dragView.information.text = nameAndAge;
     self.dragView.schoolLabel.text = userDict[@"lastSchool"];

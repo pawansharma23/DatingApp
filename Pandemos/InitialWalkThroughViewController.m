@@ -259,8 +259,8 @@ UIImagePickerControllerDelegate>
 {
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
-        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-        sivc.profileImageAsData = self.dataImage;
+        //SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+        //sivc.profileImageAsData = self.dataImage;
     }
 }
 -

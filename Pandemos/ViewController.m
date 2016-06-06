@@ -91,15 +91,15 @@ MDCSwipeToChooseDelegate>
 
 @implementation ViewController
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self)
-    {
-
-    }
-    return self;
-}
+//- (instancetype)init
+//{
+//    self = [super init];
+//    if (self)
+//    {
+//
+//    }
+//    return self;
+//}
 
 #pragma mark-- VIEW DID LOAD
 - (void)viewDidLoad
@@ -184,108 +184,38 @@ MDCSwipeToChooseDelegate>
     NSLog(@"location manager failed: %@", error);
 }
 
-#pragma mark -- SWIPE GESTURES
-- (IBAction)swipeGestureUp:(UISwipeGestureRecognizer *)sender
-{
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionUp)
-    {
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlUp animations:^{
-
-            [self profileImageSwipeUp];
-
-        } completion:^(BOOL finished) {
-        }];
-    }
-}
-
-- (IBAction)swipeGestureDown:(UISwipeGestureRecognizer *)sender
-{
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-
-    if (direction == UISwipeGestureRecognizerDirectionDown)
-    {
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionCurlDown animations:^{
-
-            [self profileImagesSwipeDown];
-
-        } completion:^(BOOL finished) {
-
-        }];
-    }
-}
-
-- (IBAction)onSwipeRight:(UISwipeGestureRecognizer *)sender
-{
-    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
-    NSLog(@"user accepting: %@", matchedObject.givenName);
-
-    [self setYesStatusForMatchRequestObject:matchedObject];
-
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionRight)
-    {
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
-
-            [self nextPotentialMatchUp];
-
-        } completion:^(BOOL finished) {
-        }];
-    }
-}
-
-- (IBAction)onSwipeLeft:(UISwipeGestureRecognizer *)sender
-{
-    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
-    NSLog(@"user denied: %@", matchedObject.givenName);
-
-    [self.userManager createMatchRequestWithStringId:matchedObject.objectId withStatus:@"denied" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-    }];
-
-    UISwipeGestureRecognizerDirection direction = [(UISwipeGestureRecognizer *) sender direction];
-    if (direction == UISwipeGestureRecognizerDirectionLeft)
-    {
-        [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
-
-            [self nextPotentialMatchUp];
-
-        } completion:^(BOOL finished) {
-        }];
-    }
-}
-
-#pragma mark -- BUTTONS
-//ACCEPTED
-- (IBAction)onYesButton:(UIButton *)sender
-{
-    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
-    NSLog(@"user accepting: %@", matchedObject.givenName);
-
-    [self setYesStatusForMatchRequestObject:matchedObject];
-
-    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
-
-        [self nextPotentialMatchUp];
-
-        } completion:^(BOOL finished) {
-    }];
-}
-//DENIED
-- (IBAction)onXButton:(UIButton *)sender
-{
-    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
-    NSLog(@"user denied: %@", matchedObject.givenName);
-
-    [self.userManager createMatchRequestWithStringId:matchedObject.objectId withStatus:@"denied" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-    }];
-
-    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
-
-        [self nextPotentialMatchUp];
-
-    } completion:^(BOOL finished) {
-    }];
-}
+//#pragma mark -- BUTTONS
+////ACCEPTED
+//- (IBAction)onYesButton:(UIButton *)sender
+//{
+//    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
+//    NSLog(@"user accepting: %@", matchedObject.givenName);
+//
+//    [self setYesStatusForMatchRequestObject:matchedObject];
+//
+//    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromLeft animations:^{
+//
+//        [self nextPotentialMatchUp];
+//
+//        } completion:^(BOOL finished) {
+//    }];
+//}
+////DENIED
+//- (IBAction)onXButton:(UIButton *)sender
+//{
+//    User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
+//    NSLog(@"user denied: %@", matchedObject.givenName);
+//
+//    [self.userManager createMatchRequestWithStringId:matchedObject.objectId withStatus:@"denied" withCompletion:^(MatchRequest *matchRequest, NSError *error) {
+//    }];
+//
+//    [UIView transitionWithView:self.userImage duration:0.2 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+//
+//        [self nextPotentialMatchUp];
+//
+//    } completion:^(BOOL finished) {
+//    }];
+//}
 
 - (IBAction)onKeepPlaying:(UIButton *)sender
 {
@@ -685,38 +615,4 @@ MDCSwipeToChooseDelegate>
 
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
-
--(void)setupGestureUp
-{
-    UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureUp:)];
-    [swipeGestureUp setDelegate:self];
-    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
-    [self.userImage addGestureRecognizer:swipeGestureUp];
-}
-
--(void)setupGestureDown
-{
-    UISwipeGestureRecognizer *swipeGestureDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(swipeGestureDown:)];
-    [swipeGestureDown setDelegate:self];
-    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.userImage addGestureRecognizer:swipeGestureDown];
-}
-
--(void)setupGestureRight
-{
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(onSwipeRight:)];
-    [swipeRight setDelegate:self];
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.userImage addGestureRecognizer:swipeRight];
-}
-
--(void)setupGestureLeft
-{
-    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(onSwipeLeft:)];
-    [swipeLeft setDelegate:self];
-    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.userImage addGestureRecognizer:swipeLeft];
-}
-
-
 @end

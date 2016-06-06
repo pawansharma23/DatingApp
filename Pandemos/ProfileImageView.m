@@ -20,6 +20,13 @@ static float CARD_WIDTH;
 @synthesize imageScroll;
 @synthesize schoolLabel;
 @synthesize nameLabel;
+
+@synthesize tallDescriptionView;
+@synthesize tallNameLabel;
+@synthesize tallSchoolLabel;
+@synthesize tallWorkLabel;
+@synthesize tallAboutMeLabel;
+
 @synthesize descriptionView;
 @synthesize profileImageView;
 @synthesize profileImageView2;
@@ -71,7 +78,6 @@ static float CARD_WIDTH;
         imageScroll.clipsToBounds = NO;
         imageScroll.userInteractionEnabled = YES;
         imageScroll.scrollsToTop = NO;
-    
         //imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height * 3);//multiplied by pro
 
         profileImageView = [UIImageView new];
@@ -163,6 +169,22 @@ static float CARD_WIDTH;
         schoolLabel.numberOfLines = 0;
         [schoolLabel setTextAlignment:NSTextAlignmentCenter];
         [self addSchoolLabelConstraints];
+
+
+
+//        tallDescriptionView = [UIView new];
+//        [self addSubview:tallDescriptionView];
+//        tallDescriptionView.translatesAutoresizingMaskIntoConstraints = NO;
+//        tallDescriptionView.layer.cornerRadius = 8;
+//        tallDescriptionView.backgroundColor = [UIColor lightGrayColor];
+//        [self addTallDescriptionViewConstraints];
+//
+//        tallNameLabel = [UILabel new];
+//        [tallDescriptionView addSubview:tallNameLabel];
+//        tallNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
+//        [tallNameLabel setFont:[UIFont fontWithName:@"GeezaPro" size:18.0]];
+//        [tallNameLabel setTextAlignment:NSTextAlignmentCenter];
+//        [self addTallNameLabelConstraints];
     }
 
     return self;
@@ -248,6 +270,55 @@ static float CARD_WIDTH;
 
 #pragma mark -- HELPERS
 #pragma mark -- DESCRIPTION CONSTRAINTS
+//need to find a way to activate the tall description view
+//-(void)addTallDescriptionViewConstraints
+//{
+//    NSDictionary *viewsDictionary = @{@"tallView":tallDescriptionView, @"lowestViewIndicator":v6};
+//    NSArray *constraint_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[lowestViewIndicator]-8-[tallView]"
+//                                                                    options:0
+//                                                                    metrics:nil
+//                                                                      views:viewsDictionary];
+//
+//    NSArray *constraint_POS_V = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[tallView]-15-|"
+//                                                                        options:0
+//                                                                        metrics:nil
+//                                                                          views:viewsDictionary];
+//
+//    NSArray *constraint_POS_H = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-32-[tallView]-32-|"
+//                                                                        options:0
+//                                                                        metrics:nil
+//                                                                          views:viewsDictionary];
+//    [self addConstraints:constraint_H];
+//    [self addConstraints:constraint_POS_H];
+//    //[self addConstraints:constraint_POS_V];
+//}
+//
+//-(void)addTallNameLabelConstraints
+//{
+//    NSDictionary *informationDict = @{@"tallName":tallNameLabel};
+//
+//    NSArray *infoCon_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[tallName(20)]"
+//                                                                 options:0
+//                                                                 metrics:nil
+//                                                                   views:informationDict];
+//
+//    NSArray *infoCon_PosH = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-8-[tallName]-5-|"
+//                                                                    options:0
+//                                                                    metrics:nil
+//                                                                      views:informationDict];
+//
+//    NSArray *infoCon_PosV = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[tallName]"
+//                                                                    options:0
+//                                                                    metrics:nil
+//                                                                      views:informationDict];
+//    [tallNameLabel addConstraints:infoCon_H];
+//    [tallDescriptionView addConstraints:infoCon_PosH];
+//    [tallDescriptionView addConstraints:infoCon_PosV];
+//}
+
+
+
+
 -(void)addDescriptionViewConstraints
 {
     NSDictionary *viewsDictionary = @{@"matchView":descriptionView};

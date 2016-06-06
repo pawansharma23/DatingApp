@@ -242,9 +242,9 @@
 
 -(void)receivedPhotoSource:(NSDictionary *)facebookPhotoSource
 {
-//    [self.delegate didReceiveParsedPhotoSource:facebookPhotoSource[@"source"]];
-    NSURL *url = [NSURL URLWithString:facebookPhotoSource[@"source"]];
-    [self.delegate didReceiveParsedPhotoSourceData:[NSData dataWithContentsOfURL:url]];
+    [self.delegate didReceiveParsedPhotoSource:facebookPhotoSource[@"source"]];
+//    NSURL *url = [NSURL URLWithString:facebookPhotoSource[@"source"]];
+  //  [self.delegate didReceiveParsedPhotoSourceData:[NSData dataWithContentsOfURL:url]];
 }
 
 -(void)receivedNextPage:(NSArray *)imageArray

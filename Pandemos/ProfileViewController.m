@@ -71,15 +71,15 @@ UserManagerDelegate>
 @property (strong, nonatomic) NSString *maxAge;
 @property (strong, nonatomic) NSString *miles;
 @property (strong, nonatomic) NSString *publicProfile;
-@property (strong, nonatomic) NSString *selectedImage;
 
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) NSMutableArray *profileImages;
 @property (strong, nonatomic) FacebookManager *manager;
 @property (strong, nonatomic) UserManager *userManager;
-@property (strong, nonatomic) NSData *selectedImageData;
-@property (strong, nonatomic) NSData *selectedPhoneImageData;
 
+@property (strong, nonatomic) NSData *selectedPhoneImageData;
+@property (strong, nonatomic) NSString *iPhoneImageString;
+@property (strong, nonatomic) NSString *selectedImage;
 @end
 
 @implementation ProfileViewController
@@ -111,10 +111,8 @@ UserManagerDelegate>
 
         [UICollectionView setupBorder:self.collectionView];
         self.collectionView.delegate = self;
-
         [self setFlowLayout];
         [self setupButtonsAndTextView];
-
     }
 }
 
@@ -123,13 +121,12 @@ UserManagerDelegate>
     [super viewDidAppear:YES];
 
     [SVProgressHUD show];
-
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.scrollView.delegate = self;
     self.scrollView.scrollEnabled = YES;
     self.scrollView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.viewInsideScrollView];
-    [self.scrollView setContentSize:CGSizeMake(self.viewInsideScrollView.frame.size.width, self.viewInsideScrollView.frame.size.height + 400)];
+    [self.scrollView setContentSize:CGSizeMake(self.viewInsideScrollView.frame.size.width, 850)];
     self.scrollView.scrollsToTop = YES;
     self.scrollView.clipsToBounds = YES;
 
@@ -238,16 +235,11 @@ UserManagerDelegate>
 {
     static NSString *cellIdentifier = @"SettingCell";
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    NSData *photoData = [self.profileImages objectAtIndex:indexPath.item];
-    cell.userImage.image = [UIImage imageWithData:photoData];
+    NSString *image = [self.profileImages objectAtIndex:indexPath.item];
+    cell.userImage.image = [UIImage imageWithString:image];
 
     return cell;
 }
-
-//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionView *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-//{
-//    return 2; // This is the minimum inter item spacing, can be more
-//}
 
 -(void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath
 {
@@ -268,7 +260,7 @@ UserManagerDelegate>
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedImageData = [self.profileImages objectAtIndex:indexPath.item];
+    self.selectedImage = [self.profileImages objectAtIndex:indexPath.item];
     [self performSegueWithIdentifier:@"Selected" sender:self];
 }
 
@@ -517,12 +509,14 @@ UserManagerDelegate>
         if (self.selectedPhoneImageData)
         {
             SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-            sivc.profileImageAsData = self.selectedPhoneImageData;
+            //sivc.profileImageAsData = self.selectedPhoneImageData;
+            sivc.profileImageFromIPhone = self.iPhoneImageString;
         }
         else
         {
             SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-            sivc.profileImageAsData = self.selectedImageData;
+            //sivc.profileImageAsData = self.selectedImageData;
+            sivc.profileImage = self.selectedImage;
         }
     }
 }
@@ -539,6 +533,7 @@ UserManagerDelegate>
     [self performSegueWithIdentifier:@"Preview" sender:self];
 }
 
+#pragma mark -- Retrive or Take Image from Phone
 - (IBAction)onSwapTapped:(UIButton *)sender
 {
     [UIButton changeButtonStateForSingleButton:self.SwapAddPhotoButton];
@@ -584,6 +579,8 @@ UserManagerDelegate>
     {
         self.selectedPhoneImageData = [[NSData alloc] init];
         self.selectedPhoneImageData = UIImagePNGRepresentation(scaledImage);
+        //changing image to string(smaller)
+        self.iPhoneImageString = [[NSString alloc]initWithData:self.selectedPhoneImageData encoding:NSUTF8StringEncoding];
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];

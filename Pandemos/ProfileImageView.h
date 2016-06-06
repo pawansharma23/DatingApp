@@ -19,8 +19,14 @@
 @property (nonatomic, strong)UIScrollView *imageScroll;
 
 @property (nonatomic, strong)UIView *descriptionView;
-@property (nonatomic,strong)UILabel *nameLabel; //%%% a placeholder for any card-specific information
-@property (nonatomic,strong)UILabel *schoolLabel; //%%% a placeholder for any card-specific information
+@property (nonatomic,strong)UILabel *nameLabel;
+@property (nonatomic,strong)UILabel *schoolLabel;
+
+@property (nonatomic, strong)UIView *tallDescriptionView;
+@property (nonatomic,strong)UILabel *tallNameLabel;
+@property (nonatomic,strong)UILabel *tallSchoolLabel;
+@property (nonatomic,strong)UILabel *tallWorkLabel;
+@property (nonatomic,strong)UILabel *tallAboutMeLabel;
 
 @property (nonatomic,strong)UIImageView* profileImageView;
 @property (nonatomic,strong)UIImageView* profileImageView2;

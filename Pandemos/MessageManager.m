@@ -10,6 +10,7 @@
 #import "User.h"
 #import <Parse/Parse.h>
 #import "UserBuilder.h"
+#import "NotificationManager.h"
 
 @implementation MessageManager
 
@@ -61,6 +62,8 @@
         else
         {
             NSLog(@"sent message: %s", succeeded ? "true" : "false");
+            NotificationManager *notificationManager = [[NotificationManager alloc] init];
+            [notificationManager scheduleInstantNotificationFromMatch:recipient.givenName];
         }
     }];
 }
