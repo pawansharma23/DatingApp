@@ -67,6 +67,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
     User *ob = [User new];
 
     NSString *faceId = [user objectForKey:kFacebookId];
+    NSString *lastName = [user objectForKey:@"lastName"];
     NSString *givenName = [user objectForKey:kParseGivenName];
     NSString *birthday = [user objectForKey:kParseUserBirthday];
     NSString *gender = [user objectForKey:kParseUserGender];
@@ -94,6 +95,10 @@ static NSString * const kParsePublic                       = @"publicProfile";
     if (givenName)
     {
         ob.givenName = givenName;
+    }
+    if (lastName)
+    {
+        ob.lastName = lastName;
     }
     if (birthday)
     {

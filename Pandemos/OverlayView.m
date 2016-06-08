@@ -42,11 +42,11 @@
     }
 }
 
-//-(void)layoutSubviews
-//{
-//    [super layoutSubviews];
-//    imageView.frame = CGRectMake(50, 50, 100, 100);
-//}
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
+    imageView.frame = CGRectMake(50, 50, 100, 100);
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

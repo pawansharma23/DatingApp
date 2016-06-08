@@ -442,7 +442,7 @@
             </objects>
             <point key="canvasLocation" x="3778.5" y="352.5"/>
         </scene>
-        <!--Title-->
+        <!--Messager ProfileVC-->
         <scene sceneID="rwn-5b-ci4">
             <objects>
                 <viewController id="HfP-qY-u8H" customClass="MessagerProfileVC" sceneMemberID="viewController">
@@ -455,8 +455,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Title" id="iCn-yY-7Ba">
+                    <navigationItem key="navigationItem" id="iCn-yY-7Ba">
                         <barButtonItem key="leftBarButtonItem" id="fm8-Dz-JF4">
                             <connections>
                                 <action selector="onCloseButton:" destination="HfP-qY-u8H" id="iq0-Kf-J2A"/>

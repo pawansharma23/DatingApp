@@ -38,6 +38,7 @@
 		26BA6F641D04C45A00745FC9 /* MessagerProfileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6F631D04C45A00745FC9 /* MessagerProfileInfo.m */; };
 		26BA6F6B1D04D2E900745FC9 /* MessagerTopCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6F6A1D04D2E900745FC9 /* MessagerTopCell.m */; };
 		26BA6F6F1D05E30E00745FC9 /* NotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6F6E1D05E30E00745FC9 /* NotificationManager.m */; };
+		26BA6FAE1D085B7300745FC9 /* MatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6FAD1D085B7300745FC9 /* MatchViewController.m */; };
 		26C1E3D61C3194B10020349A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D51C3194B10020349A /* CoreLocation.framework */; };
 		26C1E3D81C31AB590020349A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D71C31AB590020349A /* MobileCoreServices.framework */; };
 		26C70EAF1CA5B15100E9B98F /* PandemosUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0AE1C1DB53F0054414E /* PandemosUITests.m */; };
@@ -194,6 +195,8 @@
 		26BA6F6A1D04D2E900745FC9 /* MessagerTopCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagerTopCell.m; sourceTree = "<group>"; };
 		26BA6F6D1D05E30E00745FC9 /* NotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationManager.h; sourceTree = "<group>"; };
 		26BA6F6E1D05E30E00745FC9 /* NotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationManager.m; sourceTree = "<group>"; };
+		26BA6FAC1D085B7300745FC9 /* MatchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchViewController.h; sourceTree = "<group>"; };
+		26BA6FAD1D085B7300745FC9 /* MatchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchViewController.m; sourceTree = "<group>"; };
 		26C1E3D51C3194B10020349A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
@@ -446,7 +449,8 @@
 				26CB15871CFD02FA005CD680 /* AppConstants.h */,
 				268BA0951C1DB53F0054414E /* Assets.xcassets */,
 				268BA1131C26EFBD0054414E /* Initial Setup VCs */,
-				268BA10B1C25A8F00054414E /* MainAppFunctionality */,
+				26F22BF31C6FAEFF00D86343 /* Messaging */,
+				268BA10B1C25A8F00054414E /* UserFlow */,
 				2614A70D1CA1E24100D6F6AA /* Managers */,
 				268BA10F1C25AFE60054414E /* Model */,
 				26D314711C976BF80045BB22 /* Categories */,
@@ -485,14 +489,13 @@
 			path = PandemosUITests;
 			sourceTree = "<group>";
 		};
-		268BA10B1C25A8F00054414E /* MainAppFunctionality */ = {
+		268BA10B1C25A8F00054414E /* UserFlow */ = {
 			isa = PBXGroup;
 			children = (
-				26F22BF21C6FAEF000D86343 /* Preferences */,
-				26F22BF31C6FAEFF00D86343 /* Messaging */,
 				26F22BF41C6FAF0E00D86343 /* Matches */,
+				26F22BF21C6FAEF000D86343 /* Preferences */,
 			);
-			name = MainAppFunctionality;
+			name = UserFlow;
 			sourceTree = "<group>";
 		};
 		268BA10F1C25AFE60054414E /* Model */ = {
@@ -631,6 +634,8 @@
 		26D6B1621D01CF5300C94B16 /* DraggableViews */ = {
 			isa = PBXGroup;
 			children = (
+				26D6B15C1D0097D900C94B16 /* ImageScroll.h */,
+				26D6B15D1D0097D900C94B16 /* ImageScroll.m */,
 				26CB159A1CFE1930005CD680 /* OverlayView.h */,
 				26CB159B1CFE1930005CD680 /* OverlayView.m */,
 				26CB15961CFE1924005CD680 /* DraggableViewBackground.h */,
@@ -703,8 +708,8 @@
 			isa = PBXGroup;
 			children = (
 				26D6B1621D01CF5300C94B16 /* DraggableViews */,
-				26D6B15C1D0097D900C94B16 /* ImageScroll.h */,
-				26D6B15D1D0097D900C94B16 /* ImageScroll.m */,
+				26BA6FAC1D085B7300745FC9 /* MatchViewController.h */,
+				26BA6FAD1D085B7300745FC9 /* MatchViewController.m */,
 				268BA08F1C1DB53F0054414E /* ViewController.h */,
 				268BA0901C1DB53F0054414E /* ViewController.m */,
 			);
@@ -970,6 +975,7 @@
 				26AC54641CAED17A005AD536 /* UITextView+Additions.m in Sources */,
 				2655A4811CE9225B00838853 /* MatchView.m in Sources */,
 				26C70ED31CA5B18F00E9B98F /* MatchRequest.m in Sources */,
+				26BA6FAE1D085B7300745FC9 /* MatchViewController.m in Sources */,
 				26B954561CB82202006245EE /* NSString+Additions.m in Sources */,
 				26C70ED51CA5B18F00E9B98F /* CVSettingCell.m in Sources */,
 				26C70ED61CA5B18F00E9B98F /* PreviewCell.m in Sources */,
@@ -1050,6 +1056,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: Sevy.Pandemos";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1093,6 +1100,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: Sevy.Pandemos";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1118,6 +1126,8 @@
 			baseConfigurationReference = 06C994192A4EB211C11A44D2 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1127,6 +1137,7 @@
 				New_Setting = "";
 				PRODUCT_BUNDLE_IDENTIFIER = Sevy.Pandemos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -1135,6 +1146,8 @@
 			baseConfigurationReference = B2B739D58087A908AFCE74CE /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1145,6 +1158,7 @@
 				New_Setting = "";
 				PRODUCT_BUNDLE_IDENTIFIER = Sevy.Pandemos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

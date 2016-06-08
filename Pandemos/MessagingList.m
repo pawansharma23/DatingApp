@@ -204,7 +204,8 @@ UICollectionViewDataSource>
 -(void)setupChatterImage:(MessagingCell*)cell withUserData:(NSDictionary*)chatter
 {
     cell.userImage.contentMode = UIViewContentModeScaleAspectFill;
-    cell.userImage.layer.cornerRadius = 22.0 / 2.0f;
+    cell.userImage.layer.cornerRadius = 22.5;
+    cell.userImage.layer.masksToBounds = YES;
     cell.userImage.clipsToBounds = YES;
     cell.userImage.image = [UIImage imageWithString:chatter[@"repImage"]];
 }

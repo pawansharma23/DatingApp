@@ -126,7 +126,7 @@ UserManagerDelegate>
     self.scrollView.scrollEnabled = YES;
     self.scrollView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.viewInsideScrollView];
-    [self.scrollView setContentSize:CGSizeMake(self.viewInsideScrollView.frame.size.width, 850)];
+    [self.scrollView setContentSize:CGSizeMake(self.viewInsideScrollView.frame.size.width, 900)];
     self.scrollView.scrollsToTop = YES;
     self.scrollView.clipsToBounds = YES;
 
@@ -136,6 +136,8 @@ UserManagerDelegate>
 
     [UIButton setUpButton:self.SwapAddPhotoButton];
     [UIButton setUpButton:self.facebookAlbumsButton];
+    [self.facebookAlbumsButton setEnabled:YES];
+    [self.SwapAddPhotoButton setEnabled:YES];
     //on reload scroll to top
     [self.milesSlider setUserInteractionEnabled:YES];
     [self.minimumAgeSlider setUserInteractionEnabled:YES];
@@ -237,6 +239,8 @@ UserManagerDelegate>
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     NSString *image = [self.profileImages objectAtIndex:indexPath.item];
     cell.userImage.image = [UIImage imageWithString:image];
+//    NSData *image = [self.profileImages objectAtIndex:indexPath.item];
+  //  cell.userImage.image = [UIImage imageWithData:image];
 
     return cell;
 }
@@ -578,7 +582,8 @@ UserManagerDelegate>
     if (scaledImage)
     {
         self.selectedPhoneImageData = [[NSData alloc] init];
-        self.selectedPhoneImageData = UIImagePNGRepresentation(scaledImage);
+//        self.selectedPhoneImageData = UIImagePNGRepresentation(scaledImage);
+        self.selectedPhoneImageData = UIImageJPEGRepresentation(scaledImage, 1);
         //changing image to string(smaller)
         self.iPhoneImageString = [[NSString alloc]initWithData:self.selectedPhoneImageData encoding:NSUTF8StringEncoding];
     }

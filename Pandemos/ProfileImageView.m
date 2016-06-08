@@ -641,7 +641,7 @@ static float CARD_WIDTH;
                                                                     metrics:nil
                                                                       views:viewDict];
 
-    NSArray *sixSpaces = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[v1]-2-[v2]-2-[v3]-2-[v4]-2-[v5]-2-[v6]"
+    NSArray *sixSpaces = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-50-[v1]-2-[v2]-2-[v3]-2-[v4]-2-[v5]-2-[v6]"
                                                                     options:0
                                                                     metrics:nil
                                                                       views:viewDict];

@@ -14,16 +14,8 @@
 #import "UIImage+Additions.h"
 #import "DraggableView.h"
 
-@interface DraggableViewBackground()<DraggableViewDelegate>
-
-@property (strong, nonatomic) DraggableView *dragView;
-
-@end
-
 @implementation DraggableViewBackground
 {
-    NSInteger imagesLoadedIndex;
-    NSMutableArray *loadedProfileCards;
     NSInteger cardsLoadedIndex; //%%% the index of the card you have loaded into the loadedCards array last
     NSMutableArray *loadedCards; //%%% the array of card loaded (change max_buffer_size to increase or decrease the number of cards this holds)
 }
@@ -35,7 +27,6 @@ static float CARD_WIDTH;
 
 @synthesize potentialMatchData; //%%% all the labels I'm using as example data at the moment
 @synthesize allCards;//%%% all the cards
-@synthesize userManager;
 @synthesize gender;
 @synthesize sexPref;
 @synthesize milesAway;
@@ -51,20 +42,20 @@ static float CARD_WIDTH;
     {
         [super layoutSubviews];
         //1) load current user search constraints
+        self.userManager = [UserManager new];
+        self.userManager.delegate = self;
+        [self.userManager loadUserData:[User currentUser]];
+
         potentialMatchData = [NSMutableArray new];
-        userManager = [UserManager new];
-        userManager.delegate = self;
-        [userManager loadUserData:[User currentUser]];
-    
         loadedCards = [[NSMutableArray alloc] init];
         allCards = [[NSMutableArray alloc] init];
-        loadedProfileCards = [[NSMutableArray alloc]init];
 
         cardsLoadedIndex = 0;
-        imagesLoadedIndex = 0;
 
-        [self.dragView.noButton addTarget:self action:@selector(onSwipeLeft:) forControlEvents:UIControlEventTouchUpInside];
-        [self.dragView.yesButton addTarget:self action:@selector(onSwipeRight) forControlEvents:UIControlEventTouchUpInside];
+    
+        //[self.dragView.noButton addTarget:self action:@selector(onSwipeLeft:) forControlEvents:UIControlEventTouchUpInside];
+        //[self.dragView.yesButton addTarget:self action:@selector(onSwipeRight) forControlEvents:UIControlEventTouchUpInside];
+
     }
 
     return self;
@@ -72,39 +63,21 @@ static float CARD_WIDTH;
 
 -(DraggableView *)createDraggableViewWithDataAtIndex:(NSInteger)index
 {
-    if (IS_IPHONE4)
-    {
-        CARD_HEIGHT = 400;
-        CARD_WIDTH = 280;
-    }
-    else if (IS_IPHONE5)
-    {
-        CARD_WIDTH = 280;
-        CARD_HEIGHT = 500;
-    }
-    else if (IS_IPHONE6)
-    {
-        CARD_WIDTH = 330;
-        CARD_HEIGHT = 570;
-    }
-    else if (IS_IPHONE6PLUS)
-    {
-        CARD_WIDTH = 390;
-        CARD_HEIGHT = 680;
-    }
-    self.dragView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH)/2, (self.frame.size.height - CARD_HEIGHT)/1.25, CARD_WIDTH, CARD_HEIGHT)];
-    User *user = [self.potentialMatchData objectAtIndex:index];
+    [self iPhoneType];
 
-    //self.dragView.profileImageView.image = [UIImage imageWithString:user.profileImages.firstObject];
-    //load all photo images for scrool view here?
-    //[self loadProfileImages];
+    self.dragView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH) / 2, (self.frame.size.height - CARD_HEIGHT)/2, CARD_WIDTH, CARD_HEIGHT)];
 
-    NSString *infoText = [NSString stringWithFormat:@"%@, %@", user.givenName, [user ageFromBirthday:user.birthday]];
-    self.dragView.information.text = infoText;
-    self.dragView.schoolLabel.text = user.lastSchool;
+
+    //User *user = [self.potentialMatchData objectAtIndex:index];
+    //draggableView.profileImageView.image = [UIImage imageWithString:[user.profileImages objectAtIndex:0]];
+
+    //load all photo images here?
+
+//    NSString *infoText = [NSString stringWithFormat:@"%@, %@", user.givenName, [user ageFromBirthday:user.birthday]];
+//    self.dragView.information.text = infoText;
+//    self.dragView.schoolLabel.text = user.lastSchool;
 
     self.dragView.delegate = self;
-    
     return self.dragView;
 }
 
@@ -128,12 +101,14 @@ static float CARD_WIDTH;
                 [loadedCards addObject:newCard];
             }
         }
+
         //%%% displays the small number of loaded cards dictated by MAX_BUFFER_SIZE so that not all the cards
         // are showing at once and clogging a ton of data
         for (int i = 0; i<[loadedCards count]; i++)
         {
             if (i>0)
             {
+                [self loadProfileImages];
                 [self insertSubview:[loadedCards objectAtIndex:i] belowSubview:[loadedCards objectAtIndex:i-1]];
             }
             else
@@ -151,7 +126,7 @@ static float CARD_WIDTH;
 
 -(void)loadProfileImages
 {
-    User *userDict = [self.potentialMatchData objectAtIndex:0];
+    User *userDict = [self.potentialMatchData objectAtIndex:0];//changed to current user objectAtIndex
     NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", userDict[@"givenName"], [userDict[@"birthday"] ageFromBirthday:userDict[@"birthday"]]];
     self.dragView.information.text = nameAndAge;
     self.dragView.schoolLabel.text = userDict[@"lastSchool"];
@@ -219,9 +194,6 @@ static float CARD_WIDTH;
             NSLog(@"no images for ProfileImageView switch");
             break;
     }
-
-    [self loadCards];
-
 }
 
 #pragma mark -- SWIPE DIRECTION ACTIONS
@@ -292,7 +264,6 @@ static float CARD_WIDTH;
     self.maxAge = userData[@"maxAge"];
     self.gender = userData[@"gender"];
 
-
     //this method take user preferences and returns allMatchedUsers
     [self.userManager loadUsersUnseenPotentialMatches:self.sexPref minAge:self.minAge maxAge:self.maxAge];
 }
@@ -339,9 +310,10 @@ static float CARD_WIDTH;
     {
 
         self.potentialMatchData = intersectionArray;
-        //[self loadCards];
-        [self loadProfileImages];
 
+        [self loadCards];
+
+        [self loadProfileImages];
 
     }
     else
@@ -353,5 +325,29 @@ static float CARD_WIDTH;
 -(void)failedToFetchPotentialMatchData:(NSError *)error
 {
     NSLog(@"NO POTENTIAL MATCHES FOR USER TO SEE: %@", error);
+}
+
+-(void)iPhoneType
+{
+    if (IS_IPHONE4)
+    {
+        CARD_HEIGHT = 430;
+        CARD_WIDTH = 300;
+    }
+    else if (IS_IPHONE5)
+    {
+        CARD_WIDTH = 300;
+        CARD_HEIGHT = 518;
+    }
+    else if (IS_IPHONE6)
+    {
+        CARD_WIDTH = 355;
+        CARD_HEIGHT = 597;
+    }
+    else if (IS_IPHONE6PLUS)
+    {
+        CARD_WIDTH = 394;
+        CARD_HEIGHT = 686;
+    }
 }
 @end

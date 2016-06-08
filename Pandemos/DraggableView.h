@@ -11,7 +11,6 @@
 #import <UIKit/UIKit.h>
 #import "OverlayView.h"
 #import "ImageScroll.h"
-#import "DraggableViewBackground.h"
 
 @protocol DraggableViewDelegate <NSObject>
 
@@ -19,7 +18,7 @@
 -(void)cardSwipedRight:(UIView *)card;
 @end
 
-@interface DraggableView : UIView<UIScrollViewDelegate>
+@interface DraggableView : UIView <UIScrollViewDelegate>
 
 @property (weak) id <DraggableViewDelegate> delegate;
 

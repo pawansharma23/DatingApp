@@ -13,6 +13,7 @@
 #import <FBSDKAppEvents.h>
 #import "User.h"
 #import "MatchRequest.h"
+#import "NotificationManager.h"
 
 @interface AppDelegate ()
 
@@ -32,6 +33,9 @@
 
     [PFFacebookUtils initialize];
     [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+
+    NotificationManager *notifs = [NotificationManager new];
+    [notifs registerForNotifications];
 
     return YES;
 }
@@ -53,29 +57,29 @@
 {
     [FBSDKAppEvents activateApp];
 }
-
-
-
-//Local Notifs
-
-//- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-//{
-//    // Store the deviceToken in the current installation and save it to Parse.
-//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-//    [currentInstallation setDeviceTokenFromData:deviceToken];
-//    [currentInstallation saveInBackground];
-//}
+//Notifs
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    currentInstallation.channels = @[@"global"];
+    [currentInstallation saveInBackground];
+}
 //
 //- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 //{
 //    NSLog(@"FAILED TO REGISTER %@", error);
 //}
 //
-//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-//{
-//    NSLog(@"userinfo: %@", userInfo);
-//}
-//
+
+//method used for when app is in the foreground
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    NSLog(@"userinfo: %@", userInfo);
+    [PFPush handlePush:userInfo];
+}
+
 //- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void (^)())completionHandler
 //{
 //

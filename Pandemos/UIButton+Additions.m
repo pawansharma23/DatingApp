@@ -33,6 +33,7 @@
     [button.layer setBorderColor:[UIColor blackColor].CGColor];
     [button setTitleColor:[UIColor facebookBlue] forState:UIControlStateNormal];
     [button setBackgroundColor:[UIColor whiteColor]];
+    [button setEnabled:YES];
 }
 
 +(void)changeButtonState:(UIButton *)button

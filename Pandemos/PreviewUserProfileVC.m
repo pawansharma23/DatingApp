@@ -53,6 +53,13 @@ UserManagerDelegate>
     self.profileImages = [NSMutableArray new];
 
     [self navBarSetup];
+    self.piv.v1.hidden = YES;
+    self.piv.v2.hidden = YES;
+    self.piv.v3.hidden = YES;
+    self.piv.v4.hidden = YES;
+    self.piv.v5.hidden = YES;
+    self.piv.v6.hidden = YES;
+
  }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -83,6 +90,7 @@ UserManagerDelegate>
             case 1:
                 self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height);
                 self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
+                self.piv.v1.hidden = NO;
                 [self.piv.v2 removeFromSuperview];
                 [self.piv.v3 removeFromSuperview];
                 [self.piv.v4 removeFromSuperview];
@@ -93,6 +101,8 @@ UserManagerDelegate>
                 self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 2);
                 self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
                 self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
+                self.piv.v1.hidden = NO;
+                self.piv.v2.hidden = NO;
                 [self.piv.v3 removeFromSuperview];
                 [self.piv.v4 removeFromSuperview];
                 [self.piv.v5 removeFromSuperview];
@@ -103,6 +113,9 @@ UserManagerDelegate>
                 self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
                 self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
                 self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
+                self.piv.v1.hidden = NO;
+                self.piv.v2.hidden = NO;
+                self.piv.v3.hidden = NO;
                 [self.piv.v4 removeFromSuperview];
                 [self.piv.v5 removeFromSuperview];
                 [self.piv.v6 removeFromSuperview];
@@ -113,6 +126,10 @@ UserManagerDelegate>
                 self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
                 self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
                 self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
+                self.piv.v1.hidden = NO;
+                self.piv.v2.hidden = NO;
+                self.piv.v3.hidden = NO;
+                self.piv.v4.hidden = NO;
                 [self.piv.v5 removeFromSuperview];
                 [self.piv.v6 removeFromSuperview];
                 break;
@@ -123,6 +140,11 @@ UserManagerDelegate>
                 self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
                 self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
                 self.piv.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
+                self.piv.v1.hidden = NO;
+                self.piv.v2.hidden = NO;
+                self.piv.v3.hidden = NO;
+                self.piv.v4.hidden = NO;
+                self.piv.v5.hidden = NO;
                 [self.piv.v6 removeFromSuperview];
                 break;
             case 6:
@@ -133,9 +155,20 @@ UserManagerDelegate>
                 self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
                 self.piv.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
                 self.piv.profileImageView6.image = [UIImage imageWithString:[self.profileImages objectAtIndex:5]];
+                self.piv.v1.hidden = NO;
+                self.piv.v2.hidden = NO;
+                self.piv.v3.hidden = NO;
+                self.piv.v4.hidden = NO;
+                self.piv.v5.hidden = NO;
+                self.piv.v6.hidden = NO;
                 break;
             default:
-                NSLog(@"no images for ProfileImageView switch");
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 1);
+                [self.piv.v2 removeFromSuperview];
+                [self.piv.v3 removeFromSuperview];
+                [self.piv.v4 removeFromSuperview];
+                [self.piv.v5 removeFromSuperview];
+                [self.piv.v6 removeFromSuperview];
                 break;
         }
         

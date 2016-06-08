@@ -106,7 +106,7 @@ UserManagerDelegate>
                 [self.piv.v6 removeFromSuperview];
                 break;
             case 2:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 2);
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, (self.piv.frame.size.height * 2) + 50);
                 self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
                 self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
                 [self.piv.v3 removeFromSuperview];
@@ -115,7 +115,7 @@ UserManagerDelegate>
                 [self.piv.v6 removeFromSuperview];
                 break;
             case 3:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 3);
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, (self.piv.frame.size.height * 3) + 50);
                 self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
                 self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
                 self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
@@ -133,7 +133,7 @@ UserManagerDelegate>
                 [self.piv.v6 removeFromSuperview];
                 break;
             case 5:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 5);
+                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, (self.piv.frame.size.height * 5) + 50);
                 self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
                 self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
                 self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];

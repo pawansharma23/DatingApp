@@ -7,7 +7,7 @@
 //
 //  @cwRichardKim for updates and requests
 
-#define ACTION_MARGIN 120 //%%% distance from center where the action applies. Higher = swipe further in order for the action to be called
+#define ACTION_MARGIN 80 //%%% distance from center where the action applies. Higher = swipe further in order for the action to be called
 #define SCALE_STRENGTH 4 //%%% how quickly the card shrinks. Higher = slower shrinking
 #define SCALE_MAX .93 //%%% upper bar for how much the card shrinks. Higher = shrinks less
 #define ROTATION_MAX 1 //%%% the maximum rotation allowed in radians.  Higher = card can keep rotating longer
@@ -71,8 +71,8 @@ static float CARD_WIDTH;
         }
         else if (IS_IPHONE6)
         {
-            CARD_WIDTH = 330;
-            CARD_HEIGHT = 570;
+            CARD_WIDTH = 376;
+            CARD_HEIGHT = 675;
         }
         else if (IS_IPHONE6PLUS)
         {
@@ -83,23 +83,66 @@ static float CARD_WIDTH;
         panGestureRecognizer = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(beingDragged:)];
         [self addGestureRecognizer:panGestureRecognizer];
 
+        overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
+        overlayView.alpha = 0;
+        [self addSubview:overlayView];
+
         imageScroll = [[ImageScroll alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         [self addSubview:imageScroll];
-        imageScroll.layer.cornerRadius = 8;
+        imageScroll.backgroundColor = [UIColor blueColor];
         imageScroll.delegate = self;
         imageScroll.pagingEnabled = YES;
         imageScroll.scrollEnabled = YES;
         imageScroll.clipsToBounds = NO;
+        imageScroll.layer.cornerRadius = 8;
         imageScroll.userInteractionEnabled = YES;
         imageScroll.scrollsToTop = NO;
-//        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height *3);//multiplied by profileimages.count
+        imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height * 3);//multiplied by profileimages.coun
+
+        profileImageView = [UIImageView new];
+        [imageScroll addSubview:profileImageView];
+        profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        profileImageView.layer.cornerRadius = 8;
+        profileImageView.backgroundColor = [UIColor blackColor];
+        [self addProfileImage1Constraints];
+
+        profileImageView2 = [UIImageView new];
+        [imageScroll addSubview:profileImageView2];
+        profileImageView2.backgroundColor = [UIColor blueColor];
+        profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addProfileImage2Constraints];
+
+        profileImageView3 = [UIImageView new];
+        [imageScroll addSubview:profileImageView3];
+        profileImageView3.translatesAutoresizingMaskIntoConstraints = NO;
+        profileImageView3.backgroundColor = [UIColor redColor];
+        [self addProfileImage3Constraints];
+
+        profileImageView4 = [UIImageView new];
+        [imageScroll addSubview:profileImageView4];
+        profileImageView4.translatesAutoresizingMaskIntoConstraints = NO;
+        profileImageView.layer.cornerRadius = 8;
+        profileImageView4.backgroundColor = [UIColor blackColor];
+        [self addProfileImage4Constraints];
+
+        profileImageView5 = [UIImageView new];
+        [imageScroll addSubview:profileImageView5];
+        profileImageView5.translatesAutoresizingMaskIntoConstraints = NO;
+        profileImageView5.backgroundColor = [UIColor blueColor];
+        [self addProfileImage5Constraints];
+
+        profileImageView6 = [UIImageView new];
+        [imageScroll addSubview:profileImageView6];
+        profileImageView6.translatesAutoresizingMaskIntoConstraints = NO;
+        profileImageView6.backgroundColor = [UIColor redColor];
+        [self addProfileImage6Constraints];
 
         matchDescView = [[UIView alloc]init];
         [self addSubview:matchDescView];
         matchDescView.translatesAutoresizingMaskIntoConstraints = NO;
         matchDescView.layer.cornerRadius = 8;
         matchDescView.backgroundColor = [UIColor grayColor];
-        [self addMatchViewConstraints:matchDescView];
+        [self addMatchViewConstraints];
 
         information = [UILabel new];
         [matchDescView addSubview:information];
@@ -118,73 +161,41 @@ static float CARD_WIDTH;
         [schoolLabel setTextAlignment:NSTextAlignmentCenter];
         [self addSchoolLabelConstraints:schoolLabel andSuperView:matchDescView];
 
-        overlayView = [[OverlayView alloc]initWithFrame:CGRectMake(self.frame.size.width/2-100, 0, 100, 100)];
-        overlayView.alpha = 1;
-        [self addSubview:overlayView];
 
-        profileImageView = [UIImageView new];
-        [imageScroll addSubview:profileImageView];
-        profileImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addProfileImage1Constraints];
-
-        profileImageView2 = [UIImageView new];
-        [imageScroll addSubview:profileImageView2];
-        profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addProfileImage2Constraints];
-
-        profileImageView3 = [UIImageView new];
-        [imageScroll addSubview:profileImageView3];
-        profileImageView3.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addProfileImage3Constraints];
-
-        profileImageView4 = [UIImageView new];
-        [imageScroll addSubview:profileImageView4];
-        profileImageView4.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addProfileImage4Constraints];
-
-        profileImageView5 = [UIImageView new];
-        [imageScroll addSubview:profileImageView5];
-        profileImageView5.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addProfileImage5Constraints];
-
-        profileImageView6 = [UIImageView new];
-        [imageScroll addSubview:profileImageView6];
-        profileImageView6.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addProfileImage6Constraints];
 
         //View Indicator for scrolling profileImages
-//        imageCount = 0;
-//
-//        v1 = [UIView new];
-//        [self addSubview:v1];
-//        [self setForViewIndicator:v1];
-//        [self addView1Constraints];
-//        //v1.backgroundColor = [UIColor whiteColor];
-//
-//        v2 = [UIView new];
-//        [self addSubview:v2];
-//        [self setForViewIndicator:v2];
-//        [self addView2Constraints];
-//
-//        v3 = [UIView new];
-//        [self addSubview:v3];
-//        [self setForViewIndicator:v3];
-//        [self addView3Constraints];
-//
-//        v4 = [UIView new];
-//        [self addSubview:v4];
-//        [self setForViewIndicator:v4];
-//        [self addView4Constraints];
-//
-//        v5 = [UIView new];
-//        [self addSubview:v5];
-//        [self setForViewIndicator:v5];
-//        [self addView5Constraints];
-//
-//        v6 = [UIView new];
-//        [self addSubview:v6];
-//        [self setForViewIndicator:v6];
-//        [self addView6Constraints];
+        //imageCount = 0;
+
+        v1 = [UIView new];
+        [self addSubview:v1];
+        [self setForViewIndicator:v1];
+        [self addView1Constraints];
+        v1.backgroundColor = [UIColor whiteColor];
+
+        v2 = [UIView new];
+        [self addSubview:v2];
+        [self setForViewIndicator:v2];
+        [self addView2Constraints];
+
+        v3 = [UIView new];
+        [self addSubview:v3];
+        [self setForViewIndicator:v3];
+        [self addView3Constraints];
+
+        v4 = [UIView new];
+        [self addSubview:v4];
+        [self setForViewIndicator:v4];
+        [self addView4Constraints];
+
+        v5 = [UIView new];
+        [self addSubview:v5];
+        [self setForViewIndicator:v5];
+        [self addView5Constraints];
+
+        v6 = [UIView new];
+        [self addSubview:v6];
+        [self setForViewIndicator:v6];
+        [self addView6Constraints];
 
 
 //        noButton = [UIButton new];
@@ -218,7 +229,7 @@ static float CARD_WIDTH;
 
 -(void)setupView
 {
-    self.layer.cornerRadius = 4;
+    self.layer.cornerRadius = 8;
     self.layer.shadowRadius = 3;
     self.layer.shadowOpacity = 0.2;
     self.layer.shadowOffset = CGSizeMake(1, 1);
@@ -245,67 +256,67 @@ static float CARD_WIDTH;
 //    //do your code here
 //}
 
-//-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-//{
-//    CGFloat pageHeight = CARD_HEIGHT;
-//    float fractionalPage = scrollView.contentOffset.y / pageHeight;
-//    NSInteger page = ceilf(fractionalPage);
-//    NSLog(@"page: %ld", (long)page);
-//
-//    switch (page)
-//    {
-//        case 0:
-//            [v2 setBackgroundColor:nil];
-//            [v1 setBackgroundColor:[UIColor whiteColor]];
-//            [v3 setBackgroundColor:nil];
-//            [v4 setBackgroundColor:nil];
-//            [v5 setBackgroundColor:nil];
-//            [v6 setBackgroundColor:nil];
-//            break;
-//        case 1:
-//            [v1 setBackgroundColor:nil];
-//            [v2 setBackgroundColor:[UIColor whiteColor]];
-//            [v3 setBackgroundColor:nil];
-//            [v4 setBackgroundColor:nil];
-//            [v5 setBackgroundColor:nil];
-//            [v6 setBackgroundColor:nil];
-//            break;
-//        case 2:
-//            [v1 setBackgroundColor:nil];
-//            [v3 setBackgroundColor:[UIColor whiteColor]];
-//            [v2 setBackgroundColor:nil];
-//            [v4 setBackgroundColor:nil];
-//            [v5 setBackgroundColor:nil];
-//            [v6 setBackgroundColor:nil];
-//            break;
-//        case 3:
-//            [v1 setBackgroundColor:nil];
-//            [v4 setBackgroundColor:[UIColor whiteColor]];
-//            [v2 setBackgroundColor:nil];
-//            [v3 setBackgroundColor:nil];
-//            [v5 setBackgroundColor:nil];
-//            [v6 setBackgroundColor:nil];
-//            break;
-//        case 4:
-//            [v1 setBackgroundColor:nil];
-//            [v5 setBackgroundColor:[UIColor whiteColor]];
-//            [v2 setBackgroundColor:nil];
-//            [v4 setBackgroundColor:nil];
-//            [v3 setBackgroundColor:nil];
-//            [v6 setBackgroundColor:nil];
-//            break;
-//        case 5:
-//            [v1 setBackgroundColor:nil];
-//            [v6 setBackgroundColor:[UIColor whiteColor]];
-//            [v2 setBackgroundColor:nil];
-//            [v4 setBackgroundColor:nil];
-//            [v5 setBackgroundColor:nil];
-//            [v3 setBackgroundColor:nil];
-//            break;
-//        default:
-//            break;
-//    }
-//}
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGFloat pageHeight = CARD_HEIGHT;
+    float fractionalPage = scrollView.contentOffset.y / pageHeight;
+    NSInteger page = ceilf(fractionalPage);
+    NSLog(@"page: %ld", (long)page);
+
+    switch (page)
+    {
+        case 0:
+            [v2 setBackgroundColor:nil];
+            [v1 setBackgroundColor:[UIColor whiteColor]];
+            [v3 setBackgroundColor:nil];
+            [v4 setBackgroundColor:nil];
+            [v5 setBackgroundColor:nil];
+            [v6 setBackgroundColor:nil];
+            break;
+        case 1:
+            [v1 setBackgroundColor:nil];
+            [v2 setBackgroundColor:[UIColor whiteColor]];
+            [v3 setBackgroundColor:nil];
+            [v4 setBackgroundColor:nil];
+            [v5 setBackgroundColor:nil];
+            [v6 setBackgroundColor:nil];
+            break;
+        case 2:
+            [v1 setBackgroundColor:nil];
+            [v3 setBackgroundColor:[UIColor whiteColor]];
+            [v2 setBackgroundColor:nil];
+            [v4 setBackgroundColor:nil];
+            [v5 setBackgroundColor:nil];
+            [v6 setBackgroundColor:nil];
+            break;
+        case 3:
+            [v1 setBackgroundColor:nil];
+            [v4 setBackgroundColor:[UIColor whiteColor]];
+            [v2 setBackgroundColor:nil];
+            [v3 setBackgroundColor:nil];
+            [v5 setBackgroundColor:nil];
+            [v6 setBackgroundColor:nil];
+            break;
+        case 4:
+            [v1 setBackgroundColor:nil];
+            [v5 setBackgroundColor:[UIColor whiteColor]];
+            [v2 setBackgroundColor:nil];
+            [v4 setBackgroundColor:nil];
+            [v3 setBackgroundColor:nil];
+            [v6 setBackgroundColor:nil];
+            break;
+        case 5:
+            [v1 setBackgroundColor:nil];
+            [v6 setBackgroundColor:[UIColor whiteColor]];
+            [v2 setBackgroundColor:nil];
+            [v4 setBackgroundColor:nil];
+            [v5 setBackgroundColor:nil];
+            [v3 setBackgroundColor:nil];
+            break;
+        default:
+            break;
+    }
+}
 
 
 //%%% called when you move your finger across the screen.
@@ -460,14 +471,8 @@ static float CARD_WIDTH;
     NSLog(@"NO");
 }
 
-#pragma mark -- DELEGATES
--(void)didFetchImagesForMatchedProfile:(NSArray *)profileImages
-{
-    NSLog(@"profile images: %@", profileImages);
-}
-
 #pragma mark -- MATCH VIEW CONSTRAINT
--(void)addMatchViewConstraints:(UIView*)view
+-(void)addMatchViewConstraints
 {
     NSDictionary *viewsDictionary = @{@"matchView":matchDescView};
     NSArray *constraint_H = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[matchView(70)]"
@@ -485,7 +490,7 @@ static float CARD_WIDTH;
                                                                         metrics:nil
                                                                           views:viewsDictionary];
     //view specific constraints
-    [view addConstraints:constraint_H];
+    [matchDescView addConstraints:constraint_H];
     [self addConstraints:constraint_POS_H];
     [self addConstraints:constraint_POS_V];
 }
@@ -790,7 +795,7 @@ static float CARD_WIDTH;
                                                                  metrics:nil
                                                                    views:viewDict];
 
-    NSArray *sixSpaces = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[v1]-2-[v2]-2-[v3]-2-[v4]-2-[v5]-2-[v6]"
+    NSArray *sixSpaces = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-50-[v1]-3-[v2]-3-[v3]-3-[v4]-3-[v5]-3-[v6]"
                                                                  options:0
                                                                  metrics:nil
                                                                    views:viewDict];

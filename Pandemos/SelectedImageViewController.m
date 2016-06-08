@@ -95,7 +95,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     else if(self.profileImage)
     {
         self.userImage.image = [UIImage imageWithString:self.profileImage];
-
     }
 
 
@@ -157,7 +156,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     cell.cvImage.image = [UIImage imageWithString:imageStr];
 
 //    NSData *imagedata = [self.pictures objectAtIndex:indexPath.item];
-//    cell.cvImage.image = [UIImage imageWithData:imagedata];
+  //  cell.cvImage.image = [UIImage imageWithData:imagedata];
 
     if (imageStr)
     {
@@ -369,6 +368,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
             if (succeeded)
             {
+                NSLog(@"saved new iPhone profile image to Parse");
                 [self.saveImage setTitle:image forState:UIControlStateNormal];
                 [self delayAndCheckImageCount];
             }
@@ -386,6 +386,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
             if (succeeded)
             {
+                NSLog(@"saved new faecbook profile image to Parse");
                 [self.saveImage setTitle:image forState:UIControlStateNormal];
                 [self delayAndCheckImageCount];
             }
