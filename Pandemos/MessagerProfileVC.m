@@ -92,7 +92,8 @@ UserManagerDelegate>
         self.profileImages = user[@"profileImages"];
 
         self.piv.tallNameLabel.text = nameAndAge;
-        
+
+
 
         switch ((int)self.profileImages.count)
         {
@@ -156,5 +157,6 @@ UserManagerDelegate>
         }
 
     }];
+
 }
 @end

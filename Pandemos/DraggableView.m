@@ -71,8 +71,8 @@ static float CARD_WIDTH;
         }
         else if (IS_IPHONE6)
         {
-            CARD_WIDTH = 376;
-            CARD_HEIGHT = 675;
+            CARD_WIDTH = 355;
+            CARD_HEIGHT = 617;
         }
         else if (IS_IPHONE6PLUS)
         {
@@ -108,14 +108,14 @@ static float CARD_WIDTH;
 
         profileImageView2 = [UIImageView new];
         [imageScroll addSubview:profileImageView2];
-        profileImageView2.backgroundColor = [UIColor blueColor];
+        profileImageView2.backgroundColor = [UIColor redColor];
         profileImageView2.translatesAutoresizingMaskIntoConstraints = NO;
         [self addProfileImage2Constraints];
 
         profileImageView3 = [UIImageView new];
         [imageScroll addSubview:profileImageView3];
         profileImageView3.translatesAutoresizingMaskIntoConstraints = NO;
-        profileImageView3.backgroundColor = [UIColor redColor];
+        profileImageView3.backgroundColor = [UIColor blueColor];
         [self addProfileImage3Constraints];
 
         profileImageView4 = [UIImageView new];

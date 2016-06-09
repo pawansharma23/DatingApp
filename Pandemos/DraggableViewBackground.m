@@ -42,6 +42,7 @@ static float CARD_WIDTH;
     {
         [super layoutSubviews];
         //1) load current user search constraints
+        [self iPhoneType];
         self.userManager = [UserManager new];
         self.userManager.delegate = self;
         [self.userManager loadUserData:[User currentUser]];
@@ -67,11 +68,14 @@ static float CARD_WIDTH;
 
     self.dragView = [[DraggableView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH) / 2, (self.frame.size.height - CARD_HEIGHT)/2, CARD_WIDTH, CARD_HEIGHT)];
 
+    self.dragView = [[DraggableView alloc]initWithFrame:CGRectMake(0, 0, 250, 400)];
 
-    //User *user = [self.potentialMatchData objectAtIndex:index];
-    //draggableView.profileImageView.image = [UIImage imageWithString:[user.profileImages objectAtIndex:0]];
+
+//    User *user = [self.potentialMatchData objectAtIndex:index];
+    //self.dragView.profileImageView.image = [UIImage imageWithString:[user.profileImages objectAtIndex:index]];
 
     //load all photo images here?
+    [self loadProfileImages];
 
 //    NSString *infoText = [NSString stringWithFormat:@"%@, %@", user.givenName, [user ageFromBirthday:user.birthday]];
 //    self.dragView.information.text = infoText;
@@ -313,7 +317,7 @@ static float CARD_WIDTH;
 
         [self loadCards];
 
-        [self loadProfileImages];
+        //[self loadProfileImages];
 
     }
     else

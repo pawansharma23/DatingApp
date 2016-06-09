@@ -11,6 +11,7 @@
 #import "UIColor+Pandemos.h"
 #import "DraggableViewBackground.h"
 #import "UIImage+Additions.h"
+#import "DragBackground.h"
 
 @implementation MatchViewController
 
@@ -23,10 +24,14 @@
         self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
         [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
-        self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"Ally"] scaledToSize:CGSizeMake(30, 30)]];
+        self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"aLogo"] scaledToSize:CGSizeMake(35, 35)]];
 
-        DraggableViewBackground *draggable = [[DraggableViewBackground alloc]initWithFrame:self.view.frame];
-        [self.view addSubview:draggable];
+//        DraggableViewBackground *draggable = [[DraggableViewBackground alloc]initWithFrame:self.view.frame];
+//        [self.view addSubview:draggable];
+
+        DragBackground *drag = [[DragBackground alloc]initWithFrame:self.view.frame];
+        [self.view addSubview:drag];
+
     }
     else
     {
