@@ -13,7 +13,6 @@
 
 @interface DragBackground : UIView <DragViewDelegate>
 
-//methods called in DraggableView
 -(void)cardSwipedLeft:(UIView *)card;
 -(void)cardSwipedRight:(UIView *)card;
 

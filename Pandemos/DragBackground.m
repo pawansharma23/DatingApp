@@ -66,7 +66,8 @@ static float CARD_WIDTH;
 -(DragView *)createDraggableViewWithDataAtIndex:(NSInteger)index
 {
 
-    self.dragView = [[DragView alloc]initWithFrame:CGRectMake((self.frame.size.width - CARD_WIDTH) / 2, (self.frame.size.height - CARD_HEIGHT)/2, CARD_WIDTH, CARD_HEIGHT)];
+    self.dragView = [[DragView alloc]initWithFrame:CGRectMake(15,50, CARD_WIDTH, CARD_HEIGHT)];
+                                                              //(self.frame.size.width - CARD_WIDTH) / 2, (self.frame.size.height - CARD_HEIGHT)/2, CARD_WIDTH, CARD_HEIGHT)];
     //self.dragView.information.text = [exampleCardLabels objectAtIndex:index]; //%%% placeholder for card-specific information
     self.dragView.delegate = self;
 
@@ -113,13 +114,13 @@ static float CARD_WIDTH;
     {
         case 1:
             self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height);
-            self.dragView.profileImageView.image = [UIImage imageNamed:@"yesButton"];
+            self.dragView.profileImageView.image = [UIImage imageNamed:@"profile"];
 
             break;
         case 2:
             self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 2);
-            self.dragView.profileImageView.image = [UIImage imageNamed:@"yesButton"];
-            self.dragView.profileImageView2.image = [UIImage imageNamed:@"xButton"];
+            self.dragView.profileImageView.image = [UIImage imageNamed:@"profile"];
+            self.dragView.profileImageView2.image = [UIImage imageNamed:@"Back"];
             break;
         default:
             NSLog(@"no images for ProfileImageView switch");

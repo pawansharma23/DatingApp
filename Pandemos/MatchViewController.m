@@ -9,7 +9,6 @@
 #import "MatchViewController.h"
 #import "User.h"
 #import "UIColor+Pandemos.h"
-#import "DraggableViewBackground.h"
 #import "UIImage+Additions.h"
 #import "DragBackground.h"
 
@@ -31,6 +30,8 @@
 
         DragBackground *drag = [[DragBackground alloc]initWithFrame:self.view.frame];
         [self.view addSubview:drag];
+
+        self.automaticallyAdjustsScrollViewInsets = NO;
 
     }
     else

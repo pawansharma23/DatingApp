@@ -13,7 +13,6 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessagingList.h"
 #import <MessageUI/MessageUI.h>
-//#import "PotentialMatch.h"
 #import "UIColor+Pandemos.h"
 #import "UIButton+Additions.h"
 #import "UIImageView+Additions.h"
@@ -21,7 +20,6 @@
 #import "User.h"
 #import "UserManager.h"
 #import "MessageManager.h"
-#import "DraggableViewBackground.h"
 
 @interface ViewController ()<
 UINavigationControllerDelegate,
@@ -55,8 +53,8 @@ UserManagerDelegate>
 {
     [super viewDidLoad];
 
-    DraggableViewBackground *draggableBackground = [[DraggableViewBackground alloc]initWithFrame:self.view.frame];
-    [self.view addSubview:draggableBackground];
+//    DraggableViewBackground *draggableBackground = [[DraggableViewBackground alloc]initWithFrame:self.view.frame];
+//    [self.view addSubview:draggableBackground];
     //self.automaticallyAdjustsScrollViewInsets = NO;
     
     self.navigationItem.title = APP_TITLE;

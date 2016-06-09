@@ -51,7 +51,7 @@ static float CARD_WIDTH;
         }
         else if (IS_IPHONE6)
         {
-            CARD_WIDTH = 290;
+            CARD_WIDTH = 330;
             CARD_HEIGHT = 500;
         }
         else if (IS_IPHONE6PLUS)
@@ -67,8 +67,11 @@ static float CARD_WIDTH;
         overlayView.alpha = 0;
         [self addSubview:overlayView];
 
-        imageScroll = [[ImageScroll alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        imageScroll = [[ImageScroll alloc]init];
+                       //CGRectMake(0, 0, CARD_WIDTH, CARD_HEIGHT)];
+                                                                   //self.frame.size.width, self.frame.size.height)];
         [self addSubview:imageScroll];
+        imageScroll.translatesAutoresizingMaskIntoConstraints = NO;
         imageScroll.backgroundColor = [UIColor blueColor];
         imageScroll.delegate = self;
         imageScroll.pagingEnabled = YES;
@@ -76,6 +79,8 @@ static float CARD_WIDTH;
         imageScroll.clipsToBounds = NO;
         imageScroll.userInteractionEnabled = YES;
         imageScroll.scrollsToTop = NO;
+
+        [self addScrollViewConstraints];
         //imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height * 3);//multiplied by profileimages.count
 
         //load view for all the proffile images but that data is in draggableviewbackgroud
@@ -271,35 +276,39 @@ static float CARD_WIDTH;
     NSLog(@"NO");
 }
 
+
+
+
+
 -(void)addScrollViewConstraints
 {
     NSDictionary *imageDict = @{@"imageScroll":imageScroll};
-    //NSDictionary *metrics = @{@"width":@(CARD_WIDTH), @"height":@(CARD_HEIGHT)};
+    NSDictionary *metrics = @{@"width":@(CARD_WIDTH), @"height":@(CARD_HEIGHT)};
 
-    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[imageScroll]-10-|"
+    NSArray *xPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[imageScroll]"
                                                                  options:0
                                                                  metrics:nil
                                                                    views:imageDict];
 
-    NSArray *yPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[imageScroll]-10-|"
+    NSArray *yPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[imageScroll]"
                                                                  options:0
                                                                  metrics:nil
                                                                    views:imageDict];
 
-    //    NSArray *hardCodeWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageView(width)]"
-    //                                                                     options:0
-    //                                                                     metrics:metrics
-    //                                                                       views:imageDict];
-    //
-    //    NSArray *hardCodeHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageView(height)]"
-    //                                                                      options:0
-    //                                                                      metrics:metrics
-    //                                                                        views:imageDict];
+        NSArray *hardCodeWidth = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[imageScroll(width)]"
+                                                                         options:0
+                                                                         metrics:metrics
+                                                                           views:imageDict];
+    
+        NSArray *hardCodeHeight = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[imageScroll(height)]"
+                                                                          options:0
+                                                                          metrics:metrics
+                                                                            views:imageDict];
 
     [self addConstraints:xPosition];
     [self addConstraints:yPosition];
-    //[profileImageView addConstraints:hardCodeWidth];
-    //[profileImageView addConstraints:hardCodeHeight];
+    [self addConstraints:hardCodeWidth];
+    [self addConstraints:hardCodeHeight];
 }
 
 -(void)addProfileImage1Constraints
@@ -350,7 +359,7 @@ static float CARD_WIDTH;
                                                                              views:imageDict];
 
 
-    [self addConstraints:xPosition];
+    [imageScroll addConstraints:xPosition];
     [profileImageView2 addConstraints:imgConstraint_POS_H];
     [profileImageView2 addConstraints:imgConstraint_POS_V];
 }
@@ -379,7 +388,7 @@ static float CARD_WIDTH;
                                                                       options:0
                                                                       metrics:nil
                                                                         views:imageDict];
-    [self addConstraints:xPosition];
+    [imageScroll addConstraints:xPosition];
     [profileImageView3 addConstraints:imgConstraint_POS_H];
     [profileImageView3 addConstraints:imgConstraint_POS_V];
     [imageScroll addConstraints:threeViewsCons];
