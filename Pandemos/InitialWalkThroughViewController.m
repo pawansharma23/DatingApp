@@ -99,6 +99,8 @@ UIImagePickerControllerDelegate>
     [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 650)];
 
     [UIButton setUpLargeButton:self.continueButton];
+    [UIButton setUpLargeButton:self.imagesFromPhoneButton];
+    [UIButton setUpLargeButton:self.facebookAlbumBUtton];
 
     NSString *aboutMeDescription = [self.currentUser objectForKey:@"aboutMe"];
     if (aboutMeDescription)
@@ -438,8 +440,7 @@ UIImagePickerControllerDelegate>
     [UIButton setUpLargeButton:self.mensInterestButton];
     [UIButton setUpLargeButton:self.womensInterestButton];
     [UIButton setUpLargeButton:self.bothSexesButton];
-    [UIButton setUpLargeButton:self.imagesFromPhoneButton];
-    [UIButton setUpLargeButton:self.facebookAlbumBUtton];
+
 
     [UITextView setup:self.textViewAboutMe];
 }

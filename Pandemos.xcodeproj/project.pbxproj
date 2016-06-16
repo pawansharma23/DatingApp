@@ -506,7 +506,7 @@
 			isa = PBXGroup;
 			children = (
 				26F22BF41C6FAF0E00D86343 /* Matches */,
-				26F22BF21C6FAEF000D86343 /* Preferences */,
+				26F22BF21C6FAEF000D86343 /* Settings */,
 			);
 			name = UserFlow;
 			sourceTree = "<group>";
@@ -735,7 +735,7 @@
 			name = "Third Party Helpers";
 			sourceTree = "<group>";
 		};
-		26F22BF21C6FAEF000D86343 /* Preferences */ = {
+		26F22BF21C6FAEF000D86343 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
 				264ED01E1CECBC0E009A5A00 /* Cell */,
@@ -743,7 +743,7 @@
 				268BA1061C25A86C0054414E /* ProfileViewController.m */,
 				2614A7071CA1DCA900D6F6AA /* PreviewUserProfile */,
 			);
-			name = Preferences;
+			name = Settings;
 			sourceTree = "<group>";
 		};
 		26F22BF31C6FAEFF00D86343 /* Messaging */ = {

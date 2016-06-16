@@ -87,7 +87,6 @@ UserManagerDelegate>
 @property (strong, nonatomic) FacebookManager *manager;
 @property (strong, nonatomic) UserManager *userManager;
 
-@property (strong, nonatomic) NSData *selectedPhoneImageData;
 @property (strong, nonatomic) NSString *iPhoneImageString;
 @property (strong, nonatomic) NSString *selectedImage;
 @end
@@ -123,10 +122,8 @@ UserManagerDelegate>
 
     [SVProgressHUD show];
 
-//    self.automaticallyAdjustsScrollViewInsets = NO;
     self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 920)];
     self.viewInsideScrollView.userInteractionEnabled = YES;
-
 
     self.scrollView.delegate = self;
     self.scrollView.scrollEnabled = YES;
@@ -151,7 +148,7 @@ UserManagerDelegate>
     [self.minimumAgeSlider setUserInteractionEnabled:YES];
     [self.maximumAgeSlider setUserInteractionEnabled:YES];
 
-    if (self.selectedPhoneImageData)
+    if (self.iPhoneImageString)
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
@@ -474,16 +471,14 @@ UserManagerDelegate>
     if ([segue.identifier isEqualToString:@"Selected"])
     {
         [SVProgressHUD dismiss];
-        if (self.selectedPhoneImageData)
+        if (self.iPhoneImageString)
         {
             SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-            //sivc.profileImageAsData = self.selectedPhoneImageData;
             sivc.profileImageFromIPhone = self.iPhoneImageString;
         }
         else
         {
             SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-            //sivc.profileImageAsData = self.selectedImageData;
             sivc.profileImage = self.selectedImage;
         }
     }
@@ -585,7 +580,13 @@ UserManagerDelegate>
                                             [self presentViewController:ipc animated:YES completion:nil];
                                         }];
 
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+
+        [alertController dismissViewControllerAnimated:YES completion:^{
+            [UIButton setUpLargeButton:self.SwapAddPhotoButton];
+
+        }];
+    }];
 
     [alertController addAction:cameraAction];
     [alertController addAction:libraryAction];
@@ -597,16 +598,20 @@ UserManagerDelegate>
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    UIImage *orginalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    UIImage *orginalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
     UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
+
+
+    //    NSString *imageUrl = [NSString stringWithFormat:@"%@",[info valueForKey:UIImagePickerControllerReferenceURL]];
+//    NSLog(@"string value: %@", imageUrl);
+
 
     if (scaledImage)
     {
-        self.selectedPhoneImageData = [[NSData alloc] init];
-//        self.selectedPhoneImageData = UIImagePNGRepresentation(scaledImage);
-        self.selectedPhoneImageData = UIImageJPEGRepresentation(scaledImage, 1);
-        //changing image to string(smaller)
-        self.iPhoneImageString = [[NSString alloc]initWithData:self.selectedPhoneImageData encoding:NSUTF8StringEncoding];
+        NSData *pickedImageFromPhone = [[NSData alloc] init];
+        pickedImageFromPhone = UIImageJPEGRepresentation(scaledImage, 2);
+        self.iPhoneImageString = [[NSString alloc]initWithData:pickedImageFromPhone encoding:NSUTF8StringEncoding];
+        NSLog(@"string value: %@", self.iPhoneImageString);
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];

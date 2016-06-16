@@ -72,19 +72,8 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.backButton.tintColor = [UIColor mikeGray];
 
-    //UIImage *halfSizedImage = [UIImage imageWithImage:[UIImage imageWithData:self.profileImageAsData] scaledToScale:1.0];
+    
 
-//    self.resizedImageAsData = UIImageJPEGRepresentation(halfSizedImage, .01);
-
-    //NSLog(@"File size is : %.2f KB",(float)self.profileImageAsData.length/1024.0f);
-    //NSLog(@"New file size is : %.2f KB",(float)self.resizedImageAsData.length/1024.0f);
-
-    //(halfSizedImage, 0.1);
-//    self.userImage.image = [UIImage imageWithData:self.profileImageAsData];
-
-
-    //self.profileImageFromIPhone = [[NSString alloc]initWithData:self.profileImageAsData encoding:NSUTF8StringEncoding];
-    //NSLog(@"File size STRING is : %.2f KB",(float)self.profileImage.length/1024.0f);
     self.userImage.layer.cornerRadius = 8;
     self.userImage.layer.masksToBounds = YES;
 

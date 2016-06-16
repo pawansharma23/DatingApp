@@ -11,7 +11,6 @@
 @interface SelectedImageViewController : UIViewController
 
 @property (strong, nonatomic) NSString *profileImage;
-//@property (strong, nonatomic) NSData *profileImageAsData;
 @property (strong, nonatomic) NSString *profileImageFromIPhone;
 @property BOOL fromCamera;
 @end
