@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "User.h"
 
+@protocol MessageManagerDelegate <NSObject>
+
+-(void)didRecieveChatterData:(User*)chatter;
+
+@end
 typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
 typedef void (^resultBlockWithResult)(NSArray *result, NSError *error);
 typedef void (^resultBlockWithConversations)(NSArray *result, NSError *error);
@@ -16,10 +21,12 @@ typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 
 @interface MessageManager : NSObject
 
+@property (weak, nonatomic) id <MessageManagerDelegate> delegate;
+
 @property(nonatomic, strong)NSArray *matches;
 
 -(void)sendInitialMessage:(User*)recipient;
--(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text;
+-(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text withSuccess:(resultBlockWithSuccess)sucess;
 -(void)queryIfChatExists:(User*)recipient currentUser:(User*)user withSuccess:(resultBlockWithSuccess)success;
 
 -(void)queryForOutgoingMessages:(User*)recipientUser withBlock:(resultBlockWithConversations)messages;

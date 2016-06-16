@@ -86,7 +86,8 @@ UserManagerDelegate>
         self.piv.schoolLabel.text = user[@"lastSchool"];
         self.profileImages = user[@"profileImages"];
 
-        switch ((int)self.profileImages.count) {
+        switch ((int)self.profileImages.count)
+        {
             case 1:
                 self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height);
                 self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];

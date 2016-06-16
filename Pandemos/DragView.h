@@ -34,6 +34,14 @@
 @property (nonatomic,strong)UIImageView *profileImageView5;
 @property (nonatomic,strong)UIImageView *profileImageView6;
 
+@property (nonatomic,strong)UIView *v1;
+@property (nonatomic,strong)UIView *v2;
+@property (nonatomic,strong)UIView *v3;
+@property (nonatomic,strong)UIView *v4;
+@property (nonatomic,strong)UIView *v5;
+@property (nonatomic,strong)UIView *v6;
+
+
 -(void)leftClickAction;
 -(void)rightClickAction;
 

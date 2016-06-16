@@ -153,9 +153,11 @@
                                 <rect key="frame" x="521" y="555" width="71" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="71" id="GyH-R9-2NM">
-                                        <variation key="heightClass=regular-widthClass=compact" constant="80"/>
+                                        <variation key="heightClass=regular-widthClass=compact" constant="90"/>
                                     </constraint>
-                                    <constraint firstAttribute="height" constant="30" id="uye-9l-LCm"/>
+                                    <constraint firstAttribute="height" constant="30" id="uye-9l-LCm">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                    </constraint>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="13"/>
                                 <state key="normal" title="Next page"/>
@@ -167,9 +169,11 @@
                                 <rect key="frame" x="8" y="555" width="135" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="135" id="Y76-vH-s1x">
-                                        <variation key="heightClass=regular-widthClass=compact" constant="100"/>
+                                        <variation key="heightClass=regular-widthClass=compact" constant="110"/>
                                     </constraint>
-                                    <constraint firstAttribute="height" constant="30" id="fCg-v3-ecy"/>
+                                    <constraint firstAttribute="height" constant="30" id="fCg-v3-ecy">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                    </constraint>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="13"/>
                                 <state key="normal" title="Other albums"/>

@@ -22,6 +22,16 @@
 #import "HeaderForProfileVC.h"
 #import "SVProgressHUD.h"
 
+
+#import <Foundation/Foundation.h>
+#import <Bolts/BFTask.h>
+#import <FBSDKCoreKit/FBSDKAccessToken.h>
+#import <FBSDKLoginKit/FBSDKLoginManager.h>
+#import <ParseFacebookUtilsV4.h>
+#import <Parse/PFConstants.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import "PFFacebookUtils.h"
+
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
 UICollectionViewDataSource,
@@ -91,20 +101,10 @@ UserManagerDelegate>
 
     if (self.currentUser)
     {
+        [self loadNavigationBarItems];
         //self.locationLabel.text = self.cityAndState;
         //placeholder
         self.locationLabel.text = @"Location";
-
-        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor unitedNationBlue],
-                                     NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
-        [self.navigationController.navigationBar setTitleTextAttributes:attributes];
-        self.navigationItem.title = @"Settings";
-        self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-
-        UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-        [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
-        self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
-        self.navigationItem.rightBarButtonItem.tintColor = [UIColor mikeGray];
 
         self.profileImages = [NSMutableArray new];
         self.textViewAboutMe.delegate = self;
@@ -112,6 +112,7 @@ UserManagerDelegate>
         [UICollectionView setupBorder:self.collectionView];
         self.collectionView.delegate = self;
         [self setFlowLayout];
+
         [self setupButtonsAndTextView];
     }
 }
@@ -121,23 +122,30 @@ UserManagerDelegate>
     [super viewDidAppear:YES];
 
     [SVProgressHUD show];
-    self.automaticallyAdjustsScrollViewInsets = NO;
+
+//    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 920)];
+    self.viewInsideScrollView.userInteractionEnabled = YES;
+
+
     self.scrollView.delegate = self;
     self.scrollView.scrollEnabled = YES;
     self.scrollView.userInteractionEnabled = YES;
-    [self.scrollView addSubview:self.viewInsideScrollView];
-    [self.scrollView setContentSize:CGSizeMake(self.viewInsideScrollView.frame.size.width, 900)];
+    //[self.scrollView addSubview:self.viewInsideScrollView];
+    self.scrollView.contentSize = CGSizeMake(self.viewInsideScrollView.frame.size.width, self.viewInsideScrollView.frame.size.height);
     self.scrollView.scrollsToTop = YES;
-    self.scrollView.clipsToBounds = YES;
+    //self.scrollView.clipsToBounds = YES;
 
-    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 986)];
+    //[self.scrollView addSubview:self.viewInsideScrollView];
+
 
     [self setupManagersProfileVC];
 
-    [UIButton setUpButton:self.SwapAddPhotoButton];
-    [UIButton setUpButton:self.facebookAlbumsButton];
+    [UIButton setUpLargeButton:self.SwapAddPhotoButton];
+    [UIButton setUpLargeButton:self.facebookAlbumsButton];
     [self.facebookAlbumsButton setEnabled:YES];
     [self.SwapAddPhotoButton setEnabled:YES];
+
     //on reload scroll to top
     [self.milesSlider setUserInteractionEnabled:YES];
     [self.minimumAgeSlider setUserInteractionEnabled:YES];
@@ -193,6 +201,7 @@ UserManagerDelegate>
         [self.currentUser setObject:aboutMeDescr forKey:@"aboutMe"];
 
         [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
             if (error)
             {
                 NSLog(@"cannot save: %@", error.description);
@@ -239,8 +248,6 @@ UserManagerDelegate>
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     NSString *image = [self.profileImages objectAtIndex:indexPath.item];
     cell.userImage.image = [UIImage imageWithString:image];
-//    NSData *image = [self.profileImages objectAtIndex:indexPath.item];
-  //  cell.userImage.image = [UIImage imageWithData:image];
 
     return cell;
 }
@@ -307,9 +314,12 @@ UserManagerDelegate>
     [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
 
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error) {
+        if (error)
+        {
             NSLog(@"error in saving Max Age: %@", error);
-        } else{
+        }
+        else
+        {
             NSLog(@"saved: %s", succeeded ? "true" : "false");
         }
     }];
@@ -393,52 +403,6 @@ UserManagerDelegate>
     [mc setToRecipients:reciepents];
 
     [self presentViewController:mc animated:YES completion:nil];
-}
-
-- (IBAction)logOutButton:(UIButton *)sender
-{
-
-    if (sender.isSelected)
-    {
-        self.logoutButton.backgroundColor = [UIColor blackColor];
-    }
-    
-    [PFUser logOutInBackgroundWithBlock:^(NSError * _Nullable error) {
-        if (!error)
-        {
-            NSLog(@"logged Out");
-        }
-        else
-        {
-            NSLog(@"cannot log out: %@", error);
-        }
-    }];
-
-
-    //nothing works to unlink the facebok account
-   // [PFFacebookUtils unlinkUserInBackground:self.currentUser];
-
-//    [PFFacebookUtils unlinkUserInBackground:[PFUser currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
-//        if (error) {
-//            NSLog(@"error unlinking: %@", error);
-//        } else{
-//            NSLog(@"logged out, no user: %@", self.currentUser);
-//        }
-//    }];
-
-    NSLog(@"current user: after %@", self.currentUser);
-
-    [self performSegueWithIdentifier:@"LoggedOut" sender:self];
-}
-
-- (IBAction)onBackButton:(id)sender
-{
-    [self performSegueWithIdentifier:@"BackToMain" sender:self];
-}
-
-- (IBAction)userViewButton:(UIButton *)sender
-{
-
 }
 
 #pragma mark - USER MANAGER DELEGATE
@@ -537,6 +501,63 @@ UserManagerDelegate>
     [self performSegueWithIdentifier:@"Preview" sender:self];
 }
 
+- (IBAction)logoutTest:(UIButton *)sender
+{
+    NSLog(@"button tapped");
+
+//    if (sender.isSelected)
+//    {
+//        self.logoutButton.backgroundColor = [UIColor blackColor];
+
+
+        //[PFUser logOut];
+
+
+
+        //[PFFacebookUtils unlinkUserInBackground:self.currentUser];
+
+        [PFFacebookUtils unlinkUserInBackground:[User currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error)
+            {
+                NSLog(@"error unlinking: %@", error);
+            }
+            else
+            {
+                NSLog(@"logged out?: %@", self.currentUser.givenName);
+                [self performSegueWithIdentifier:@"BackToMain" sender:self];
+            }
+        }];
+        
+//    }
+}
+
+- (IBAction)logOutButton:(UIButton *)sender
+{
+
+    if (sender.isSelected)
+    {
+        self.logoutButton.backgroundColor = [UIColor blackColor];
+
+        [PFFacebookUtils unlinkUserInBackground:[User currentUser] block:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error)
+            {
+                NSLog(@"error unlinking: %@", error);
+            }
+            else
+            {
+                NSLog(@"logged out, no user: %@", self.currentUser);
+                [self performSegueWithIdentifier:@"LoggedOut" sender:self];
+            }
+        }];
+
+    }
+}
+
+- (IBAction)onBackButton:(id)sender
+{
+    [self performSegueWithIdentifier:@"BackToMain" sender:self];
+}
+
 #pragma mark -- Retrive or Take Image from Phone
 - (IBAction)onSwapTapped:(UIButton *)sender
 {
@@ -592,15 +613,33 @@ UserManagerDelegate>
 }
 
 #pragma mark -- HELPERS
+-(void)loadNavigationBarItems
+{
+    NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor mikeGray],
+                                 NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
+    [self.navigationController.navigationBar setTitleTextAttributes:attributes];
+    self.navigationItem.title = @"Settings";
+    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
+
+    UIImage *backToMatches = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(30.0, 30.0)];
+    [self.navigationItem.leftBarButtonItem setImage:backToMatches];
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+
+    NSDictionary *attributesForRight = @{NSForegroundColorAttributeName:[UIColor mikeGray],
+                                         NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:18.0]};
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:attributesForRight forState:UIControlStateNormal];
+    self.navigationItem.rightBarButtonItem.title = @"Preview";
+}
+
 -(void)setupButtonsAndTextView
 {
-    [UIButton setUpButton:self.menButton];
-    [UIButton setUpButton:self.womenButton];
-    [UIButton setUpButton:self.bothButton];
-    [UIButton setUpButton:self.logoutButton];
-    [UIButton setUpButton:self.deleteButton];
-    [UIButton setUpButton:self.shareButton];
-    [UIButton setUpButton:self.feedbackButton];
+    [UIButton setUpLargeButton:self.menButton];
+    [UIButton setUpLargeButton:self.womenButton];
+    [UIButton setUpLargeButton:self.bothButton];
+    [UIButton setUpLargeButton:self.logoutButton];
+    [UIButton setUpLargeButton:self.deleteButton];
+    [UIButton setUpLargeButton:self.shareButton];
+    [UIButton setUpLargeButton:self.feedbackButton];
 
     self.textViewAboutMe.layer.cornerRadius = 10;
     [self.textViewAboutMe.layer setBorderWidth:1.0];

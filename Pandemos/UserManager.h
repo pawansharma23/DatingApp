@@ -28,7 +28,7 @@
 -(void)didReceivePotentialMatchImages:(NSArray *)images;
 -(void)failedToFetchPotentialMatchImages:(NSError*)error;
 //match Requests
--(void)didLoadMatchedUsers:(NSArray<User*>*)users;
+-(void)didLoadAlreadySeen:(NSArray<User*>*)users;
 -(void)didCreateMatchRequest:(MatchRequest*)matchRequest;
 -(void)failedToCreateMatchRequest:(NSError*)error;
 -(void)didUpdateMatchRequest:(User *)user;
@@ -46,6 +46,7 @@ typedef void (^resultBlockWithArray)(NSArray *users, NSError *error);
 typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
 typedef void (^resultBlockWithUserConfidant)(NSString *confidant, NSError *error);
 typedef void (^resultBlockWithUser)(User *user, NSError *error);
+typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError *error);
 
 @property(nonatomic, strong)NSMutableArray<User*> *allUsers;
 @property(nonatomic, strong)NSArray<User*> *allMatchedUsers;
@@ -65,7 +66,7 @@ typedef void (^resultBlockWithUser)(User *user, NSError *error);
 -(void)updateMatchRequestWithRetrivalUserObject:(MatchRequest*)matchRequest
              withResponse:(NSString*)response
               withSuccess:(resultBlockWithUserData)result;
--(void)loadMatchedUsers:(resultBlockWithArray)result;
+-(void)loadAlreadySeenMatches;
 -(void)fromMessaging:(User*)user;
 -(void)queryForUserData:(NSString *)objectId
                withUser:(resultBlockWithUser)user;
@@ -74,5 +75,9 @@ typedef void (^resultBlockWithUser)(User *user, NSError *error);
                            withStatus:(NSString*)status
                        withCompletion:(resultBlockWithMatchRequest)result;
 -(void)secureMatchWithPFCloudFunction:(User*)recipientUser;
+-(void)changePFRelationToDeniedWithPFCloudFunction:(User*)recipientUser;
 -(void)queryForImageCount:(NSString *)objectId;
+-(void)queryForRelationshipMatch:(User*)matchedUser withBlock:(resultBlockWithMatchedUser)match;
+-(void)addPFRelationWithPFCloudFunction:(User*)recipientUser
+                        andMatchRequest:(MatchRequest*)match;
 @end

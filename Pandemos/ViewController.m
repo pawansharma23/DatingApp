@@ -57,12 +57,12 @@ UserManagerDelegate>
 //    [self.view addSubview:draggableBackground];
     //self.automaticallyAdjustsScrollViewInsets = NO;
     
-    self.navigationItem.title = APP_TITLE;
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor unitedNationBlue]}];
-    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-    [self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
+//    self.navigationItem.title = APP_TITLE;
+//    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor unitedNationBlue]}];
+//    self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
+    //[self.navigationItem.rightBarButtonItem setTitle:@"Messages"];
 
-    self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"Ally"] scaledToSize:CGSizeMake(30, 30)]];
+   // self.navigationItem.titleView = [[UIImageView alloc]initWithImage:[UIImage imageWithImage:[UIImage imageNamed:@"Ally"] scaledToSize:CGSizeMake(30, 30)]];
 }
 
 -(void)viewDidAppear:(BOOL)animated

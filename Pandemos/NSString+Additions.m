@@ -41,7 +41,7 @@
     }
     else if (timingDiff < 60)
     {
-        return [NSString stringWithFormat:@"%f secs ago",timingDiff];
+        return @"1 min ago";
     }
     else if (timingDiff < 3600)
     {

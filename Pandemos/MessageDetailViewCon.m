@@ -29,7 +29,8 @@
 @interface MessageDetailViewCon ()<UITextFieldDelegate,
 UITableViewDataSource,
 UITableViewDelegate,
-MatchViewDelegate>
+MatchViewDelegate,
+UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
@@ -111,11 +112,21 @@ MatchViewDelegate>
         [self.tableView endUpdates];
         [self.tableView reloadData];
 
-        [self.messageManager sendMessage:self.currentUser toUser:self.recipient withText:textField.text];
+        //[self.messageManager sendMessage:self.currentUser toUser:self.recipient withText:textField.text];
+        [self.messageManager sendMessage:self.currentUser toUser:self.recipient withText:textField.text withSuccess:^(BOOL success, NSError *error) {
 
+            if (success)
+            {
+                textField.text = @"";
+
+            }
+            else
+            {
+                NSLog(@"nope");
+            }
+        }];
         //reset textField
-        textField.text = @"";
-        [textField resignFirstResponder];
+        //[textField resignFirstResponder];
         return YES;
     }
 
@@ -128,7 +139,8 @@ MatchViewDelegate>
 #pragma mark -- TABLEVIEW DELEGATE
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.outgoingChatData.count;
+    NSInteger totalChats = self.incomingChatData.count + self.outgoingChatData.count;
+    return totalChats;
 }
 
 -(IncomingCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -239,6 +251,7 @@ MatchViewDelegate>
 #pragma mark -- HELPERS
 -(void)loadIncomingMessages
 {
+    
     [self.messageManager queryForIncomingMessages:self.recipient withBlock:^(NSArray *result, NSError *error) {
 
         self.incomingChatData = [NSMutableArray arrayWithArray:result];
@@ -251,6 +264,7 @@ MatchViewDelegate>
     [self.messageManager queryForOutgoingMessages:self.recipient withBlock:^(NSArray *result, NSError *error) {
 
         self.outgoingChatData = [NSMutableArray arrayWithArray:result];
+        self.tableView.scrollsToTop = YES;
         [self.tableView reloadData];
     }];
 }

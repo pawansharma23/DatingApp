@@ -56,11 +56,6 @@ static NSString * const reuseIdentifier = @"FaceCell";
     NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor],
                                  NSFontAttributeName :[UIFont fontWithName:@"GeezaPro" size:20.0]};
     [self.navigationController.navigationBar setTitleTextAttributes:attributes];
-    
-//    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-//    self.backButton.tintColor = [UIColor mikeGray];
-//    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
-//    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
 
     self.photos = [NSMutableArray new];
     self.albumPages = [NSArray new];
@@ -68,6 +63,8 @@ static NSString * const reuseIdentifier = @"FaceCell";
     self.collectionView.delegate = self;
     [UICollectionView setupBorder:self.collectionView];
     [self setupCollectionViewFlowLayout];
+
+    self.nextButton.hidden = YES;
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -86,8 +83,7 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
         [self.manager loadParsedFBAlbum:self.albumID];
 
-        [UIButton setUpButton:self.nextButton];
-        [UIButton setUpButton:self.otherAlbumsButton];
+        [UIButton setUpLargeButton:self.otherAlbumsButton];
     }
     else
     {
@@ -142,7 +138,6 @@ static NSString * const reuseIdentifier = @"FaceCell";
     {
         SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
         sivc.profileImage = self.selectedImage;
-        //sivc.profileImageAsData = self.selectedImageData;
     }
         else
         {
@@ -154,6 +149,13 @@ static NSString * const reuseIdentifier = @"FaceCell";
 -(void)didReceiveParsedAlbum:(NSArray *)album
 {
     self.photos = [NSMutableArray arrayWithArray:album];
+
+    if (self.photos.count == 25)
+    {
+        self.nextButton.hidden = NO;
+        [UIButton setUpLargeButton:self.nextButton];
+    }
+    
     [self.collectionView reloadData];
     [SVProgressHUD dismiss];
 }
@@ -164,13 +166,6 @@ static NSString * const reuseIdentifier = @"FaceCell";
     Facebook *nextPage = [self.albumPages firstObject];
     self.nextURL = nextPage.nextPage;
 }
-
-//-(void)didReceiveParsedPhotoSourceData:(NSData *)photoData
-//{
-//    self.selectedImageData = photoData;
-//    [self performSegueWithIdentifier:@"ChooseImage" sender:self];
-//
-//}
 
 -(void)didReceiveParsedPhotoSource:(NSString *)photoURL
 {

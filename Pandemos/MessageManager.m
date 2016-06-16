@@ -35,18 +35,14 @@
         else
         {
             NSLog(@"initial message sent: %s", succeeded ? "true" : "false");
+            [self.delegate didRecieveChatterData:recipient];
         }
     }];
 }
 
--(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text
+-(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text withSuccess:(resultBlockWithSuccess)sucess
 {
-
     PFObject *newMessage = [PFObject objectWithClassName:@"Chat"];
-
-    //add the from user to the currentUsers friends
-    //PFRelation *chatRelation = [user relationForKey:@"chatter"];
-    //[chatRelation addObject:recipient];
 
     [newMessage setObject:recipient forKey:@"toUser"];
     [newMessage setObject:user forKey:@"fromUser"];
@@ -58,12 +54,14 @@
         if (error)
         {
             NSLog(@"error saving message: %@", error);
+            sucess(NO, nil);
         }
         else
         {
             NSLog(@"sent message: %s", succeeded ? "true" : "false");
-            NotificationManager *notificationManager = [[NotificationManager alloc] init];
-            [notificationManager scheduleInstantNotificationFromMatch:recipient.givenName];
+            sucess(succeeded, nil);
+//            NotificationManager *notificationManager = [[NotificationManager alloc] init];
+//            [notificationManager scheduleInstantNotificationFromMatch:recipient.givenName];
         }
     }];
 }
@@ -123,14 +121,15 @@
     [query whereKeyExists:@"text"];
     [query orderByAscending:@"updatedAt"];
 
-    query.cachePolicy = kPFCachePolicyCacheThenNetwork;
-    [query orderByAscending:@"createdAt"];
-    NSLog(@"Trying to retrieve from cache");
+//    query.cachePolicy = kPFCachePolicyCacheThenNetwork;
+//    [query orderByAscending:@"createdAt"];
+//    NSLog(@"Trying to retrieve from cache");
 
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
 
         if (!error)
         {
+            NSLog(@"results: %@", objects);
             messages(objects, nil);
         }
         else
@@ -204,7 +203,6 @@
         }
         else
         {
-            //NSArray *userObjects = [UserBuilder parsedUserData:objects withError:error];
             matches(objects, nil);
         }
     }];

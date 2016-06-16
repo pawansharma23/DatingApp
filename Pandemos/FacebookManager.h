@@ -42,7 +42,6 @@
 //@property(nonatomic, strong)NSMutableArray<Facebook*> *facebookAlbums;
 
 
-//@property(nonatomic, strong)NSMutableArray<FriendRequest*> *pendingArray;
 
 @property (strong, nonatomic) FacebookNetwork *facebookNetworker;
 @property (weak, nonatomic) id<FacebookManagerDelegate>delegate;

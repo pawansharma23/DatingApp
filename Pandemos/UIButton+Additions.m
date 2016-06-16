@@ -36,6 +36,17 @@
     [button setEnabled:YES];
 }
 
++(void)setUpLargeButton:(UIButton *)button
+{
+    button.layer.cornerRadius = 20;
+    button.clipsToBounds = YES;
+    [button.layer setBorderWidth:1.0];
+    [button.layer setBorderColor:[UIColor blackColor].CGColor];
+    [button setTitleColor:[UIColor facebookBlue] forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor whiteColor]];
+    [button setEnabled:YES];
+}
+
 +(void)changeButtonState:(UIButton *)button
 {
     [button setHighlighted:YES];

@@ -49,7 +49,6 @@ UIImagePickerControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *mensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *womensInterestButton;
 @property (weak, nonatomic) IBOutlet UIButton *bothSexesButton;
-@property (weak, nonatomic) IBOutlet UIButton *suggestionsButton;
 @property (weak, nonatomic) IBOutlet UIButton *continueButton;
 @property (weak, nonatomic) IBOutlet UISwitch *pushNotifications;
 @property (weak, nonatomic) IBOutlet UIButton *imagesFromPhoneButton;
@@ -76,7 +75,7 @@ UIImagePickerControllerDelegate>
     {
         [self setupManagersForInitalWalkViewController];
 
-        self.navigationItem.title = @"Setup";
+        self.navigationController.navigationItem.title = @"Ally";
         self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
         self.automaticallyAdjustsScrollViewInsets = NO;
         self.scrollView.delegate = self;
@@ -98,12 +97,17 @@ UIImagePickerControllerDelegate>
 -(void)viewDidAppear:(BOOL)animated
 {
     [self.scrollView setContentSize:CGSizeMake(self.view.frame.size.width, 650)];
-    [UIButton setUpButton:self.continueButton];
+
+    [UIButton setUpLargeButton:self.continueButton];
 
     NSString *aboutMeDescription = [self.currentUser objectForKey:@"aboutMe"];
     if (aboutMeDescription)
     {
         self.textViewAboutMe.text = aboutMeDescription;
+    }
+    else
+    {
+        self.textViewAboutMe.text = @"Enter a little about yourself";
     }
 
     if (self.dataImage)
@@ -192,18 +196,17 @@ UIImagePickerControllerDelegate>
 }
 
 #pragma mark -- NAV
-- (IBAction)onSuggestionsTapped:(UIButton *)sender
-{
-    [self performSegueWithIdentifier:@"Suggestions" sender:self];
-}
 - (IBAction)onFacebookAlbumsTapped:(UIButton *)sender
 {
+    [UIButton changeButtonStateForSingleButton:self.facebookAlbumBUtton];
     [self performSegueWithIdentifier:@"FacebookAlbums" sender:self];
 }
 
 
 - (IBAction)onImagesFromPhone:(UIButton *)sender
 {
+    [UIButton changeButtonStateForSingleButton:self.imagesFromPhoneButton];
+
     ipc = [[UIImagePickerController alloc] init];
     ipc.delegate = (id)self;
 
@@ -263,11 +266,19 @@ UIImagePickerControllerDelegate>
         //sivc.profileImageAsData = self.dataImage;
     }
 }
--
-(IBAction)onContinueTapped:(UIButton *)sender
+
+-(IBAction)onContinueTapped:(UIButton *)sender
 {
     [UIButton changeButtonStateForSingleButton:self.continueButton];
-    [self performSegueWithIdentifier:@"ConfidantEmail" sender:self];
+
+    if ([self.userGender isEqualToString:@"male"])
+    {
+        [self performSegueWithIdentifier:@"Matches" sender:self];
+    }
+    else
+    {
+        [self performSegueWithIdentifier:@"ConfidantEmail" sender:self];
+    }
 }
 
 #pragma mark -- AGE SLIDERS
@@ -290,7 +301,7 @@ UIImagePickerControllerDelegate>
     [self.currentUser saveInBackground];
 }
 
-#pragma mark -- Distance Away Slider
+#pragma mark -- DISTANCE AWAY
 - (IBAction)sliderValueChanged:(UISlider *)sender
 {
     NSString *milesAwayStr = [NSString stringWithFormat:@"%.f", self.milesSlider.value];
@@ -349,9 +360,7 @@ UIImagePickerControllerDelegate>
 -(void)didReceiveParsedUserData:(NSArray *)data
 {
     Facebook *face = [data firstObject];
-    NSLog(@"name: %@", face.givenName);
-    NSLog(@"name: %@", face.gender);
-
+    NSLog(@"did we get last name?!?! %@", face.lastName);
     [self saveToParse:data];
 }
 -(void)saveToParse:(NSArray*)facebookUserDataArray
@@ -426,15 +435,12 @@ UIImagePickerControllerDelegate>
 #pragma mark -- HELPERS
 -(void)setupButtons
 {
-    [UIButton setUpButton:self.mensInterestButton];
-    [UIButton setUpButton:self.womensInterestButton];
-    [UIButton setUpButton:self.bothSexesButton];
-    [UIButton setUpButton:self.suggestionsButton];
-    [UIButton setUpButton:self.imagesFromPhoneButton];
-    self.facebookAlbumBUtton.layer.cornerRadius = 16.0 / 2.0;
-    self.facebookAlbumBUtton.clipsToBounds = YES;
-    [self.facebookAlbumBUtton.layer setBorderWidth:1.0];
-    [self.facebookAlbumBUtton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [UIButton setUpLargeButton:self.mensInterestButton];
+    [UIButton setUpLargeButton:self.womensInterestButton];
+    [UIButton setUpLargeButton:self.bothSexesButton];
+    [UIButton setUpLargeButton:self.imagesFromPhoneButton];
+    [UIButton setUpLargeButton:self.facebookAlbumBUtton];
+
     [UITextView setup:self.textViewAboutMe];
 }
 

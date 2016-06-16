@@ -22,7 +22,8 @@
 UITableViewDelegate,
 UserManagerDelegate,
 UICollectionViewDelegate,
-UICollectionViewDataSource>
+UICollectionViewDataSource,
+MessageManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
@@ -86,11 +87,11 @@ UICollectionViewDataSource>
 
 -(MatchesCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"MatchesCell";
-    MatchesCell *cell = (MatchesCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    MatchesCell *cell = (MatchesCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"MatchesCell" forIndexPath:indexPath];
     User *user = [self.matches objectAtIndex:indexPath.item];
 
-    [self setupCVCell:cell];
+    cell.matchImage.layer.cornerRadius = 37.5;
+    cell.matchImage.layer.masksToBounds = YES;
     cell.matchImage.image = [UIImage imageWithData:[user stringURLToData:user.profileImages.firstObject]];
     cell.nameLabel.text = user[@"givenName"];
 
@@ -99,7 +100,6 @@ UICollectionViewDataSource>
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"index Path: %d", (int)indexPath.row);
     self.recipientUser = [self.matches objectAtIndex:indexPath.row];
 
     [self.messageManager queryIfChatExists:self.recipientUser currentUser:self.currentUser withSuccess:^(BOOL success, NSError *error) {
@@ -113,9 +113,9 @@ UICollectionViewDataSource>
         }
         else
         {
-            //[self.messageManager sendInitialMessage:self.recipientUser];
+            [self.messageManager sendInitialMessage:self.recipientUser];
             NSLog(@"first time chatters send initial message");
-           // [self performSegueWithIdentifier:@"detailMessage" sender:self];
+            [self performSegueWithIdentifier:@"detailMessage" sender:self];
         }
     }];
 }
@@ -163,6 +163,7 @@ UICollectionViewDataSource>
     [self performSegueWithIdentifier:@"detailMessage" sender:self];
 }
 
+#pragma mark --NAV
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"detailMessage"])
@@ -180,6 +181,11 @@ UICollectionViewDataSource>
     }];
 }
 
+-(void)didRecieveChatterData:(User *)chatter
+{
+    self.recipientUser = chatter[@"toUser"];
+    [self performSegueWithIdentifier:@"detailMessage" sender:self];
+}
 
 #pragma mark -- HELPERS
 -(void)setupMatches
@@ -208,13 +214,6 @@ UICollectionViewDataSource>
     cell.userImage.layer.masksToBounds = YES;
     cell.userImage.clipsToBounds = YES;
     cell.userImage.image = [UIImage imageWithString:chatter[@"repImage"]];
-}
-
--(void)setupCVCell:(MatchesCell*)cell
-{
-    //cell.matchImage.contentMode = UIViewContentModeScaleAspectFill;
-    cell.matchImage.layer.cornerRadius = 22.0 / 2.0f;
-    //cell.matchImage.clipsToBounds = YES;
 }
 @end
 

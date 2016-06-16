@@ -277,12 +277,12 @@ static float CARD_WIDTH;
     NSLog(@"failed to fetch Data: %@", error);
 }
 //Step 3
--(void)didReceivePotentialMatchData:(NSArray *)data
-{
-    [self.userManager loadMatchedUsers:^(NSArray *users, NSError *error) {
-        //returns [usermanager].alreadySeenUser
-    }];
-}
+//-(void)didReceivePotentialMatchData:(NSArray *)data
+//{
+//    [self.userManager loadMatchedUsers:^(NSArray *users, NSError *error) {
+//        //returns [usermanager].alreadySeenUser
+//    }];
+//}
 //Step 4
 -(void)didLoadMatchedUsers:(NSArray<User *> *)users
 {

@@ -13,11 +13,13 @@
 #import "UIColor+Pandemos.h"
 #import "UserManager.h"
 #import "User.h"
+#import <UIKit/UIDynamicBehavior.h>
 
 @interface MessagerProfileInfo ()
 @property (strong, nonatomic) UserManager *usermanager;
 @property (strong, nonatomic) NSString *imageStr;
 @property (strong, nonatomic) NSString *name;
+@property (strong, nonatomic) User *selectedUser;
 @end
 
 @implementation MessagerProfileInfo
@@ -46,6 +48,7 @@
             NSArray *arr = user[@"profileImages"];
             self.imageStr = arr.firstObject;
             self.name = user[@"givenName"];
+            self.selectedUser = user;
         }
         else
         {
@@ -176,9 +179,11 @@
             [self performSegueWithIdentifier:@"toMessagerProfile" sender:self];
             break;
         case 2:
-            //send unmatch saveinBackfround to parse
+            [self addUnmatchConfirmAlert:self.selectedUser];
             break;
         case 3:
+            [self addBlockConfirmAlert:self.selectedUser];
+
             //send report email to Ally webmaster
         default:
             break;
@@ -192,5 +197,89 @@
         MessagerProfileVC *mpvc = segue.destinationViewController;
         mpvc.messagingUser = self.messagingUser;
     }
+}
+
+-(void)addBlockConfirmAlert:(User *)chatter
+{
+    NSString *userName = [NSString stringWithFormat:@"Confirm block: %@", chatter.givenName];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:userName
+                                message:nil
+                                preferredStyle:UIAlertControllerStyleAlert];
+
+
+    UIAlertAction *ok = [UIAlertAction
+                         actionWithTitle:@"Block"
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action)
+                         {
+                             //add another pfrelation to the relationship: blocked, check this during downloading Messaging list
+                             [self.usermanager changePFRelationToDeniedWithPFCloudFunction:chatter];
+                         }];
+
+    UIAlertAction *cancel = [UIAlertAction
+                             actionWithTitle:@"Cancel"
+                             style:UIAlertActionStyleCancel
+                             handler:^(UIAlertAction * action)
+                             {
+                                 [alert dismissViewControllerAnimated:YES completion:^{
+
+                                 }];
+                             }];
+
+
+    [alert addAction:cancel];
+    [alert addAction:ok];
+
+//    UIDynamicAnimator *animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+//
+//    UISnapBehavior *snapBehavior = [[UISnapBehavior alloc]initWithItem:alert snapToPoint:self.view.center];
+//    snapBehavior.damping = 0.65f;
+//    [animator addBehavior:snapBehavior];
+//
+//    UIGravityBehavior *gravityBehaviour = [[UIGravityBehavior alloc] initWithItems:@[alert]];
+//    gravityBehaviour.gravityDirection = CGVectorMake(0, 10);
+//    [animator addBehavior:gravityBehaviour];
+//
+//    UIDynamicItemBehavior *itemBehaviour = [[UIDynamicItemBehavior alloc] initWithItems:@[alert]];
+//    [itemBehaviour addAngularVelocity:-M_PI_2 forItem:alert];
+//    [animator addBehavior:itemBehaviour];
+
+
+    [self presentViewController:alert animated:YES completion:nil];
+
+}
+
+
+-(void)addUnmatchConfirmAlert:(User *)chatter
+{
+    NSString *userName = [NSString stringWithFormat:@"Confirm unmatching %@", chatter.givenName];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:userName
+                                message:nil
+                                preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *ok = [UIAlertAction
+                         actionWithTitle:@"Unmatch"
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action)
+                         {
+                             //add another pfrelation to the relationship: blocked, check this during downloading Messaging list
+                             [self.usermanager changePFRelationToDeniedWithPFCloudFunction:chatter];
+                         }];
+
+    UIAlertAction *cancel = [UIAlertAction
+                             actionWithTitle:@"Cancel"
+                             style:UIAlertActionStyleCancel
+                             handler:^(UIAlertAction * action)
+                             {
+                                 [alert dismissViewControllerAnimated:YES completion:^{
+
+                                 }];
+                             }];
+
+    [alert addAction:cancel];
+    [alert addAction:ok];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 @end

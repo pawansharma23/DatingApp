@@ -16,8 +16,10 @@
 <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *emailTextField;
+@property (weak, nonatomic) IBOutlet UIButton *continueButton;
 
-@property (strong, nonatomic) PFUser *currentUser;
+@property (strong, nonatomic) User *currentUser;
+@property (strong, nonatomic) NSString *emailAddress;
 
 @end
 
@@ -27,53 +29,119 @@
 {
     [super viewDidLoad];
 
+    self.currentUser = [User currentUser];
+
     self.navigationItem.title = @"Confidant";
+    self.navigationItem.titleView.tintColor = [UIColor mikeGray];
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 
     self.emailTextField.delegate = self;
-    self.currentUser = [User currentUser];
+    self.emailTextField.placeholder = @"email address";
+
+    self.continueButton.enabled = NO;
+    self.continueButton.backgroundColor = [UIColor colorWithHexValue:@"EFEFF4"];
+    self.continueButton.layer.cornerRadius = 20;
 
     UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     [self.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+
+
+    [self.emailTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
+-(void)textFieldDidChange:(UITextField *)emailAddress
+{
+    if (emailAddress.text.length > 0)
+    {
 
-- (IBAction)onEmailTextField:(UITextField *)sender {
-
-    //on Editing did end
+        if (emailAddress.text.length > 7 && [emailAddress.text containsString:@"@"])
+        {
+            [self continueButtonEnabled:YES];
+            self.emailAddress = emailAddress.text;
+        }
+    }
 }
 
+- (IBAction)onContinueButton:(UIButton *)sender
+{
+    [self saveConfidantEmailToParse];
+}
 
--(BOOL)textFieldShouldReturn:(UITextField *)textField {
+-(void)saveConfidantEmailToParse
+{
+    NSRange whiteSpaceRange = [self.emailAddress rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]];
 
-   NSString *email = [self.emailTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if ([email length] == 0 || [email rangeOfString:@"@"].location == NSNotFound) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Make sure you enter a Username, Password, and Email Address" preferredStyle:UIAlertControllerStyleAlert];
-
-        UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        }];
-        [alert addAction:action];
-        [self presentViewController:alert animated:YES completion:nil];
-
-    } else if (textField == self.emailTextField) {
-        [textField resignFirstResponder];
-
+    if (whiteSpaceRange.location != NSNotFound)
+    {
+        [self addInvalidEmailAlert];
+    }
+    else
+    {
         [self.currentUser setObject:self.emailTextField.text forKey:@"confidantEmail"];
         [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (!error) {
 
-            NSLog(@"saved: %@ %s", self.emailTextField.text, succeeded ? "true" : "false");
+            if (!error)
+            {
+                NSLog(@"saved: %@ %s", self.emailTextField.text, succeeded ? "true" : "false");
                 [self performSegueWithIdentifier:@"ConfidantToHome" sender:self];
-            }else{
+            }
+            else
+            {
+                [self addParseErrorAlert];
                 NSLog(@"error: %@", error);
             }
         }];
-
-        return NO;
     }
-    NSLog(@"in YES: %@", textField);
-    return YES;
 }
 
+-(void)addInvalidEmailAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Ooops!"
+                                                                   message:@"Make sure you enter a valid email address"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Ok"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction *action) {
+                                                       [self dismissViewControllerAnimated:alert completion:^{
+
+                                                       }];
+                                                   }];
+
+    [alert addAction:action];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)addParseErrorAlert
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Ooops!"
+                                                                   message:@"There was a problem saving your confidant email"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"Try Again"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction *action) {
+                                                       [self dismissViewControllerAnimated:alert completion:^{
+
+                                                       }];
+                                                   }];
+
+    [alert addAction:action];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)continueButtonEnabled:(BOOL)enabled
+{
+    if (enabled)
+    {
+        self.continueButton.enabled = YES;
+        self.continueButton.backgroundColor = [UIColor colorWithHexValue:@"2ecc71"];
+    }
+    else
+    {
+        self.continueButton.enabled = NO;
+        self.continueButton.backgroundColor = [UIColor colorWithHexValue:@"EFEFF4"];
+    }
+}
 @end

@@ -193,18 +193,19 @@ static NSString * const kParsePublic                       = @"publicProfile";
     }];
 }
 
--(void)loadMatchedUsers:(resultBlockWithArray)result
+-(void)loadAlreadySeenMatches
 {
     PFQuery *query = [PFQuery queryWithClassName:@"MatchRequest"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
 
-    [query whereKey:@"status" equalTo:@"boyYes"] || [query whereKey:@"status" equalTo:@"deny"] || [query whereKey:@"status" equalTo:@"girlYes"] || [query whereKey:@"status" equalTo:@"blocked"];
+    [query whereKey:@"status" equalTo:@"girlYes"] ||
+    [query whereKey:@"status" equalTo:@"boyYes"];
 
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (objects)
         {
             self.alreadySeenUsers = objects;
-            [self.delegate didLoadMatchedUsers:objects];
+            [self.delegate didLoadAlreadySeen:objects];
         }
     }];
 }
@@ -236,6 +237,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
     MatchRequest *matchRequest = [MatchRequest objectWithClassName:@"MatchRequest"];
     matchRequest.fromUser = [User currentUser];
     //matchRequest.toUser = strId;
+    
     matchRequest.strId = strId;
     matchRequest.status = status;
 
@@ -295,6 +297,68 @@ static NSString * const kParsePublic                       = @"publicProfile";
      }];
 }
 
+-(void)addPFRelationWithPFCloudFunction:(User*)recipientUser andMatchRequest:(MatchRequest*)match
+{
+    User *fromUser = match.fromUser;
+
+    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
+    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
+    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : match.objectId} block:^(id object, NSError *error)
+     {
+         if (!error)
+         {
+             //add the from user to the currentUsers friends
+             PFRelation *matchRelation = [[User currentUser] relationForKey:@"match"];
+             [matchRelation addObject:fromUser];
+
+             //save the current user
+             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)    {
+
+                 if (succeeded)
+                 {
+                     NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
+                     //[self.delegate didUpdateMatchRequest:recipientUser];
+                 }
+             }];
+         }
+         else
+         {
+             NSLog(@"failed to save final PFrelation");
+             //[self.delegate failedToCreateMatchRequest:error];
+         }
+     }];
+}
+
+-(void)changePFRelationToDeniedWithPFCloudFunction:(User*)recipientUser
+{
+    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
+    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
+    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : [User currentUser].objectId} block:^(id object, NSError *error)
+     {
+         if (!error)
+         {
+             //add the from user to the currentUsers friends
+             PFRelation *matchRelation = [[User currentUser] relationForKey:@"blocked"];
+             [matchRelation addObject:[User currentUser]];
+
+             //save the current user
+             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)    {
+
+                 if (succeeded)
+                 {
+                     NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
+                     //[self.delegate didUpdateMatchRequest:recipientUser];
+                 }
+             }];
+         }
+         else
+         {
+             NSLog(@"failed to save final PFrelation");
+             //[self.delegate failedToCreateMatchRequest:error];
+         }
+     }];
+}
+
 -(void)fromMessaging:(User*)user
 {
     if (user == [User currentUser])
@@ -327,7 +391,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
 {
     PFQuery *query = [User query];
     [query whereKey:@"objectId" equalTo:objectId];
-   // [query getObjectInBackgroundWithId:objectId block:^(PFObject * _Nullable object, NSError * _Nullable error) {
+
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 
         if (objects)
@@ -373,6 +437,27 @@ static NSString * const kParsePublic                       = @"publicProfile";
         else
         {
             NSLog(@"error querying for User data: %@", error);
+        }
+    }];
+}
+
+-(void)queryForRelationshipMatch:(User*)matchedUser withBlock:(resultBlockWithMatchedUser)match
+{
+    PFRelation *relation = [matchedUser relationForKey:@"match"];
+    PFQuery *query = [relation query];
+
+    [query whereKey:@"objectId" notEqualTo:[User currentUser].objectId];
+    [query orderByDescending:@"updatedAt"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+
+        if (error)
+        {
+            NSLog(@"error: %@", error);
+            match(objects, error);
+        }
+        else
+        {
+            match(objects, nil);
         }
     }];
 }
