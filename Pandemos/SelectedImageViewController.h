@@ -12,5 +12,7 @@
 
 @property (strong, nonatomic) NSString *profileImage;
 @property (strong, nonatomic) NSString *profileImageFromIPhone;
+@property (strong, nonatomic) NSData *profileData;
+
 @property BOOL fromCamera;
 @end

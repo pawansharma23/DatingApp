@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface MatchViewController : UIViewController
-
+@property (strong, nonatomic) NSString *currentCityState;
 @end

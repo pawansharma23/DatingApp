@@ -85,6 +85,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     {
         self.userImage.image = [UIImage imageWithString:self.profileImage];
     }
+    else if (self.profileData)
+    {
+        self.userImage.image = [UIImage imageWithData:self.profileData];
+    }
 
 
     self.pictures = [NSMutableArray new];
@@ -109,9 +113,9 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
         [self.userManager loadUserImages:self.currentUser];
 
-        [UIButton setUpButton:self.saveImage];
-        [UIButton setUpButton:self.addAnother];
-        [UIButton setUpButton:self.profileButton];
+        [UIButton setUpLargeButton:self.saveImage];
+        [UIButton setUpLargeButton:self.addAnother];
+        [UIButton setUpLargeButton:self.profileButton];
         [self.profileButton setNeedsLayout];
 
        [self.userManager queryForUsersConfidant:^(NSString *confidant, NSError *error) {
@@ -349,7 +353,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
 -(void)saveForImage:(NSString *)image
 {
-    if (self.profileImageFromIPhone)
+    if (self.profileImageFromIPhone)//string from iPhone (not working)
     {
         [self.pictures addObject:self.profileImageFromIPhone];
         [self.currentUser setObject:self.pictures forKey:@"profileImages"];
@@ -367,7 +371,39 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
             }
         }];
     }
-    else
+    else if (self.profileData)//data from iPhone
+    {
+        //NSData *pickedImageFromPhone = [[NSData alloc] init];
+//        self.profileData = UIImageJPEGRepresentation(<#UIImage * _Nonnull image#>, <#CGFloat compressionQuality#>);
+//        self.selectedData = pickedImageFromPhone;
+        NSString *dataString = [[NSString alloc]initWithData:self.profileData encoding:NSUTF8StringEncoding];
+        NSLog(@"string value: %@", dataString);
+
+        if (dataString.length > 0)
+        {
+            [self.pictures addObject:dataString];
+            [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+                if (succeeded)
+                {
+                    NSLog(@"saved new iPhone image to Parse");
+                    [self.saveImage setTitle:image forState:UIControlStateNormal];
+                    [self delayAndCheckImageCount];
+                }
+                else
+                {
+                    NSLog(@"image too large, Parse couldnt save, size: %f",(float)self.profileImage.length/1024.0f);
+                }
+            }];
+        }
+        else
+        {
+            NSLog(@"cannot convert nsdta to string???");
+        }
+
+    }
+    else//facebook image
     {
         [self.pictures addObject:self.profileImage];
         [self.currentUser setObject:self.pictures forKey:@"profileImages"];

@@ -122,22 +122,28 @@
                                             <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IRu-fR-6Zx">
                                                 <rect key="frame" x="475" y="514" width="120" height="29"/>
                                                 <constraints>
+                                                    <constraint firstAttribute="width" constant="150" id="AdP-9g-wP4"/>
                                                     <constraint firstAttribute="height" constant="30" id="Zff-S3-frZ"/>
                                                     <constraint firstAttribute="width" constant="120" id="hD1-mf-5Y6">
                                                         <variation key="heightClass=regular-widthClass=compact" constant="135"/>
                                                     </constraint>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="kYs-Sd-ZoV"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="15"/>
                                                 <state key="normal" title="Looks good, save it!"/>
                                                 <variation key="default">
                                                     <mask key="constraints">
+                                                        <exclude reference="AdP-9g-wP4"/>
                                                         <exclude reference="Zff-S3-frZ"/>
+                                                        <exclude reference="kYs-Sd-ZoV"/>
                                                     </mask>
                                                 </variation>
                                                 <variation key="heightClass=regular-widthClass=compact">
                                                     <mask key="constraints">
-                                                        <include reference="Zff-S3-frZ"/>
+                                                        <include reference="AdP-9g-wP4"/>
+                                                        <exclude reference="Zff-S3-frZ"/>
                                                         <exclude reference="hD1-mf-5Y6"/>
+                                                        <include reference="kYs-Sd-ZoV"/>
                                                     </mask>
                                                 </variation>
                                                 <connections>
@@ -147,8 +153,12 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dg9-IA-saE">
                                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="100" id="86x-Ac-2J6"/>
-                                                    <constraint firstAttribute="height" constant="30" id="QK6-aR-xsX"/>
+                                                    <constraint firstAttribute="width" constant="100" id="86x-Ac-2J6">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="110"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="height" constant="30" id="QK6-aR-xsX">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                                    </constraint>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="15"/>
                                                 <state key="normal" title="Add another"/>
@@ -171,7 +181,10 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ng6-Uy-IUm">
                                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="30" id="C01-vU-Xf8"/>
+                                                    <constraint firstAttribute="height" constant="30" id="C01-vU-Xf8">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="40"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="width" constant="115" id="UXm-sd-Fcl"/>
                                                     <constraint firstAttribute="width" constant="175" id="dfi-Iv-wz8"/>
                                                     <constraint firstAttribute="width" constant="60" id="vcC-lV-qzK">
                                                         <variation key="heightClass=regular-widthClass=compact" constant="155"/>
@@ -182,6 +195,7 @@
                                                 <variation key="default">
                                                     <mask key="constraints">
                                                         <exclude reference="C01-vU-Xf8"/>
+                                                        <exclude reference="UXm-sd-Fcl"/>
                                                         <exclude reference="dfi-Iv-wz8"/>
                                                         <exclude reference="vcC-lV-qzK"/>
                                                     </mask>
@@ -189,6 +203,7 @@
                                                 <variation key="heightClass=regular-widthClass=compact">
                                                     <mask key="constraints">
                                                         <include reference="C01-vU-Xf8"/>
+                                                        <include reference="UXm-sd-Fcl"/>
                                                         <exclude reference="dfi-Iv-wz8"/>
                                                         <exclude reference="vcC-lV-qzK"/>
                                                     </mask>

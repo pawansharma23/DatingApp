@@ -89,6 +89,8 @@ UserManagerDelegate>
 
 @property (strong, nonatomic) NSString *iPhoneImageString;
 @property (strong, nonatomic) NSString *selectedImage;
+@property (strong, nonatomic) NSData *selectedData;
+
 @end
 
 @implementation ProfileViewController
@@ -101,9 +103,10 @@ UserManagerDelegate>
     if (self.currentUser)
     {
         [self loadNavigationBarItems];
-        //self.locationLabel.text = self.cityAndState;
+        
+        self.locationLabel.text = self.cityAndState;
         //placeholder
-        self.locationLabel.text = @"Location";
+        //self.locationLabel.text = @"Location";
 
         self.profileImages = [NSMutableArray new];
         self.textViewAboutMe.delegate = self;
@@ -122,7 +125,7 @@ UserManagerDelegate>
 
     [SVProgressHUD show];
 
-    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 920)];
+    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 950)];
     self.viewInsideScrollView.userInteractionEnabled = YES;
 
     self.scrollView.delegate = self;
@@ -134,7 +137,6 @@ UserManagerDelegate>
     //self.scrollView.clipsToBounds = YES;
 
     //[self.scrollView addSubview:self.viewInsideScrollView];
-
 
     [self setupManagersProfileVC];
 
@@ -149,6 +151,10 @@ UserManagerDelegate>
     [self.maximumAgeSlider setUserInteractionEnabled:YES];
 
     if (self.iPhoneImageString)
+    {
+        [self performSegueWithIdentifier:@"Selected" sender:self];
+    }
+    else if(self.selectedData)
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
@@ -470,15 +476,20 @@ UserManagerDelegate>
 {
     if ([segue.identifier isEqualToString:@"Selected"])
     {
+        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
         [SVProgressHUD dismiss];
+
         if (self.iPhoneImageString)
         {
-            SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
             sivc.profileImageFromIPhone = self.iPhoneImageString;
+        }
+        else if(self.selectedData)
+        {
+
+            sivc.profileData = self.selectedData;
         }
         else
         {
-            SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
             sivc.profileImage = self.selectedImage;
         }
     }
@@ -544,7 +555,6 @@ UserManagerDelegate>
                 [self performSegueWithIdentifier:@"LoggedOut" sender:self];
             }
         }];
-
     }
 }
 
@@ -610,6 +620,7 @@ UserManagerDelegate>
     {
         NSData *pickedImageFromPhone = [[NSData alloc] init];
         pickedImageFromPhone = UIImageJPEGRepresentation(scaledImage, 2);
+        self.selectedData = pickedImageFromPhone;
         self.iPhoneImageString = [[NSString alloc]initWithData:pickedImageFromPhone encoding:NSUTF8StringEncoding];
         NSLog(@"string value: %@", self.iPhoneImageString);
     }
