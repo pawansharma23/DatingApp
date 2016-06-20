@@ -41,7 +41,7 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
 
         //*************for testing**********
-        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 20, 20)];
+        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 70, 20, 20)];
         [self.button setTitle:@"To Init Setup" forState:UIControlStateNormal];
         self.button.backgroundColor = [UIColor blackColor];
         self.button.layer.cornerRadius = 10;

@@ -36,6 +36,25 @@ typedef NS_ENUM(NSInteger, AppLaunchStatus)
 #define IS_IOS9_AND_HIGHER   ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0)
 
 #define KEYBOARD_NOTIFICATION_DEBUG     DEBUG && 0  // Logs every keyboard notification being sent
+//SINCH
+#define SINCH_APPLICATION_KEY @"ac9a3642-6560-49ab-b00a-20340e17d9f7"
+
+#define SINCH_APPLICATION_SECRET @"1EkVAQZoUkuV/86E6VNiWQ=="
+
+#define SINCH_ENVIRONMENT_HOST @"sandbox.sinch.com"
+
+#define SINCH_MESSAGE_RECIEVED @"SINCH_MESSAGE_RECIEVED"
+
+#define SINCH_MESSAGE_SENT @"SINCH_MESSAGE_SENT"
+
+#define SINCH_MESSAGE_DELIVERED @"SINCH_MESSAGE_DELIVERED"
+
+#define SINCH_MESSAGE_FAILED @"SINCH_MESSAGE_DELIVERED"
+
+//PARSE
+#define PARSE_APPLICATION_ID @"dCNWcarB6Tv1iW8vCT1c7UATrEwZ3AFq7OzwAs7A"
+
+#define PARSE_CLIENT_KEY @"Fm7fN3AP4Efbcq6265D8Bh4ReICvjbHkgmRiQucl"
 
 #if __has_attribute(objc_designated_initializer)
 #define DESIGNATED_INITIALIZER __attribute__((objc_designated_initializer))
