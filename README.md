@@ -1,7 +1,7 @@
 # DatingApp
 A Tinder/Bumble style dating app, but with a twist for the more discerning dater. 
 Implements all matching functionality based on user's location and preferences. 
-Works with Facebook to give user's full access to their photos and pertinent data.
+Works with Facebook to give users full access to their photos and pertinent data.
 The user is able to preview what their potential matches will see as well as chat and block or unmatch.
 
 <img width="373" alt="screen shot 2016-06-24 at 5 16 16 pm" src="https://cloud.githubusercontent.com/assets/8518882/16350877/85ad0008-3a2f-11e6-98e6-0aec7d3e14df.png">
