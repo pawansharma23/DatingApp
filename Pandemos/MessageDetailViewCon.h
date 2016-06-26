@@ -8,9 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "User.h"
+#import "AppDelegate.h"
 
 @interface MessageDetailViewCon : UIViewController
 
 @property (strong, nonatomic) User *recipient;
+
+@property (strong, nonatomic) NSString *userId;
+
+@property (strong, nonatomic) UITextField *activeTextField;
 
 @end

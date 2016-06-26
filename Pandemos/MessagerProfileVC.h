@@ -11,5 +11,4 @@
 
 @interface MessagerProfileVC : UIViewController
 
-@property (strong, nonatomic) User *messagingUser;
 @end

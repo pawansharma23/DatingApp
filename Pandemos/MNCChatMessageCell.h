@@ -9,5 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface MNCChatMessageCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *chatMessageLabel;
+@property (weak, nonatomic) IBOutlet UILabel *myMessageLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timeStampFooter;
 
+//+ (CGFloat)defaultFontSize;
+//+(CGSize)sizeForMessage:(LYRMessage *)message withWidth:(CGFloat)width;
 @end

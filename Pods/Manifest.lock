@@ -32,7 +32,6 @@ PODS:
   - FBSDKLoginKit (4.8.0):
     - FBSDKCoreKit
   - LXReorderableCollectionViewFlowLayout (0.1.1)
-  - MDCSwipeToChoose (0.2.3)
   - Parse (1.10.0):
     - Bolts/Tasks (~> 1.5)
   - ParseFacebookUtilsV4 (1.9.1):
@@ -48,7 +47,6 @@ PODS:
 DEPENDENCIES:
   - AFNetworking (~> 3.0)
   - LXReorderableCollectionViewFlowLayout (~> 0.1.1)
-  - MDCSwipeToChoose
   - Parse
   - ParseFacebookUtilsV4 (~> 1.9)
   - ParseUI
@@ -60,7 +58,6 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: 66a935d17b6e00b6b64e604f2eb9b72c9ab7deb8
   FBSDKLoginKit: d893fcbb98d854496925e9ff73c67b896982d3c4
   LXReorderableCollectionViewFlowLayout: c89e0f693744c5cb96718822a8455a7de99d90ea
-  MDCSwipeToChoose: 56239d98b4558c66e7c3c9069482befd26092270
   Parse: 90b2544822200f84b18bfacc4e8b0a3a6c3584a2
   ParseFacebookUtilsV4: eab9b4ade12f0800b4d30f6b808bca55ce17a0e9
   ParseUI: af2eba584799da4a9fbdac0e178662d7438b502e

@@ -32,6 +32,17 @@ static NSString * const kParseAboutMe                      = @"aboutMe";
 static NSString * const kParsePublic                       = @"publicProfile";
 
 //PFGeoPoint * const kParseGeoPoint= @"GeoCode";
+
++ (id)sharedSettings
+{
+    static UserManager *shared = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[self alloc] init];
+    });
+    return shared;
+}
+
 -(void)signUp:(PFUser*)user
 {
     [self saveToUserDefaultsWithObject:user.objectId andKey:@"objectId"];
@@ -318,6 +329,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
                  {
                      NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
                      //[self.delegate didUpdateMatchRequest:recipientUser];
+                     //send delegate to throw UIView taht says it was a match?
                  }
              }];
          }
@@ -327,6 +339,32 @@ static NSString * const kParsePublic                       = @"publicProfile";
              //[self.delegate failedToCreateMatchRequest:error];
          }
      }];
+}
+
+-(void)sendEmailWithPFCloudFunction:(NSString*)confidantEmail withRelation:(PFRelation*)rela andMatchedUser:(User*)user
+{
+
+    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
+    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
+
+    NSString *userNeedsHelp = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
+
+    //NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/%@", rela];
+    NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
+    NSString *cssButton = [NSString stringWithFormat:@"button"];
+    NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, user.givenName, [User currentUser].givenName];
+
+
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": @"What do you think of this user for your friend", @"username": userNeedsHelp, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
+        if (error)
+        {
+            NSLog(@"error cloud js code: %@", error);
+        }
+        else
+        {
+            NSLog(@"result :%@", result);
+        }
+    }];
 }
 
 -(void)changePFRelationToDeniedWithPFCloudFunction:(User*)recipientUser

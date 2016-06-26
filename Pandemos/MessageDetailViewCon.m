@@ -8,9 +8,6 @@
 
 #import "MessageDetailViewCon.h"
 #import "MessagingList.h"
-#import <Parse/PFConstants.h>
-#import <Parse/PFUser.h>
-#import <Parse/Parse.h>
 #import "User.h"
 #import "UIColor+Pandemos.h"
 #import "MessageManager.h"
@@ -18,13 +15,8 @@
 #import "UIImage+Additions.h"
 #import "MatchView.h"
 #import "NSString+Additions.h"
-#import "IncomingCell.h"
-#import "OutgoingCell.h"
 #import "MessagerProfileInfo.h"
-
-#define TABBAR_HEIGHT 49.0f
-#define TEXTFIELD_HEIGHT 70.0f
-#define MAX_ENTRIES_LOADED 50
+#import "MNCChatMessageCell.h"
 
 @interface MessageDetailViewCon ()<UITextFieldDelegate,
 UITableViewDataSource,
@@ -33,21 +25,24 @@ MatchViewDelegate,
 UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (weak, nonatomic) IBOutlet UITextField *textField;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UITextField *textEntryTextField;
+@property (weak, nonatomic) IBOutlet UIButton *sendButton;
+
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backToMessaging;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *forwardToUserDetail;
 
 @property BOOL reloading;
-@property (strong, nonatomic) NSMutableArray *incomingChatData;
-@property (strong, nonatomic) NSMutableArray *outgoingChatData;
-@property (strong, nonatomic) NSDictionary *lastObject;
+
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) MessageManager *messageManager;
 
 @property (strong, nonatomic) NSString *userImage;
 @property (strong, nonatomic) NSString *userGiven;
 @property (strong, nonatomic) NSString *user;
+
+@property (strong, nonatomic) NSArray *messages;
 
 @end
 
@@ -59,220 +54,166 @@ UserManagerDelegate>
 
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
-    self.lastObject = [NSDictionary new];
+    self.messages = [NSArray new];
+
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     self.backToMessaging.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
     self.backToMessaging.tintColor = [UIColor mikeGray];
 
-    _textField.delegate = self;
-    _textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    UITapGestureRecognizer *tapTableGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapOnTableView)];
+    [self.tableView addGestureRecognizer:tapTableGR];
 
-    self.tableView.delegate = self;
+    self.textEntryTextField.delegate = self;
+    self.textEntryTextField.layer.cornerRadius = 8;
+    [self.textEntryTextField setBackgroundColor:[UIColor whiteColor]];
+    [self.textEntryTextField.layer setBorderColor:[UIColor grayColor].CGColor];
+    [self.textEntryTextField.layer setBorderWidth:1.0];
+
+    [self registerForKeyboardNotifications];
+
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+
+    [self queryForMessages];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.incomingChatData = [NSMutableArray new];
-    self.outgoingChatData = [NSMutableArray new];
-
     [self loadRecipientUserData];
-    [self loadIncomingMessages];
-    [self loadOutgoingMessages];
+    self.sendButton.layer.cornerRadius = 8;
+    self.sendButton.layer.masksToBounds = YES;
 }
 
-- (void)viewDidUnload
+- (void)didTapOnTableView
 {
-    [super viewDidUnload];
-    [self freeKeyboardNotifications];
+    [self.activeTextField resignFirstResponder];
 }
 
-#pragma mark -- TEXTFIELD DELEGATES
-//-(IBAction) backgroundTap:(id) sender
-//{
-//    [self.textField resignFirstResponder];
-//}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+-(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    NSLog(@"text entry: %@", textField.text);
+    self.activeTextField = textField;
+    [self scrollTableToBottom];
+    NSLog(@"started typing message");
+}
 
-    if (textField.text.length > 0)
-    {
-        NSArray *keys = [NSArray arrayWithObjects:@"text", @"userName", @"date", nil];
-        NSArray *objects = [NSArray arrayWithObjects:textField.text, self.currentUser, [NSDate date], nil];
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-        [self.outgoingChatData addObject:dictionary];
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    self.activeTextField = nil;
+}
 
-        NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
-        NSIndexPath *newPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        [insertIndexPaths addObject:newPath];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationTop];
-        [self.tableView endUpdates];
-        [self.tableView reloadData];
+- (IBAction)onSendMessage:(UIButton *)sender
+{
+    self.sendButton.backgroundColor = [UIColor lightGrayColor];
+    [self.sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [self sendMessage:sender];
+}
 
-        //[self.messageManager sendMessage:self.currentUser toUser:self.recipient withText:textField.text];
-        [self.messageManager sendMessage:self.currentUser toUser:self.recipient withText:textField.text withSuccess:^(BOOL success, NSError *error) {
+-(void)sendMessage:(id)sender
+{
+    [self.messageManager sendMessage:[User currentUser] toUser:[UserManager sharedSettings].recipient withText:self.activeTextField.text withSuccess:^(BOOL success, NSError *error) {
 
-            if (success)
+        if (success)
+        {
+            self.sendButton.backgroundColor = [UIColor yellowGreen];
+            [self.sendButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+
+            self.activeTextField.text = @"";
+            [self scrollTableToBottom];
+            [self queryForMessages];
+        }
+    }];
+}
+- (void)scrollTableToBottom
+{
+    int rowNumber = (int)[self.tableView numberOfRowsInSection:0];
+    if (rowNumber > 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowNumber-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
+#pragma mark -- TABLEVIEW DELEGATES
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.messages count];
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MNCChatMessageCell *messageCell = [tableView dequeueReusableCellWithIdentifier:@"MNCCell" forIndexPath:indexPath];
+    messageCell.layer.cornerRadius = 13.75;
+    messageCell.layer.masksToBounds = YES;
+    [self configureCell:messageCell forIndexPath:indexPath];
+
+    return messageCell;
+}
+
+
+#pragma mark -- HELPERS
+-(void)queryForMessages
+{
+    [self.messageManager queryForFirst50Messages:[UserManager sharedSettings].recipient withBlock:^(NSArray *result, NSError *error) {
+
+        if(result)
+        {
+            if (result.count < 50)
             {
-                textField.text = @"";
-
+                self.messages = result;
+                NSLog(@"messages: %d", (int)self.messages.count);
             }
             else
             {
-                NSLog(@"nope");
+                NSLog(@"over 50 messges for pagnation");
             }
-        }];
-        //reset textField
-        //[textField resignFirstResponder];
-        return YES;
-    }
-
-    // reload the data
-    [self loadOutgoingMessages];
-    [self loadIncomingMessages];
-    return NO;
-}
-
-#pragma mark -- TABLEVIEW DELEGATE
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    NSInteger totalChats = self.incomingChatData.count + self.outgoingChatData.count;
-    return totalChats;
-}
-
--(IncomingCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-
-    NSUInteger inRow = [_incomingChatData count]-[indexPath row]-1;
-    NSUInteger outRow = [_outgoingChatData count]-[indexPath row]-1;
-    
-
-    IncomingCell *inCell = (IncomingCell *)[tableView dequeueReusableCellWithIdentifier: @"Incoming"];
-
-    if (self.incomingChatData.count > 0)
-    {
-        NSDictionary *inChatText = [self.incomingChatData objectAtIndex:indexPath.row];
-
-        if (inRow < _incomingChatData.count)
-        {
-            inCell.textLabel.text = inChatText[@"text"];
-            inCell.messageLabel.textAlignment = NSTextAlignmentLeft;
-            inCell.timeLabel.textAlignment = NSTextAlignmentLeft;
-            inCell.timeLabel.text = [NSString timeFromData:inChatText[@"timestamp"]];
         }
-    }
-
-    if (self.outgoingChatData.count > 0)
-    {
-        NSDictionary *outChatText = [self.outgoingChatData objectAtIndex:indexPath.row];
-        NSString *text = outChatText[@"text"];
-
-        if (outRow < _outgoingChatData.count)
+        else
         {
-
-            inCell.timeLabel.textAlignment = NSTextAlignmentRight;
-            inCell.messageLabel.textAlignment = NSTextAlignmentRight;
- //           inCell.messageLabel.layer.cornerRadius = 8;
-//                inCell.messageLabel.backgroundColor = [UIColor unitedNationBlue];
-            inCell.messageLabel.text = text;
-            inCell.timeLabel.text = [NSString timeFromData:outChatText[@"timestamp"]];
-
-
+            NSLog(@"error: %@", error);
         }
-}
 
-    return inCell;
-}
-
--(void)doneLoadingCollectionViewData
-{
-    self.reloading = NO;
-    //[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:chatTable];
-}
-
-
-#pragma mark -- KEYBOARD DELEGATES
--(void) registerForKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-}
-
--(void) freeKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-}
-
-
--(void) keyboardWasShown:(NSNotification*)aNotification
-{
-    NSLog(@"Keyboard was shown");
-    NSDictionary* info = [aNotification userInfo];
-
-    NSTimeInterval animationDuration;
-    UIViewAnimationCurve animationCurve;
-    CGRect keyboardFrame;
-    [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
-    [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
-    [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardFrame];
-
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    [self.view setFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y- keyboardFrame.size.height+TABBAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height)];
-
-    [UIView commitAnimations];
-}
-
--(void) keyboardWillHide:(NSNotification*)aNotification
-{
-    NSLog(@"Keyboard will hide");
-    NSDictionary* info = [aNotification userInfo];
-
-    NSTimeInterval animationDuration;
-    UIViewAnimationCurve animationCurve;
-    CGRect keyboardFrame;
-    [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
-    [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
-    [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&keyboardFrame];
-
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    [UIView setAnimationCurve:animationCurve];
-    [self.view setFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y + keyboardFrame.size.height-TABBAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height)];
-
-    [UIView commitAnimations];
-}
-
-#pragma mark -- HELPERS
--(void)loadIncomingMessages
-{
-    
-    [self.messageManager queryForIncomingMessages:self.recipient withBlock:^(NSArray *result, NSError *error) {
-
-        self.incomingChatData = [NSMutableArray arrayWithArray:result];
         [self.tableView reloadData];
+        [self scrollTableToBottom];
     }];
 }
 
--(void)loadOutgoingMessages
+-(void)configureCell:(MNCChatMessageCell *)messageCell forIndexPath:(NSIndexPath *)indexPath
 {
-    [self.messageManager queryForOutgoingMessages:self.recipient withBlock:^(NSArray *result, NSError *error) {
 
-        self.outgoingChatData = [NSMutableArray arrayWithArray:result];
-        self.tableView.scrollsToTop = YES;
-        [self.tableView reloadData];
-    }];
+    NSDictionary *chatMessage = self.messages[indexPath.row];
+    User *fromUser = chatMessage[@"fromUser"];
+    //User *toUser = chatMessage[@"toUser"];
+    NSString *text = chatMessage[@"text"];
+    //for footer
+    NSDate *time = chatMessage[@"timestamp"];
+    NSString *timeFormatted = [NSString timeFromData:time];
+
+    if ([fromUser.objectId isEqualToString:[User currentUser].objectId])
+    {
+        // If the message was sent by myself
+        messageCell.chatMessageLabel.text = @"";
+        messageCell.myMessageLabel.text = text;
+        messageCell.timeStampFooter.text = timeFormatted;
+        messageCell.myMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        messageCell.myMessageLabel.numberOfLines = 0;
+    }
+    else
+    {
+        // If the message was sent by the chat mate
+        messageCell.myMessageLabel.text = @"";
+        messageCell.chatMessageLabel.text = text;
+        messageCell.timeStampFooter.text = timeFormatted;
+        messageCell.chatMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        messageCell.chatMessageLabel.numberOfLines = 0;
+    }
 }
 
 -(void)loadRecipientUserData
 {
     UserManager *userManager = [UserManager new];
-    [userManager queryForUserData:self.recipient.objectId withUser:^(User *users, NSError *error) {
+    [userManager queryForUserData:[UserManager sharedSettings].recipient.objectId withUser:^(User *users, NSError *error) {
 
         self.userGiven = users[@"givenName"];
         NSArray *array = users[@"profileImages"];
@@ -298,17 +239,45 @@ UserManagerDelegate>
 }
 
 #pragma mark - Navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"toUserInfo"])
-    {
-        MessagerProfileInfo *mpi = [segue destinationViewController];
-        mpi.messagingUser = self.recipient;
-    }
-}
-
 - (IBAction)onBackToMessaging:(UIBarButtonItem *)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark --KEYBOARD NOTIFS
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+}
+
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(kbSize.height, 0.0, kbSize.height, 0.0);
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    // Your app might not need or want this behavior.
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbSize.height;
+    if (!CGRectContainsPoint(aRect, self.activeTextField.frame.origin))
+    {
+        [self.tableView scrollRectToVisible:self.activeTextField.frame animated:NO];
+    }
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
 }
 @end

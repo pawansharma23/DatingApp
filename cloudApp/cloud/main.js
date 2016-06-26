@@ -6,8 +6,8 @@ Mandrill.sendEmail({
     	html:request.params.htmlCode,
         text:request.params.text,
         subject: request.params.username,
-        from_email: "michael@dote.space",
-        from_name: "The Dote App",
+        from_email: "mike@myally.tech",
+        from_name: "Ally App",
         to: [
             {
                 email:request.params.email,
@@ -93,28 +93,4 @@ Parse.Cloud.define("addMatchToMatchRelation", function(request, response) {
   
     });
   
-});
-
-
-
-
-//layer funcitonality
-var fs = require('fs');
-var layer = require('cloud/layer-parse-module/layer-module.js');
- 
-var layerProviderID = '8b0c63ce-0cab-11e6-b294-424d000047e5';
-var layerKeyID = '3b495e9c-0d72-11e6-aa51-a8ea00006b62';
-var privateKey = fs.readFileSync('cloud/layer-parse-module/keys/layer-key.js');
- 
-var twilio = require("twilio");
-twilio.initialize("AC42c81cfeff3ee6039f1dbd613420c267","04ea44eb31ef8c7456453b7ced5a3fb6");
- 
-layer.initialize(layerProviderID, layerKeyID, privateKey);
- 
-Parse.Cloud.define("generateToken", function(request, response) {
-    var userID = request.params.userID;
-    var nonce = request.params.nonce;
-    if (!userID) throw new Error('Missing userID parameter');
-    if (!nonce) throw new Error('Missing nonce parameter');
-        response.success(layer.layerIdentityToken(userID, nonce));
 });

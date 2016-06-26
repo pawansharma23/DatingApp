@@ -16,6 +16,8 @@
 #import "MessageManager.h"
 #import "UIColor+Pandemos.h"
 #import "UIImage+Additions.h"
+#import "AppConstants.h"
+#import "SVProgressHUD.h"
 
 @interface MessagingList ()
 <UITableViewDataSource,
@@ -32,14 +34,19 @@ MessageManagerDelegate>
 
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *recipientUser;
-@property (strong, nonatomic) User *chatter;
+@property (strong, nonatomic) User *recipientNewConvoUser;
+
 
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) MessageManager *messageManager;
 
 @property (strong, nonatomic) NSArray *matches;
 @property (strong, nonatomic) NSArray *chatters;
+
 @property (strong, nonatomic) NSArray *lastLines;
+@property (strong, nonatomic) NSString *selectedId;
+
+@property (strong, nonatomic) MessageDetailViewCon *activeDialogViewController;
 
 @end
 
@@ -51,71 +58,71 @@ MessageManagerDelegate>
 
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
+    self.messageManager.delegate = self;
     
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
     self.navigationItem.title = @"Messages";
-
     self.backButton.tintColor = [UIColor mikeGray];
     self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
 
     self.matches = [NSArray new];
-    self.chatters = [NSArray new];
+    self.chatters = [NSMutableArray new];
     self.lastLines = [NSArray new];
 
     self.tableView.delegate = self;
     self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
     self.collectionView.backgroundColor = [UIColor whiteColor];
 
     self.automaticallyAdjustsScrollViewInsets = NO;
 
-    [self setupMatches];
+    [self setFlowLayout];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
 
+    //collectionView matches pre chat
     [self setupMatches];
+
+    //tableview chats
     [self setupChatters];
 }
 
 #pragma mark -- COLLECTION VIEW DELEGATE
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    NSLog(@"match count: %d", (int)self.matches.count);
     return self.matches.count;
 }
 
 -(MatchesCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    MatchesCell *cell = (MatchesCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"MatchesCell" forIndexPath:indexPath];
+    MatchesCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MatchesCell" forIndexPath:indexPath];
     User *user = [self.matches objectAtIndex:indexPath.item];
 
+    cell.nameLabel.text = user.givenName;
     cell.matchImage.layer.cornerRadius = 37.5;
     cell.matchImage.layer.masksToBounds = YES;
-    cell.matchImage.image = [UIImage imageWithData:[user stringURLToData:user.profileImages.firstObject]];
-    cell.nameLabel.text = user[@"givenName"];
+    cell.matchImage.image = [UIImage imageWithImage:[UIImage imageWithString:user.profileImages.firstObject] scaledToSize:CGSizeMake(75, 75)];
 
     return cell;
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.recipientUser = [self.matches objectAtIndex:indexPath.row];
-
-    [self.messageManager queryIfChatExists:self.recipientUser currentUser:self.currentUser withSuccess:^(BOOL success, NSError *error) {
+    User *matchedUser = [self.matches objectAtIndex:indexPath.row];
+    [self.messageManager queryIfChatExists:matchedUser currentUser:self.currentUser withSuccess:^(BOOL success, NSError *error) {
 
         if (success)
         {
-            //add code to switch PFRelation object text
-            [self performSegueWithIdentifier:@"detailMessage" sender:self];
-            NSLog(@"chat object already exists");
-
+            [self addConversationAlreadyExistsAlert:matchedUser];
         }
         else
         {
-            [self.messageManager sendInitialMessage:self.recipientUser];
             NSLog(@"first time chatters send initial message");
-            [self performSegueWithIdentifier:@"detailMessage" sender:self];
+            [self.messageManager sendInitialMessage:matchedUser];
         }
     }];
 }
@@ -140,39 +147,34 @@ MessageManagerDelegate>
 {
     MessagingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     NSDictionary *chat = [self.chatters objectAtIndex:indexPath.row];
-    [self setupChatterImage:cell withUserData:chat];
 
-//    User *user = [self.chatters objectAtIndex:indexPath.row];
-
-//    [self.messageManager queryForChatTextAndTime:user[@"toUser"] andConvo:^(NSArray *result, NSError *error) {
-//
-//        NSDictionary *chatDict = result.firstObject;
-//        NSLog(@"chat: %@", chatDict[@"text"]);
-//        User *userName = chatDict[@"toUser"];
-//        cell.lastMessage.text = userName.givenName;
-//        cell.lastMessageTime.text = chatDict[@"text"];
-//    }];
+    cell.userImage.image = [UIImage imageWithImage:[UIImage imageWithString:chat[@"repImage"]] scaledToSize:CGSizeMake(45, 45)];
+    cell.userImage.layer.cornerRadius = 22.5;
+    cell.userImage.layer.masksToBounds = YES;
+    cell.lastMessage.text = chat[@"repName"];
 
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.chatter = [self.chatters objectAtIndex:indexPath.row];
-    self.recipientUser = self.chatter[@"toUser"];
+    NSDictionary *chat = [self.chatters objectAtIndex:indexPath.row];
+    User *toUser = chat[@"toUser"];
+    User *fromUser = chat[@"fromUser"];
+
+    if ([toUser isEqual:[User currentUser]])
+    {
+        [UserManager sharedSettings].recipient = fromUser;
+    }
+    else
+    {
+        [UserManager sharedSettings].recipient = toUser;
+    }
+
     [self performSegueWithIdentifier:@"detailMessage" sender:self];
 }
 
 #pragma mark --NAV
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"detailMessage"])
-    {
-        MessageDetailViewCon *mdvc = segue.destinationViewController;
-        mdvc.recipient = self.recipientUser;
-    }
-}
-
 - (IBAction)onBackButton:(UIBarButtonItem *)sender
 {
     NSLog(@"tapping");
@@ -181,39 +183,108 @@ MessageManagerDelegate>
     }];
 }
 
+#pragma mark -- MESSAGE MANAGER DELEGATES
+//from creation of new convo from CollectionView selection
 -(void)didRecieveChatterData:(User *)chatter
 {
-    self.recipientUser = chatter[@"toUser"];
-    [self performSegueWithIdentifier:@"detailMessage" sender:self];
+    if (chatter)
+    {
+        NSLog(@"initial message went through, now send to message detail VC");
+        [UserManager sharedSettings].recipient = chatter;
+        [self performSegueWithIdentifier:@"detailMessage" sender:self];
+    }
+
+    [self.tableView reloadData];
 }
 
 #pragma mark -- HELPERS
+//collectionview
 -(void)setupMatches
 {
     [self.messageManager queryForMatches:^(NSArray *result, NSError *error) {
 
-        self.matches = result;
+        if (result.count > 0)
+        {
+            self.matches = result;
+            NSLog(@"matches: %d", (int)result.count);
+        }
+        else
+        {
+            NSLog(@"no matches returned");
+        }
+
         [self.collectionView reloadData];
+
     }];
+
+    [SVProgressHUD dismiss];
+
 }
 
+//tableview
 -(void)setupChatters
 {
-    //only the first sent chat to get the user data from for the tableview
     [self.messageManager queryForChattersImage:^(NSArray *result, NSError *error) {
 
-        self.chatters = result;
+        if (result.count > 0)
+        {
+            self.chatters = result;
+            NSLog(@"chatters: %d", (int)result.count);
+        }
+        
         [self.tableView reloadData];
     }];
+
+        [SVProgressHUD dismiss];
 }
 
--(void)setupChatterImage:(MessagingCell*)cell withUserData:(NSDictionary*)chatter
+-(void)addConversationAlreadyExistsAlert:(User *)matchedUser
 {
-    cell.userImage.contentMode = UIViewContentModeScaleAspectFill;
-    cell.userImage.layer.cornerRadius = 22.5;
-    cell.userImage.layer.masksToBounds = YES;
-    cell.userImage.clipsToBounds = YES;
-    cell.userImage.image = [UIImage imageWithString:chatter[@"repImage"]];
+    UIAlertController *alert = [UIAlertController
+                                alertControllerWithTitle:@"Chat exists"
+                                message:nil
+                                preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *ok = [UIAlertAction
+                         actionWithTitle:@"Go to Conversation ->"
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action)
+                         {
+                             [UserManager sharedSettings].recipient = matchedUser;
+                             [self performSegueWithIdentifier:@"detailMessage" sender:self];
+                         }];
+
+    UIAlertAction *cancel = [UIAlertAction
+                             actionWithTitle:@"Cancel"
+                             style:UIAlertActionStyleCancel
+                             handler:^(UIAlertAction * action)
+                             {
+                                 [alert dismissViewControllerAnimated:YES completion:^{
+
+                                 }];
+                             }];
+
+    [alert addAction:cancel];
+    [alert addAction:ok];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)setFlowLayout
+{
+    UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
+    layout.minimumInteritemSpacing = 5;
+    layout.minimumLineSpacing = 2;
+    layout.headerReferenceSize = CGSizeMake(300, 20);
+
+//    LXReorderableCollectionViewFlowLayout *flowlayouts = [LXReorderableCollectionViewFlowLayout new];
+//    [flowlayouts setItemSize:CGSizeMake(100, 100)];
+//    [flowlayouts setScrollDirection:UICollectionViewScrollDirectionVertical];
+//    flowlayouts.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+//    flowlayouts.headerReferenceSize = CGSizeMake(300, 20);
+//    flowlayouts.footerReferenceSize = CGSizeZero;
+
+    //[self.collectionView setCollectionViewLayout:flowlayouts];
+    self.collectionView.contentInset = UIEdgeInsetsZero;
 }
 @end
 

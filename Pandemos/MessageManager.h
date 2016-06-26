@@ -11,7 +11,9 @@
 
 @protocol MessageManagerDelegate <NSObject>
 
--(void)didRecieveChatterData:(User*)chatter;
+@optional
+-(void)didReceiveChatterData:(User*)chatter;
+-(void)didReceiveChatters:(NSArray*)chatters;
 
 @end
 typedef void (^resultBlockWithSuccess)(BOOL success, NSError *error);
@@ -27,10 +29,10 @@ typedef void (^resultBlockWithMatches)(NSArray *result, NSError *error);
 
 -(void)sendInitialMessage:(User*)recipient;
 -(void)sendMessage:(User*)user toUser:(User*)recipient withText:(NSString*)text withSuccess:(resultBlockWithSuccess)sucess;
+
 -(void)queryIfChatExists:(User*)recipient currentUser:(User*)user withSuccess:(resultBlockWithSuccess)success;
 
--(void)queryForOutgoingMessages:(User*)recipientUser withBlock:(resultBlockWithConversations)messages;
--(void)queryForIncomingMessages:(User*)recipientUser withBlock:(resultBlockWithConversations)messages;
+-(void)queryForFirst50Messages:(User*)recipientUsr withBlock:(resultBlockWithConversations)messages;
 
 -(void)queryForMatches:(resultBlockWithMatches)matches;
 -(void)queryForChattersImage:(resultBlockWithConversations)conversation;

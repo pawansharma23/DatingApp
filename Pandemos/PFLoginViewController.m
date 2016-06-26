@@ -18,6 +18,7 @@
 #import "UIColor+Pandemos.h"
 #import "InitialWalkThroughViewController.h"
 #import "UIImage+Additions.h"
+#import "AppDelegate.h"
 
 @interface PFLoginViewController ()
 
@@ -81,32 +82,8 @@
     [self.view addConstraints:centerButtonCon];
     [self.view addConstraints:sideCon];
 }
-//
-//- (IBAction)loginWFacebook:(UIButton *)sender
-//{
-//    // Set permissions required from the facebook user account
-//    NSArray *permissionsArray = @[ @"public_profile", @"user_about_me", @"user_birthday", @"user_location", @"user_photos", @"user_work_history", @"user_hometown", @"user_likes", @"pages_show_list", @"user_education_history"];
-//
-//    // Login PFUser using Facebook
-//    [PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-//
-//        if (!user)
-//        {
-//            NSLog(@"Uh oh. The user cancelled the Facebook login.");
-//        }
-//        else if (user.isNew)
-//        {
-//            [self.userManager signUp:user];
-//            NSLog(@"User signed up and logged in through Facebook!");
-//            [self performSegueWithIdentifier:@"LoggedIn" sender:self];
-//        }
-//        else
-//        {
-//            NSLog(@"User logged in through Facebook!");
-//            [self performSegueWithIdentifier:@"successfulLoginToMatches" sender:self];
-//        }
-//    }];
-//}
+
+
 
 -(void)loginButtonClicked
 {
@@ -124,18 +101,25 @@
         {
             [self.userManager signUp:user];
             NSLog(@"User signed up and logged in through Facebook!");
+
             [self performSegueWithIdentifier:@"InitialLogIn" sender:self];
         }
         else
         {
+            //for users where facebook cache has saved their prefereces
+
             NSLog(@"User logged in through Facebook!");
-            [self performSegueWithIdentifier:@"successfulLoginToMatches" sender:self];
+            
+            //[self performSegueWithIdentifier:@"successfulLoginToMatches" sender:self];
+            [self dismissViewControllerAnimated:YES completion:^{
+
+            }];
         }
     }];
 }
 
 - (IBAction)onInitialWalkThrough:(UIButton *)sender
 {
-    [self performSegueWithIdentifier:@"LoggedIn" sender:self];
+    [self performSegueWithIdentifier:@"InitialLogIn" sender:self];
 }
 @end

@@ -136,7 +136,8 @@ static NSString * const reuseIdentifier = @"FaceCell";
 {
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
-        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+        UINavigationController *navController = [segue destinationViewController];
+        SelectedImageViewController *sivc = (SelectedImageViewController*)([navController viewControllers][0]);
         sivc.profileImage = self.selectedImage;
     }
         else

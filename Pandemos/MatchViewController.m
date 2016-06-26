@@ -13,9 +13,13 @@
 #import "DragBackground.h"
 #import "AppConstants.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import <MessageUI/MessageUI.h>
 #import "ProfileViewController.h"
+#import "SVProgressHUD.h"
 
-@interface MatchViewController()<CLLocationManagerDelegate>
+@interface MatchViewController()<CLLocationManagerDelegate,
+MFMailComposeViewControllerDelegate>
+
 {
     CLLocation *currentLocation;
     CLLocationManager *locationManager;
@@ -33,21 +37,29 @@
 
         [self navigationItems];
 
-        [self currentLocationIdentifier];
+        //[self currentLocationIdentifier];
 
         DragBackground *drag = [[DragBackground alloc]initWithFrame:self.view.frame];
         [self.view addSubview:drag];
 
         self.automaticallyAdjustsScrollViewInsets = NO;
 
-        //*************for testing**********
-        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 70, 20, 20)];
-        [self.button setTitle:@"To Init Setup" forState:UIControlStateNormal];
+        //*************for testing to original login**********
+        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 70, 50, 20)];
+        [self.button setTitle:@"Setup" forState:UIControlStateNormal];
         self.button.backgroundColor = [UIColor blackColor];
         self.button.layer.cornerRadius = 10;
         self.button.layer.masksToBounds = YES;
         [self.view addSubview:self.button];
         [self.button addTarget:self action:@selector(segueToNoUser:) forControlEvents:UIControlEventTouchUpInside];
+
+        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 95, 50, 20)];
+        [self.button setTitle:@"Email" forState:UIControlStateNormal];
+        self.button.backgroundColor = [UIColor blackColor];
+        self.button.layer.cornerRadius = 10;
+        self.button.layer.masksToBounds = YES;
+        [self.view addSubview:self.button];
+        [self.button addTarget:self action:@selector(sendEmailForTesting:) forControlEvents:UIControlEventTouchUpInside];
     }
     else
     {
@@ -91,7 +103,8 @@
 {
     if ([segue.identifier isEqualToString:@"Settings"])
     {
-        ProfileViewController *pvc = [(UINavigationController*)segue.destinationViewController topViewController];
+        UINavigationController *navController = [segue destinationViewController];
+        ProfileViewController *pvc = (ProfileViewController*)([navController viewControllers][0]);
         pvc.cityAndState = self.currentCityState;
     }
 }
@@ -108,6 +121,7 @@
 }
 - (IBAction)onMessagesTapped:(UIBarButtonItem *)sender
 {
+    [SVProgressHUD dismiss];
     self.navigationItem.rightBarButtonItem.image = [UIImage imageNamed:@"chatFilled2"];
     [self performSegueWithIdentifier:@"Messaging" sender:self];
 }
@@ -135,5 +149,47 @@
 
     self.navigationItem.leftBarButtonItem.image = [UIImage imageWithImage:[UIImage imageNamed:@"emptySettings"] scaledToSize:CGSizeMake(30, 30)];
     self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
+}
+
+-(void)sendEmailForTesting:(UIButton*)sender
+{
+    [self sendEmailForTesting];
+}
+
+-(void)sendEmailForTesting
+{
+    NSString *emailTitle = @"Feedback";
+    NSString *messageBody = @"<h1>Matched User's Name</h1>";
+    NSArray *reciepents = [NSArray arrayWithObject:@"michaelsevy@gmail.com"];
+    MFMailComposeViewController *mc = [[MFMailComposeViewController alloc]init];
+    mc.mailComposeDelegate = self;
+    [mc setSubject:emailTitle];
+    [mc setMessageBody:messageBody isHTML:YES];
+    [mc setToRecipients:reciepents];
+
+    [self presentViewController:mc animated:YES completion:nil];
+}
+
+- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    switch (result)
+    {
+        case MFMailComposeResultCancelled:
+            NSLog(@"Mail cancelled");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"Mail saved");
+            break;
+        case MFMailComposeResultSent:
+            NSLog(@"Mail sent");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
+            break;
+        default:
+            break;
+    }
+
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 @end

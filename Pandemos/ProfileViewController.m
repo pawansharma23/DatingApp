@@ -123,20 +123,26 @@ UserManagerDelegate>
 {
     [super viewDidAppear:YES];
 
+    //the only way scrolling works is if contentsize is set here between the viewinside and the scrollview alloc/init, when this is moved contentSize says 950, but it wont scroll
     [SVProgressHUD show];
 
-    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 950)];
+    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 675)];
     self.viewInsideScrollView.userInteractionEnabled = YES;
 
+    self.scrollView.contentSize = CGSizeMake(375,900);
+
+    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 375, 675)];
     self.scrollView.delegate = self;
     self.scrollView.scrollEnabled = YES;
     self.scrollView.userInteractionEnabled = YES;
-    //[self.scrollView addSubview:self.viewInsideScrollView];
-    self.scrollView.contentSize = CGSizeMake(self.viewInsideScrollView.frame.size.width, self.viewInsideScrollView.frame.size.height);
     self.scrollView.scrollsToTop = YES;
-    //self.scrollView.clipsToBounds = YES;
+    self.scrollView.clipsToBounds = YES;
+    [self.scrollView addSubview:self.viewInsideScrollView];
 
-    //[self.scrollView addSubview:self.viewInsideScrollView];
+
+    NSLog(@"scrollView: %f, viewinside scrollView: %f & content size: %f", self.scrollView.frame.size.height, self.viewInsideScrollView.frame.size.height, self.scrollView.contentSize.height);
+    NSLog(@"view dimensions: %0.f, %0.f", self.view.frame.size.width, self.view.frame.size.height);
+    NSLog(@"view inside scrollview: %0.f", self.viewInsideScrollView.frame.size.height);
 
     [self setupManagersProfileVC];
 
@@ -158,6 +164,11 @@ UserManagerDelegate>
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
+}
+
+-(void)viewDidLayoutSubviews
+{
+
 }
 
 - (BOOL)touchesShouldCancelInContentView:(UIView *)view
@@ -282,37 +293,43 @@ UserManagerDelegate>
 //3) Min/Max Ages
 - (IBAction)onMinAgeSliderChange:(UISlider *)sender
 {
-    NSLog(@"slider sender: %f", sender.value);
-    NSString *minAgeStr = [NSString stringWithFormat:@"%.f", self.minimumAgeSlider.value];
+    NSLog(@"slider sender: %.0f", truncf(sender.value));
+    NSString *minAgeStr = [NSString stringWithFormat:@"%.0f", truncf(self.minimumAgeSlider.value)];
     NSString *minAge = [NSString stringWithFormat:@"Minimum Age: %@", minAgeStr];
     self.minimumAgeLabel.text = minAge;
 
     [self.minimumAgeSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
+    float minValue = 18.0f;
+
+    if ([(UISlider*)sender value] < minValue)
+    {
+        [(UISlider*)sender setValue:minValue];
+    }
     self.minimumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
     self.minimumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
-    self.minimumAgeSlider.thumbTintColor = [UIColor facebookBlue];
+    self.minimumAgeSlider.thumbTintColor = [UIColor lightGrayColor];
 
     [self.currentUser setObject:minAgeStr forKey:@"minAge"];
 
     [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if (error) {
+        if (error)
+        {
             NSLog(@"error in saving min Age: %@", error);
-        } else{
-            NSLog(@"saved: %s with string: %@", succeeded ? "true" : "false", minAgeStr);
         }
     }];
 }
 
 - (IBAction)onMaxAgeSliderChange:(UISlider *)sender
 {
-    NSString *maxAgeStr = [NSString stringWithFormat:@"%.f", self.maximumAgeSlider.value];
+    NSLog(@"slider sender: %.0f", truncf(sender.value));
+    NSString *maxAgeStr = [NSString stringWithFormat:@"%.0f", truncf(self.maximumAgeSlider.value)];
     NSString *maxAge = [NSString stringWithFormat:@"Maximum Age: %@", maxAgeStr];
     self.maximumAgeLabel.text = maxAge;
 
     [self.maximumAgeSlider setThumbImage:[self.maximumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
     self.maximumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
     self.maximumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
-    self.maximumAgeSlider.thumbTintColor = [UIColor facebookBlue];
+    self.maximumAgeSlider.thumbTintColor = [UIColor lightGrayColor];
 
     [self.currentUser setObject:maxAgeStr forKey:@"maxAge"];
 
@@ -320,10 +337,6 @@ UserManagerDelegate>
         if (error)
         {
             NSLog(@"error in saving Max Age: %@", error);
-        }
-        else
-        {
-            NSLog(@"saved: %s", succeeded ? "true" : "false");
         }
     }];
 }
@@ -358,7 +371,7 @@ UserManagerDelegate>
         }
         else
         {
-            NSLog(@"SAVED:%@ %s", milesAwayStr, succeeded ? "true" : "false");
+            //NSLog(@"SAVED:%@ %s", milesAwayStr, succeeded ? "true" : "false");
         }
     }];
 }
@@ -430,7 +443,7 @@ UserManagerDelegate>
     [self.milesSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
     self.milesSlider.minimumTrackTintColor = [UIColor yellowGreen];
     self.milesSlider.maximumTrackTintColor = [UIColor lightGrayColor];
-    self.milesSlider.thumbTintColor = [UIColor facebookBlue];
+    self.milesSlider.thumbTintColor = [UIColor lightGrayColor];
 
     NSString *min = userData[@"minAge"];
     NSString *max = userData[@"maxAge"];
@@ -438,20 +451,16 @@ UserManagerDelegate>
     [self.minimumAgeSlider setThumbImage:[self.minimumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
     self.minimumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
     self.minimumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
-    self.minimumAgeSlider.thumbTintColor = [UIColor facebookBlue];
+    self.minimumAgeSlider.thumbTintColor = [UIColor lightGrayColor];
 
     [self.maximumAgeSlider setThumbImage:[self.maximumAgeSlider thumbImageForState:UIControlStateNormal] forState:UIControlStateNormal];
     self.maximumAgeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
     self.maximumAgeSlider.minimumTrackTintColor = [UIColor yellowGreen];
-    self.maximumAgeSlider.thumbTintColor = [UIColor facebookBlue];
+    self.maximumAgeSlider.thumbTintColor = [UIColor lightGrayColor];
 
     self.jobLabel.text = userData[@"work"];
     self.educationLabel.text = userData[@"lastSchool"];
     [self setPublicProfile:userData[@"publicProfile"]];
-
-
-    //what the viewInside height
-    NSLog(@"viewinside height: %f", self.viewInsideScrollView.frame.size.height);   
 }
 
 -(void)failedToFetchUserData:(NSError *)error
@@ -464,6 +473,9 @@ UserManagerDelegate>
     self.profileImages = [NSMutableArray arrayWithArray:images];
     [self.collectionView reloadData];
     [SVProgressHUD dismiss];
+
+//    self.scrollView.contentSize = CGSizeMake(375,900);
+//    NSLog(@"scroll view: %0.f", self.scrollView.contentSize.height);
 }
 
 -(void)failedToFetchImages:(NSError *)error
@@ -476,7 +488,9 @@ UserManagerDelegate>
 {
     if ([segue.identifier isEqualToString:@"Selected"])
     {
-        SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+        UINavigationController *navController = [segue destinationViewController];
+        SelectedImageViewController *sivc = (SelectedImageViewController*)([navController viewControllers][0]);
+        //SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
         [SVProgressHUD dismiss];
 
         if (self.iPhoneImageString)
@@ -693,12 +707,10 @@ UserManagerDelegate>
 {
     if ([publicProfile containsString:@"public"])
     {
-        NSLog(@"public: %@", publicProfile);
         [self.publicProfileSwitch setOn:YES animated:YES];
     }
     else
     {
-        NSLog(@"non public: %@", publicProfile);
         [self.publicProfileSwitch setOn:NO animated:YES];
     }
 }

@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "User.h"
 #import <Parse/Parse.h>
+#import "MessageDetailViewCon.h"
 
 @interface MessagingList : UIViewController
 
-@property (strong, nonatomic) User *pfUser;
-@property (strong, nonatomic) PFRelation *relation;
+@property (strong, nonatomic) User *user;
+
+@property (strong, nonatomic) NSString *myUserId;
 
 @end

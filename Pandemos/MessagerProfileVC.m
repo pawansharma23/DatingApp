@@ -82,7 +82,7 @@ UserManagerDelegate>
     self.piv = [[ProfileImageView alloc]initWithFrame:self.view.frame];
     [self.view addSubview:self.piv];
 
-    [self.userManager queryForUserData:self.messagingUser.objectId withUser:^(User *user, NSError *error) {
+    [self.userManager queryForUserData:[UserManager sharedSettings].recipient.objectId withUser:^(User *user, NSError *error) {
 
         NSString *bday = user[@"birthday"];
         NSString *nameAndAge = [NSString stringWithFormat:@"%@, %@", user[@"givenName"], [bday ageFromBirthday:bday]];

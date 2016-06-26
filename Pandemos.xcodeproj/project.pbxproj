@@ -20,7 +20,6 @@
 		2653C0481CE0E3D000DDBD65 /* UserDetail.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2653C0471CE0E3D000DDBD65 /* UserDetail.storyboard */; };
 		2655A47E1CE920A800838853 /* MatchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2655A47D1CE920A800838853 /* MatchView.xib */; };
 		2655A4811CE9225B00838853 /* MatchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2655A4801CE9225B00838853 /* MatchView.m */; };
-		2657ABCC1CCE5E2100629437 /* ChooseMatchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */; };
 		2657ABCF1CCE5F3B00629437 /* ImageLabelViews.m in Sources */ = {isa = PBXBuildFile; fileRef = 2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */; };
 		268BA0941C1DB53F0054414E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 268BA0921C1DB53F0054414E /* Main.storyboard */; };
 		268BA0961C1DB53F0054414E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 268BA0951C1DB53F0054414E /* Assets.xcassets */; };
@@ -43,6 +42,7 @@
 		26BA6FB51D087BAB00745FC9 /* DragBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6FB41D087BAB00745FC9 /* DragBackground.m */; };
 		26BA6FBC1D0C732F00745FC9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26BA6FBB1D0C732F00745FC9 /* UIKit.framework */; };
 		26BA6FBF1D0DF60400745FC9 /* AcceptedMatchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6FBE1D0DF60400745FC9 /* AcceptedMatchView.m */; };
+		26BA6FD21D17015400745FC9 /* MNCChatMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BA6FD11D17015400745FC9 /* MNCChatMessageCell.m */; };
 		26C1E3D61C3194B10020349A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D51C3194B10020349A /* CoreLocation.framework */; };
 		26C1E3D81C31AB590020349A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C1E3D71C31AB590020349A /* MobileCoreServices.framework */; };
 		26C70EAF1CA5B15100E9B98F /* PandemosUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0AE1C1DB53F0054414E /* PandemosUITests.m */; };
@@ -76,8 +76,6 @@
 		26C70ED81CA5B18F00E9B98F /* UIColor+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */; };
 		26C70ED91CA5B18F00E9B98F /* RangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 260799061C29CB4600B364C8 /* RangeSlider.m */; };
 		26C70EDA1CA5B18F00E9B98F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
-		26CB15801CFCE5AA005CD680 /* IncomingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB157F1CFCE5AA005CD680 /* IncomingCell.m */; };
-		26CB158D1CFDCA3F005CD680 /* OutgoingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */; };
 		26CB15981CFE1924005CD680 /* DraggableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15951CFE1924005CD680 /* DraggableView.m */; };
 		26CB15991CFE1924005CD680 /* DraggableViewBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15971CFE1924005CD680 /* DraggableViewBackground.m */; };
 		26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB159B1CFE1930005CD680 /* OverlayView.m */; };
@@ -136,8 +134,6 @@
 		2655A47D1CE920A800838853 /* MatchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MatchView.xib; sourceTree = "<group>"; };
 		2655A47F1CE9225B00838853 /* MatchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchView.h; sourceTree = "<group>"; };
 		2655A4801CE9225B00838853 /* MatchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchView.m; sourceTree = "<group>"; };
-		2657ABCA1CCE5E2100629437 /* ChooseMatchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseMatchView.h; sourceTree = "<group>"; };
-		2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseMatchView.m; sourceTree = "<group>"; };
 		2657ABCD1CCE5F3B00629437 /* ImageLabelViews.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageLabelViews.h; sourceTree = "<group>"; };
 		2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageLabelViews.m; sourceTree = "<group>"; };
 		2664514E1C5D007B00D98136 /* AlbumDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumDetailViewController.h; sourceTree = "<group>"; };
@@ -208,15 +204,13 @@
 		26BA6FBB1D0C732F00745FC9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		26BA6FBD1D0DF60400745FC9 /* AcceptedMatchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AcceptedMatchView.h; sourceTree = "<group>"; };
 		26BA6FBE1D0DF60400745FC9 /* AcceptedMatchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AcceptedMatchView.m; sourceTree = "<group>"; };
+		26BA6FD01D17015400745FC9 /* MNCChatMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNCChatMessageCell.h; sourceTree = "<group>"; };
+		26BA6FD11D17015400745FC9 /* MNCChatMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MNCChatMessageCell.m; sourceTree = "<group>"; };
 		26C1E3D51C3194B10020349A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		26C1E3D71C31AB590020349A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
 		26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuggestionsViewController.m; sourceTree = "<group>"; };
-		26CB157E1CFCE5AA005CD680 /* IncomingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IncomingCell.h; sourceTree = "<group>"; };
-		26CB157F1CFCE5AA005CD680 /* IncomingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IncomingCell.m; sourceTree = "<group>"; };
 		26CB15871CFD02FA005CD680 /* AppConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
-		26CB158B1CFDCA3F005CD680 /* OutgoingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutgoingCell.h; sourceTree = "<group>"; };
-		26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutgoingCell.m; sourceTree = "<group>"; };
 		26CB15941CFE1924005CD680 /* DraggableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraggableView.h; sourceTree = "<group>"; };
 		26CB15951CFE1924005CD680 /* DraggableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraggableView.m; sourceTree = "<group>"; };
 		26CB15961CFE1924005CD680 /* DraggableViewBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraggableViewBackground.h; sourceTree = "<group>"; };
@@ -295,19 +289,17 @@
 			name = MessagerProfile;
 			sourceTree = "<group>";
 		};
-		2614A7031CA1DBF700D6F6AA /* Matches */ = {
+		2614A7031CA1DBF700D6F6AA /* OldCode */ = {
 			isa = PBXGroup;
 			children = (
 				26CC6A381C7CF3E1000F3BAC /* PotentialMatch.h */,
 				26CC6A391C7CF3E1000F3BAC /* PotentialMatch.m */,
 				268EE4551C834BC500085DAD /* MatchRequest.h */,
 				268EE4561C834BC500085DAD /* MatchRequest.m */,
-				2657ABCA1CCE5E2100629437 /* ChooseMatchView.h */,
-				2657ABCB1CCE5E2100629437 /* ChooseMatchView.m */,
 				2657ABCD1CCE5F3B00629437 /* ImageLabelViews.h */,
 				2657ABCE1CCE5F3B00629437 /* ImageLabelViews.m */,
 			);
-			name = Matches;
+			name = OldCode;
 			sourceTree = "<group>";
 		};
 		2614A7071CA1DCA900D6F6AA /* PreviewUserProfile */ = {
@@ -337,6 +329,8 @@
 				2644451A1CB5699B00A0381B /* UserManager.m */,
 				26F7E4BF1CD29935002F8BFC /* MessageManager.h */,
 				26F7E4C01CD29935002F8BFC /* MessageManager.m */,
+				26BA6FCD1D15AF9D00745FC9 /* SinchClient.h */,
+				26BA6FCE1D15AF9D00745FC9 /* SinchClient.m */,
 				2614A70A1CA1E22F00D6F6AA /* FacebookNetwork.h */,
 				2614A70B1CA1E22F00D6F6AA /* FacebookNetwork.m */,
 				2614A7111CA1EF4E00D6F6AA /* FacebookManager.h */,
@@ -412,10 +406,8 @@
 		2655A4821CE95CBC00838853 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				26CB157E1CFCE5AA005CD680 /* IncomingCell.h */,
-				26CB157F1CFCE5AA005CD680 /* IncomingCell.m */,
-				26CB158B1CFDCA3F005CD680 /* OutgoingCell.h */,
-				26CB158C1CFDCA3F005CD680 /* OutgoingCell.m */,
+				26BA6FD01D17015400745FC9 /* MNCChatMessageCell.h */,
+				26BA6FD11D17015400745FC9 /* MNCChatMessageCell.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -468,7 +460,7 @@
 				268BA10F1C25AFE60054414E /* Model */,
 				26D314711C976BF80045BB22 /* Categories */,
 				26F22BF11C6FAE2000D86343 /* Third Party Helpers */,
-				2614A7031CA1DBF700D6F6AA /* Matches */,
+				2614A7031CA1DBF700D6F6AA /* OldCode */,
 				268BA0971C1DB53F0054414E /* LaunchScreen.storyboard */,
 				268BA09A1C1DB53F0054414E /* Info.plist */,
 				268BA0891C1DB53F0054414E /* Supporting Files */,
@@ -505,8 +497,8 @@
 		268BA10B1C25A8F00054414E /* UserFlow */ = {
 			isa = PBXGroup;
 			children = (
-				26F22BF41C6FAF0E00D86343 /* Matches */,
 				26F22BF21C6FAEF000D86343 /* Settings */,
+				26F22BF41C6FAF0E00D86343 /* Matches */,
 			);
 			name = UserFlow;
 			sourceTree = "<group>";
@@ -570,10 +562,9 @@
 		26BA6F651D04C46100745FC9 /* MessagerInfoPage */ = {
 			isa = PBXGroup;
 			children = (
+				26D259381D1C205600FAD670 /* Cell */,
 				26BA6F621D04C45A00745FC9 /* MessagerProfileInfo.h */,
 				26BA6F631D04C45A00745FC9 /* MessagerProfileInfo.m */,
-				26BA6F691D04D2E900745FC9 /* MessagerTopCell.h */,
-				26BA6F6A1D04D2E900745FC9 /* MessagerTopCell.m */,
 			);
 			name = MessagerInfoPage;
 			sourceTree = "<group>";
@@ -663,6 +654,15 @@
 				2664514F1C5D007B00D98136 /* AlbumDetailViewController.m */,
 			);
 			name = "Album Detail";
+			sourceTree = "<group>";
+		};
+		26D259381D1C205600FAD670 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				26BA6F691D04D2E900745FC9 /* MessagerTopCell.h */,
+				26BA6F6A1D04D2E900745FC9 /* MessagerTopCell.m */,
+			);
+			name = Cell;
 			sourceTree = "<group>";
 		};
 		26D314711C976BF80045BB22 /* Categories */ = {
@@ -994,6 +994,7 @@
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */,
 				260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */,
+				26BA6FD51D170CE000745FC9 /* MNCChatMessage.m in Sources */,
 				26CB15981CFE1924005CD680 /* DraggableView.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */,
@@ -1023,8 +1024,6 @@
 				26C70ED01CA5B18F00E9B98F /* Facebook.m in Sources */,
 				26C70ED11CA5B18F00E9B98F /* FacebookBuilder.m in Sources */,
 				26CB15991CFE1924005CD680 /* DraggableViewBackground.m in Sources */,
-				26CB15801CFCE5AA005CD680 /* IncomingCell.m in Sources */,
-				2657ABCC1CCE5E2100629437 /* ChooseMatchView.m in Sources */,
 				26C70ED21CA5B18F00E9B98F /* PotentialMatch.m in Sources */,
 				26AC54641CAED17A005AD536 /* UITextView+Additions.m in Sources */,
 				2655A4811CE9225B00838853 /* MatchView.m in Sources */,
@@ -1034,9 +1033,9 @@
 				26C70ED51CA5B18F00E9B98F /* CVSettingCell.m in Sources */,
 				26C70ED61CA5B18F00E9B98F /* PreviewCell.m in Sources */,
 				26C70ED71CA5B18F00E9B98F /* UIButton+Additions.m in Sources */,
+				26BA6FD21D17015400745FC9 /* MNCChatMessageCell.m in Sources */,
 				2653C03A1CDA357200DDBD65 /* NSData+Additions.m in Sources */,
 				26C70ED81CA5B18F00E9B98F /* UIColor+Pandemos.m in Sources */,
-				26CB158D1CFDCA3F005CD680 /* OutgoingCell.m in Sources */,
 				26C70ED91CA5B18F00E9B98F /* RangeSlider.m in Sources */,
 				26C70EDA1CA5B18F00E9B98F /* main.m in Sources */,
 			);

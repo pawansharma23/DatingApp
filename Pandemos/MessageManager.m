@@ -35,7 +35,7 @@
         else
         {
             NSLog(@"initial message sent: %s", succeeded ? "true" : "false");
-            [self.delegate didRecieveChatterData:recipient];
+            [self.delegate didReceiveChatterData:recipient];
         }
     }];
 }
@@ -87,49 +87,20 @@
     }];
 }
 
--(void)queryForOutgoingMessages:(User*)recipientUser withBlock:(resultBlockWithConversations)messages
+-(void)queryForFirst50Messages:(User *)recipientUsr withBlock:(resultBlockWithConversations)messages
 {
+    NSArray *participants = @[recipientUsr, [User currentUser]];
     PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
-    [query whereKey:@"fromUser" equalTo:[User currentUser]];
-    [query whereKey:@"toUser" equalTo:recipientUser];
+
     [query whereKeyExists:@"text"];
     [query whereKeyDoesNotExist:@"repImage"];
+    [query whereKey:@"fromUser" containedIn:participants] && [query whereKey:@"toUser" containedIn:participants];
     [query orderByAscending:@"updatedAt"];
-
-    query.cachePolicy = kPFCachePolicyCacheThenNetwork;
-    [query orderByAscending:@"createdAt"];
-    NSLog(@"Trying to retrieve from cache");
 
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
 
         if (!error)
         {
-            messages(objects, nil);
-        }
-        else
-        {
-            NSLog(@"Error Above: %@ %@", error, [error userInfo]);
-        }
-    }];
-}
-
--(void)queryForIncomingMessages:(User*)recipientUser withBlock:(resultBlockWithConversations)messages
-{
-    PFQuery *query = [PFQuery queryWithClassName:@"Chat"];
-    [query whereKey:@"toUser" equalTo:[User currentUser]];
-    [query whereKey:@"fromUser" equalTo:recipientUser];
-    [query whereKeyExists:@"text"];
-    [query orderByAscending:@"updatedAt"];
-
-//    query.cachePolicy = kPFCachePolicyCacheThenNetwork;
-//    [query orderByAscending:@"createdAt"];
-//    NSLog(@"Trying to retrieve from cache");
-
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-
-        if (!error)
-        {
-            NSLog(@"results: %@", objects);
             messages(objects, nil);
         }
         else

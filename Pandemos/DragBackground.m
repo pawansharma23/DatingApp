@@ -272,27 +272,34 @@ static float CARD_WIDTH;
     [self.userManager queryForRelationshipMatch:self.currentMatch withBlock:^(NSArray<User *> *matchedUser, NSError *error) {
 
         //compare curent match with all mathces to check for an already existing PFRelationship
-
-        for (User *matched in matchedUser)
+        if (matchedUser)
         {
+            for (User *matched in matchedUser)
+            {
 
-            if ([matched.objectId isEqualToString:self.currentMatch.objectId])
-            {
-                //[self snapAcceptedMatchViewToStartNewConvo];
-                NSLog(@"boom we've got a match, send to messager");
-            }
-            else
-            {
-                [self setYesStatusForMatchRequestObject:self.currentMatch];
+                if ([matched.objectId isEqualToString:self.currentMatch.objectId])
+                {
+                    //[self snapAcceptedMatchViewToStartNewConvo];
+                    NSLog(@"boom we've got a match, send to messager");
+                }
+                else
+                {
+                    NSLog(@"no previous matches");
+                    //[self setYesStatusForMatchRequestObject:self.currentMatch];
+                }
             }
         }
+        else
+        {
+            [self setYesStatusForMatchRequestObject:self.currentMatch];
 
+            //not a previous match, so start the match process
+        }
     }];
 
-
-
-
-//    NSLog(@"user accepted: %@", matchedObject.givenName);
+    //set match
+    [self setYesStatusForMatchRequestObject:self.currentMatch];
+    NSLog(@"matched: %@ & %@", _currentMatch.givenName, [User currentUser].givenName);
 
 
     //*** this is the magic that did it!!!
@@ -433,24 +440,35 @@ static float CARD_WIDTH;
 {
     NSLog(@"match Request class successfully created: %@", matchRequest);
 
-    //send email through mail chimp + then figure out how to handle setitng up the PFRelation "match"
+    NSDictionary *matchDict = matchRequest;
+    NSString *status = matchDict[@"status"];
 
-//           [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(NSDictionary *userDict, NSError *error) {
-//        
-//                if (!error)
-//                {
-//                    NSLog(@"update worked added PFRelation");
-//                    //calls didFetchUserObjectForFinalMatch
-//                }
-//            }];
-//    }
+    if ([status isEqualToString:@"denied"])
+    {
+        NSLog(@"no match it dies here, buried as a match request");
+    }
+    else if([status isEqualToString:@"boyYes"])
+    {
+        //        //************for TESTING***************
+        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
+    }
+    else if([status isEqualToString:@"girlYes"])
+    {
+        //        //************for TESTING***************
+        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
+        /////////SEND EMAIL FOR APPROVAL/////////CLOUD CODE//////
+        //send email through mail chimp + then figure out how to handle setitng up the PFRelation "match"
 
-    //        //************for TESTING***************
-    [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
-        
-    
-
-
+        //           [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(NSDictionary *userDict, NSError *error) {
+        //
+        //                if (!error)
+        //                {
+        //                    NSLog(@"update worked added PFRelation");
+        //                    //calls didFetchUserObjectForFinalMatch
+        //                }
+        //            }];
+        //    }
+    }
 }
 
 #pragma mark -- Swipe YES OR NO HELPERS
@@ -480,7 +498,10 @@ static float CARD_WIDTH;
 //    [self.userManager createMatchRequestWithStringId:potMatch.objectId withStatus:status withCompletion:^(MatchRequest *matchRequest, NSError *error) {
 //    }];
     [self.userManager createMatchRequest:potMatch withStatus:status withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-
+        if (matchRequest)
+        {
+            NSLog(@"match object: %@", matchRequest);
+        }
     }];
 
 }

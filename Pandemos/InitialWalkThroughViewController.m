@@ -116,6 +116,11 @@ UIImagePickerControllerDelegate>
     {
         [self performSegueWithIdentifier:@"ChooseImage" sender:self];
     }
+
+    if ([UserManager sharedSettings].imageFromPhone)
+    {
+        [self performSegueWithIdentifier:@"ChooseImage" sender:self];
+    }
 }
 
 #pragma mark -- CLLOCATION
@@ -254,6 +259,7 @@ UIImagePickerControllerDelegate>
     {
         self.dataImage = [[NSData alloc] init];
         self.dataImage = UIImagePNGRepresentation(scaledImage);
+        [UserManager sharedSettings].imageFromPhone = self.dataImage;
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -264,6 +270,7 @@ UIImagePickerControllerDelegate>
 {
     if ([segue.identifier isEqualToString:@"ChooseImage"])
     {
+
         //SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
         //sivc.profileImageAsData = self.dataImage;
     }
@@ -361,10 +368,9 @@ UIImagePickerControllerDelegate>
 #pragma mark -- FACEBOOK MANAGER DELEGATE
 -(void)didReceiveParsedUserData:(NSArray *)data
 {
-    Facebook *face = [data firstObject];
-    NSLog(@"did we get last name?!?! %@", face.lastName);
     [self saveToParse:data];
 }
+
 -(void)saveToParse:(NSArray*)facebookUserDataArray
 {
     Facebook *face = [facebookUserDataArray firstObject];
@@ -376,6 +382,10 @@ UIImagePickerControllerDelegate>
     if (face.givenName)
     {
         [self.currentUser setObject:face.givenName forKey:@"givenName"];
+    }
+    if (face.lastName)
+    {
+        [self.currentUser setObject:face.lastName forKey:@"lastName"];
     }
     if (face.birthday)
     {

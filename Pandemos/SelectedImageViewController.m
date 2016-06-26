@@ -90,6 +90,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
         self.userImage.image = [UIImage imageWithData:self.profileData];
     }
 
+    else if ([UserManager sharedSettings].imageFromPhone)
+    {
+        self.userImage.image = [UIImage imageWithData:[UserManager sharedSettings].imageFromPhone];
+    }
 
     self.pictures = [NSMutableArray new];
 
@@ -115,8 +119,6 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
 
         [UIButton setUpLargeButton:self.saveImage];
         [UIButton setUpLargeButton:self.addAnother];
-        [UIButton setUpLargeButton:self.profileButton];
-        [self.profileButton setNeedsLayout];
 
        [self.userManager queryForUsersConfidant:^(NSString *confidant, NSError *error) {
 
@@ -298,8 +300,7 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     self.fromInitialSetup = NO;
     [self.profileButton setTitle:profile forState:UIControlStateNormal];
     self.profileButton.backgroundColor = [UIColor whiteColor];
-    [self.profileButton sizeToFit];
-    [self.profileButton setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
+    [UIButton setUpLargeButton:self.profileButton];
 }
 
 -(void)makeInitialSetupButton
@@ -309,8 +310,10 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
     self.fromInitialSetup = YES;
     [self.profileButton setTitle:profile forState:UIControlStateNormal];
     self.profileButton.backgroundColor = [UIColor whiteColor];
-    [self.profileButton sizeToFit];
-    [self.profileButton setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
+    [UIButton setUpLargeButton:self.profileButton];
+    CGRect      buttonFrame = self.profileButton.frame;
+    buttonFrame.size = CGSizeMake(100, 40);
+    self.profileButton.frame = buttonFrame;
 }
 
 -(void)saveButtonCheck
@@ -402,6 +405,39 @@ static NSString * const kReuseIdentifier = @"PreviewCell";
             NSLog(@"cannot convert nsdta to string???");
         }
 
+    }
+    else if ([UserManager sharedSettings].imageFromPhone)
+    {
+//        NSString *newStr = [[NSString alloc] initWithData:[UserManager sharedSettings].imageFromPhone
+//                                                  encoding:NSUTF8StringEncoding];
+//        NSLog(@"string: %@", newStr);
+
+        //null termindated
+        NSString *nullTerminatedStr = [NSString stringWithUTF8String:[[UserManager sharedSettings].imageFromPhone bytes]];
+        NSLog(@"string: %@", nullTerminatedStr);
+
+        if (nullTerminatedStr.length > 0)
+        {
+            [self.pictures addObject:nullTerminatedStr];
+            [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+                if (succeeded)
+                {
+                    NSLog(@"saved new iPhone image to Parse");
+                    [self.saveImage setTitle:image forState:UIControlStateNormal];
+                    [self delayAndCheckImageCount];
+                }
+                else
+                {
+                    NSLog(@"image too large, Parse couldnt save, size: %f",(float)self.profileImage.length/1024.0f);
+                }
+            }];
+        }
+        else
+        {
+            NSLog(@"cannot convert nsdata to string???");
+        }
     }
     else//facebook image
     {

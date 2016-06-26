@@ -27,7 +27,7 @@
                                                 <rect key="frame" x="8" y="8" width="584" height="498"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="327.5" id="wKJ-F9-ut0">
-                                                        <variation key="heightClass=regular-widthClass=compact" constant="300"/>
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="250"/>
                                                     </constraint>
                                                 </constraints>
                                                 <variation key="default">
@@ -184,7 +184,9 @@
                                                     <constraint firstAttribute="height" constant="30" id="C01-vU-Xf8">
                                                         <variation key="heightClass=regular-widthClass=compact" constant="40"/>
                                                     </constraint>
-                                                    <constraint firstAttribute="width" constant="115" id="UXm-sd-Fcl"/>
+                                                    <constraint firstAttribute="width" constant="115" id="UXm-sd-Fcl">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="115"/>
+                                                    </constraint>
                                                     <constraint firstAttribute="width" constant="175" id="dfi-Iv-wz8"/>
                                                     <constraint firstAttribute="width" constant="60" id="vcC-lV-qzK">
                                                         <variation key="heightClass=regular-widthClass=compact" constant="155"/>

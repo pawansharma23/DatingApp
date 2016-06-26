@@ -13,13 +13,19 @@
 #import "UIColor+Pandemos.h"
 #import "UserManager.h"
 #import "User.h"
-#import <UIKit/UIDynamicBehavior.h>
 
-@interface MessagerProfileInfo ()
+@interface MessagerProfileInfo ()<UITableViewDelegate,
+UITableViewDataSource>
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navigationTitle;
+
 @property (strong, nonatomic) UserManager *usermanager;
 @property (strong, nonatomic) NSString *imageStr;
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) User *selectedUser;
+
 @end
 
 @implementation MessagerProfileInfo
@@ -29,26 +35,32 @@
     [super viewDidLoad];
 
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
-
-    UIImage *closeNavBarButton = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(30.0, 30.0)];
-    [self.navigationController.navigationItem.leftBarButtonItem setImage:closeNavBarButton];
+    self.backButton.image = [UIImage imageWithImage:[UIImage imageNamed:@"Back"] scaledToSize:CGSizeMake(25.0, 25.0)];
+    self.backButton.tintColor = [UIColor mikeGray];
 
     self.usermanager = [UserManager new];
 
     self.tableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
+
+    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
 
-    [self.usermanager queryForUserData:self.messagingUser.objectId withUser:^(User *user, NSError *error) {
+    [self.usermanager queryForUserData:[UserManager sharedSettings].recipient.objectId withUser:^(User *user, NSError *error) {
 
         if (user)
         {
             NSArray *arr = user[@"profileImages"];
             self.imageStr = arr.firstObject;
-            self.name = user[@"givenName"];
+            NSString *givenName = user[@"givenName"];
+            NSString *lastI = user[@"lastName"];
+            NSString *last = [lastI substringToIndex:1];
+            self.name = [NSString stringWithFormat:@"%@ %@.", givenName, last];
+
             self.selectedUser = user;
+            self.navigationTitle.title = self.name;
         }
         else
         {
@@ -87,7 +99,6 @@
     }
     return 0;
 }
-
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -174,6 +185,7 @@
     switch (indexPath.section)
     {
         case 0:
+            [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         case 1:
             [self performSegueWithIdentifier:@"toMessagerProfile" sender:self];
@@ -190,13 +202,9 @@
     }
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (IBAction)onBackToMessageDetail:(UIBarButtonItem *)sender
 {
-    if ([segue.identifier isEqualToString:@"toMessagerProfile"])
-    {
-        MessagerProfileVC *mpvc = segue.destinationViewController;
-        mpvc.messagingUser = self.messagingUser;
-    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(void)addBlockConfirmAlert:(User *)chatter
@@ -227,27 +235,9 @@
                                  }];
                              }];
 
-
     [alert addAction:cancel];
     [alert addAction:ok];
-
-//    UIDynamicAnimator *animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-//
-//    UISnapBehavior *snapBehavior = [[UISnapBehavior alloc]initWithItem:alert snapToPoint:self.view.center];
-//    snapBehavior.damping = 0.65f;
-//    [animator addBehavior:snapBehavior];
-//
-//    UIGravityBehavior *gravityBehaviour = [[UIGravityBehavior alloc] initWithItems:@[alert]];
-//    gravityBehaviour.gravityDirection = CGVectorMake(0, 10);
-//    [animator addBehavior:gravityBehaviour];
-//
-//    UIDynamicItemBehavior *itemBehaviour = [[UIDynamicItemBehavior alloc] initWithItems:@[alert]];
-//    [itemBehaviour addAngularVelocity:-M_PI_2 forItem:alert];
-//    [animator addBehavior:itemBehaviour];
-
-
     [self presentViewController:alert animated:YES completion:nil];
-
 }
 
 

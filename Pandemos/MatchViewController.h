@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UserManager.h"
 
 @interface MatchViewController : UIViewController
+
 @property (strong, nonatomic) NSString *currentCityState;
+@property (strong, nonatomic) UserManager *userManager;
 @end

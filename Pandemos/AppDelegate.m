@@ -14,6 +14,7 @@
 #import "User.h"
 #import "MatchRequest.h"
 #import "NotificationManager.h"
+#import "AppConstants.h"
 
 @interface AppDelegate ()
 
@@ -22,12 +23,14 @@
 @implementation AppDelegate
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+
     //conenct to FB
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
     //Parse id's
-    [Parse setApplicationId:@"dCNWcarB6Tv1iW8vCT1c7UATrEwZ3AFq7OzwAs7A" clientKey:@"Fm7fN3AP4Efbcq6265D8Bh4ReICvjbHkgmRiQucl"];
+    [Parse setApplicationId:PARSE_APPLICATION_ID clientKey:PARSE_CLIENT_KEY];
     [User registerSubclass];
     [MatchRequest registerSubclass];
 
@@ -41,17 +44,14 @@
 }
 
 
-
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
 
     //facebook install method
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:sourceApplication
-                                                       annotation:annotation
-            ];
+                                                       annotation:annotation];
 }
-
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {

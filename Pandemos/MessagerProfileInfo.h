@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "User.h"
-@interface MessagerProfileInfo : UITableViewController
 
-@property (strong, nonatomic) User *messagingUser;
+@interface MessagerProfileInfo : UIViewController
+
 
 @end

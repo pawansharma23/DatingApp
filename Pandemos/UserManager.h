@@ -41,6 +41,7 @@
 @end
 
 @interface UserManager : NSObject
+
 typedef void (^resultBlockWithMatchRequest)(MatchRequest *matchRequest, NSError *error);
 typedef void (^resultBlockWithArray)(NSArray *users, NSError *error);
 typedef void (^resultBlockWithUserData)(NSDictionary *userDict, NSError *error);
@@ -51,8 +52,12 @@ typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError 
 @property(nonatomic, strong)NSMutableArray<User*> *allUsers;
 @property(nonatomic, strong)NSArray<User*> *allMatchedUsers;
 @property(nonatomic, strong)NSArray<User*> *alreadySeenUsers;
+@property(nonatomic, strong)User *recipient;
+@property(nonatomic, strong)NSData *imageFromPhone;
 
 @property (weak, nonatomic) id<UserManagerDelegate>delegate;
+
++(UserManager*)sharedSettings;
 
 -(void)signUp:(PFUser*)user;
 -(void)loadUserData:(User *)user;
@@ -80,4 +85,12 @@ typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError 
 -(void)queryForRelationshipMatch:(User*)matchedUser withBlock:(resultBlockWithMatchedUser)match;
 -(void)addPFRelationWithPFCloudFunction:(User*)recipientUser
                         andMatchRequest:(MatchRequest*)match;
+
+
+-(void)sendEmailWithPFCloudFunction:(NSString*)confidantEmail withRelation:(PFRelation*)rela andMatchedUser:(User*)user;
 @end
+
+
+
+
+

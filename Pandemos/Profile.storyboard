@@ -647,19 +647,19 @@
                                                 <exclude reference="U9u-Ku-Ta7"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <exclude reference="Kfa-OW-xCr"/>
-                                                <exclude reference="Ygn-2R-A2C"/>
-                                                <exclude reference="QDw-4Q-IHU"/>
-                                                <exclude reference="mNY-w2-JVd"/>
-                                                <exclude reference="IsI-fw-4C2"/>
+                                                <exclude reference="AQM-n5-d8j"/>
+                                                <exclude reference="nIm-cv-jqP"/>
                                                 <exclude reference="BA9-CI-fLA"/>
                                                 <exclude reference="SlN-HC-VrE"/>
                                                 <exclude reference="ZSf-f3-Ugs"/>
                                                 <exclude reference="ixx-ts-2Ta"/>
+                                                <exclude reference="Kfa-OW-xCr"/>
+                                                <exclude reference="Ygn-2R-A2C"/>
+                                                <exclude reference="IsI-fw-4C2"/>
+                                                <exclude reference="QDw-4Q-IHU"/>
+                                                <exclude reference="mNY-w2-JVd"/>
                                                 <exclude reference="OKw-y3-ZVk"/>
                                                 <exclude reference="SAD-fZ-0re"/>
-                                                <exclude reference="AQM-n5-d8j"/>
-                                                <exclude reference="nIm-cv-jqP"/>
                                                 <exclude reference="zfA-p7-zcp"/>
                                                 <exclude reference="1Zq-a7-bTS"/>
                                                 <exclude reference="8Sj-zm-P8a"/>
@@ -680,26 +680,26 @@
                                                 <include reference="U9u-Ku-Ta7"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <include reference="Kfa-OW-xCr"/>
-                                                <include reference="Ygn-2R-A2C"/>
-                                                <exclude reference="f1l-wL-3pM"/>
-                                                <exclude reference="kcI-g8-VXf"/>
-                                                <exclude reference="QDw-4Q-IHU"/>
-                                                <exclude reference="ljt-dl-E8y"/>
-                                                <include reference="mNY-w2-JVd"/>
-                                                <include reference="IsI-fw-4C2"/>
-                                                <exclude reference="hi5-xo-J9f"/>
+                                                <include reference="AQM-n5-d8j"/>
+                                                <include reference="nIm-cv-jqP"/>
                                                 <include reference="BA9-CI-fLA"/>
                                                 <include reference="SlN-HC-VrE"/>
                                                 <include reference="ZSf-f3-Ugs"/>
                                                 <include reference="ixx-ts-2Ta"/>
+                                                <include reference="Kfa-OW-xCr"/>
+                                                <include reference="Ygn-2R-A2C"/>
+                                                <exclude reference="f1l-wL-3pM"/>
+                                                <exclude reference="kcI-g8-VXf"/>
+                                                <include reference="IsI-fw-4C2"/>
+                                                <exclude reference="hi5-xo-J9f"/>
+                                                <exclude reference="QDw-4Q-IHU"/>
+                                                <exclude reference="ljt-dl-E8y"/>
+                                                <include reference="mNY-w2-JVd"/>
                                                 <exclude reference="DFL-qZ-M1M"/>
                                                 <exclude reference="LFh-Xu-P67"/>
                                                 <include reference="OKw-y3-ZVk"/>
                                                 <include reference="SAD-fZ-0re"/>
                                                 <exclude reference="aG8-fS-wDT"/>
-                                                <include reference="AQM-n5-d8j"/>
-                                                <include reference="nIm-cv-jqP"/>
                                                 <include reference="1hi-4S-2M4"/>
                                                 <exclude reference="HjW-Hs-koQ"/>
                                                 <exclude reference="mfP-Lj-1rC"/>
@@ -716,12 +716,44 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="M2O-H8-XX8" firstAttribute="leading" secondItem="AVF-wf-17b" secondAttribute="leading" id="249-Be-R59"/>
+                                    <constraint firstAttribute="trailing" secondItem="M2O-H8-XX8" secondAttribute="trailing" id="6bs-UR-8Wm"/>
                                     <constraint firstItem="M2O-H8-XX8" firstAttribute="top" secondItem="AVF-wf-17b" secondAttribute="top" id="CuS-fr-kF6"/>
                                     <constraint firstItem="M2O-H8-XX8" firstAttribute="width" secondItem="AVF-wf-17b" secondAttribute="width" id="DFJ-r5-Ikc"/>
                                     <constraint firstAttribute="bottom" secondItem="M2O-H8-XX8" secondAttribute="bottom" id="GZP-h4-fvk"/>
+                                    <constraint firstItem="M2O-H8-XX8" firstAttribute="centerY" secondItem="AVF-wf-17b" secondAttribute="centerY" id="KcO-xp-vMd"/>
                                     <constraint firstAttribute="trailing" secondItem="M2O-H8-XX8" secondAttribute="trailing" id="UDf-Ao-iVt"/>
+                                    <constraint firstItem="M2O-H8-XX8" firstAttribute="leading" secondItem="AVF-wf-17b" secondAttribute="leading" id="UiE-86-5vK"/>
+                                    <constraint firstItem="M2O-H8-XX8" firstAttribute="top" secondItem="AVF-wf-17b" secondAttribute="top" id="irL-k6-ZpE"/>
+                                    <constraint firstItem="M2O-H8-XX8" firstAttribute="centerX" secondItem="AVF-wf-17b" secondAttribute="centerX" id="jof-Ri-CCj"/>
+                                    <constraint firstAttribute="bottom" secondItem="M2O-H8-XX8" secondAttribute="bottom" id="mt0-ea-S83"/>
                                     <constraint firstItem="M2O-H8-XX8" firstAttribute="height" secondItem="AVF-wf-17b" secondAttribute="height" id="q68-jj-Umr"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="6bs-UR-8Wm"/>
+                                        <exclude reference="KcO-xp-vMd"/>
+                                        <exclude reference="UiE-86-5vK"/>
+                                        <exclude reference="irL-k6-ZpE"/>
+                                        <exclude reference="jof-Ri-CCj"/>
+                                        <exclude reference="mt0-ea-S83"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <exclude reference="249-Be-R59"/>
+                                        <include reference="6bs-UR-8Wm"/>
+                                        <exclude reference="CuS-fr-kF6"/>
+                                        <exclude reference="DFJ-r5-Ikc"/>
+                                        <exclude reference="GZP-h4-fvk"/>
+                                        <include reference="KcO-xp-vMd"/>
+                                        <exclude reference="UDf-Ao-iVt"/>
+                                        <include reference="UiE-86-5vK"/>
+                                        <include reference="irL-k6-ZpE"/>
+                                        <include reference="jof-Ri-CCj"/>
+                                        <include reference="mt0-ea-S83"/>
+                                        <exclude reference="q68-jj-Umr"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <outlet property="delegate" destination="z3C-Zz-vhA" id="Cuu-NT-0hf"/>
                                 </connections>
