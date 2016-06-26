@@ -9,14 +9,10 @@
 #import <LXReorderableCollectionViewFlowLayout.h>
 #import "PreviewCell.h"
 #import "User.h"
-#import "UIColor+Pandemos.h"
-#import "UIButton+Additions.h"
-#import "UIImage+Additions.h"
-#import "UIImageView+Additions.h"
 #import "FacebookManager.h"
 #import "Facebook.h"
 #import "UserManager.h"
-#import "UICollectionView+Pandemos.h"
+#import "AllyAdditions.h"
 
 @interface SelectedImageViewController ()
 <UICollectionViewDataSource,

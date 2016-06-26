@@ -7,7 +7,6 @@
 //
 
 #import <CoreGraphics/CoreGraphics.h>
-#import "AppDelegate.h"
 #import "UITextView+Additions.h"
 
 @implementation UITextView (Additions)

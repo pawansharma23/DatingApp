@@ -17,12 +17,9 @@
 #import "FacebookNetwork.h"
 #import "User.h"
 #import "UserManager.h"
-#import "SVProgressHUD.h"
-#import "UIColor+Pandemos.h"
-#import "UIButton+Additions.h"
-#import "UITextView+Additions.h"
-#import "UIImage+Additions.h"
 #import "SelectedImageViewController.h"
+#import "SVProgressHUD.h"
+#import "AllyAdditions.h"
 
 @interface InitialWalkThroughViewController ()<
 CLLocationManagerDelegate,

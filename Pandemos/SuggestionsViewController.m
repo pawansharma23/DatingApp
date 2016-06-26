@@ -177,10 +177,4 @@ UITableViewDelegate>
     button.backgroundColor = [UIColor whiteColor];
     button.titleLabel.textColor = [UIColor blackColor];
 }
-
 @end
-
-
-
-
-

@@ -10,8 +10,6 @@
 #import <Parse/PFConstants.h>
 #import <Parse/PFUser.h>
 
-#define APP_TITLE @"Ally"
-
 @interface User : PFUser<PFSubclassing>
 //Parse User Data
 @property (strong, nonatomic) UIImage *image;

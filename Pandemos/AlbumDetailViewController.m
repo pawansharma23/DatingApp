@@ -6,17 +6,13 @@
 //  Copyright © 2016 Michael Sevy. All rights reserved.
 //
 #import "AlbumDetailViewController.h"
-#import "UIColor+Pandemos.h"
 #import "FacebookCVCell.h"
 #import "SelectedImageViewController.h"
 #import "Facebook.h"
 #import "FacebookManager.h"
 #import "User.h"
-#import "UIImage+Additions.h"
-#import "UIButton+Additions.h"
-#import "UIColor+Pandemos.h"
-#import "UICollectionView+Pandemos.h"
 #import "SVProgressHUD.h"
+#import "AllyAdditions.h"
 
 @interface AlbumDetailViewController ()
 <UICollectionViewDataSource,

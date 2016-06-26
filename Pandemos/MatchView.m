@@ -7,8 +7,7 @@
 //
 
 #import "MatchView.h"
-#import "UIImage+Additions.h"
-#import "UIColor+Pandemos.h"
+#import "AllyAdditions.h"
 
 @implementation MatchView
 

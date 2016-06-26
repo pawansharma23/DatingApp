@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, AppLaunchStatus)
     APP_LAUNCH_STATUS_LOGIN_FAILED_REGISTRATION
 };
 
+#define APP_TITLE @"Ally"
 
 #define STARTCLOCK clock_t start, end; double cpu_time_used; start = clock();
 #define RESETCLOCK start = clock();

@@ -31,8 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-
+    
     self.navigationItem.title = @"Facebook Login";
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
     self.navigationController.navigationItem.leftBarButtonItem.title = @"";

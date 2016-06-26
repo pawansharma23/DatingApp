@@ -14,8 +14,7 @@
 #import "User.h"
 #import "UserManager.h"
 #import "MessageManager.h"
-#import "UIColor+Pandemos.h"
-#import "UIImage+Additions.h"
+#import "AllyAdditions.h"
 #import "AppConstants.h"
 #import "SVProgressHUD.h"
 

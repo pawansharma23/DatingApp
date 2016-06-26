@@ -8,12 +8,11 @@
 #import "FacebookAlbumsTableVC.h"
 #import "FacebookTableViewCell.h"
 #import "AlbumDetailViewController.h"
-#import "UIColor+Pandemos.h"
-#import "UIImage+Additions.h"
 #import "Facebook.h"
 #import "FacebookManager.h"
 #import "User.h"
 #import "SVProgressHUD.h"
+#import "AllyAdditions.h"
 
 @interface FacebookAlbumsTableVC ()<FacebookManagerDelegate>
 @property (weak, nonatomic) IBOutlet UINavigationItem *navBar;

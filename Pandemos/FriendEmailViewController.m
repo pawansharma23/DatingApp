@@ -9,8 +9,7 @@
 #import "FriendEmailViewController.h"
 #import <Parse/Parse.h>
 #import "User.h"
-#import "UIColor+Pandemos.h"
-#import "UIImage+Additions.h"
+#import "AllyAdditions.h"
 
 @interface FriendEmailViewController ()
 <UITextFieldDelegate>

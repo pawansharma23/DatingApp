@@ -8,14 +8,13 @@
 
 #import "MatchViewController.h"
 #import "User.h"
-#import "UIColor+Pandemos.h"
-#import "UIImage+Additions.h"
 #import "DragBackground.h"
 #import "AppConstants.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <MessageUI/MessageUI.h>
 #import "ProfileViewController.h"
 #import "SVProgressHUD.h"
+#import "AllyAdditions.h"
 
 @interface MatchViewController()<CLLocationManagerDelegate,
 MFMailComposeViewControllerDelegate>

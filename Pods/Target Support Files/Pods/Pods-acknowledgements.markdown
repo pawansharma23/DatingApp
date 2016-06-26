@@ -180,46 +180,6 @@ A different license may apply to other resources included in this package,
 including Freepik Icons. Please consult their 
 respective headers for the terms of their individual licenses.
 
-## SinchRTC
-
-IMPORTANT NOTICE -- READ BEFORE USE
-
-## LICENSE AGREEMENT
-
-This SDK and all the associated software, documents and other content in
-this package file (the "Software") is provided by the Swedish company
-Sinch AB (reg. no 556969-5397) under the Sinch Terms of Service
-located at http://www.sinch.com/terms-of-service (the "Terms of Service").
-
-You are not allowed to in any way use or handle or access the Software
-before accepting the Terms of Service. Not limiting anything in the
-Terms of Service; by downloading, accessing and/or using the Software,
-you acknowledge that you have read and understand the Terms of Service
-and accept to be bound by them.
-
-The Software contains valuable, confidential and proprietary information of
-Sinch AB. Unauthorized reproduction, transmission, distribution
-or use of the Software is a violation of Sinch AB's rights and
-applicable laws. The Software may make use of some third-party and
-open source code and/or software, in this regard reference is made to the
-document Third Party Licenses http://www.sinch.com/legal/third-party-licenses/.
-
-
-## THIRD-PARTY LICENSES
-
-This document contains a list of the attributions and licenses for third-party
-and open source software, codes or similar used by the Swedish company
-Sinch AB (reg. no 556969-5397) in the Sinch SDK and other software,
-codes etc. relating thereto ("Third Party Licenses").
-
-NOTE - The list is updated as per March 04, 2015 and is included in the SDK
-package file for convenience purposes only. Note that the current official
-(complete and updated) list of Third Party Licenses are located
-at http://www.sinch.com/legal/third-party-licenses/. Therefore, in case
-of any discrepancies between the list in this document and the list presented
-on the website, the list on the website shall prevail.
-
-
 ### appledoc (Gentle Bytes)
 
 Copyright (c) 2009-2011, Gentle Bytes All rights reserved.

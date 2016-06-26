@@ -7,7 +7,6 @@
 #define ROTATION_STRENGTH 320 //%%% strength of rotation. Higher = weaker rotation
 #define ROTATION_ANGLE M_PI/8 //%%% Higher = stronger rotation angle
 
-
 #import "DragView.h"
 #import "AppConstants.h"
 #import "UIColor+Pandemos.h"

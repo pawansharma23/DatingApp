@@ -9,13 +9,10 @@
 #import "MessagerProfileVC.h"
 #import <Foundation/Foundation.h>
 #import "UIColor+Pandemos.h"
-#import "UIButton+Additions.h"
-#import "NSString+Additions.h"
-#import "UIImageView+Additions.h"
-#import "UIImage+Additions.h"
 #import "User.h"
 #import "UserManager.h"
 #import "ProfileImageView.h"
+#import "AllyAdditions.h"
 
 @interface MessagerProfileVC ()<UIScrollViewDelegate,
 UserManagerDelegate>

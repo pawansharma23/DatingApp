@@ -9,14 +9,12 @@
 #import "MessageDetailViewCon.h"
 #import "MessagingList.h"
 #import "User.h"
-#import "UIColor+Pandemos.h"
 #import "MessageManager.h"
 #import "UserManager.h"
-#import "UIImage+Additions.h"
 #import "MatchView.h"
-#import "NSString+Additions.h"
 #import "MessagerProfileInfo.h"
 #import "MNCChatMessageCell.h"
+#import "AllyAdditions.h"
 
 @interface MessageDetailViewCon ()<UITextFieldDelegate,
 UITableViewDataSource,

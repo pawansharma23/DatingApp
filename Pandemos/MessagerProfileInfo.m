@@ -7,12 +7,11 @@
 //
 
 #import "MessagerProfileInfo.h"
-#import "UIImage+Additions.h"
 #import "MessagerProfileVC.h"
 #import "MessagerTopCell.h"
-#import "UIColor+Pandemos.h"
 #import "UserManager.h"
 #import "User.h"
+#import "AllyAdditions.h"
 
 @interface MessagerProfileInfo ()<UITableViewDelegate,
 UITableViewDataSource>

@@ -11,25 +11,20 @@
 #import <MessageUI/MessageUI.h>
 #import "CVSettingCell.h"
 #import <LXReorderableCollectionViewFlowLayout.h>
-#import "UIColor+Pandemos.h"
-#import "UIButton+Additions.h"
 #import "User.h"
 #import "FacebookManager.h"
 #import "UserManager.h"
-#import "UIImage+Additions.h"
-#import "UICollectionView+Pandemos.h"
 #import "SelectedImageViewController.h"
 #import "HeaderForProfileVC.h"
 #import "SVProgressHUD.h"
+#import "AllyAdditions.h"
 
-
-#import <Foundation/Foundation.h>
 #import <Bolts/BFTask.h>
 #import <FBSDKCoreKit/FBSDKAccessToken.h>
 #import <FBSDKLoginKit/FBSDKLoginManager.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <ParseFacebookUtilsV4.h>
 #import <Parse/PFConstants.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "PFFacebookUtils.h"
 
 @interface ProfileViewController ()
