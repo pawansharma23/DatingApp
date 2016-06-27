@@ -27,6 +27,8 @@
 #import <Parse/PFConstants.h>
 #import "PFFacebookUtils.h"
 
+static NSString * const k_cell_id = @"SettingCell";
+
 @interface ProfileViewController ()
 <MFMailComposeViewControllerDelegate,
 UICollectionViewDataSource,
@@ -42,6 +44,8 @@ UserManagerDelegate>
 {
     UIImagePickerController *ipc;
 }
+
+
 //View Properties
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIView *viewInsideScrollView;
@@ -151,11 +155,11 @@ UserManagerDelegate>
     [self.minimumAgeSlider setUserInteractionEnabled:YES];
     [self.maximumAgeSlider setUserInteractionEnabled:YES];
 
-    if (self.iPhoneImageString)
+    if ([UserManager sharedSettings].dataImage)
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
-    else if(self.selectedData)
+    else if([UserManager sharedSettings].urlImage)
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
@@ -253,10 +257,9 @@ UserManagerDelegate>
 
 -(CVSettingCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"SettingCell";
-    CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    NSString *image = [self.profileImages objectAtIndex:indexPath.item];
-    cell.userImage.image = [UIImage imageWithString:image];
+    CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:k_cell_id forIndexPath:indexPath];
+    PFFile *pfFile = [self.profileImages objectAtIndex:indexPath.item];
+    cell.userImage.image = [UIImage imageWithString:pfFile.url];
 
     return cell;
 }
@@ -280,7 +283,8 @@ UserManagerDelegate>
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedImage = [self.profileImages objectAtIndex:indexPath.item];
+    PFFile *pfFile = [self.profileImages objectAtIndex:indexPath.item];
+    [UserManager sharedSettings].urlImage = pfFile.url;
     [self performSegueWithIdentifier:@"Selected" sender:self];
 }
 
@@ -466,6 +470,7 @@ UserManagerDelegate>
 -(void)didReceiveUserImages:(NSArray *)images
 {
     self.profileImages = [NSMutableArray arrayWithArray:images];
+    
     [self.collectionView reloadData];
     [SVProgressHUD dismiss];
 
@@ -483,24 +488,11 @@ UserManagerDelegate>
 {
     if ([segue.identifier isEqualToString:@"Selected"])
     {
-        UINavigationController *navController = [segue destinationViewController];
-        SelectedImageViewController *sivc = (SelectedImageViewController*)([navController viewControllers][0]);
-        //SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+//        UINavigationController *navController = [segue destinationViewController];
+//        SelectedImageViewController *sivc = (SelectedImageViewController*)([navController viewControllers][0]);
         [SVProgressHUD dismiss];
 
-        if (self.iPhoneImageString)
-        {
-            sivc.profileImageFromIPhone = self.iPhoneImageString;
-        }
-        else if(self.selectedData)
-        {
 
-            sivc.profileData = self.selectedData;
-        }
-        else
-        {
-            sivc.profileImage = self.selectedImage;
-        }
     }
 }
 
@@ -615,23 +607,39 @@ UserManagerDelegate>
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+//{
+//    UIImage *orginalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
+//    UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
+//
+//
+//    //    NSString *imageUrl = [NSString stringWithFormat:@"%@",[info valueForKey:UIImagePickerControllerReferenceURL]];
+////    NSLog(@"string value: %@", imageUrl);
+//
+//
+//    if (scaledImage)
+//    {
+//        NSData *pickedImageFromPhone = [[NSData alloc] init];
+//        pickedImageFromPhone = UIImageJPEGRepresentation(scaledImage, 2);
+//        self.selectedData = pickedImageFromPhone;
+//        self.iPhoneImageString = [[NSString alloc]initWithData:pickedImageFromPhone encoding:NSUTF8StringEncoding];
+//        NSLog(@"string value: %@", self.iPhoneImageString);
+//    }
+//
+//    [picker dismissViewControllerAnimated:YES completion:nil];
+//}
+
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    UIImage *orginalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
+    UIImage *orginalImage = [info objectForKey:UIImagePickerControllerOriginalImage];
     UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
-
-
-    //    NSString *imageUrl = [NSString stringWithFormat:@"%@",[info valueForKey:UIImagePickerControllerReferenceURL]];
-//    NSLog(@"string value: %@", imageUrl);
-
 
     if (scaledImage)
     {
-        NSData *pickedImageFromPhone = [[NSData alloc] init];
-        pickedImageFromPhone = UIImageJPEGRepresentation(scaledImage, 2);
-        self.selectedData = pickedImageFromPhone;
-        self.iPhoneImageString = [[NSString alloc]initWithData:pickedImageFromPhone encoding:NSUTF8StringEncoding];
-        NSLog(@"string value: %@", self.iPhoneImageString);
+        NSData *dataImage = [[NSData alloc] init];
+        dataImage = UIImagePNGRepresentation(scaledImage);
+        [UserManager sharedSettings].dataImage = dataImage;
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];

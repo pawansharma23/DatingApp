@@ -11,6 +11,7 @@
 #import "Facebook.h"
 #import "FacebookManager.h"
 #import "User.h"
+#import "UserManager.h"
 #import "SVProgressHUD.h"
 #import "AllyAdditions.h"
 
@@ -128,19 +129,19 @@ static NSString * const reuseIdentifier = @"FaceCell";
 }
 
 #pragma mark -- SEGUE
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"ChooseImage"])
-    {
-        UINavigationController *navController = [segue destinationViewController];
-        SelectedImageViewController *sivc = (SelectedImageViewController*)([navController viewControllers][0]);
-        sivc.profileImage = self.selectedImage;
-    }
-        else
-        {
-            NSLog(@"destination not correct");
-        }
-}
+//-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+//{
+//    if ([segue.identifier isEqualToString:@"ChooseImage"])
+//    {
+//        UINavigationController *navController = [segue destinationViewController];
+//        SelectedImageViewController *sivc = (SelectedImageViewController*)([navController viewControllers][0]);
+//        sivc.profileImage = self.selectedImage;
+//    }
+//        else
+//        {
+//            NSLog(@"destination not correct");
+//        }
+//}
 
 #pragma mark -- DELEGATES
 -(void)didReceiveParsedAlbum:(NSArray *)album
@@ -166,7 +167,8 @@ static NSString * const reuseIdentifier = @"FaceCell";
 
 -(void)didReceiveParsedPhotoSource:(NSString *)photoURL
 {
-    self.selectedImage = photoURL;
+//    self.selectedImage = photoURL;
+    [UserManager sharedSettings].urlImage = photoURL;
     [self performSegueWithIdentifier:@"ChooseImage" sender:self];
 }
 

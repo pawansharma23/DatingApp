@@ -109,12 +109,7 @@ UIImagePickerControllerDelegate>
         self.textViewAboutMe.text = @"Enter a little about yourself";
     }
 
-    if (self.dataImage)
-    {
-        [self performSegueWithIdentifier:@"ChooseImage" sender:self];
-    }
-
-    if ([UserManager sharedSettings].imageFromPhone)
+    if ([UserManager sharedSettings].dataImage)
     {
         [self performSegueWithIdentifier:@"ChooseImage" sender:self];
     }
@@ -254,24 +249,24 @@ UIImagePickerControllerDelegate>
 
     if (scaledImage)
     {
-        self.dataImage = [[NSData alloc] init];
-        self.dataImage = UIImagePNGRepresentation(scaledImage);
-        [UserManager sharedSettings].imageFromPhone = self.dataImage;
+        NSData *dataImage = [[NSData alloc] init];
+        dataImage = UIImagePNGRepresentation(scaledImage);
+        [UserManager sharedSettings].dataImage = dataImage;
     }
 
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -- SEGUE
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"ChooseImage"])
-    {
-
-        //SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
-        //sivc.profileImageAsData = self.dataImage;
-    }
-}
+//-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+//{
+//    if ([segue.identifier isEqualToString:@"ChooseImage"])
+//    {
+//
+//        //SelectedImageViewController *sivc = [(UINavigationController*)segue.destinationViewController topViewController];
+//        //sivc.profileImageAsData = self.dataImage;
+//    }
+//}
 
 -(IBAction)onContinueTapped:(UIButton *)sender
 {

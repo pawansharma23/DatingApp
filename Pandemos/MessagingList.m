@@ -14,9 +14,9 @@
 #import "User.h"
 #import "UserManager.h"
 #import "MessageManager.h"
-#import "AllyAdditions.h"
 #import "AppConstants.h"
 #import "SVProgressHUD.h"
+#import "AllyAdditions.h"
 
 @interface MessagingList ()
 <UITableViewDataSource,
@@ -34,15 +34,11 @@ MessageManagerDelegate>
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) User *recipientUser;
 @property (strong, nonatomic) User *recipientNewConvoUser;
-
-
 @property (strong, nonatomic) UserManager *userManager;
 @property (strong, nonatomic) MessageManager *messageManager;
 
 @property (strong, nonatomic) NSArray *matches;
 @property (strong, nonatomic) NSArray *chatters;
-
-@property (strong, nonatomic) NSArray *lastLines;
 @property (strong, nonatomic) NSString *selectedId;
 
 @property (strong, nonatomic) MessageDetailViewCon *activeDialogViewController;
@@ -66,7 +62,6 @@ MessageManagerDelegate>
 
     self.matches = [NSArray new];
     self.chatters = [NSMutableArray new];
-    self.lastLines = [NSArray new];
 
     self.tableView.delegate = self;
     self.collectionView.delegate = self;

@@ -53,7 +53,8 @@ typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError 
 @property(nonatomic, strong)NSArray<User*> *allMatchedUsers;
 @property(nonatomic, strong)NSArray<User*> *alreadySeenUsers;
 @property(nonatomic, strong)User *recipient;
-@property(nonatomic, strong)NSData *imageFromPhone;
+@property(nonatomic, strong)NSData *dataImage;
+@property(nonatomic, strong)NSString *urlImage;
 
 @property (weak, nonatomic) id<UserManagerDelegate>delegate;
 
