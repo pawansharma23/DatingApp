@@ -86,8 +86,9 @@
 
 -(void)loginButtonClicked
 {
+    //need user work and education history paths
     // Set permissions required from the facebook user account
-    NSArray *permissionsArray = @[ @"public_profile", @"user_about_me", @"user_birthday", @"user_location", @"user_photos", @"user_work_history", @"user_hometown", @"user_likes", @"pages_show_list", @"user_education_history"];
+    NSArray *permissionsArray = @[ @"public_profile", @"user_about_me", @"user_birthday", @"user_location", @"user_photos", @"user_hometown", @"user_likes", @"pages_show_list", @"user_education_history"];
 
     // Login PFUser using Facebook
     [PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
@@ -108,11 +109,9 @@
             //for users where facebook cache has saved their prefereces
 
             NSLog(@"User logged in through Facebook!");
-            
-            //[self performSegueWithIdentifier:@"successfulLoginToMatches" sender:self];
-            [self dismissViewControllerAnimated:YES completion:^{
-
-            }];
+            //for testing
+            [self performSegueWithIdentifier:@"InitialLogIn" sender:self];
+            //real login will segue to matchViewController
         }
     }];
 }

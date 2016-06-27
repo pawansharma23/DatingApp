@@ -27,12 +27,12 @@ PreviewCellDelegate,
 UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIImageView *userImage;
-@property (weak, nonatomic) IBOutlet UIButton *saveImage;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (weak, nonatomic) IBOutlet UIImageView *userImage;
 @property (weak, nonatomic) IBOutlet UIButton *profileButton;
 @property (weak, nonatomic) IBOutlet UIButton *addAnother;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
+@property (weak, nonatomic) IBOutlet UIButton *saveImage;
 
 @property (strong, nonatomic) User *currentUser;
 @property (strong, nonatomic) UserManager *userManager;
@@ -97,7 +97,7 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
 
         [self setImage];
 
-        [self saveButtonCheck];
+        [self imageFullCheck];
 
         [UIButton setUpLargeButton:self.saveImage];
         [UIButton setUpLargeButton:self.addAnother];
@@ -185,12 +185,16 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
 - (IBAction)onBackButton:(UIBarButtonItem *)sender
 {
     [self.navigationController dismissViewControllerAnimated:YES completion:^{
+        [UserManager sharedSettings].urlImage = nil;
+        [UserManager sharedSettings].dataImage = nil;
     }];
 }
 
 - (IBAction)onAddAnother:(UIButton *)sender
 {
     [UIButton changeButtonStateForSingleButton:self.addAnother];
+    [UserManager sharedSettings].urlImage = nil;
+    [UserManager sharedSettings].dataImage = nil;
     [self performSegueWithIdentifier:@"FacebookAlbums" sender:self];
 }
 
@@ -200,10 +204,14 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
 
     if (self.fromInitialSetup)
     {
+        [UserManager sharedSettings].urlImage = nil;
+        [UserManager sharedSettings].dataImage = nil;
         [self performSegueWithIdentifier:@"InitialSetup" sender:self];
     }
     else
     {
+        [UserManager sharedSettings].urlImage = nil;
+        [UserManager sharedSettings].dataImage = nil;
         [self performSegueWithIdentifier:@"Profile" sender:self];
     }
 }
@@ -296,6 +304,18 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
     self.profileButton.frame = buttonFrame;
 }
 
+-(void)imageFullCheck
+{
+    if (self.pictures.count == 6)
+    {
+        NSString *okString = @"Delete image, then save!";
+        [self.saveImage setTitle:okString forState:UIControlStateNormal];
+        self.saveImage.backgroundColor = [UIColor whiteColor];
+        [self.saveImage sizeToFit];
+        [self.saveImage setContentEdgeInsets:UIEdgeInsetsMake(2.0, 5.0, 2.0, 5.0)];
+    }
+}
+
 -(void)saveButtonCheck
 {
     if (self.pictures.count < 6)
@@ -385,25 +405,61 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
         NSData *dataForJPEGFile = UIImageJPEGRepresentation([UIImage imageWithData:[UserManager sharedSettings].dataImage], 1.5f);
         NSLog(@"Original Size: %.2f MB, reduced by 1.5 factor size: %.2f MB",(float)[UserManager sharedSettings].dataImage.length/1024.0f/1024.0f, dataForJPEGFile.length/1024.0f/1024.0f);
 
-        [self.pictures addObject:[PFFile fileWithData:dataForJPEGFile]];
-        [self.currentUser setObject:self.pictures forKey:@"profileImages"];
-        [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (dataForJPEGFile.length/1024.0f/1024.0f < 10)
+        {
+            [self.pictures addObject:[PFFile fileWithData:dataForJPEGFile]];
+            [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+            [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 
-            if (succeeded)
+                if (succeeded)
+                {
+                    NSLog(@"saved new iPhone image to Parse");
+                    [self.saveImage setTitle:image forState:UIControlStateNormal];
+                    [self delayAndCheckImageCount];
+                    [self.collectionView reloadData];
+                    [UserManager sharedSettings].dataImage = nil;
+                }
+                else
+                {
+                    NSLog(@"failed to save to parse: %@", error);
+                }
+
+                [SVProgressHUD dismiss];
+            }];
+        }
+        else
+        {
+            NSLog(@"image too big reduce more");
+
+            NSData *dataForJPEGFile = UIImageJPEGRepresentation([UIImage imageWithData:[UserManager sharedSettings].dataImage], 0.6f);
+
+            if (dataForJPEGFile.length/1024.0f/1024.0f < 10)
             {
-                NSLog(@"saved new iPhone image to Parse");
-                [self.saveImage setTitle:image forState:UIControlStateNormal];
-                [self delayAndCheckImageCount];
-                [self.collectionView reloadData];
-                [UserManager sharedSettings].dataImage = nil;
+                [self.pictures addObject:[PFFile fileWithData:dataForJPEGFile]];
+                [self.currentUser setObject:self.pictures forKey:@"profileImages"];
+                [self.currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+                    if (succeeded)
+                    {
+                        NSLog(@"saved new iPhone image to Parse");
+                        [self.saveImage setTitle:image forState:UIControlStateNormal];
+                        [self delayAndCheckImageCount];
+                        [self.collectionView reloadData];
+                        [UserManager sharedSettings].dataImage = nil;
+                    }
+                    else
+                    {
+                        NSLog(@"failed to save to parse: %@", error);
+                    }
+
+                    [SVProgressHUD dismiss];
+                }];
             }
             else
             {
-                NSLog(@"image too large, Parse couldnt save, size: %f",(float)dataForJPEGFile.length/1024.0f);
+                NSLog(@"image still too large");
             }
-
-            [SVProgressHUD dismiss];
-        }];
+        }
     }
     else
     {

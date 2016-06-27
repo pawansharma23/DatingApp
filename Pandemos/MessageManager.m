@@ -19,10 +19,12 @@
     PFObject *initialMessage = [PFObject objectWithClassName:@"Chat"];
     [initialMessage setObject:recipient forKey:@"toUser"];
     [initialMessage setObject:recipient.givenName forKey:@"repName"];
-    [initialMessage setObject:recipient.profileImages.firstObject forKey:@"repImage"];
+    PFFile *pfRep = recipient.profileImages.firstObject;
+    [initialMessage setObject:pfRep forKey:@"repImage"];
     [initialMessage setObject:[User currentUser] forKey:@"fromUser"];
     [initialMessage setObject:[User currentUser].givenName forKey:@"fromName"];
-    [initialMessage setObject:[User currentUser].profileImages.firstObject forKey:@"fromImage"];
+    PFFile *pfFrom = [User currentUser].profileImages.firstObject;
+    [initialMessage setObject:pfFrom forKey:@"fromImage"];
     [initialMessage setObject:@"" forKey:@"text"];
     [initialMessage setObject:[NSDate date] forKey:@"timestamp"];
 

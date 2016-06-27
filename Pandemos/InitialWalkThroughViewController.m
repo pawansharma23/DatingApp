@@ -201,7 +201,7 @@ UIImagePickerControllerDelegate>
     [self performSegueWithIdentifier:@"FacebookAlbums" sender:self];
 }
 
-
+#pragma mark -- IMAGE FROM PHONE
 - (IBAction)onImagesFromPhone:(UIButton *)sender
 {
     [UIButton changeButtonStateForSingleButton:self.imagesFromPhoneButton];

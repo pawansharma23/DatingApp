@@ -214,8 +214,9 @@ UserManagerDelegate>
     [userManager queryForUserData:[UserManager sharedSettings].recipient.objectId withUser:^(User *users, NSError *error) {
 
         self.userGiven = users[@"givenName"];
-        NSArray *array = users[@"profileImages"];
-        self.userImage = array.firstObject;
+        NSArray<PFFile*> *array = users[@"profileImages"];
+        PFFile *image = array.firstObject;
+        self.userImage = image.url;
 
         [self loadMatchView];
     }];

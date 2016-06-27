@@ -95,11 +95,13 @@ MessageManagerDelegate>
 {
     MatchesCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MatchesCell" forIndexPath:indexPath];
     User *user = [self.matches objectAtIndex:indexPath.item];
+    PFFile *images = user.profileImages.firstObject;
+    NSString *firstImage = images.url;
 
     cell.nameLabel.text = user.givenName;
     cell.matchImage.layer.cornerRadius = 37.5;
     cell.matchImage.layer.masksToBounds = YES;
-    cell.matchImage.image = [UIImage imageWithImage:[UIImage imageWithString:user.profileImages.firstObject] scaledToSize:CGSizeMake(75, 75)];
+    cell.matchImage.image = [UIImage imageWithImage:[UIImage imageWithString:firstImage] scaledToSize:CGSizeMake(75, 75)];
 
     return cell;
 }
@@ -142,7 +144,10 @@ MessageManagerDelegate>
     MessagingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     NSDictionary *chat = [self.chatters objectAtIndex:indexPath.row];
 
-    cell.userImage.image = [UIImage imageWithImage:[UIImage imageWithString:chat[@"repImage"]] scaledToSize:CGSizeMake(45, 45)];
+    PFFile *image = chat[@"repImage"];
+    NSString *firstImage = image.url;
+
+    cell.userImage.image = [UIImage imageWithImage:[UIImage imageWithString:firstImage] scaledToSize:CGSizeMake(45, 45)];
     cell.userImage.layer.cornerRadius = 22.5;
     cell.userImage.layer.masksToBounds = YES;
     cell.lastMessage.text = chat[@"repName"];

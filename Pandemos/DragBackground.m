@@ -3,6 +3,7 @@
 #import "DragBackground.h"
 #import "AppConstants.h"
 #import "UIImage+Additions.h"
+
 #import "SVProgressHUD.h"
 #import "AcceptedMatchView.h"
 
@@ -138,110 +139,108 @@ static float CARD_WIDTH;
     profileImages = userDict[@"profileImages"];
 
     NSLog(@"matches to load: %@", nameAndAge);
+    NSLog(@"count: %d",(int)profileImages.count);
 
-    //int count = 2;
-    switch (profileImages.count)
-    //switch (1)
+    if (profileImages.count ==1)
     {
-        case 1:
+        self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 1);
 
-            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height);
+        PFFile *i0 = [profileImages objectAtIndex:0];
+        self.dragView.profileImageView.image = [UIImage imageWithString:i0.url];
 
-            self.dragView.profileImageView.image = [UIImage imageWithString:[profileImages objectAtIndex:0]];
+        [self.dragView.v2 removeFromSuperview];
+        [self.dragView.v3 removeFromSuperview];
+        [self.dragView.v4 removeFromSuperview];
+        [self.dragView.v5 removeFromSuperview];
+        [self.dragView.v6 removeFromSuperview];
+        [SVProgressHUD dismiss];
+    }
+    else if (profileImages.count ==2)
+    {
+        self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 2);
 
-            [self.dragView.v2 removeFromSuperview];
-            [self.dragView.v3 removeFromSuperview];
-            [self.dragView.v4 removeFromSuperview];
-            [self.dragView.v5 removeFromSuperview];
-            [self.dragView.v6 removeFromSuperview];
-            [SVProgressHUD dismiss];
+        PFFile *i0 = [profileImages objectAtIndex:0];
+        PFFile *i1 = [profileImages objectAtIndex:1];
+        self.dragView.profileImageView.image = [UIImage imageWithString:i0.url];
+        self.dragView.profileImageView2.image = [UIImage imageWithString:i1.url];
 
-            break;
-        case 2:
+        [self.dragView.v3 removeFromSuperview];
+        [self.dragView.v4 removeFromSuperview];
+        [self.dragView.v5 removeFromSuperview];
+        [self.dragView.v6 removeFromSuperview];
+        [SVProgressHUD dismiss];
+    }
+    else if (profileImages.count ==3)
+    {
+        self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 3);
 
-            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 2);
+        PFFile *i0 = [profileImages objectAtIndex:0];
+        PFFile *i1 = [profileImages objectAtIndex:1];
+        PFFile *i2 = [profileImages objectAtIndex:2];
+        self.dragView.profileImageView.image = [UIImage imageWithString:i0.url];
+        self.dragView.profileImageView2.image = [UIImage imageWithString:i1.url];
+        self.dragView.profileImageView3.image = [UIImage imageWithString:i2.url];
 
+        [self.dragView.v4 removeFromSuperview];
+        [self.dragView.v5 removeFromSuperview];
+        [self.dragView.v6 removeFromSuperview];
+        [SVProgressHUD dismiss];
+    }
+    else if (profileImages.count ==4)
+    {
+        self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 4);
 
-            self.dragView.profileImageView.image = [UIImage imageWithString:[profileImages objectAtIndex:0]];
-            self.dragView.profileImageView2.image = [UIImage imageWithString:[profileImages objectAtIndex:1]];
+        PFFile *i0 = [profileImages objectAtIndex:0];
+        PFFile *i1 = [profileImages objectAtIndex:1];
+        PFFile *i2 = [profileImages objectAtIndex:2];
+        PFFile *i3 = [profileImages objectAtIndex:3];
+        self.dragView.profileImageView.image = [UIImage imageWithString:i0.url];
+        self.dragView.profileImageView2.image = [UIImage imageWithString:i1.url];
+        self.dragView.profileImageView3.image = [UIImage imageWithString:i2.url];
+        self.dragView.profileImageView4.image = [UIImage imageWithString:i3.url];
 
-            [self.dragView.v3 removeFromSuperview];
-            [self.dragView.v4 removeFromSuperview];
-            [self.dragView.v5 removeFromSuperview];
-            [self.dragView.v6 removeFromSuperview];
+        [self.dragView.v5 removeFromSuperview];
+        [self.dragView.v6 removeFromSuperview];
+        [SVProgressHUD dismiss];
+    }
+    else if (profileImages.count ==5)
+    {
+        self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 5);
 
+        PFFile *i0 = [profileImages objectAtIndex:0];
+        PFFile *i1 = [profileImages objectAtIndex:1];
+        PFFile *i2 = [profileImages objectAtIndex:2];
+        PFFile *i3 = [profileImages objectAtIndex:3];
+        PFFile *i4 = [profileImages objectAtIndex:4];
+        self.dragView.profileImageView.image = [UIImage imageWithString:i0.url];
+        self.dragView.profileImageView2.image = [UIImage imageWithString:i1.url];
+        self.dragView.profileImageView3.image = [UIImage imageWithString:i2.url];
+        self.dragView.profileImageView4.image = [UIImage imageWithString:i3.url];
+        self.dragView.profileImageView5.image = [UIImage imageWithString:i4.url];
 
-            [SVProgressHUD dismiss];
+        [self.dragView.v6 removeFromSuperview];
+        [SVProgressHUD dismiss];
+    }
+    else if (profileImages.count ==6)
+    {
+        self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 6);
 
-            break;
-        case 3:
-
-            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 3);
-
-            self.dragView.profileImageView.image = [UIImage imageWithString:[profileImages objectAtIndex:0]];
-            self.dragView.profileImageView2.image = [UIImage imageWithString:[profileImages objectAtIndex:1]];
-            self.dragView.profileImageView3.image = [UIImage imageWithString:[profileImages objectAtIndex:2]];
-
-            [self.dragView.v4 removeFromSuperview];
-            [self.dragView.v5 removeFromSuperview];
-            [self.dragView.v6 removeFromSuperview];
-
-            [SVProgressHUD dismiss];
-
-            break;
-        case 4:
-            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 4);
-
-            self.dragView.profileImageView.image = [UIImage imageWithString:[profileImages objectAtIndex:0]];
-            self.dragView.profileImageView2.image = [UIImage imageWithString:[profileImages objectAtIndex:1]];
-            self.dragView.profileImageView3.image = [UIImage imageWithString:[profileImages objectAtIndex:2]];
-            self.dragView.profileImageView4.image = [UIImage imageWithString:[profileImages objectAtIndex:3]];
-
-            [self.dragView.v5 removeFromSuperview];
-            [self.dragView.v6 removeFromSuperview];
-
-            //self.dragView.imageScroll.frame = CGRectMake(0, 0, CARD_WIDTH, CARD_HEIGHT);
-            [SVProgressHUD dismiss];
-
-            break;
-        case 5:
-
-            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 5);
-
-            self.dragView.profileImageView.image = [UIImage imageWithString:[profileImages objectAtIndex:0]];
-            self.dragView.profileImageView2.image = [UIImage imageWithString:[profileImages objectAtIndex:1]];
-            self.dragView.profileImageView3.image = [UIImage imageWithString:[profileImages objectAtIndex:2]];
-            self.dragView.profileImageView4.image = [UIImage imageWithString:[profileImages objectAtIndex:3]];
-            self.dragView.profileImageView5.image = [UIImage imageWithString:[profileImages objectAtIndex:4]];
-
-            [self.dragView.v6 removeFromSuperview];
-
-//            self.dragView.imageScroll.frame = CGRectMake(0, 0, CARD_WIDTH, CARD_HEIGHT);
-//            [self.dragView.imageScroll setContentSize:CGSizeMake(CARD_WIDTH, CARD_HEIGHT * 5)];
-
-//            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 5);
-            [SVProgressHUD dismiss];
-            break;
-        case 6:
-
-            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 6);
-
-            self.dragView.profileImageView.image = [UIImage imageWithString:[profileImages objectAtIndex:0]];
-            self.dragView.profileImageView2.image = [UIImage imageWithString:[profileImages objectAtIndex:1]];
-            self.dragView.profileImageView3.image = [UIImage imageWithString:[profileImages objectAtIndex:2]];
-            self.dragView.profileImageView4.image = [UIImage imageWithString:[profileImages objectAtIndex:3]];
-            self.dragView.profileImageView5.image = [UIImage imageWithString:[profileImages objectAtIndex:4]];
-            self.dragView.profileImageView5.image = [UIImage imageWithString:[profileImages objectAtIndex:5]];
-
-            self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 6);
-            [SVProgressHUD dismiss];
-
-            break;
-        default:
-            NSLog(@"no images for ProfileImageView switch");
-            break;
+        PFFile *i0 = [profileImages objectAtIndex:0];
+        PFFile *i1 = [profileImages objectAtIndex:1];
+        PFFile *i2 = [profileImages objectAtIndex:2];
+        PFFile *i3 = [profileImages objectAtIndex:3];
+        PFFile *i4 = [profileImages objectAtIndex:4];
+        PFFile *i5 = [profileImages objectAtIndex:5];
+        self.dragView.profileImageView.image = [UIImage imageWithString:i0.url];
+        self.dragView.profileImageView2.image = [UIImage imageWithString:i1.url];
+        self.dragView.profileImageView3.image = [UIImage imageWithString:i2.url];
+        self.dragView.profileImageView4.image = [UIImage imageWithString:i3.url];
+        self.dragView.profileImageView5.image = [UIImage imageWithString:i4.url];
+        self.dragView.profileImageView6.image = [UIImage imageWithString:i5.url];
+        [SVProgressHUD dismiss];
     }
 }
+
 //%%% action called when the card goes to the left.
 // This should be customized with your own action
 -(void)cardSwipedLeft:(UIView *)card;

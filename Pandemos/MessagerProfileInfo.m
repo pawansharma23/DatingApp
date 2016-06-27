@@ -51,8 +51,9 @@ UITableViewDataSource>
 
         if (user)
         {
-            NSArray *arr = user[@"profileImages"];
-            self.imageStr = arr.firstObject;
+            NSArray<PFFile*> *arr = user[@"profileImages"];
+            PFFile *pf = arr.firstObject;
+            self.imageStr = pf.url;
             NSString *givenName = user[@"givenName"];
             NSString *lastI = user[@"lastName"];
             NSString *last = [lastI substringToIndex:1];

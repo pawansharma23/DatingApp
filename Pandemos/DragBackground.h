@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSMutableArray* allCards; //%%% the labels the cards
 @property (strong, nonatomic) DragView *dragView;
 @property (strong, nonatomic) UserManager *userManager;
-@property (strong, nonatomic) NSArray *profileImages;
+@property (strong, nonatomic) NSArray<PFFile*> *profileImages;
 
 @property BOOL alreadyMatched;
 @property NSInteger userCount;

@@ -607,29 +607,6 @@ UserManagerDelegate>
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
-//{
-//    UIImage *orginalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
-//    UIImage *scaledImage = [UIImage imageWithImage:orginalImage scaledToScale:2.0];
-//
-//
-//    //    NSString *imageUrl = [NSString stringWithFormat:@"%@",[info valueForKey:UIImagePickerControllerReferenceURL]];
-////    NSLog(@"string value: %@", imageUrl);
-//
-//
-//    if (scaledImage)
-//    {
-//        NSData *pickedImageFromPhone = [[NSData alloc] init];
-//        pickedImageFromPhone = UIImageJPEGRepresentation(scaledImage, 2);
-//        self.selectedData = pickedImageFromPhone;
-//        self.iPhoneImageString = [[NSString alloc]initWithData:pickedImageFromPhone encoding:NSUTF8StringEncoding];
-//        NSLog(@"string value: %@", self.iPhoneImageString);
-//    }
-//
-//    [picker dismissViewControllerAnimated:YES completion:nil];
-//}
-
-
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
     UIImage *orginalImage = [info objectForKey:UIImagePickerControllerOriginalImage];

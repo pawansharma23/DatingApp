@@ -25,7 +25,7 @@ UserManagerDelegate>
 //@property (strong, nonatomic) NSString *aboutMe;
 @property (strong, nonatomic) User *passedUser;
 @property (strong, nonatomic) UserManager *userManager;
-@property (strong, nonatomic) NSMutableArray *profileImages;
+@property (strong, nonatomic) NSMutableArray<PFFile*> *profileImages;
 @property (strong, nonatomic) NSString *nameAndAgeGlobal;
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) PFGeoPoint *pfGeoCoded;
@@ -90,69 +90,98 @@ UserManagerDelegate>
 
         self.piv.tallNameLabel.text = nameAndAge;
 
-
-
-        switch ((int)self.profileImages.count)
+        if (self.profileImages.count ==1)
         {
-            case 1:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height);
-                self.piv.profileImageView.image = [UIImage imageWithImage:[UIImage imageWithString:[self.profileImages objectAtIndex:0]] scaledToSize:CGSizeMake(375, 667)];
-                [self.piv.v2 removeFromSuperview];
-                [self.piv.v3 removeFromSuperview];
-                [self.piv.v4 removeFromSuperview];
-                [self.piv.v5 removeFromSuperview];
-                [self.piv.v6 removeFromSuperview];
-                break;
-            case 2:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, (self.piv.frame.size.height * 2) + 50);
-                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
-                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
-                [self.piv.v3 removeFromSuperview];
-                [self.piv.v4 removeFromSuperview];
-                [self.piv.v5 removeFromSuperview];
-                [self.piv.v6 removeFromSuperview];
-                break;
-            case 3:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, (self.piv.frame.size.height * 3) + 50);
-                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
-                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
-                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
-                [self.piv.v4 removeFromSuperview];
-                [self.piv.v5 removeFromSuperview];
-                [self.piv.v6 removeFromSuperview];
-                break;
-            case 4:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 4);
-                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
-                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
-                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
-                self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
-                [self.piv.v5 removeFromSuperview];
-                [self.piv.v6 removeFromSuperview];
-                break;
-            case 5:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, (self.piv.frame.size.height * 5) + 50);
-                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
-                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
-                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
-                self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
-                self.piv.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
-                [self.piv.v6 removeFromSuperview];
-                break;
-            case 6:
-                self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 6);
-                self.piv.profileImageView.image = [UIImage imageWithString:[self.profileImages objectAtIndex:0]];
-                self.piv.profileImageView2.image = [UIImage imageWithString:[self.profileImages objectAtIndex:1]];
-                self.piv.profileImageView3.image = [UIImage imageWithString:[self.profileImages objectAtIndex:2]];
-                self.piv.profileImageView4.image = [UIImage imageWithString:[self.profileImages objectAtIndex:3]];
-                self.piv.profileImageView5.image = [UIImage imageWithString:[self.profileImages objectAtIndex:4]];
-                self.piv.profileImageView6.image = [UIImage imageWithString:[self.profileImages objectAtIndex:5]];
-                break;
-            default:
-                NSLog(@"no images for ProfileImageView switch");
-                break;
-        }
+            self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 1);
 
+            PFFile *i0 = [self.profileImages objectAtIndex:0];
+            self.piv.profileImageView.image = [UIImage imageWithString:i0.url];
+
+            [self.piv.v2 removeFromSuperview];
+            [self.piv.v3 removeFromSuperview];
+            [self.piv.v4 removeFromSuperview];
+            [self.piv.v5 removeFromSuperview];
+            [self.piv.v6 removeFromSuperview];
+        }
+        else if (self.profileImages.count ==2)
+        {
+            self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 2);
+
+            PFFile *i0 = [self.profileImages objectAtIndex:0];
+            PFFile *i1 = [self.profileImages objectAtIndex:1];
+            self.piv.profileImageView.image = [UIImage imageWithString:i0.url];
+            self.piv.profileImageView2.image = [UIImage imageWithString:i1.url];
+
+            [self.piv.v3 removeFromSuperview];
+            [self.piv.v4 removeFromSuperview];
+            [self.piv.v5 removeFromSuperview];
+            [self.piv.v6 removeFromSuperview];
+        }
+        else if (self.profileImages.count ==3)
+        {
+            self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 3);
+
+            PFFile *i0 = [self.profileImages objectAtIndex:0];
+            PFFile *i1 = [self.profileImages objectAtIndex:1];
+            PFFile *i2 = [self.profileImages objectAtIndex:2];
+            self.piv.profileImageView.image = [UIImage imageWithString:i0.url];
+            self.piv.profileImageView2.image = [UIImage imageWithString:i1.url];
+            self.piv.profileImageView3.image = [UIImage imageWithString:i2.url];
+
+            [self.piv.v4 removeFromSuperview];
+            [self.piv.v5 removeFromSuperview];
+            [self.piv.v6 removeFromSuperview];
+        }
+        else if (self.profileImages.count ==4)
+        {
+            self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 4);
+
+            PFFile *i0 = [self.profileImages objectAtIndex:0];
+            PFFile *i1 = [self.profileImages objectAtIndex:1];
+            PFFile *i2 = [self.profileImages objectAtIndex:2];
+            PFFile *i3 = [self.profileImages objectAtIndex:3];
+            self.piv.profileImageView.image = [UIImage imageWithString:i0.url];
+            self.piv.profileImageView2.image = [UIImage imageWithString:i1.url];
+            self.piv.profileImageView3.image = [UIImage imageWithString:i2.url];
+            self.piv.profileImageView4.image = [UIImage imageWithString:i3.url];
+
+            [self.piv.v5 removeFromSuperview];
+            [self.piv.v6 removeFromSuperview];
+        }
+        else if (self.profileImages.count ==5)
+        {
+            self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 5);
+
+            PFFile *i0 = [self.profileImages objectAtIndex:0];
+            PFFile *i1 = [self.profileImages objectAtIndex:1];
+            PFFile *i2 = [self.profileImages objectAtIndex:2];
+            PFFile *i3 = [self.profileImages objectAtIndex:3];
+            PFFile *i4 = [self.profileImages objectAtIndex:4];
+            self.piv.profileImageView.image = [UIImage imageWithString:i0.url];
+            self.piv.profileImageView2.image = [UIImage imageWithString:i1.url];
+            self.piv.profileImageView3.image = [UIImage imageWithString:i2.url];
+            self.piv.profileImageView4.image = [UIImage imageWithString:i3.url];
+            self.piv.profileImageView5.image = [UIImage imageWithString:i4.url];
+
+            [self.piv.v6 removeFromSuperview];
+        }
+        else if (self.profileImages.count ==6)
+        {
+            self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 6);
+
+            PFFile *i0 = [self.profileImages objectAtIndex:0];
+            PFFile *i1 = [self.profileImages objectAtIndex:1];
+            PFFile *i2 = [self.profileImages objectAtIndex:2];
+            PFFile *i3 = [self.profileImages objectAtIndex:3];
+            PFFile *i4 = [self.profileImages objectAtIndex:4];
+            PFFile *i5 = [self.profileImages objectAtIndex:5];
+            self.piv.profileImageView.image = [UIImage imageWithString:i0.url];
+            self.piv.profileImageView2.image = [UIImage imageWithString:i1.url];
+            self.piv.profileImageView3.image = [UIImage imageWithString:i2.url];
+            self.piv.profileImageView4.image = [UIImage imageWithString:i3.url];
+            self.piv.profileImageView5.image = [UIImage imageWithString:i4.url];
+            self.piv.profileImageView6.image = [UIImage imageWithString:i5.url];
+        }
     }];
 
 }
