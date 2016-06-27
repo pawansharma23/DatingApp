@@ -64,7 +64,7 @@
         NSString *lastName = userDict[@"last_name"];
         NSString *gender = userDict[@"gender"];
         NSString *birthday = userDict[@"birthday"];
-        NSString *location = userDict[@"location"][@"name"];
+        NSString *location = userDict[@"hometown"][@"name"];
         //work
         NSArray *workArray = userDict[@"work"];
         NSDictionary *employerDict = [workArray lastObject];

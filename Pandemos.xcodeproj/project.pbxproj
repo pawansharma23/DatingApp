@@ -504,10 +504,10 @@
 		268BA1131C26EFBD0054414E /* Initial Setup VCs */ = {
 			isa = PBXGroup;
 			children = (
+				26F22BEC1C6FAD7000D86343 /* FacebookLogin */,
 				268EE4591C838C3A00085DAD /* Initial Setup */,
 				26F22BEE1C6FAD9300D86343 /* ConfidantEmail */,
 				26F22BED1C6FAD8300D86343 /* AboutMeSuggestions */,
-				26F22BEC1C6FAD7000D86343 /* FacebookLogin */,
 			);
 			name = "Initial Setup VCs";
 			sourceTree = "<group>";

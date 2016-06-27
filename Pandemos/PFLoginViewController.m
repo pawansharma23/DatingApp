@@ -88,7 +88,7 @@
 {
     //need user work and education history paths
     // Set permissions required from the facebook user account
-    NSArray *permissionsArray = @[ @"public_profile", @"user_about_me", @"user_birthday", @"user_location", @"user_photos", @"user_hometown", @"user_likes", @"pages_show_list", @"user_education_history"];
+    NSArray *permissionsArray = @[ @"public_profile", @"user_about_me", @"user_birthday", @"user_location", @"user_photos", @"user_hometown", @"user_likes", @"pages_show_list", @"user_education_history", @"user_work_history"];
 
     // Login PFUser using Facebook
     [PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
