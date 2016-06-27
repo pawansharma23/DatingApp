@@ -37,7 +37,7 @@
         else
         {
             NSLog(@"initial message sent: %s", succeeded ? "true" : "false");
-            [self.delegate didReceiveChatterData:recipient];
+            [self.delegate didReceiveChatterData:YES];
         }
     }];
 }

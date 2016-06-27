@@ -12,7 +12,7 @@
 @protocol MessageManagerDelegate <NSObject>
 
 @optional
--(void)didReceiveChatterData:(User*)chatter;
+-(void)didReceiveChatterData:(BOOL)sentInitial;
 -(void)didReceiveChatters:(NSArray*)chatters;
 
 @end

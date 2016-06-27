@@ -184,16 +184,25 @@ MessageManagerDelegate>
 
 #pragma mark -- MESSAGE MANAGER DELEGATES
 //from creation of new convo from CollectionView selection
--(void)didRecieveChatterData:(User *)chatter
-{
-    if (chatter)
-    {
-        NSLog(@"initial message went through, now send to message detail VC");
-        [UserManager sharedSettings].recipient = chatter;
-        [self performSegueWithIdentifier:@"detailMessage" sender:self];
-    }
+//-(void)didRecieveChatterData:(User *)chatter
+//{
+//    if (chatter)
+//    {
+//        NSLog(@"initial message went through, now send to message detail VC");
+//        [UserManager sharedSettings].recipient = chatter;
+//        [self performSegueWithIdentifier:@"detailMessage" sender:self];
+//    }
+//
+//    [self.tableView reloadData];
+//}
 
-    [self.tableView reloadData];
+-(void)didReceiveChatterData:(BOOL)sentInitial
+{
+    if (sentInitial)
+    {
+        //also put in chekc if messaging already exists to segue to message detail
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark -- HELPERS
