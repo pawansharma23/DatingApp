@@ -122,7 +122,9 @@
                                             <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IRu-fR-6Zx">
                                                 <rect key="frame" x="475" y="514" width="120" height="29"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="150" id="AdP-9g-wP4"/>
+                                                    <constraint firstAttribute="width" constant="150" id="AdP-9g-wP4">
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="190"/>
+                                                    </constraint>
                                                     <constraint firstAttribute="height" constant="30" id="Zff-S3-frZ"/>
                                                     <constraint firstAttribute="width" constant="120" id="hD1-mf-5Y6">
                                                         <variation key="heightClass=regular-widthClass=compact" constant="135"/>
@@ -130,7 +132,7 @@
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="kYs-Sd-ZoV"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="15"/>
-                                                <state key="normal" title="Looks good, save it!"/>
+                                                <state key="normal" title="Looking good, save it!"/>
                                                 <variation key="default">
                                                     <mask key="constraints">
                                                         <exclude reference="AdP-9g-wP4"/>

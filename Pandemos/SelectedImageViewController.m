@@ -95,18 +95,9 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
 
         [self.userManager loadUserImages:self.currentUser];
 
-        if ([UserManager sharedSettings].dataImage)
-        {
-            self.userImage.image = [UIImage imageWithData:[UserManager sharedSettings].dataImage];
-        }
-        else if([UserManager sharedSettings].urlImage)
-        {
-            self.userImage.image = [UIImage imageWithString:[UserManager sharedSettings].urlImage];
-        }
-        else
-        {
-            NSLog(@"neither data nor url for profile image");
-        }
+        [self setImage];
+
+        [self saveButtonCheck];
 
         [UIButton setUpLargeButton:self.saveImage];
         [UIButton setUpLargeButton:self.addAnother];
@@ -314,7 +305,7 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
     }
     else
     {
-        NSString *okString = @"Delete an Image, then save!";
+        NSString *okString = @"Delete image, then save!";
         [self.saveImage setTitle:okString forState:UIControlStateNormal];
         self.saveImage.backgroundColor = [UIColor whiteColor];
         [self.saveImage sizeToFit];
@@ -341,6 +332,22 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
 
         [self saveButtonCheck];
     });
+}
+
+-(void)setImage
+{
+    if ([UserManager sharedSettings].dataImage)
+    {
+        self.userImage.image = [UIImage imageWithData:[UserManager sharedSettings].dataImage];
+    }
+    else if([UserManager sharedSettings].urlImage)
+    {
+        self.userImage.image = [UIImage imageWithString:[UserManager sharedSettings].urlImage];
+    }
+    else
+    {
+        NSLog(@"neither data nor url for profile image");
+    }
 }
 
 -(void)saveForImage:(NSString *)image
