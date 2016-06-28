@@ -201,6 +201,20 @@ UIImagePickerControllerDelegate>
     [self performSegueWithIdentifier:@"FacebookAlbums" sender:self];
 }
 
+-(IBAction)onContinueTapped:(UIButton *)sender
+{
+    [UIButton changeButtonStateForSingleButton:self.continueButton];
+
+    if ([self.userGender isEqualToString:@"male"])
+    {
+        [self performSegueWithIdentifier:@"Matches" sender:self];
+    }
+    else
+    {
+        [self performSegueWithIdentifier:@"ConfidantEmail" sender:self];
+    }
+}
+
 #pragma mark -- IMAGE FROM PHONE
 - (IBAction)onImagesFromPhone:(UIButton *)sender
 {
@@ -268,19 +282,6 @@ UIImagePickerControllerDelegate>
 //    }
 //}
 
--(IBAction)onContinueTapped:(UIButton *)sender
-{
-    [UIButton changeButtonStateForSingleButton:self.continueButton];
-
-    if ([self.userGender isEqualToString:@"male"])
-    {
-        [self performSegueWithIdentifier:@"Matches" sender:self];
-    }
-    else
-    {
-        [self performSegueWithIdentifier:@"ConfidantEmail" sender:self];
-    }
-}
 
 #pragma mark -- AGE SLIDERS
 - (IBAction)minSliderChange:(UISlider *)sender
@@ -540,8 +541,4 @@ UIImagePickerControllerDelegate>
     [self.userManager loadUserData:self.currentUser];
 }
 @end
-
-
-
-
 

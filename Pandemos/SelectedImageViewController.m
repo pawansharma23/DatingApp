@@ -463,7 +463,7 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
     }
     else
     {
-        NSLog(@"image not data or url");
+        NSLog(@"unrecognized image");
     }
 }
 @end

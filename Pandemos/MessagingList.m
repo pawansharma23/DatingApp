@@ -51,6 +51,7 @@ MessageManagerDelegate>
 {
     [super viewDidLoad];
 
+    [SVProgressHUD show];
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
     self.messageManager.delegate = self;
@@ -62,6 +63,10 @@ MessageManagerDelegate>
 
     self.matches = [NSArray new];
     self.chatters = [NSMutableArray new];
+    [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
+    layout.sectionInset = UIEdgeInsetsMake(0, 20, 20,0);//top, left bottom, right
+
 
     self.tableView.delegate = self;
     self.collectionView.delegate = self;
@@ -87,7 +92,6 @@ MessageManagerDelegate>
 #pragma mark -- COLLECTION VIEW DELEGATE
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSLog(@"match count: %d", (int)self.matches.count);
     return self.matches.count;
 }
 
@@ -121,6 +125,35 @@ MessageManagerDelegate>
             [self.messageManager sendInitialMessage:matchedUser];
         }
     }];
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    if (kind == UICollectionElementKindSectionHeader)
+    {
+
+        UICollectionReusableView *reusableview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
+
+        if (reusableview==nil)
+        {
+            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(10, 0, 320, 25)];
+            reusableview.backgroundColor = [UIColor lightGrayColor];
+        }
+
+        UILabel *label=[[UILabel alloc] initWithFrame:CGRectMake(10, 0, 320, 25)];
+        label.text = @"Matches";
+        //@"Helvetica-Bold"
+        label.font = [UIFont fontWithName:@"GeezaPro-Bold" size:16.0];
+        [reusableview addSubview:label];
+        return reusableview;
+    }
+    return nil;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    CGSize headerSize = CGSizeMake(320, 25);
+    return headerSize;
 }
 
 #pragma mark -- TABLEVIEW DELEGATE
@@ -183,19 +216,6 @@ MessageManagerDelegate>
 }
 
 #pragma mark -- MESSAGE MANAGER DELEGATES
-//from creation of new convo from CollectionView selection
-//-(void)didRecieveChatterData:(User *)chatter
-//{
-//    if (chatter)
-//    {
-//        NSLog(@"initial message went through, now send to message detail VC");
-//        [UserManager sharedSettings].recipient = chatter;
-//        [self performSegueWithIdentifier:@"detailMessage" sender:self];
-//    }
-//
-//    [self.tableView reloadData];
-//}
-
 -(void)didReceiveChatterData:(BOOL)sentInitial
 {
     if (sentInitial)
@@ -215,6 +235,7 @@ MessageManagerDelegate>
         {
             self.matches = result;
             NSLog(@"matches: %d", (int)result.count);
+            [SVProgressHUD dismiss];
         }
         else
         {

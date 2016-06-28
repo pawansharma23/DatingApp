@@ -464,6 +464,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
 -(void)queryForUsersConfidant:(resultBlockWithUserConfidant)confidant
 {
     PFQuery *query = [User query];
+    [query whereKey:@"user" equalTo:[User currentUser]];
     [query whereKeyExists:@"confidantEmail"];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
 
