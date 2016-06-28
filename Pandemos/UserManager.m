@@ -206,11 +206,11 @@ static NSString * const kParsePublic                       = @"publicProfile";
 
 -(void)loadAlreadySeenMatches
 {
+    NSArray *alreadySeenStatus = @[@"boyYes",@"girlYes",@"denied"];
+
     PFQuery *query = [PFQuery queryWithClassName:@"MatchRequest"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
-
-    [query whereKey:@"status" equalTo:@"girlYes"] ||
-    [query whereKey:@"status" equalTo:@"boyYes"];
+    [query whereKey:@"status" containedIn:alreadySeenStatus];
 
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (objects)

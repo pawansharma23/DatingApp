@@ -173,6 +173,7 @@ UserManagerDelegate>
         }
 
         [self.tableView reloadData];
+
         [self scrollTableToBottom];
     }];
 }
@@ -197,14 +198,32 @@ UserManagerDelegate>
         messageCell.recipientImage.hidden = YES;
 
         messageCell.myMessageLabel.backgroundColor = [UIColor clearColor];
-        messageCell.myMessageLabel.numberOfLines = 0;
         messageCell.myMessageLabel.text = text;
         messageCell.outgoingTimestampFooter.text = timeFormatted;
+        messageCell.myMessageLabel.numberOfLines = 0;
         messageCell.myMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
         messageCell.yourImage.layer.cornerRadius = 15.0;
         messageCell.yourImage.layer.masksToBounds = YES;
         PFFile *pf = [User currentUser].profileImages.firstObject;
         messageCell.yourImage.image = [UIImage imageWithString:pf.url];
+        [messageCell.myMessageLabel sizeToFit];
+
+//        NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+//        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+//        paragraphStyle.alignment = NSTextAlignmentRight;
+//
+//        NSDictionary *attributes = @{NSFontAttributeName:@"GeezaPro",
+//                                     NSParagraphStyleAttributeName: paragraphStyle,
+//                                     NSForegroundColorAttributeName: [UIColor whiteColor]};
+
+//        CGRect textRect = [text boundingRectWithSize:CGSizeMake(250, 600)
+//                                             options:NSStringDrawingUsesLineFragmentOrigin
+//                                          attributes:attributes
+//                                             context:nil];
+//        CGSize size = textRect.size;
+//        CGRect newFrame = messageCell.myMessageLabel.frame;
+//        newFrame.size.height = size.height;
+//        messageCell.myMessageLabel.frame = newFrame;
 
     }
     else
@@ -297,18 +316,3 @@ UserManagerDelegate>
     self.scrollView.scrollIndicatorInsets = contentInsets;
 }
 @end
-
-//NSMutableParagraphStyle *style =  [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-////style.alignment = NSTextAlignmentJustified;
-//style.alignment = NSTextAlignmentCenter;
-//style.firstLineHeadIndent = 10.0f;
-//style.headIndent = 3.0f;
-//style.tailIndent = -3.0f;
-//style.lineHeightMultiple = 1.5f;
-//style.minimumLineHeight = 35;
-//
-//NSAttributedString *attrText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSParagraphStyleAttributeName : style}];
-//
-//UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, text.length, 35)];
-//messageCell.myMessageLabel.attributedText = attrText;
-

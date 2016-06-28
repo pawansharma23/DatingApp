@@ -51,6 +51,8 @@ MessageManagerDelegate>
 {
     [super viewDidLoad];
 
+    [SVProgressHUD show];
+
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
     self.messageManager.delegate = self;
@@ -77,17 +79,23 @@ MessageManagerDelegate>
     [self setFlowLayout];
 }
 
--(void)viewDidAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
 
-    [SVProgressHUD show];
 
     //collectionView matches pre chat
     [self setupMatches];
 
     //tableview chats
     [self setupChatters];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+
+    [SVProgressHUD dismiss];
 }
 
 #pragma mark -- COLLECTION VIEW DELEGATE
