@@ -179,7 +179,6 @@ UserManagerDelegate>
 
 -(void)configureCell:(MNCChatMessageCell *)messageCell forIndexPath:(NSIndexPath *)indexPath
 {
-
     NSDictionary *chatMessage = self.messages[indexPath.row];
     User *fromUser = chatMessage[@"fromUser"];
     //User *toUser = chatMessage[@"toUser"];
@@ -188,23 +187,41 @@ UserManagerDelegate>
     NSDate *time = chatMessage[@"timestamp"];
     NSString *timeFormatted = [NSString timeFromData:time];
 
+
+    
     if ([fromUser.objectId isEqualToString:[User currentUser].objectId])
     {
-        // If the message was sent by myself
+        //OUTGOING... hide incoming
         messageCell.chatMessageLabel.text = @"";
-        messageCell.myMessageLabel.text = text;
-        messageCell.timeStampFooter.text = timeFormatted;
-        messageCell.myMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        messageCell.incomingTimestampFooter.text = @"";
+        messageCell.recipientImage.hidden = YES;
+
+        messageCell.myMessageLabel.backgroundColor = [UIColor clearColor];
         messageCell.myMessageLabel.numberOfLines = 0;
+        messageCell.myMessageLabel.text = text;
+        messageCell.outgoingTimestampFooter.text = timeFormatted;
+        messageCell.myMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        messageCell.yourImage.layer.cornerRadius = 15.0;
+        messageCell.yourImage.layer.masksToBounds = YES;
+        PFFile *pf = [User currentUser].profileImages.firstObject;
+        messageCell.yourImage.image = [UIImage imageWithString:pf.url];
+
     }
     else
     {
-        // If the message was sent by the chat mate
+        //INCOMING... hide outgoing
         messageCell.myMessageLabel.text = @"";
+        messageCell.outgoingTimestampFooter.text = @"";
+        messageCell.yourImage.hidden = YES;
+
+        messageCell.chatMessageLabel.backgroundColor = [UIColor clearColor];
         messageCell.chatMessageLabel.text = text;
-        messageCell.timeStampFooter.text = timeFormatted;
+        messageCell.incomingTimestampFooter.text = timeFormatted;
         messageCell.chatMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
         messageCell.chatMessageLabel.numberOfLines = 0;
+        messageCell.recipientImage.layer.cornerRadius = 15.0;
+        messageCell.recipientImage.layer.masksToBounds = YES;
+        messageCell.yourImage.image = [UIImage imageWithString:self.userImage];
     }
 }
 
@@ -280,3 +297,18 @@ UserManagerDelegate>
     self.scrollView.scrollIndicatorInsets = contentInsets;
 }
 @end
+
+//NSMutableParagraphStyle *style =  [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+////style.alignment = NSTextAlignmentJustified;
+//style.alignment = NSTextAlignmentCenter;
+//style.firstLineHeadIndent = 10.0f;
+//style.headIndent = 3.0f;
+//style.tailIndent = -3.0f;
+//style.lineHeightMultiple = 1.5f;
+//style.minimumLineHeight = 35;
+//
+//NSAttributedString *attrText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSParagraphStyleAttributeName : style}];
+//
+//UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, text.length, 35)];
+//messageCell.myMessageLabel.attributedText = attrText;
+

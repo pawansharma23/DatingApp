@@ -51,7 +51,6 @@ MessageManagerDelegate>
 {
     [super viewDidLoad];
 
-    [SVProgressHUD show];
     self.currentUser = [User currentUser];
     self.messageManager = [MessageManager new];
     self.messageManager.delegate = self;
@@ -81,6 +80,8 @@ MessageManagerDelegate>
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+
+    [SVProgressHUD show];
 
     //collectionView matches pre chat
     [self setupMatches];

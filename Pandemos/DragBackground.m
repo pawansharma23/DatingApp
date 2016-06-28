@@ -439,8 +439,8 @@ static float CARD_WIDTH;
 {
     NSLog(@"match Request class successfully created: %@", matchRequest);
 
-    NSDictionary *matchDict = matchRequest;
-    NSString *status = matchDict[@"status"];
+//    NSDictionary *matchDict = matchRequest;
+    NSString *status = matchRequest[@"status"];
 
     if ([status isEqualToString:@"denied"])
     {
