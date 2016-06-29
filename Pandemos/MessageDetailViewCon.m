@@ -69,8 +69,11 @@ UserManagerDelegate>
 
     [self registerForKeyboardNotifications];
 
+    self.tableView.delegate = self;
+   // self.tableView.estimatedRowHeight = 60.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.automaticallyAdjustsScrollViewInsets = NO;
+    //self.automaticallyAdjustsScrollViewInsets = NO;
 
     [self queryForMessages];
 }
@@ -128,6 +131,12 @@ UserManagerDelegate>
 }
 
 #pragma mark -- TABLEVIEW DELEGATES
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -149,6 +158,10 @@ UserManagerDelegate>
     return messageCell;
 }
 
+//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    
+//}
 
 #pragma mark -- HELPERS
 -(void)queryForMessages
@@ -206,24 +219,8 @@ UserManagerDelegate>
         messageCell.yourImage.layer.masksToBounds = YES;
         PFFile *pf = [User currentUser].profileImages.firstObject;
         messageCell.yourImage.image = [UIImage imageWithString:pf.url];
-        [messageCell.myMessageLabel sizeToFit];
-
-//        NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
-//        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-//        paragraphStyle.alignment = NSTextAlignmentRight;
-//
-//        NSDictionary *attributes = @{NSFontAttributeName:@"GeezaPro",
-//                                     NSParagraphStyleAttributeName: paragraphStyle,
-//                                     NSForegroundColorAttributeName: [UIColor whiteColor]};
-
-//        CGRect textRect = [text boundingRectWithSize:CGSizeMake(250, 600)
-//                                             options:NSStringDrawingUsesLineFragmentOrigin
-//                                          attributes:attributes
-//                                             context:nil];
-//        CGSize size = textRect.size;
-//        CGRect newFrame = messageCell.myMessageLabel.frame;
-//        newFrame.size.height = size.height;
-//        messageCell.myMessageLabel.frame = newFrame;
+        //[messageCell.myMessageLabel sizeToFit];
+        //[messageCell.outgoingTimestampFooter sizeToFit];
 
     }
     else
