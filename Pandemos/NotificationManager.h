@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "User.h"
 
 @interface NotificationManager : NSObject
 
 -(void)registerForNotifications;
--(void)scheduleNotificationNowWithUnreadCount:(long)count;
--(void)scheduleNotificationForLater:(long)count withMatched:(NSString *)matchName;
--(void)scheduleInstantNotificationFromMatch:(NSString*)matchName;
+-(void)scheduleNotificationNowFromUser:(User*)user;
+-(void)scheduleDelayedNotification:(long)count withMatched:(User *)matched;
 @end

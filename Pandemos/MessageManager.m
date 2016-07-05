@@ -61,11 +61,18 @@
         else
         {
             NSLog(@"sent message: %s", succeeded ? "true" : "false");
+            //message was successful now start the Push from Parse process
+            [self sendMessageNotificationFromUser:recipient];
             sucess(succeeded, nil);
-//            NotificationManager *notificationManager = [[NotificationManager alloc] init];
-//            [notificationManager scheduleInstantNotificationFromMatch:recipient.givenName];
         }
     }];
+}
+
+- (void)sendMessageNotificationFromUser:(User*)recipient
+{
+    NotificationManager *notificationManager = [[NotificationManager alloc] init];
+    //send to the Notifcation Manager
+    [notificationManager scheduleNotificationNowFromUser:recipient];
 }
 
 -(void)queryIfChatExists:(User*)recipient currentUser:(User*)user withSuccess:(resultBlockWithSuccess)success

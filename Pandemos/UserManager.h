@@ -12,6 +12,7 @@
 
 @class User;
 @class PFQuery;
+@class PFUser;
 
 @protocol UserManagerDelegate <NSObject>
 

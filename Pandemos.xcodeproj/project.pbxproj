@@ -308,16 +308,9 @@
 				2644451A1CB5699B00A0381B /* UserManager.m */,
 				26F7E4BF1CD29935002F8BFC /* MessageManager.h */,
 				26F7E4C01CD29935002F8BFC /* MessageManager.m */,
-				2614A70A1CA1E22F00D6F6AA /* FacebookNetwork.h */,
-				2614A70B1CA1E22F00D6F6AA /* FacebookNetwork.m */,
-				2614A7111CA1EF4E00D6F6AA /* FacebookManager.h */,
-				2614A7121CA1EF4E00D6F6AA /* FacebookManager.m */,
-				2614A70E1CA1EBF200D6F6AA /* FacebookBuilder.h */,
-				2614A70F1CA1EBF200D6F6AA /* FacebookBuilder.m */,
-				26B9545A1CBAD0D5006245EE /* UserBuilder.h */,
-				26B9545B1CBAD0D5006245EE /* UserBuilder.m */,
 				26BA6F6D1D05E30E00745FC9 /* NotificationManager.h */,
 				26BA6F6E1D05E30E00745FC9 /* NotificationManager.m */,
+				2655720D1D24363F00FBA1B7 /* Facebook Helpers */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -387,6 +380,21 @@
 				2653C0351CD7859B00DDBD65 /* MatchesCell.m */,
 			);
 			name = Cells;
+			sourceTree = "<group>";
+		};
+		2655720D1D24363F00FBA1B7 /* Facebook Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2614A70A1CA1E22F00D6F6AA /* FacebookNetwork.h */,
+				2614A70B1CA1E22F00D6F6AA /* FacebookNetwork.m */,
+				2614A7111CA1EF4E00D6F6AA /* FacebookManager.h */,
+				2614A7121CA1EF4E00D6F6AA /* FacebookManager.m */,
+				2614A70E1CA1EBF200D6F6AA /* FacebookBuilder.h */,
+				2614A70F1CA1EBF200D6F6AA /* FacebookBuilder.m */,
+				26B9545A1CBAD0D5006245EE /* UserBuilder.h */,
+				26B9545B1CBAD0D5006245EE /* UserBuilder.m */,
+			);
+			name = "Facebook Helpers";
 			sourceTree = "<group>";
 		};
 		2655A4821CE95CBC00838853 /* Cell */ = {

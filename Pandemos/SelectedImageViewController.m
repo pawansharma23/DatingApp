@@ -402,7 +402,7 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
     //image from Phone
     else if ([UserManager sharedSettings].dataImage)
     {
-        NSData *dataForJPEGFile = UIImageJPEGRepresentation([UIImage imageWithData:[UserManager sharedSettings].dataImage], 1.0f);
+        NSData *dataForJPEGFile = UIImageJPEGRepresentation([UIImage imageWithData:[UserManager sharedSettings].dataImage], 0.8f);
         NSLog(@"Original Size: %.2f MB, reduced by 1.5 factor size: %.2f MB",(float)[UserManager sharedSettings].dataImage.length/1024.0f/1024.0f, dataForJPEGFile.length/1024.0f/1024.0f);
 
         if (dataForJPEGFile.length/1024.0f/1024.0f < 10)
@@ -431,7 +431,7 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
         {
             NSLog(@"image too big reduce more");
 
-            NSData *dataForJPEGFile = UIImageJPEGRepresentation([UIImage imageWithData:[UserManager sharedSettings].dataImage], 0.5f);
+            NSData *dataForJPEGFile = UIImageJPEGRepresentation([UIImage imageWithData:[UserManager sharedSettings].dataImage], 0.4f);
 
             if (dataForJPEGFile.length/1024.0f/1024.0f < 10)
             {

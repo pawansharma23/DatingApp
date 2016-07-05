@@ -30,7 +30,7 @@
 
     self.currentUser = [User currentUser];
 
-    self.navigationItem.title = @"Confidant";
+    self.navigationItem.title = @"Your Ally";
     self.navigationItem.titleView.tintColor = [UIColor mikeGray];
     self.navigationController.navigationBar.backgroundColor = [UIColor yellowGreen];
 

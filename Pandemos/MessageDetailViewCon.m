@@ -73,7 +73,7 @@ UserManagerDelegate>
    // self.tableView.estimatedRowHeight = 60.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    //self.automaticallyAdjustsScrollViewInsets = NO;
+    self.automaticallyAdjustsScrollViewInsets = NO;
 
     [self queryForMessages];
 }
@@ -90,6 +90,7 @@ UserManagerDelegate>
     [self.activeTextField resignFirstResponder];
 }
 
+#pragma mark -- TEXTFIELD DELEGATES
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     self.activeTextField = textField;
@@ -158,11 +159,6 @@ UserManagerDelegate>
     return messageCell;
 }
 
-//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    
-//}
-
 #pragma mark -- HELPERS
 -(void)queryForMessages
 {
@@ -210,6 +206,7 @@ UserManagerDelegate>
         messageCell.incomingTimestampFooter.text = @"";
         messageCell.recipientImage.hidden = YES;
 
+        messageCell.yourImage.hidden = NO;
         messageCell.myMessageLabel.backgroundColor = [UIColor clearColor];
         messageCell.myMessageLabel.text = text;
         messageCell.outgoingTimestampFooter.text = timeFormatted;
@@ -230,6 +227,7 @@ UserManagerDelegate>
         messageCell.outgoingTimestampFooter.text = @"";
         messageCell.yourImage.hidden = YES;
 
+        messageCell.recipientImage.hidden = NO;
         messageCell.chatMessageLabel.backgroundColor = [UIColor clearColor];
         messageCell.chatMessageLabel.text = text;
         messageCell.incomingTimestampFooter.text = timeFormatted;
@@ -237,7 +235,7 @@ UserManagerDelegate>
         messageCell.chatMessageLabel.numberOfLines = 0;
         messageCell.recipientImage.layer.cornerRadius = 15.0;
         messageCell.recipientImage.layer.masksToBounds = YES;
-        messageCell.yourImage.image = [UIImage imageWithString:self.userImage];
+        messageCell.recipientImage.image = [UIImage imageWithString:self.userImage];
     }
 }
 

@@ -99,6 +99,8 @@ UIImagePickerControllerDelegate>
     [UIButton setUpLargeButton:self.imagesFromPhoneButton];
     [UIButton setUpLargeButton:self.facebookAlbumBUtton];
 
+    [SVProgressHUD dismiss];
+
     NSString *aboutMeDescription = [self.currentUser objectForKey:@"aboutMe"];
     if (aboutMeDescription)
     {

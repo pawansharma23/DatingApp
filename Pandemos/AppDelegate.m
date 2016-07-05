@@ -25,7 +25,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-
+    //this is where we handle when an app is opened from a notification
+    
     //conenct to FB
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
@@ -37,8 +38,8 @@
     [PFFacebookUtils initialize];
     [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
 
-    NotificationManager *notifs = [NotificationManager new];
-    [notifs registerForNotifications];
+//    NotificationManager *notifs = [NotificationManager new];
+//    [notifs registerForNotifications];
 
     return YES;
 }
@@ -56,22 +57,33 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     [FBSDKAppEvents activateApp];
+
+    //adds a column to installation table
+//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//    currentInstallation[@"sendingUser"] = [[PFUser currentUser]objectId];
 }
-//Notifs
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
-    // Store the deviceToken in the current installation and save it to Parse.
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation setDeviceTokenFromData:deviceToken];
-    currentInstallation.channels = @[@"global"];
-    [currentInstallation saveInBackground];
-}
-//
-//- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+//Notifs--- throwing a PF error because user isnt signed in here
+//- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 //{
-//    NSLog(@"FAILED TO REGISTER %@", error);
-//}
+//    // Store the deviceToken in the current installation and save it to Parse.
+//    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//    [currentInstallation setDeviceTokenFromData:deviceToken];
+//    currentInstallation.channels = @[@"global"];
+//    [currentInstallation saveInBackground];
 //
+//    [PFPush storeDeviceToken:deviceToken];
+//    [PFPush subscribeToChannelInBackground:@"pushMessage"];
+//
+//    [currentInstallation setObject:[User currentUser] forKey:@"owner"];
+//
+//}
+
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"FAILED TO REGISTER %@", error);
+}
+
 
 //method used for when app is in the foreground
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler

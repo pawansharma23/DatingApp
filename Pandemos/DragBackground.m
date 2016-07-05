@@ -290,11 +290,13 @@ static float CARD_WIDTH;
         }
         else
         {
+
             [self setYesStatusForMatchRequestObject:self.currentMatch];
 
             //not a previous match, so start the match process
         }
     }];
+
 
     //set match
     [self setYesStatusForMatchRequestObject:self.currentMatch];
@@ -435,40 +437,7 @@ static float CARD_WIDTH;
     NSLog(@"NO POTENTIAL MATCHES FOR USER TO SEE: %@", error);
 }
 
--(void)didCreateMatchRequest:(MatchRequest *)matchRequest
-{
-    NSLog(@"match Request class successfully created: %@", matchRequest);
 
-//    NSDictionary *matchDict = matchRequest;
-    NSString *status = matchRequest[@"status"];
-
-    if ([status isEqualToString:@"denied"])
-    {
-        NSLog(@"no match it dies here, buried as a match request");
-    }
-    else if([status isEqualToString:@"boyYes"])
-    {
-        //        //************for TESTING***************
-        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
-    }
-    else if([status isEqualToString:@"girlYes"])
-    {
-        //        //************for TESTING***************
-        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
-        /////////SEND EMAIL FOR APPROVAL/////////CLOUD CODE//////
-        //send email through mail chimp + then figure out how to handle setitng up the PFRelation "match"
-
-        //           [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(NSDictionary *userDict, NSError *error) {
-        //
-        //                if (!error)
-        //                {
-        //                    NSLog(@"update worked added PFRelation");
-        //                    //calls didFetchUserObjectForFinalMatch
-        //                }
-        //            }];
-        //    }
-    }
-}
 
 #pragma mark -- Swipe YES OR NO HELPERS
 -(void)setYesStatusForMatchRequestObject:(User*)potentialMatch
@@ -504,4 +473,40 @@ static float CARD_WIDTH;
     }];
 
 }
+
+-(void)didCreateMatchRequest:(MatchRequest *)matchRequest
+{
+    NSLog(@"match Request class successfully created: %@", matchRequest);
+
+    //    NSDictionary *matchDict = matchRequest;
+    NSString *status = matchRequest[@"status"];
+
+    if ([status isEqualToString:@"denied"])
+    {
+        NSLog(@"no match it dies here, buried as a match request");
+    }
+    else if([status isEqualToString:@"boyYes"])
+    {
+        //        //************for TESTING***************
+        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
+    }
+    else if([status isEqualToString:@"girlYes"])
+    {
+        //        //************for TESTING***************
+        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
+        /////////SEND EMAIL FOR APPROVAL/////////CLOUD CODE//////
+        //send email through mail chimp + then figure out how to handle setitng up the PFRelation "match"
+
+        //           [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(NSDictionary *userDict, NSError *error) {
+        //
+        //                if (!error)
+        //                {
+        //                    NSLog(@"update worked added PFRelation");
+        //                    //calls didFetchUserObjectForFinalMatch
+        //                }
+        //            }];
+        //    }
+    }
+}
+
 @end

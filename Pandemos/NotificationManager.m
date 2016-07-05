@@ -8,6 +8,7 @@
 
 #import "NotificationManager.h"
 #import "AppDelegate.h"
+#import <Parse/Parse.h>
 
 @implementation NotificationManager
 
@@ -24,32 +25,83 @@
     [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 
-- (void)scheduleInstantNotificationFromMatch:(NSString*)matchName
+-(void)scheduleNotificationNowFromUser:(User*)user
 {
-    [self scheduleNotificationWithDate:[NSDate date]
-                               message:[NSString stringWithFormat:@"You have a new message from %@", matchName]];
+    //setup the intallation object
+    PFInstallation *installation = [PFInstallation currentInstallation];
+    installation[@"user"] = [PFUser currentUser];
+    [installation saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+        if (succeeded)
+        {
+            NSLog(@"push installation object was saved with: %@", user.objectId);
+
+            [self sendPushUsingQuery:user];
+//            [self scheduleNotificationWithDate:[NSDate date]
+//                                       message:[NSString stringWithFormat:@"New message from %@", usersGivenName]];
+        }
+    }];
 }
 
--(void)scheduleNotificationNowWithUnreadCount:(long)count
+-(void)sendPushUsingQuery:(User*)recipeint
 {
-    if (count > 1)
-    {
-        [self scheduleNotificationWithDate:[NSDate date]
-                                   message:[NSString stringWithFormat:@"You have %ld new messages", count]];
-    }
+    NSArray *userArray = @[recipeint];
+    //assign it query then send the query
+    PFQuery *userQuery = [PFUser query];
+    [userQuery whereKey:@"user" containsAllObjectsInArray:userArray];
+
+    // Find devices associated with these users
+    PFQuery *pushQuery = [PFInstallation query];
+    [pushQuery whereKey:@"recipientUser" containedIn:userArray];
+
+    // Send push notification to query
+    PFPush *push = [[PFPush alloc] init];
+    [push setQuery:pushQuery]; // Set our Installation query
+    [push setMessage:[NSString stringWithFormat:@"Ally: You have a Message from %@", recipeint.objectId]];
+
+    [push sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+
+        if (succeeded)
+        {
+            NSLog(@"push sent");
+        }
+    }];
 }
 
--(void)scheduleNotificationForLater:(long)count withMatched:(NSString *)matchName
+
+//NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
+//                      @“Ne messages available!!”, @"alert",
+//                      @"Increment", @"badge",
+//                      nil];
+//
+//// Now we’ll need to query all saved installations to find those of our recipients
+//// Create our Installation query using the self.recipients array we already have
+//PFQuery *pushQuery = [PFInstallation query];
+//[pushQuery whereKey:@"installationUser" containedIn:self.recipients];
+//
+//// Send push notification to our query
+//PFPush *push = [[PFPush alloc] init];
+//[push setQuery:pushQuery];
+//[push setData:data];
+//[push sendPushInBackground];
+//}
+//}];
+
+
+
+//delayed notification for girls only alerting them of a confirm match able to speak with
+-(void)scheduleDelayedNotification:(long)count withMatched:(User *)matched
 {
     NSCalendar *calendar = [NSCalendar autoupdatingCurrentCalendar];
     NSDate *laterDate = [calendar dateByAddingUnit:NSCalendarUnitMinute value:30.0 toDate:[NSDate date] options:NSCalendarMatchStrictly];
 
     [self scheduleNotificationWithDate:laterDate
-                               message:[NSString stringWithFormat:@"You have a new message from %@", matchName]];
+                               message:[NSString stringWithFormat:@"You have a match"]];
 }
 
 -(void)scheduleNotificationWithDate:(NSDate*)date message:(NSString*)message
 {
+    //who and how are we sending the push notif too???
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.fireDate = date;
     notification.timeZone = [NSTimeZone localTimeZone];
@@ -60,5 +112,6 @@
     //notification.userInfo for putting in the 700 reminder
     [[UIApplication sharedApplication] scheduleLocalNotification:notification];
 }
+
 
 @end

@@ -30,9 +30,12 @@ MFMailComposeViewControllerDelegate>
 
 -(void)viewDidLoad
 {
+
     if ([User currentUser].givenName)
     {
-        NSLog(@"logged in user: %@", [User currentUser].givenName);
+
+
+        NSLog(@"logged in user: %@ %@", [User currentUser].givenName, [User currentUser].objectId   );
 
         [self navigationItems];
 
@@ -152,43 +155,42 @@ MFMailComposeViewControllerDelegate>
 
 -(void)sendEmailForTesting:(UIButton*)sender
 {
-    [self sendEmailForTesting];
+    [self sendingEmailToAlly:@"IhUCoCNLUB"];
 }
 
--(void)sendEmailForTesting
+-(void)sendingEmailToAlly:(NSString*)userIddummied
 {
-    NSString *emailTitle = @"Feedback";
-    NSString *messageBody = @"<h1>Matched User's Name</h1>";
-    NSArray *reciepents = [NSArray arrayWithObject:@"michaelsevy@gmail.com"];
-    MFMailComposeViewController *mc = [[MFMailComposeViewController alloc]init];
-    mc.mailComposeDelegate = self;
-    [mc setSubject:emailTitle];
-    [mc setMessageBody:messageBody isHTML:YES];
-    [mc setToRecipients:reciepents];
+    //    User *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+    //    NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
+    //llok up user for first name last i and image for email
+//    [self.userManager queryForUserData:userIddummied withUser:^(User *user, NSError *error) {
+//
+//        NSLog(@"GOT USR DATA: %@", user);
 
-    [self presentViewController:mc animated:YES completion:nil];
-}
 
-- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
-{
-    switch (result)
-    {
-        case MFMailComposeResultCancelled:
-            NSLog(@"Mail cancelled");
-            break;
-        case MFMailComposeResultSaved:
-            NSLog(@"Mail saved");
-            break;
-        case MFMailComposeResultSent:
-            NSLog(@"Mail sent");
-            break;
-        case MFMailComposeResultFailed:
-            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
-            break;
-        default:
-            break;
-    }
+        //stash old cloud key from Mandrill: vPIT4Hx_NM_rciNztmNOxA
+        NSString *testEmail = @"michaelsevy@gmail.com";
+        //NSString *confidantEmail = [[User currentUser] objectForKey:@"confidantEmail"];
+        NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
+        //relation info for email
+//            PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+//          PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
+//          [approvedRela addObject:approvedMatchUser];
 
-    [self dismissViewControllerAnimated:YES completion:NULL];
+        NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
+        //%@", approvedRela];
+        NSString *cssButton = [NSString stringWithFormat:@"button"];
+        NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, @"John", yourName];
+
+        [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": testEmail, @"text": @"What do you think of this user for your friend", @"username": yourName, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
+            if (error)
+            {
+                NSLog(@"error cloud js code: %@", error);
+            }
+            else
+            {
+                NSLog(@"result :%@", result);
+            }
+        }];
 }
 @end

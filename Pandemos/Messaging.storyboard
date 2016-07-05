@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -240,7 +241,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="40" id="FOL-ci-LhU"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="14"/>
+                                                <fontDescription key="fontDescription" name="GeezaPro" family="Geeza Pro" pointSize="16"/>
                                                 <textInputTraits key="textInputTraits"/>
                                                 <variation key="default">
                                                     <mask key="constraints">
@@ -408,7 +409,9 @@
                                                                     <exclude reference="QHD-e5-WWZ"/>
                                                                 </mask>
                                                                 <mask key="constraints">
-                                                                    <exclude reference="CpB-kF-1ZJ"/>
+                                                                    <exclude reference="5sN-gX-ZIT"/>
+                                                                    <exclude reference="Ksv-S4-RMx"/>
+                                                                    <exclude reference="nDw-Qf-L5y"/>
                                                                     <exclude reference="cU1-hz-RBT"/>
                                                                     <exclude reference="dvr-TL-7Km"/>
                                                                     <exclude reference="fIY-yw-Mdt"/>
@@ -418,9 +421,7 @@
                                                                     <exclude reference="zpG-sG-Q2f"/>
                                                                     <exclude reference="DhL-as-cYJ"/>
                                                                     <exclude reference="lP3-gh-2jg"/>
-                                                                    <exclude reference="5sN-gX-ZIT"/>
-                                                                    <exclude reference="Ksv-S4-RMx"/>
-                                                                    <exclude reference="nDw-Qf-L5y"/>
+                                                                    <exclude reference="CpB-kF-1ZJ"/>
                                                                     <exclude reference="CNO-B4-3Fc"/>
                                                                     <exclude reference="ggz-sY-zGd"/>
                                                                     <exclude reference="lLo-wQ-W4z"/>
@@ -436,7 +437,9 @@
                                                                     <include reference="QHD-e5-WWZ"/>
                                                                 </mask>
                                                                 <mask key="constraints">
-                                                                    <include reference="CpB-kF-1ZJ"/>
+                                                                    <include reference="5sN-gX-ZIT"/>
+                                                                    <include reference="Ksv-S4-RMx"/>
+                                                                    <include reference="nDw-Qf-L5y"/>
                                                                     <include reference="cU1-hz-RBT"/>
                                                                     <include reference="dvr-TL-7Km"/>
                                                                     <include reference="fIY-yw-Mdt"/>
@@ -446,9 +449,7 @@
                                                                     <include reference="zpG-sG-Q2f"/>
                                                                     <include reference="DhL-as-cYJ"/>
                                                                     <include reference="lP3-gh-2jg"/>
-                                                                    <include reference="5sN-gX-ZIT"/>
-                                                                    <include reference="Ksv-S4-RMx"/>
-                                                                    <include reference="nDw-Qf-L5y"/>
+                                                                    <include reference="CpB-kF-1ZJ"/>
                                                                     <include reference="CNO-B4-3Fc"/>
                                                                     <include reference="ggz-sY-zGd"/>
                                                                     <include reference="lLo-wQ-W4z"/>

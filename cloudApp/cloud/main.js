@@ -1,6 +1,6 @@
 Parse.Cloud.define("email", function(request, response) {
 var Mandrill = require('mandrill');
-Mandrill.initialize('vPIT4Hx_NM_rciNztmNOxA');
+Mandrill.initialize('g6fHKSFERBja0XRxIRyS3g');
 Mandrill.sendEmail({
     message: {
     	html:request.params.htmlCode,
@@ -11,7 +11,7 @@ Mandrill.sendEmail({
         to: [
             {
                 email:request.params.email,
-                name: "Pandemos UserName"
+                name: "Ally needs you help!"
             }
         ]
     },
