@@ -1,10 +1,10 @@
 
 
-#define ACTION_MARGIN 60 //%%% distance from center where the action applies. Higher = swipe further in order for the action to be called
-#define SCALE_STRENGTH 6 //%%% how quickly the card shrinks. Higher = slower shrinking
-#define SCALE_MAX .93 //%%% upper bar for how much the card shrinks. Higher = shrinks less
+#define ACTION_MARGIN 80 //%%% distance from center where the action applies. Higher = swipe further in order for the action to be called
+#define SCALE_STRENGTH 8 //%%% how quickly the card shrinks. Higher = slower shrinking
+#define SCALE_MAX .95 //%%% upper bar for how much the card shrinks. Higher = shrinks less
 #define ROTATION_MAX 1 //%%% the maximum rotation allowed in radians.  Higher = card can keep rotating longer
-#define ROTATION_STRENGTH 320 //%%% strength of rotation. Higher = weaker rotation
+#define ROTATION_STRENGTH 350 //%%% strength of rotation. Higher = weaker rotation
 #define ROTATION_ANGLE M_PI/8 //%%% Higher = stronger rotation angle
 
 #import "DragView.h"
@@ -51,23 +51,23 @@ static float CARD_WIDTH;
 
         if (IS_IPHONE4)
         {
-            CARD_WIDTH = 290;
-            CARD_HEIGHT = 400;
+            CARD_WIDTH = 320 - 20;
+            CARD_HEIGHT = 480 - 50;
         }
         else if (IS_IPHONE5)
         {
-            CARD_WIDTH = 290;
-            CARD_HEIGHT = 500;
+            CARD_WIDTH = 320 - 20;
+            CARD_HEIGHT = 568 - 55;
         }
         else if (IS_IPHONE6)
         {
-            CARD_WIDTH = 340;
-            CARD_HEIGHT = 597;
+            CARD_WIDTH = 375 - 30;
+            CARD_HEIGHT = 667 - 70;
         }
         else if (IS_IPHONE6PLUS)
         {
-            CARD_WIDTH = 390;
-            CARD_HEIGHT = 680;
+            CARD_WIDTH = 414 - 40;
+            CARD_HEIGHT = 736 - 80;
         }
 
         self.backgroundColor = [UIColor orangeColor];
@@ -100,8 +100,6 @@ static float CARD_WIDTH;
         //imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height * 3);//multiplied by profileimages.count
 
         [self loadDescriptionView];
-
-
         profileImageView = [UIImageView new];
         [self setProfileImage:profileImageView];
         [self addProfileImage1Constraints];
@@ -220,20 +218,6 @@ static float CARD_WIDTH;
 #pragma mark -- SCROLLVIEW DELEGATE
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-
-//    float scrollOffset = scrollView.contentOffset.y;
-//
-//    if (scrollOffset == 0)
-//    {
-//        // then we are at the top
-//    }
-//    else if (scrollOffset + scrollViewHeight == scrollContentSizeHeight)
-//    {
-//        // then we are at the end
-//    }
-
-
-
     CGFloat pageHeight = CARD_HEIGHT;
     float fractionalPage = scrollView.contentOffset.y / pageHeight;
     NSInteger page = ceilf(fractionalPage);
@@ -309,7 +293,8 @@ static float CARD_WIDTH;
             break;
         };
             //%%% in the middle of a swipe
-        case UIGestureRecognizerStateChanged:{
+        case UIGestureRecognizerStateChanged:
+        {
             v1.hidden = YES;
             v2.hidden = YES;
             v3.hidden = YES;

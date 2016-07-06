@@ -260,7 +260,6 @@ UserManagerDelegate>
     CVSettingCell *cell = (CVSettingCell *)[collectionView dequeueReusableCellWithReuseIdentifier:k_cell_id forIndexPath:indexPath];
     PFFile *pfFile = [self.profileImages objectAtIndex:indexPath.item];
     cell.userImage.image = [UIImage imageWithString:pfFile.url];
-    NSLog(@"urls: %@", pfFile.url);
 
     return cell;
 }

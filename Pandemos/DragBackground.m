@@ -37,23 +37,23 @@ static float CARD_WIDTH;
 
         if (IS_IPHONE4)
         {
-            CARD_WIDTH = 290;
-            CARD_HEIGHT = 400;
+            CARD_WIDTH = 320 - 20;
+            CARD_HEIGHT = 480 - 50;
         }
         else if (IS_IPHONE5)
         {
-            CARD_WIDTH = 290;
-            CARD_HEIGHT = 500;
+            CARD_WIDTH = 320 - 20;
+            CARD_HEIGHT = 568 - 55;
         }
         else if (IS_IPHONE6)
         {
-            CARD_WIDTH = 340;
-            CARD_HEIGHT = 577;
+            CARD_WIDTH = 375 - 30;
+            CARD_HEIGHT = 667 - 70;
         }
         else if (IS_IPHONE6PLUS)
         {
-            CARD_WIDTH = 390;
-            CARD_HEIGHT = 680;
+            CARD_WIDTH = 414 - 40;
+            CARD_HEIGHT = 736 - 80;
         }
 
         self.userManager = [UserManager new];
@@ -108,7 +108,6 @@ static float CARD_WIDTH;
                 [loadedCards addObject:newCard];
             }
         }
-
 
         //%%% displays the small number of loaded cards dictated by MAX_BUFFER_SIZE so that not all the cards
         // are showing at once and clogging a ton of data

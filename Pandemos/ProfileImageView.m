@@ -70,7 +70,7 @@ static float CARD_WIDTH;
             CARD_HEIGHT = 680;
         }
 
-        imageScroll = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 40, self.frame.size.width, self.frame.size.height)];
+        imageScroll = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         [self addSubview:imageScroll];
         imageScroll.delegate = self;
         imageScroll.pagingEnabled = YES;
