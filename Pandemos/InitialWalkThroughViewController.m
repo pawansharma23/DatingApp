@@ -196,6 +196,11 @@ UIImagePickerControllerDelegate>
     }
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
+}
+
 #pragma mark -- NAV
 - (IBAction)onFacebookAlbumsTapped:(UIButton *)sender
 {

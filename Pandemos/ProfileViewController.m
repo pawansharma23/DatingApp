@@ -99,6 +99,10 @@ UserManagerDelegate>
     [super viewDidLoad];
     self.currentUser = [User currentUser];
 
+
+
+
+
     if (self.currentUser)
     {
         [self loadNavigationBarItems];
@@ -125,23 +129,23 @@ UserManagerDelegate>
     //the only way scrolling works is if contentsize is set here between the viewinside and the scrollview alloc/init, when this is moved contentSize says 950, but it wont scroll
     [SVProgressHUD show];
 
-    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 675)];
+    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 667)];
     self.viewInsideScrollView.userInteractionEnabled = YES;
 
-    self.scrollView.contentSize = CGSizeMake(375,900);
+    self.scrollView.contentSize = CGSizeMake(375,950);
 
-    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 375, 675)];
+    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 375, 667)];
     self.scrollView.delegate = self;
     self.scrollView.scrollEnabled = YES;
     self.scrollView.userInteractionEnabled = YES;
+    self.scrollView.pagingEnabled = YES;
     self.scrollView.scrollsToTop = YES;
     self.scrollView.clipsToBounds = YES;
+
     [self.scrollView addSubview:self.viewInsideScrollView];
 
 
     NSLog(@"scrollView: %f, viewinside scrollView: %f & content size: %f", self.scrollView.frame.size.height, self.viewInsideScrollView.frame.size.height, self.scrollView.contentSize.height);
-    NSLog(@"view dimensions: %0.f, %0.f", self.view.frame.size.width, self.view.frame.size.height);
-    NSLog(@"view inside scrollview: %0.f", self.viewInsideScrollView.frame.size.height);
 
     [self setupManagersProfileVC];
 
@@ -165,19 +169,9 @@ UserManagerDelegate>
     }
 }
 
--(void)viewDidLayoutSubviews
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-
-}
-
-- (BOOL)touchesShouldCancelInContentView:(UIView *)view
-{
-    return NO;
-}
-
--(BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
-{
-    return NO;
+    NSLog(@"begun dragging");
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -343,18 +337,23 @@ UserManagerDelegate>
 // 4) Sex Preference
 - (IBAction)onMensButton:(UIButton *)sender
 {
+    NSLog(@"mens tapped");
     [self changeButtonState:self.menButton sexString:@"male" otherButton1:self.womenButton otherButton2:self.bothButton];
 }
 
 - (IBAction)onWomensButton:(UIButton *)sender
 {
+    NSLog(@"womens tapped");
+
     [self changeButtonState:self.womenButton sexString:@"female" otherButton1:self.menButton otherButton2:self.bothButton];
 }
 
 - (IBAction)onBothButton:(UIButton *)sender
 {
+    NSLog(@"both tapped");
     [self changeButtonState:self.bothButton sexString:@"male female" otherButton1:self.menButton otherButton2:self.womenButton];
 }
+
 - (IBAction)onMilesSliderChanged:(UISlider *)sender
 {
     NSLog(@"miles value: %d", (int)sender);
@@ -407,6 +406,8 @@ UserManagerDelegate>
 
 - (IBAction)feedback:(UIButton *)sender
 {
+    NSLog(@"feedback tapped");
+
     //subject line and body of email to send
     NSString *emailTitle = @"Feedback";
     NSString *messageBody = @"message body";
@@ -472,6 +473,8 @@ UserManagerDelegate>
     self.profileImages = [NSMutableArray arrayWithArray:images];
     
     [self.collectionView reloadData];
+    self.scrollView.contentSize = CGSizeMake(375, 900);
+    self.scrollView.userInteractionEnabled = YES;
     [SVProgressHUD dismiss];
 
 //    self.scrollView.contentSize = CGSizeMake(375,900);
@@ -623,6 +626,15 @@ UserManagerDelegate>
 }
 
 #pragma mark -- HELPERS
+-(void)setupManagersProfileVC
+{
+    self.userManager = [UserManager new];
+    self.userManager.delegate = self;
+
+    [self.userManager loadUserData:self.currentUser];
+    [self.userManager loadUserImages:self.currentUser];
+}
+
 -(void)loadNavigationBarItems
 {
     NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor mikeGray],
@@ -672,15 +684,6 @@ UserManagerDelegate>
 
     [self.collectionView setCollectionViewLayout:flowlayouts];
     self.collectionView.contentInset = UIEdgeInsetsZero;
-}
-
--(void)setupManagersProfileVC
-{
-    self.userManager = [UserManager new];
-    self.userManager.delegate = self;
-
-    [self.userManager loadUserData:self.currentUser];
-    [self.userManager loadUserImages:self.currentUser];
 }
 
 -(void)setPublicProfile:(NSString *)publicProfile

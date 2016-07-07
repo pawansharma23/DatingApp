@@ -60,7 +60,6 @@
 		26C70EC51CA5B18F00E9B98F /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA1061C25A86C0054414E /* ProfileViewController.m */; };
 		26C70EC61CA5B18F00E9B98F /* AlbumCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 266451581C5D78CB00D98136 /* AlbumCustomCell.m */; };
 		26C70EC71CA5B18F00E9B98F /* PreviewUserProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 266F23ED1C60498300A34C0B /* PreviewUserProfileVC.m */; };
-		26C70ECC1CA5B18F00E9B98F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA0901C1DB53F0054414E /* ViewController.m */; };
 		26C70ECD1CA5B18F00E9B98F /* FacebookNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 2614A70B1CA1E22F00D6F6AA /* FacebookNetwork.m */; };
 		26C70ECE1CA5B18F00E9B98F /* FacebookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2614A7121CA1EF4E00D6F6AA /* FacebookManager.m */; };
 		26C70ECF1CA5B18F00E9B98F /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA10D1C25AFE10054414E /* User.m */; };
@@ -73,8 +72,6 @@
 		26C70ED81CA5B18F00E9B98F /* UIColor+Pandemos.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CC6A361C7CF31F000F3BAC /* UIColor+Pandemos.m */; };
 		26C70ED91CA5B18F00E9B98F /* RangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 260799061C29CB4600B364C8 /* RangeSlider.m */; };
 		26C70EDA1CA5B18F00E9B98F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 268BA08A1C1DB53F0054414E /* main.m */; };
-		26CB15981CFE1924005CD680 /* DraggableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15951CFE1924005CD680 /* DraggableView.m */; };
-		26CB15991CFE1924005CD680 /* DraggableViewBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB15971CFE1924005CD680 /* DraggableViewBackground.m */; };
 		26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CB159B1CFE1930005CD680 /* OverlayView.m */; };
 		26D6B15E1D0097D900C94B16 /* ImageScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D6B15D1D0097D900C94B16 /* ImageScroll.m */; };
 		26D6B1611D01CDD700C94B16 /* ProfileImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D6B1601D01CDD700C94B16 /* ProfileImageView.m */; };
@@ -148,8 +145,6 @@
 		268BA08A1C1DB53F0054414E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		268BA08C1C1DB53F0054414E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		268BA08D1C1DB53F0054414E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		268BA08F1C1DB53F0054414E /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		268BA0901C1DB53F0054414E /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		268BA0931C1DB53F0054414E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		268BA0951C1DB53F0054414E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		268BA0981C1DB53F0054414E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -205,10 +200,6 @@
 		26C6B36F1C5A88FE00F9EB72 /* SuggestionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuggestionsViewController.h; sourceTree = "<group>"; };
 		26C6B3701C5A88FE00F9EB72 /* SuggestionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuggestionsViewController.m; sourceTree = "<group>"; };
 		26CB15871CFD02FA005CD680 /* AppConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
-		26CB15941CFE1924005CD680 /* DraggableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraggableView.h; sourceTree = "<group>"; };
-		26CB15951CFE1924005CD680 /* DraggableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraggableView.m; sourceTree = "<group>"; };
-		26CB15961CFE1924005CD680 /* DraggableViewBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DraggableViewBackground.h; sourceTree = "<group>"; };
-		26CB15971CFE1924005CD680 /* DraggableViewBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DraggableViewBackground.m; sourceTree = "<group>"; };
 		26CB159A1CFE1930005CD680 /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
 		26CB159B1CFE1930005CD680 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
 		26CC6A351C7CF31F000F3BAC /* UIColor+Pandemos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Pandemos.h"; sourceTree = "<group>"; };
@@ -564,19 +555,6 @@
 			name = MessagingList;
 			sourceTree = "<group>";
 		};
-		26BA6FB21D087B1200745FC9 /* Old Code */ = {
-			isa = PBXGroup;
-			children = (
-				26CB15961CFE1924005CD680 /* DraggableViewBackground.h */,
-				26CB15971CFE1924005CD680 /* DraggableViewBackground.m */,
-				26CB15941CFE1924005CD680 /* DraggableView.h */,
-				26CB15951CFE1924005CD680 /* DraggableView.m */,
-				268BA08F1C1DB53F0054414E /* ViewController.h */,
-				268BA0901C1DB53F0054414E /* ViewController.m */,
-			);
-			name = "Old Code";
-			sourceTree = "<group>";
-		};
 		26BA6FC01D0DFDF100745FC9 /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
@@ -746,7 +724,6 @@
 			isa = PBXGroup;
 			children = (
 				26D6B1621D01CF5300C94B16 /* MatchViewController */,
-				26BA6FB21D087B1200745FC9 /* Old Code */,
 			);
 			name = Matches;
 			sourceTree = "<group>";
@@ -979,7 +956,6 @@
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */,
 				260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */,
-				26CB15981CFE1924005CD680 /* DraggableView.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
@@ -997,7 +973,6 @@
 				26C70EC61CA5B18F00E9B98F /* AlbumCustomCell.m in Sources */,
 				26C70EC71CA5B18F00E9B98F /* PreviewUserProfileVC.m in Sources */,
 				26BA6FB51D087BAB00745FC9 /* DragBackground.m in Sources */,
-				26C70ECC1CA5B18F00E9B98F /* ViewController.m in Sources */,
 				26C70ECD1CA5B18F00E9B98F /* FacebookNetwork.m in Sources */,
 				26C70ECE1CA5B18F00E9B98F /* FacebookManager.m in Sources */,
 				2653C03D1CDBA60C00DDBD65 /* UIImage+Additions.m in Sources */,
@@ -1005,7 +980,6 @@
 				26C70ECF1CA5B18F00E9B98F /* User.m in Sources */,
 				26C70ED01CA5B18F00E9B98F /* Facebook.m in Sources */,
 				26C70ED11CA5B18F00E9B98F /* FacebookBuilder.m in Sources */,
-				26CB15991CFE1924005CD680 /* DraggableViewBackground.m in Sources */,
 				26AC54641CAED17A005AD536 /* UITextView+Additions.m in Sources */,
 				2655A4811CE9225B00838853 /* MatchView.m in Sources */,
 				26C70ED31CA5B18F00E9B98F /* MatchRequest.m in Sources */,

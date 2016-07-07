@@ -68,7 +68,6 @@ MessageManagerDelegate>
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
     layout.sectionInset = UIEdgeInsetsMake(0, 20, 20,0);//top, left bottom, right
 
-
     self.tableView.delegate = self;
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
@@ -82,7 +81,6 @@ MessageManagerDelegate>
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
 
     //collectionView matches pre chat
     [self setupMatches];
@@ -131,6 +129,9 @@ MessageManagerDelegate>
         else
         {
             NSLog(@"first time chatters send initial message");
+
+            [UserManager sharedSettings].recipient = matchedUser;
+            
             [self.messageManager sendInitialMessage:matchedUser];
         }
     }];
@@ -145,14 +146,13 @@ MessageManagerDelegate>
 
         if (reusableview==nil)
         {
-            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(10, 0, 320, 25)];
+            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(10, 5, 320, 25)];
             reusableview.backgroundColor = [UIColor lightGrayColor];
         }
 
-        UILabel *label=[[UILabel alloc] initWithFrame:CGRectMake(10, 0, 320, 25)];
+        UILabel *label=[[UILabel alloc] initWithFrame:CGRectMake(10, 5, 320, 25)];
         label.text = @"Matches";
-        //@"Helvetica-Bold"
-        label.font = [UIFont fontWithName:@"GeezaPro-Bold" size:16.0];
+        label.font = [UIFont fontWithName:@"GeezaPro" size:18.0];
         [reusableview addSubview:label];
         return reusableview;
     }
@@ -229,8 +229,11 @@ MessageManagerDelegate>
 {
     if (sentInitial)
     {
-        //also put in chekc if messaging already exists to segue to message detail
+
         [self.tableView reloadData];
+
+        [self performSegueWithIdentifier:@"detailMessage" sender:self];
+
     }
 }
 

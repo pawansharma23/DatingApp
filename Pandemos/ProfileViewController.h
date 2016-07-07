@@ -6,7 +6,6 @@
 //  Copyright © 2015 Michael Sevy. All rights reserved.
 //
 
-#import "ViewController.h"
 #import <Foundation/Foundation.h>
 #import <Bolts/BFTask.h>
 #import <FBSDKCoreKit/FBSDKAccessToken.h>

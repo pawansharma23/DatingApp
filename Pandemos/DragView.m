@@ -100,26 +100,22 @@ static float CARD_WIDTH;
         //imageScroll.contentSize = CGSizeMake(self.frame.size.width, self.frame.size.height * 3);//multiplied by profileimages.count
 
         [self loadDescriptionView];
+
         profileImageView = [UIImageView new];
         [self setProfileImage:profileImageView];
         [self addProfileImage1Constraints];
-
         profileImageView2 = [UIImageView new];
         [self setProfileImage:profileImageView2];
         [self addProfileImage2Constraints];
-
         profileImageView3 = [UIImageView new];
         [self setProfileImage:profileImageView3];
         [self addProfileImage3Constraints];
-
         profileImageView4 = [UIImageView new];
         [self setProfileImage:profileImageView4];
         [self addProfileImage4Constraints];
-
         profileImageView5 = [UIImageView new];
         [self setProfileImage:profileImageView5];
         [self addProfileImage5Constraints];
-
         profileImageView6 = [UIImageView new];
         [self setProfileImage:profileImageView6];
         [self addProfileImage6Constraints];
@@ -193,7 +189,8 @@ static float CARD_WIDTH;
 
 -(void)setupView
 {
-    self.layer.cornerRadius = 4;
+    self.layer.cornerRadius = 10;
+    self.layer.masksToBounds = YES;
     self.layer.shadowRadius = 3;
     self.layer.shadowOpacity = 0.2;
     self.layer.shadowOffset = CGSizeMake(1, 1);
@@ -202,7 +199,8 @@ static float CARD_WIDTH;
 -(void)setProfileImage:(UIImageView*)imageView
 {
     imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    imageView.layer.cornerRadius = 8;
+    imageView.layer.cornerRadius = 10;
+    imageView.layer.masksToBounds = YES;
     [imageScroll addSubview:imageView];
 }
 

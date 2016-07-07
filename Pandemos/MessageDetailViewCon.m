@@ -288,6 +288,8 @@ UserManagerDelegate>
 // Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWasShown:(NSNotification*)aNotification
 {
+    NSLog(@"keyboard shown adjustment");
+
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(kbSize.height, 0.0, kbSize.height, 0.0);
@@ -297,9 +299,16 @@ UserManagerDelegate>
     // Your app might not need or want this behavior.
     CGRect aRect = self.view.frame;
     aRect.size.height -= kbSize.height;
+
+
+
+
     if (!CGRectContainsPoint(aRect, self.activeTextField.frame.origin))
     {
         [self.tableView scrollRectToVisible:self.activeTextField.frame animated:NO];
+
+        CGPoint offset = CGPointMake(0, self.tableView.contentSize.height -  self.tableView.frame.size.height);
+        [self.tableView setContentOffset:offset animated:YES];
     }
 }
 

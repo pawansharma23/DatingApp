@@ -253,6 +253,12 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
 
     [self saveButtonCheck];
 }
+- (IBAction)rotateImage:(UIButton *)sender
+{
+    self.userImage.transform = CGAffineTransformMakeRotation(M_PI_2);
+
+
+}
 
 #pragma mark -- USER MANAGER DELEGATE
 -(void)didReceiveUserImages:(NSArray<PFFile*> *)images
@@ -402,6 +408,9 @@ static NSString * const k_reuse_identifier = @"PreviewCell";
     //image from Phone
     else if ([UserManager sharedSettings].dataImage)
     {
+        //////********need to save the rotaated image here************
+
+
         NSData *dataForJPEGFile = UIImageJPEGRepresentation([UIImage imageWithData:[UserManager sharedSettings].dataImage], 0.8f);
         NSLog(@"Original Size: %.2f MB, reduced by 1.5 factor size: %.2f MB",(float)[UserManager sharedSettings].dataImage.length/1024.0f/1024.0f, dataForJPEGFile.length/1024.0f/1024.0f);
 

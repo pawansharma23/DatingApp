@@ -6,8 +6,8 @@
 //  Copyright © 2015 Michael Sevy. All rights reserved.
 //
 
-#import "ViewController.h"
+#import <UIKit/UIKit.h>
 
-@interface InitialWalkThroughViewController : ViewController
+@interface InitialWalkThroughViewController : UIViewController
 
 @end

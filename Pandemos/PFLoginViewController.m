@@ -15,10 +15,9 @@
 #import "ProfileViewController.h"
 #import "User.h"
 #import "UserManager.h"
-#import "UIColor+Pandemos.h"
 #import "InitialWalkThroughViewController.h"
-#import "UIImage+Additions.h"
 #import "AppDelegate.h"
+#import "AllyAdditions.h"
 
 @interface PFLoginViewController ()
 

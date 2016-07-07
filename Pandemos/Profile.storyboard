@@ -27,7 +27,7 @@
                                                 <rect key="frame" x="0.0" y="8" width="400" height="215"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="215" id="Ydb-IL-857">
-                                                        <variation key="heightClass=regular-widthClass=compact" constant="250"/>
+                                                        <variation key="heightClass=regular-widthClass=compact" constant="245"/>
                                                     </constraint>
                                                 </constraints>
                                                 <inset key="scrollIndicatorInsets" minX="0.0" minY="-20" maxX="0.0" maxY="0.0"/>

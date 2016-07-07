@@ -6,9 +6,8 @@
 //  Copyright © 2015 Michael Sevy. All rights reserved.
 //
 
-#import "ViewController.h"
+#import <UIKit/UIKit.h>
 #import <Parse/PFUser.h>
-
 
 @interface PFLoginViewController : UIViewController
 

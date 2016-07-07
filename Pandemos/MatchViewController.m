@@ -34,7 +34,6 @@ MFMailComposeViewControllerDelegate>
     if ([User currentUser].givenName)
     {
 
-
         NSLog(@"logged in user: %@ %@", [User currentUser].givenName, [User currentUser].objectId   );
 
         [self navigationItems];
