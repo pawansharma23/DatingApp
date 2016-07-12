@@ -277,16 +277,16 @@
                                                 <exclude reference="bQZ-aO-zru"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <exclude reference="bt4-LN-YN8"/>
-                                                <exclude reference="HMb-zM-JLd"/>
-                                                <exclude reference="hIk-Ex-Eev"/>
                                                 <exclude reference="Gmg-yr-0Or"/>
                                                 <exclude reference="a6s-Pg-fqb"/>
+                                                <exclude reference="HMb-zM-JLd"/>
+                                                <exclude reference="hIk-Ex-Eev"/>
                                                 <exclude reference="BNO-em-dcB"/>
                                                 <exclude reference="WSG-0n-kic"/>
                                                 <exclude reference="42N-lM-Tny"/>
                                                 <exclude reference="Jsg-bb-QFx"/>
                                                 <exclude reference="do4-0o-RYO"/>
+                                                <exclude reference="bt4-LN-YN8"/>
                                             </mask>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact">
@@ -296,16 +296,16 @@
                                                 <include reference="bQZ-aO-zru"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <include reference="bt4-LN-YN8"/>
-                                                <include reference="HMb-zM-JLd"/>
-                                                <include reference="hIk-Ex-Eev"/>
                                                 <include reference="Gmg-yr-0Or"/>
                                                 <include reference="a6s-Pg-fqb"/>
+                                                <include reference="HMb-zM-JLd"/>
+                                                <include reference="hIk-Ex-Eev"/>
                                                 <include reference="BNO-em-dcB"/>
                                                 <include reference="WSG-0n-kic"/>
                                                 <include reference="42N-lM-Tny"/>
                                                 <include reference="Jsg-bb-QFx"/>
                                                 <exclude reference="do4-0o-RYO"/>
+                                                <include reference="bt4-LN-YN8"/>
                                             </mask>
                                         </variation>
                                     </view>

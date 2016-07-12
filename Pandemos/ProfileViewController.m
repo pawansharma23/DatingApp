@@ -51,6 +51,7 @@ UserManagerDelegate>
 @property (strong, nonatomic) IBOutlet UIView *viewInsideScrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UITextView *textViewAboutMe;
+@property (weak, nonatomic) IBOutlet UILabel *addOrSwapLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *minimumAgeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *maximumAgeLabel;
@@ -62,6 +63,7 @@ UserManagerDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *SwapAddPhotoButton;
 @property (weak, nonatomic) IBOutlet UIButton *feedbackButton;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
+@property (weak, nonatomic) IBOutlet UILabel *interestedSexLabel;
 @property (weak, nonatomic) IBOutlet UIButton *menButton;
 @property (weak, nonatomic) IBOutlet UIButton *womenButton;
 @property (weak, nonatomic) IBOutlet UIButton *bothButton;
@@ -129,18 +131,24 @@ UserManagerDelegate>
     //the only way scrolling works is if contentsize is set here between the viewinside and the scrollview alloc/init, when this is moved contentSize says 950, but it wont scroll
     [SVProgressHUD show];
 
-    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 667)];
-    self.viewInsideScrollView.userInteractionEnabled = YES;
+    self.viewInsideScrollView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 950)];
+    //self.viewInsideScrollView.userInteractionEnabled = YES;
 
     self.scrollView.contentSize = CGSizeMake(375,950);
 
     self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 375, 667)];
     self.scrollView.delegate = self;
     self.scrollView.scrollEnabled = YES;
+
     self.scrollView.userInteractionEnabled = YES;
-    self.scrollView.pagingEnabled = YES;
+    self.scrollView.exclusiveTouch = YES;
+    self.scrollView.canCancelContentTouches = YES;
+    self.scrollView.delaysContentTouches = NO;
+
+
+    //self.scrollView.pagingEnabled = YES;
     self.scrollView.scrollsToTop = YES;
-    self.scrollView.clipsToBounds = YES;
+    //self.scrollView.clipsToBounds = YES;
 
     [self.scrollView addSubview:self.viewInsideScrollView];
 
@@ -167,6 +175,10 @@ UserManagerDelegate>
     {
         [self performSegueWithIdentifier:@"Selected" sender:self];
     }
+    // add buttons
+//    [self addViewObjects];
+    //add constraints for view objects
+  //   [self addLabelConstraints];
 }
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
@@ -767,28 +779,178 @@ UserManagerDelegate>
         b2.backgroundColor = [UIColor whiteColor];
     }
 }
-//change to cloud code
-- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
-{
-    switch (result)
-    {
-        case MFMailComposeResultCancelled:
-            NSLog(@"Mail cancelled");
-            break;
-        case MFMailComposeResultSaved:
-            NSLog(@"Mail saved");
-            break;
-        case MFMailComposeResultSent:
-            NSLog(@"Mail sent");
-            break;
-        case MFMailComposeResultFailed:
-            NSLog(@"Mail sent failure: %@", [error localizedDescription]);
-            break;
-        default:
-            break;
-    }
 
-    // Close the Mail Interface
-    [self dismissViewControllerAnimated:YES completion:NULL];
+-(void)addLabelConstraints
+{
+    NSDictionary *imageDict = @{@"collection" : self.collectionView, @"addOr" : self.addOrSwapLabel, @"faceButton" : self.facebookAlbumsButton, @"swapOr" : self.SwapAddPhotoButton, @"textView" : self.textViewAboutMe, @"minAge" : self.minimumAgeLabel, @"minSlider" : self.minimumAgeSlider, @"maxAge" : self.maximumAgeLabel, @"maxSlider" : self.maximumAgeSlider, @"interest": self.interestedSexLabel, @"men" : self.menButton, @"women" : self.womenButton, @"both" : self.bothButton, @"location" : self.locationLabel, @"milesAway" : self.milesAwayLabel, @"milesSlider" : self.milesSlider, @"job" : self.jobLabel, @"education" : self.educationLabel, @"feedback" : self.feedbackButton, @"share" : self.shareButton, @"logout" : self.logoutButton, @"delete" : self.deleteButton};
+
+    NSArray *yPosition = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[collection]-[addOr]-[faceButton]-[textView]-[minAge]-[minSlider]-[maxAge]-[maxSlider]-[interest]-[men]-[location]-[milesAway]-[milesSlider]-[job]-[education]-[feedback]-40-[logout]-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
+    NSArray *xCollectionView = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[collection]-20-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:imageDict];
+
+    NSArray *xAddOr = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[addOr]-50-|"
+                                                                       options:0
+                                                                       metrics:nil
+                                                                         views:imageDict];
+
+    NSArray *xFace = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-40-[faceButton]-20-[swapOr]|"
+                                                                       options:0
+                                                                       metrics:nil
+                                                                         views:imageDict];
+
+    NSArray *xTextView = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[textView]-20-|"
+                                                             options:0
+                                                             metrics:nil
+                                                               views:imageDict];
+
+    NSArray *xMinAge = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[minAge]-|"
+                                                             options:0
+                                                             metrics:nil
+                                                               views:imageDict];
+
+    NSArray *xMinSlider = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[minSlider]-|"
+                                                               options:0
+                                                               metrics:nil
+                                                                 views:imageDict];
+
+    NSArray *xMaxAge = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[maxAge]-|"
+                                                               options:0
+                                                               metrics:nil
+                                                                 views:imageDict];
+
+    NSArray *xMaxSlider = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[maxSlider]-|"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:imageDict];
+
+    NSArray *xInterest = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[interest]-|"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:imageDict];
+
+    NSArray *xPosForSexButtons = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[men]-20-[women]-20-[both]"
+                                                                           options:0
+                                                                           metrics:nil
+                                                                             views:imageDict];
+
+    NSArray *xLocationLabel = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[location]-|"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:imageDict];
+
+    NSArray *xMilesAway = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[milesAway]-|"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:imageDict];
+
+    NSArray *xMilesSlider = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[milesSlider]-|"
+                                                                  options:0
+                                                                  metrics:nil
+                                                                    views:imageDict];
+
+    NSArray *xJobLabel = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[job]-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:imageDict];
+
+
+    NSArray *xEducation = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[education]-|"
+                                                                    options:0
+                                                                    metrics:nil
+                                                                      views:imageDict];
+
+    NSArray *xPosForFeedback = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[feedback]-50-[share]"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:imageDict];
+
+    NSArray *xPosForLogout = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[logout]-50-[delete]"
+                                                                       options:0
+                                                                       metrics:nil
+                                                                         views:imageDict];
+
+    [self.viewInsideScrollView addConstraints:yPosition];
+    [self.viewInsideScrollView addConstraints:xCollectionView];
+    [self.viewInsideScrollView addConstraints:xAddOr];
+    [self.viewInsideScrollView addConstraints:xFace];
+    [self.viewInsideScrollView addConstraints:xTextView];
+    [self.viewInsideScrollView addConstraints:xMinAge];
+    [self.viewInsideScrollView addConstraints:xMinSlider];
+    [self.viewInsideScrollView addConstraints:xMaxAge];
+    [self.viewInsideScrollView addConstraints:xMaxSlider];
+    [self.viewInsideScrollView addConstraints:xInterest];
+    [self.viewInsideScrollView addConstraints:xPosForSexButtons];
+    [self.viewInsideScrollView addConstraints:xLocationLabel];
+    [self.viewInsideScrollView addConstraints:xMilesAway];
+    [self.viewInsideScrollView addConstraints:xMilesSlider];
+    [self.viewInsideScrollView addConstraints:xJobLabel];
+    [self.viewInsideScrollView addConstraints:xEducation];
+    [self.viewInsideScrollView addConstraints:xPosForFeedback];
+    [self.viewInsideScrollView addConstraints:xPosForLogout];
+
+
+}
+
+-(void)addViewObjects
+{
+    self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.collectionView];
+
+    self.addOrSwapLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.addOrSwapLabel];
+
+    self.facebookAlbumsButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.facebookAlbumsButton];
+    self.SwapAddPhotoButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.SwapAddPhotoButton];
+
+    self.textViewAboutMe.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.textViewAboutMe];
+
+    self.minimumAgeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.minimumAgeLabel];
+    self.minimumAgeSlider.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.minimumAgeSlider];
+
+    self.maximumAgeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.maximumAgeLabel];
+    self.maximumAgeSlider.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.maximumAgeSlider];
+
+    self.interestedSexLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.interestedSexLabel];
+    self.menButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.menButton];
+    self.womenButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.womenButton];
+    self.bothButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.bothButton];
+
+    self.locationLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.locationLabel];
+    self.milesAwayLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.milesAwayLabel];
+    self.milesSlider.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.milesSlider];
+
+    self.jobLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.jobLabel];
+    self.educationLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.educationLabel];
+
+    self.feedbackButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.feedbackButton];
+    self.shareButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.shareButton];
+    self.logoutButton.translatesAutoresizingMaskIntoConstraints  = NO;
+    [self.viewInsideScrollView addSubview:self.logoutButton];
+    self.deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.viewInsideScrollView addSubview:self.deleteButton];
 }
 @end

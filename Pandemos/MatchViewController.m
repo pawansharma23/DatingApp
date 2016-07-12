@@ -159,37 +159,39 @@ MFMailComposeViewControllerDelegate>
 
 -(void)sendingEmailToAlly:(NSString*)userIddummied
 {
-    //    User *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-    //    NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
-    //llok up user for first name last i and image for email
+    NSString *testEmail = @"michaelsevy@gmail.com";
+    //NSString *confidantEmail = [[User currentUser] objectForKey:@"confidantEmail"];
+    NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
+    //relation info for email
+
+    NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
+    //%@", approvedRela];
+    NSString *cssButton = [NSString stringWithFormat:@"button"];
+    NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, @"John", yourName];
+
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": testEmail, @"text": @"What do you think of this user for your friend", @"username": yourName, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
+        if (error)
+        {
+            NSLog(@"error cloud js code: %@", error);
+        }
+        else
+        {
+            NSLog(@"result :%@", result);
+        }
+    }];
+}
+@end
+
+//    User *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
+//    NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
+//llok up user for first name last i and image for email
 //    [self.userManager queryForUserData:userIddummied withUser:^(User *user, NSError *error) {
 //
 //        NSLog(@"GOT USR DATA: %@", user);
 
 
-        //stash old cloud key from Mandrill: vPIT4Hx_NM_rciNztmNOxA
-        NSString *testEmail = @"michaelsevy@gmail.com";
-        //NSString *confidantEmail = [[User currentUser] objectForKey:@"confidantEmail"];
-        NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
-        //relation info for email
+//stash old cloud key from Mandrill: vPIT4Hx_NM_rciNztmNOxA
+
 //            PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
 //          PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
 //          [approvedRela addObject:approvedMatchUser];
-
-        NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
-        //%@", approvedRela];
-        NSString *cssButton = [NSString stringWithFormat:@"button"];
-        NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, @"John", yourName];
-
-        [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": testEmail, @"text": @"What do you think of this user for your friend", @"username": yourName, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
-            if (error)
-            {
-                NSLog(@"error cloud js code: %@", error);
-            }
-            else
-            {
-                NSLog(@"result :%@", result);
-            }
-        }];
-}
-@end

@@ -432,13 +432,13 @@
 		268BA0881C1DB53F0054414E /* Pandemos */ = {
 			isa = PBXGroup;
 			children = (
-				26AC54611CAEBB41005AD536 /* Storyboards */,
 				268BA08C1C1DB53F0054414E /* AppDelegate.h */,
 				268BA08D1C1DB53F0054414E /* AppDelegate.m */,
+				26AC54611CAEBB41005AD536 /* Storyboards */,
 				268BA0951C1DB53F0054414E /* Assets.xcassets */,
 				268BA1131C26EFBD0054414E /* Initial Setup VCs */,
 				26BA6FCB1D10360A00745FC9 /* FacebookAlbums */,
-				268BA10B1C25A8F00054414E /* UserFlow */,
+				268BA10B1C25A8F00054414E /* Home/Settings */,
 				26F22BF31C6FAEFF00D86343 /* Messaging */,
 				2614A70D1CA1E24100D6F6AA /* Managers */,
 				268BA10F1C25AFE60054414E /* Model */,
@@ -478,13 +478,13 @@
 			path = PandemosUITests;
 			sourceTree = "<group>";
 		};
-		268BA10B1C25A8F00054414E /* UserFlow */ = {
+		268BA10B1C25A8F00054414E /* Home/Settings */ = {
 			isa = PBXGroup;
 			children = (
 				26F22BF21C6FAEF000D86343 /* Settings */,
 				26F22BF41C6FAF0E00D86343 /* Matches */,
 			);
-			name = UserFlow;
+			name = Home/Settings;
 			sourceTree = "<group>";
 		};
 		268BA10F1C25AFE60054414E /* Model */ = {
