@@ -12,6 +12,7 @@
 		260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 260317B91CE2338800C37C67 /* MessagerProfileVC.m */; };
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		261ADA361CF72DD900C7ECCD /* HeaderForProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 261ADA351CF72DD900C7ECCD /* HeaderForProfileVC.m */; };
+		2638B20E1D35DCF300411CEA /* MatchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2638B20D1D35DCF300411CEA /* MatchManager.m */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
 		2653C0361CD7859B00DDBD65 /* MatchesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0351CD7859B00DDBD65 /* MatchesCell.m */; };
 		2653C03A1CDA357200DDBD65 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0391CDA357200DDBD65 /* NSData+Additions.m */; };
@@ -115,6 +116,8 @@
 		261ADA341CF72DD900C7ECCD /* HeaderForProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderForProfileVC.h; sourceTree = "<group>"; };
 		261ADA351CF72DD900C7ECCD /* HeaderForProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderForProfileVC.m; sourceTree = "<group>"; };
 		262829001D20642B00A69F24 /* AllyAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AllyAdditions.h; sourceTree = "<group>"; };
+		2638B20C1D35DCF300411CEA /* MatchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchManager.h; sourceTree = "<group>"; };
+		2638B20D1D35DCF300411CEA /* MatchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchManager.m; sourceTree = "<group>"; };
 		264445191CB5699B00A0381B /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		2644451A1CB5699B00A0381B /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		2653C0341CD7859B00DDBD65 /* MatchesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchesCell.h; sourceTree = "<group>"; };
@@ -295,6 +298,8 @@
 		2614A70D1CA1E24100D6F6AA /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				2638B20C1D35DCF300411CEA /* MatchManager.h */,
+				2638B20D1D35DCF300411CEA /* MatchManager.m */,
 				264445191CB5699B00A0381B /* UserManager.h */,
 				2644451A1CB5699B00A0381B /* UserManager.m */,
 				26F7E4BF1CD29935002F8BFC /* MessageManager.h */,
@@ -949,6 +954,7 @@
 				26C70EBA1CA5B18F00E9B98F /* AlbumDetailViewController.m in Sources */,
 				26C70EBB1CA5B18F00E9B98F /* SelectedImageViewController.m in Sources */,
 				2653C0361CD7859B00DDBD65 /* MatchesCell.m in Sources */,
+				2638B20E1D35DCF300411CEA /* MatchManager.m in Sources */,
 				26C70EBC1CA5B18F00E9B98F /* FacebookTableViewCell.m in Sources */,
 				26C70EBD1CA5B18F00E9B98F /* FacebookAlbumsTableVC.m in Sources */,
 				26C70EBF1CA5B18F00E9B98F /* InitialWalkThroughViewController.m in Sources */,

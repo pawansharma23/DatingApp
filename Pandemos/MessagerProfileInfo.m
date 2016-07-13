@@ -12,6 +12,7 @@
 #import "UserManager.h"
 #import "User.h"
 #import "AllyAdditions.h"
+#import "MatchManager.h"
 
 @interface MessagerProfileInfo ()<UITableViewDelegate,
 UITableViewDataSource>
@@ -222,7 +223,7 @@ UITableViewDataSource>
                          handler:^(UIAlertAction * action)
                          {
                              //add another pfrelation to the relationship: blocked, check this during downloading Messaging list
-                             [self.usermanager changePFRelationToDeniedWithPFCloudFunction:chatter];
+                             [[MatchManager sharedSettings] changePFRelationToDeniedWithPFCloudFunction:chatter];
                          }];
 
     UIAlertAction *cancel = [UIAlertAction
@@ -255,7 +256,7 @@ UITableViewDataSource>
                          handler:^(UIAlertAction * action)
                          {
                              //add another pfrelation to the relationship: blocked, check this during downloading Messaging list
-                             [self.usermanager changePFRelationToDeniedWithPFCloudFunction:chatter];
+                             [[MatchManager sharedSettings] changePFRelationToDeniedWithPFCloudFunction:chatter];
                          }];
 
     UIAlertAction *cancel = [UIAlertAction

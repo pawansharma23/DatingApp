@@ -90,7 +90,7 @@ UserManagerDelegate>
 
         self.piv.tallNameLabel.text = nameAndAge;
 
-        if (self.profileImages.count ==1)
+        if (self.profileImages.count == 1)
         {
             self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 1);
 
@@ -103,7 +103,7 @@ UserManagerDelegate>
             [self.piv.v5 removeFromSuperview];
             [self.piv.v6 removeFromSuperview];
         }
-        else if (self.profileImages.count ==2)
+        else if (self.profileImages.count == 2)
         {
             self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 2);
 
@@ -117,7 +117,7 @@ UserManagerDelegate>
             [self.piv.v5 removeFromSuperview];
             [self.piv.v6 removeFromSuperview];
         }
-        else if (self.profileImages.count ==3)
+        else if (self.profileImages.count == 3)
         {
             self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 3);
 
@@ -132,7 +132,7 @@ UserManagerDelegate>
             [self.piv.v5 removeFromSuperview];
             [self.piv.v6 removeFromSuperview];
         }
-        else if (self.profileImages.count ==4)
+        else if (self.profileImages.count == 4)
         {
             self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 4);
 
@@ -148,7 +148,7 @@ UserManagerDelegate>
             [self.piv.v5 removeFromSuperview];
             [self.piv.v6 removeFromSuperview];
         }
-        else if (self.profileImages.count ==5)
+        else if (self.profileImages.count == 5)
         {
             self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 5);
 
@@ -165,7 +165,7 @@ UserManagerDelegate>
 
             [self.piv.v6 removeFromSuperview];
         }
-        else if (self.profileImages.count ==6)
+        else if (self.profileImages.count == 6)
         {
             self.piv.imageScroll.contentSize = CGSizeMake(self.piv.frame.size.width, self.piv.frame.size.height * 6);
 

@@ -3,7 +3,6 @@
 #import "DragBackground.h"
 #import "AppConstants.h"
 #import "UIImage+Additions.h"
-
 #import "SVProgressHUD.h"
 #import "AcceptedMatchView.h"
 
@@ -60,7 +59,7 @@ static float CARD_WIDTH;
         self.userManager.delegate = self;
         //load user data for search preferences
         [self.userManager loadUserData:[User currentUser]];
-        
+
         //load user objects
         loadedCards = [[NSMutableArray alloc] init];
         allCards = [[NSMutableArray alloc] init];
@@ -188,46 +187,13 @@ static float CARD_WIDTH;
 -(void)cardSwipedRight:(UIView *)card
 {
     self.currentMatch = [self.potentialMatchData objectAtIndex:self.userCount];
-
-    //check if a girl has already ok'd a boy, here they can speak now
-    [self.userManager queryForRelationshipMatch:self.currentMatch withBlock:^(NSArray<User *> *matchedUser, NSError *error) {
-
-        //compare curent match with all mathces to check for an already existing PFRelationship
-        if (matchedUser)
-        {
-            for (User *matched in matchedUser)
-            {
-
-                if ([matched.objectId isEqualToString:self.currentMatch.objectId])
-                {
-                    //[self snapAcceptedMatchViewToStartNewConvo];
-                    NSLog(@"boom we've got a match, send to messager");
-                }
-                else
-                {
-                    NSLog(@"no previous matches");
-                    //[self setYesStatusForMatchRequestObject:self.currentMatch];
-                }
-            }
-        }
-        else
-        {
-
-            [self setYesStatusForMatchRequestObject:self.currentMatch];
-
-            //not a previous match, so start the match process
-        }
-    }];
-
+    NSLog(@"matched: %@ & %@", _currentMatch.givenName, [User currentUser].givenName);
 
     //set match
     [self setYesStatusForMatchRequestObject:self.currentMatch];
-    NSLog(@"matched: %@ & %@", _currentMatch.givenName, [User currentUser].givenName);
-
 
     //*** this is the magic that did it!!!
     self.userCount++;
-
     [loadedCards removeObjectAtIndex:0]; //%%% card was swiped, so it's no longer a "loaded card"
 
     if (cardsLoadedIndex < [allCards count])
@@ -238,9 +204,8 @@ static float CARD_WIDTH;
     }
     else
     {
-        NSLog(@"reached the end of your matches, insert view");
+        NSLog(@"reached the end of your matches, insert view that warns user nothing left");
     }
-
 }
 
 -(void)cardSwipedUp:(UIView *)card
@@ -378,57 +343,65 @@ static float CARD_WIDTH;
     }
 }
 
+//1a)
 -(void)setNoStatusForMatchRequestObject:(User*)deniedMatch
 {
     [self matchStatus:@"denied" potentialMatch:deniedMatch];
 }
 
+//2
 -(void)matchStatus:(NSString*)status potentialMatch:(User*)potMatch
 {
-//    [self.userManager createMatchRequestWithStringId:potMatch.objectId withStatus:status withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-//    }];
-    [self.userManager createMatchRequest:potMatch withStatus:status withCompletion:^(MatchRequest *matchRequest, NSError *error) {
-        if (matchRequest)
-        {
-            NSLog(@"match object: %@", matchRequest);
-        }
-    }];
+    [[MatchManager sharedSettings] createMatchRequest:potMatch withStatus:status withMatchRequest:^(MatchRequest *matchRequest, NSError *error) {
 
+        NSLog(@"match Request class successfully created: %@", matchRequest);//why do we need this matchRequst at all it's already been logged, thats how we got to this delegate,----> dont need it, matchRequest dies here
+        
+        //2a) Status on MatchRequest class determines what to do
+        [[MatchManager sharedSettings] queryForMatchRequestWithUserSeen:potMatch withStatusBlock:^(NSString *status, NSError *error) {
+
+            if ([status isEqualToString:@"denied"])
+            {
+                NSLog(@"dies here, no further action necessary");
+            }
+
+            else if ([status isEqualToString:@"boyYes"])
+            {
+                //means the current user has matched with a boy and that boy has said yes and user(a girl) has said yes so send EMAIL
+                NSLog(@"we've got a boyYes, send an email for the girlVerified or confidantNo");
+            }
+
+            else if ([status isEqualToString:@"girlYes"])
+            {
+                //means the current user has matched with a girl and she has accepted but hasnt gone to her confidant yet
+                NSLog(@"do nothing, wait for Heroku to send message from Confidant adding the PFRelation and it will send a Notification");
+            }
+
+            else if ([status isEqualToString:@"girlVerified"])
+            {
+                NSLog(@"yaaaaaah you are connected, show view and allow to chat, also add the PFRelation(or that may be done in the back end");
+                //************for TESTING***************
+                [[MatchManager sharedSettings] createVerifiedPFRelationWithPFCloud:self.currentMatch andMatchRequest:matchRequest];
+            }
+            else if([status isEqualToString:@"confidantNo"])
+            {
+                NSLog(@"the girl has sent an email to confidant they said no, Beta 1.01 guy can pay to get a PFRelation");
+            }
+            else
+            {
+                NSLog(@"match hasnt seen this user yet, do nothing");
+            }
+        }];
+    }];
 }
 
 -(void)didCreateMatchRequest:(MatchRequest *)matchRequest
 {
-    NSLog(@"match Request class successfully created: %@", matchRequest);
+    NSLog(@"match request created, this should hitting");
+}
 
-    //    NSDictionary *matchDict = matchRequest;
-    NSString *status = matchRequest[@"status"];
-
-    if ([status isEqualToString:@"denied"])
-    {
-        NSLog(@"no match it dies here, buried as a match request");
-    }
-    else if([status isEqualToString:@"boyYes"])
-    {
-        //        //************for TESTING***************
-        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
-    }
-    else if([status isEqualToString:@"girlYes"])
-    {
-        //        //************for TESTING***************
-        [self.userManager addPFRelationWithPFCloudFunction:self.currentMatch andMatchRequest:matchRequest];
-        /////////SEND EMAIL FOR APPROVAL/////////CLOUD CODE//////
-        //send email through mail chimp + then figure out how to handle setitng up the PFRelation "match"
-
-        //           [self.userManager updateMatchRequestWithRetrivalUserObject:matchRequest withResponse:@"lastStep" withSuccess:^(NSDictionary *userDict, NSError *error) {
-        //
-        //                if (!error)
-        //                {
-        //                    NSLog(@"update worked added PFRelation");
-        //                    //calls didFetchUserObjectForFinalMatch
-        //                }
-        //            }];
-        //    }
-    }
+-(void)failedToCreateMatchRequest:(NSError *)error
+{
+    NSLog(@"this shild be hitting: error: %@", error);
 }
 
 #pragma mark -- USER IMAGES

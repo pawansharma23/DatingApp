@@ -28,16 +28,8 @@
 -(void)failedToFetchPotentialMatchData:(NSError *)error;
 -(void)didReceivePotentialMatchImages:(NSArray *)images;
 -(void)failedToFetchPotentialMatchImages:(NSError*)error;
-//match Requests
 -(void)didLoadAlreadySeen:(NSArray<User*>*)users;
--(void)didCreateMatchRequest:(MatchRequest*)matchRequest;
--(void)failedToCreateMatchRequest:(NSError*)error;
--(void)didUpdateMatchRequest:(User *)user;
--(void)failedToUpdateMatchRequest:(NSError*)error;
--(void)didCreateDenyMatchRequest:(MatchRequest*)matchRequest;
--(void)failedToCreateDenyMatchRequest:(NSError*)error;
 -(void)didComeFromMessaging:(BOOL)fromMessaging withUser:(User*)user;
--(void)didFetchUserObjectForFinalMatch:(User*)user;
 -(void)didReturnImageDataCount:(NSDictionary*)userDict;
 @end
 
@@ -67,32 +59,10 @@ typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError 
 -(void)loadUsersUnseenPotentialMatches:(NSString *)sexPref
                                 minAge:(NSString *)min
                                 maxAge:(NSString *)max;
--(void)createMatchRequest:(User*)user
-               withStatus:(NSString*)status
-           withCompletion:(resultBlockWithMatchRequest)result;
--(void)updateMatchRequestWithRetrivalUserObject:(MatchRequest*)matchRequest
-             withResponse:(NSString*)response
-              withSuccess:(resultBlockWithUserData)result;
 -(void)loadAlreadySeenMatches;
 -(void)fromMessaging:(User*)user;
 -(void)queryForUserData:(NSString *)objectId
                withUser:(resultBlockWithUser)user;
 -(void)queryForUsersConfidant:(resultBlockWithUserConfidant)confidant;
--(void)createMatchRequestWithStringId:(NSString*)strId
-                           withStatus:(NSString*)status
-                       withCompletion:(resultBlockWithMatchRequest)result;
--(void)secureMatchWithPFCloudFunction:(User*)recipientUser;
--(void)changePFRelationToDeniedWithPFCloudFunction:(User*)recipientUser;
--(void)queryForImageCount:(NSString *)objectId;
--(void)queryForRelationshipMatch:(User*)matchedUser withBlock:(resultBlockWithMatchedUser)match;
--(void)addPFRelationWithPFCloudFunction:(User*)recipientUser
-                        andMatchRequest:(MatchRequest*)match;
-
-
--(void)sendEmailWithPFCloudFunction:(NSString*)confidantEmail withRelation:(PFRelation*)rela andMatchedUser:(User*)user;
 @end
-
-
-
-
 
