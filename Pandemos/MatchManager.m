@@ -20,7 +20,7 @@
     return shared;
 }
 
--(void)createMatchRequest:(User *)matchedUser withStatus:(NSString*)status withMatchRequest:(resultBlockWithMatch)match
+-(void)createMatchRequest:(User *)matchedUser withStatus:(NSString*)status andBlock:(resultBlockWithMatch)match
 {
     MatchRequest *matchRequest = [MatchRequest objectWithClassName:@"MatchRequest"];
     matchRequest.fromUser = [User currentUser];
@@ -32,12 +32,10 @@
         if (succeeded)
         {
             match(matchRequest, nil);
-            //[self.delegate didCreateMatchRequest:matchRequest];
         }
         else
         {
             match(nil, error);
-//            [self.delegate failedToCreateMatchRequest:error];
         }
     }];
 }

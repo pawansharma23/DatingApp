@@ -5,6 +5,7 @@
 #import "UIImage+Additions.h"
 #import "SVProgressHUD.h"
 #import "AcceptedMatchView.h"
+#import "NoMatchesView.h"
 
 @implementation DragBackground{
     NSInteger cardsLoadedIndex; //%%% the index of the card you have loaded into the loadedCards array last
@@ -162,8 +163,6 @@ static float CARD_WIDTH;
     }
 }
 
-//%%% action called when the card goes to the left.
-// This should be customized with your own action
 -(void)cardSwipedLeft:(UIView *)card;
 {
     User *matchedObject = [self.potentialMatchData objectAtIndex:self.userCount];
@@ -255,8 +254,6 @@ static float CARD_WIDTH;
     UISnapBehavior *snapBehaviour = [[UISnapBehavior alloc] initWithItem:matchView snapToPoint:CGPointMake(100, 300)];
     snapBehaviour.damping = 0.65f;
     [animator addBehavior:snapBehaviour];
-
-
 }
 
 #pragma mark - USER MANAGER DELEGATES
@@ -315,16 +312,18 @@ static float CARD_WIDTH;
     }
     else
     {
-        NSLog(@"no cards left");
+        NoMatchesView *matchView = [[NoMatchesView alloc] initWithFrame:CGRectMake(0, 0, CARD_WIDTH + 30, CARD_HEIGHT + 70)];
+        //[matchView loadNoMatchesImage:@"aLogo"];
+        [self addSubview:matchView];
     }
+
+    [SVProgressHUD dismiss];
 }
 
 -(void)failedToFetchPotentialMatchData:(NSError *)error
 {
     NSLog(@"NO POTENTIAL MATCHES FOR USER TO SEE: %@", error);
 }
-
-
 
 #pragma mark -- Swipe YES OR NO HELPERS
 -(void)setYesStatusForMatchRequestObject:(User*)potentialMatch
@@ -352,59 +351,75 @@ static float CARD_WIDTH;
 //2
 -(void)matchStatus:(NSString*)status potentialMatch:(User*)potMatch
 {
-    [[MatchManager sharedSettings] createMatchRequest:potMatch withStatus:status withMatchRequest:^(MatchRequest *matchRequest, NSError *error) {
+    [[MatchManager sharedSettings] createMatchRequest:potMatch withStatus:status andBlock:^(MatchRequest *matchRequest, NSError *error) {
 
         NSLog(@"match Request class successfully created: %@", matchRequest);//why do we need this matchRequst at all it's already been logged, thats how we got to this delegate,----> dont need it, matchRequest dies here
         
         //2a) Status on MatchRequest class determines what to do
         [[MatchManager sharedSettings] queryForMatchRequestWithUserSeen:potMatch withStatusBlock:^(NSString *status, NSError *error) {
 
-            if ([status isEqualToString:@"denied"])
+            if ([status isEqualToString:@"denied"])//2a-1 & 2b-2
             {
                 NSLog(@"dies here, no further action necessary");
             }
 
-            else if ([status isEqualToString:@"boyYes"])
+            else if ([status isEqualToString:@"boyYes"])//2a-2
             {
                 //means the current user has matched with a boy and that boy has said yes and user(a girl) has said yes so send EMAIL
                 NSLog(@"we've got a boyYes, send an email for the girlVerified or confidantNo");
             }
 
-            else if ([status isEqualToString:@"girlYes"])
+            else if ([status isEqualToString:@"girlYes"])//2b-1
             {
+                //for testing
+                [self loadMatchAndChatView];
+
                 //means the current user has matched with a girl and she has accepted but hasnt gone to her confidant yet
                 NSLog(@"do nothing, wait for Heroku to send message from Confidant adding the PFRelation and it will send a Notification");
             }
 
-            else if ([status isEqualToString:@"girlVerified"])
+            else if ([status isEqualToString:@"girlVerified"])//2b-3
             {
                 NSLog(@"yaaaaaah you are connected, show view and allow to chat, also add the PFRelation(or that may be done in the back end");
                 //************for TESTING***************
                 [[MatchManager sharedSettings] createVerifiedPFRelationWithPFCloud:self.currentMatch andMatchRequest:matchRequest];
+                [self loadMatchAndChatView];
             }
-            else if([status isEqualToString:@"confidantNo"])
+            else if([status isEqualToString:@"confidantNo"])//2b-4
             {
-                NSLog(@"the girl has sent an email to confidant they said no, Beta 1.01 guy can pay to get a PFRelation");
+                NSLog(@"do nothing but... girl sent email to confidant they said no, Beta 1.01 guy can pay to get a PFRelation");
             }
             else
-            {
+            {//2a-3
                 NSLog(@"match hasnt seen this user yet, do nothing");
             }
         }];
+
+        [SVProgressHUD dismiss];//after the MatchRequest is made the progress bar is dismissed
     }];
 }
 
--(void)didCreateMatchRequest:(MatchRequest *)matchRequest
-{
-    NSLog(@"match request created, this should hitting");
-}
-
--(void)failedToCreateMatchRequest:(NSError *)error
-{
-    NSLog(@"this shild be hitting: error: %@", error);
-}
-
 #pragma mark -- USER IMAGES
+-(void)loadMatchAndChatView
+{
+    MatchAndChatView *matchView = [[MatchAndChatView alloc] initWithFrame:CGRectMake(0, 0, CARD_WIDTH -20, CARD_HEIGHT-40)];
+    matchView.delegate = self;
+    [matchView setMatchImages:profileImages.firstObject.url];
+    [matchView setLabelNames:_currentMatch.givenName];
+    matchView.center = CGPointMake((self.frame.size.width - 85) / 2, self.frame.size.height / 2);
+    [self addSubview:matchView];
+}
+
+-(void)didPressElsewhere
+{
+    NSLog(@"take away nib");
+}
+
+-(void)didPressToChat
+{
+    NSLog(@"chat segue");
+}
+
 -(void)loadOneImage
 {
     self.dragView.imageScroll.contentSize = CGSizeMake(self.dragView.frame.size.width, self.dragView.frame.size.height * 1);

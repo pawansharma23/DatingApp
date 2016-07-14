@@ -70,7 +70,6 @@ UserManagerDelegate>
     [self registerForKeyboardNotifications];
 
     self.tableView.delegate = self;
-   // self.tableView.estimatedRowHeight = 60.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.automaticallyAdjustsScrollViewInsets = NO;

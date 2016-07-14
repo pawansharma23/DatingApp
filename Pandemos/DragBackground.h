@@ -11,8 +11,11 @@
 #import "DragView.h"
 #import "UserManager.h"
 #import "MatchManager.h"
+#import "MatchAndChatView.h"
 
-@interface DragBackground : UIView <DragViewDelegate, UserManagerDelegate, MatchManagerDelegate>
+@interface DragBackground : UIView <DragViewDelegate,
+UserManagerDelegate,
+MatchAndChatDelegate>
 
 -(void)cardSwipedLeft:(UIView *)card;
 -(void)cardSwipedRight:(UIView *)card;

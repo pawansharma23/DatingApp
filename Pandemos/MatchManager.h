@@ -10,15 +10,9 @@
 #import "User.h"
 #import "MatchRequest.h"
 
-@protocol MatchManagerDelegate <NSObject>
+//@protocol MatchManagerDelegate <NSObject>
 
--(void)didCreateMatchRequest:(MatchRequest*)matchRequest;
--(void)failedToCreateMatchRequest:(NSError*)error;
-//not in use yet
-//-(void)didCreateDenyMatchRequest:(MatchRequest*)matchRequest;
-//-(void)failedToCreateDenyMatchRequest:(NSError*)error;
-
-@end
+//@end
 
 @interface MatchManager : NSObject
 
@@ -26,15 +20,17 @@ typedef void (^resultBlockWithStatus)(NSString *status, NSError *error);
 typedef void (^resultBlockWithMatch)(MatchRequest *matchRequest, NSError *error);
 typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError *error);
 
-
-@property (weak, nonatomic) id<MatchManagerDelegate>delegate;
-
 +(MatchManager*)sharedSettings;
 
--(void)createMatchRequest:(User *)matchedUser withStatus:(NSString*)status withMatchRequest:(resultBlockWithMatch)match;
--(void)queryForMatchRequestWithUserSeen:(User*)matchedUser withStatusBlock:(resultBlockWithStatus)status;
+-(void)createMatchRequest:(User *)matchedUser
+               withStatus:(NSString*)status
+                 andBlock:(resultBlockWithMatch)match;
 
--(void)queryForRelationshipMatch:(User*)matchedUser withBlock:(resultBlockWithMatchedUser)match;
+-(void)queryForMatchRequestWithUserSeen:(User*)matchedUser
+                        withStatusBlock:(resultBlockWithStatus)status;
+
+-(void)queryForRelationshipMatch:(User*)matchedUser
+                       withBlock:(resultBlockWithMatchedUser)match;
 
 //this method is in MatchViewController now as a dummy email that works
 -(void)sendEmailWithPFCloudFunction:(NSString*)confidantEmail

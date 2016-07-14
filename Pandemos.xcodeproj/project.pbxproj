@@ -13,6 +13,10 @@
 		260799091C2B1C3500B364C8 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260799081C2B1C3500B364C8 /* MessageUI.framework */; };
 		261ADA361CF72DD900C7ECCD /* HeaderForProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 261ADA351CF72DD900C7ECCD /* HeaderForProfileVC.m */; };
 		2638B20E1D35DCF300411CEA /* MatchManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2638B20D1D35DCF300411CEA /* MatchManager.m */; };
+		2638B2101D371F5A00411CEA /* MatchAndChatView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2638B20F1D371F5A00411CEA /* MatchAndChatView.xib */; };
+		2638B2131D37204000411CEA /* MatchAndChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2638B2121D37204000411CEA /* MatchAndChatView.m */; };
+		2638B2151D37D09000411CEA /* NoMatchesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2638B2141D37D09000411CEA /* NoMatchesView.xib */; };
+		2638B2181D37D11D00411CEA /* NoMatchesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2638B2171D37D11D00411CEA /* NoMatchesView.m */; };
 		2644451B1CB5699B00A0381B /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2644451A1CB5699B00A0381B /* UserManager.m */; };
 		2653C0361CD7859B00DDBD65 /* MatchesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0351CD7859B00DDBD65 /* MatchesCell.m */; };
 		2653C03A1CDA357200DDBD65 /* NSData+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2653C0391CDA357200DDBD65 /* NSData+Additions.m */; };
@@ -118,6 +122,12 @@
 		262829001D20642B00A69F24 /* AllyAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AllyAdditions.h; sourceTree = "<group>"; };
 		2638B20C1D35DCF300411CEA /* MatchManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchManager.h; sourceTree = "<group>"; };
 		2638B20D1D35DCF300411CEA /* MatchManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchManager.m; sourceTree = "<group>"; };
+		2638B20F1D371F5A00411CEA /* MatchAndChatView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MatchAndChatView.xib; sourceTree = "<group>"; };
+		2638B2111D37204000411CEA /* MatchAndChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchAndChatView.h; sourceTree = "<group>"; };
+		2638B2121D37204000411CEA /* MatchAndChatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchAndChatView.m; sourceTree = "<group>"; };
+		2638B2141D37D09000411CEA /* NoMatchesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoMatchesView.xib; sourceTree = "<group>"; };
+		2638B2161D37D11D00411CEA /* NoMatchesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoMatchesView.h; sourceTree = "<group>"; };
+		2638B2171D37D11D00411CEA /* NoMatchesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoMatchesView.m; sourceTree = "<group>"; };
 		264445191CB5699B00A0381B /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		2644451A1CB5699B00A0381B /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		2653C0341CD7859B00DDBD65 /* MatchesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchesCell.h; sourceTree = "<group>"; };
@@ -266,7 +276,6 @@
 		260317BB1CE2339F00C37C67 /* MessagerProfile */ = {
 			isa = PBXGroup;
 			children = (
-				2655A4831CE95CC900838853 /* MatchViewXib */,
 				260317B81CE2338800C37C67 /* MessagerProfileVC.h */,
 				260317B91CE2338800C37C67 /* MessagerProfileVC.m */,
 				26D6B15F1D01CDD700C94B16 /* ProfileImageView.h */,
@@ -288,9 +297,10 @@
 		2614A7081CA1DF9F00D6F6AA /* MessagingDetail */ = {
 			isa = PBXGroup;
 			children = (
-				2655A4821CE95CBC00838853 /* Cell */,
 				26DBD03F1C4748F700944300 /* MessageDetailViewCon.h */,
 				26DBD0401C4748F700944300 /* MessageDetailViewCon.m */,
+				2655A4821CE95CBC00838853 /* Cell */,
+				2655A4831CE95CC900838853 /* SubViews */,
 			);
 			name = MessagingDetail;
 			sourceTree = "<group>";
@@ -402,14 +412,14 @@
 			name = Cell;
 			sourceTree = "<group>";
 		};
-		2655A4831CE95CC900838853 /* MatchViewXib */ = {
+		2655A4831CE95CC900838853 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
 				2655A47D1CE920A800838853 /* MatchView.xib */,
 				2655A47F1CE9225B00838853 /* MatchView.h */,
 				2655A4801CE9225B00838853 /* MatchView.m */,
 			);
-			name = MatchViewXib;
+			name = SubViews;
 			sourceTree = "<group>";
 		};
 		268BA07D1C1DB53F0054414E = {
@@ -569,6 +579,12 @@
 				26CB159B1CFE1930005CD680 /* OverlayView.m */,
 				26BA6FBD1D0DF60400745FC9 /* AcceptedMatchView.h */,
 				26BA6FBE1D0DF60400745FC9 /* AcceptedMatchView.m */,
+				2638B20F1D371F5A00411CEA /* MatchAndChatView.xib */,
+				2638B2111D37204000411CEA /* MatchAndChatView.h */,
+				2638B2121D37204000411CEA /* MatchAndChatView.m */,
+				2638B2141D37D09000411CEA /* NoMatchesView.xib */,
+				2638B2161D37D11D00411CEA /* NoMatchesView.h */,
+				2638B2171D37D11D00411CEA /* NoMatchesView.m */,
 			);
 			name = Subviews;
 			sourceTree = "<group>";
@@ -863,6 +879,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2638B2101D371F5A00411CEA /* MatchAndChatView.xib in Resources */,
+				2638B2151D37D09000411CEA /* NoMatchesView.xib in Resources */,
 				26AC54601CAEBB36005AD536 /* Suggestions.storyboard in Resources */,
 				26AC546C1CAF1A63005AD536 /* Messaging.storyboard in Resources */,
 				26AC54661CAF13A9005AD536 /* InitialSetup.storyboard in Resources */,
@@ -962,6 +980,7 @@
 				26C70EC01CA5B18F00E9B98F /* PFLoginViewController.m in Sources */,
 				26B9545C1CBAD0D5006245EE /* UserBuilder.m in Sources */,
 				260317BA1CE2338800C37C67 /* MessagerProfileVC.m in Sources */,
+				2638B2131D37204000411CEA /* MatchAndChatView.m in Sources */,
 				26C70EC21CA5B18F00E9B98F /* MessageDetailViewCon.m in Sources */,
 				26CB159C1CFE1930005CD680 /* OverlayView.m in Sources */,
 				2644451B1CB5699B00A0381B /* UserManager.m in Sources */,
@@ -991,6 +1010,7 @@
 				26C70ED31CA5B18F00E9B98F /* MatchRequest.m in Sources */,
 				26BA6FAE1D085B7300745FC9 /* MatchViewController.m in Sources */,
 				26B954561CB82202006245EE /* NSString+Additions.m in Sources */,
+				2638B2181D37D11D00411CEA /* NoMatchesView.m in Sources */,
 				26C70ED51CA5B18F00E9B98F /* CVSettingCell.m in Sources */,
 				26C70ED61CA5B18F00E9B98F /* PreviewCell.m in Sources */,
 				26C70ED71CA5B18F00E9B98F /* UIButton+Additions.m in Sources */,
