@@ -38,8 +38,8 @@ typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError 
                      andMatchedUser:(User*)user;
 
 //do we need the matchRequest object here?
--(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser
-                           andMatchRequest:(MatchRequest*)match;
+//-(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser
+//                           andMatchRequest:(MatchRequest*)match;
 
 //In Messsage Profile
 //to block or unmatch user with match in profile(when they're already a match)

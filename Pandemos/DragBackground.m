@@ -203,6 +203,9 @@ static float CARD_WIDTH;
     }
     else
     {
+        NoMatchesView *matchView = [[NoMatchesView alloc] initWithFrame:CGRectMake(0, 0, CARD_WIDTH + 30, CARD_HEIGHT + 70)];
+        //[matchView loadNoMatchesImage:@"aLogo"];
+        [self addSubview:matchView];
         NSLog(@"reached the end of your matches, insert view that warns user nothing left");
     }
 }
@@ -352,8 +355,6 @@ static float CARD_WIDTH;
 -(void)matchStatus:(NSString*)status potentialMatch:(User*)potMatch
 {
     [[MatchManager sharedSettings] createMatchRequest:potMatch withStatus:status andBlock:^(MatchRequest *matchRequest, NSError *error) {
-
-        NSLog(@"match Request class successfully created: %@", matchRequest);//why do we need this matchRequst at all it's already been logged, thats how we got to this delegate,----> dont need it, matchRequest dies here
         
         //2a) Status on MatchRequest class determines what to do
         [[MatchManager sharedSettings] queryForMatchRequestWithUserSeen:potMatch withStatusBlock:^(NSString *status, NSError *error) {
@@ -365,24 +366,20 @@ static float CARD_WIDTH;
 
             else if ([status isEqualToString:@"boyYes"])//2a-2
             {
-                //means the current user has matched with a boy and that boy has said yes and user(a girl) has said yes so send EMAIL
-                NSLog(@"we've got a boyYes, send an email for the girlVerified or confidantNo");
+                //we have a mutal match between users
+                NSString *email = [User currentUser].confidantEmail;
+                [self sendEmailForMatch:potMatch.objectId withEmail:email matchedUser:potMatch];
             }
 
             else if ([status isEqualToString:@"girlYes"])//2b-1
             {
-                //for testing
-                [self loadMatchAndChatView];
-
                 //means the current user has matched with a girl and she has accepted but hasnt gone to her confidant yet
                 NSLog(@"do nothing, wait for Heroku to send message from Confidant adding the PFRelation and it will send a Notification");
             }
 
             else if ([status isEqualToString:@"girlVerified"])//2b-3
             {
-                NSLog(@"yaaaaaah you are connected, show view and allow to chat, also add the PFRelation(or that may be done in the back end");
-                //************for TESTING***************
-                [[MatchManager sharedSettings] createVerifiedPFRelationWithPFCloud:self.currentMatch andMatchRequest:matchRequest];
+                //we have a match, the guy can send a message---> setup PFRelation from other perspective and in callback block call the match view allowing the guy to chat right away with the girl
                 [self loadMatchAndChatView];
             }
             else if([status isEqualToString:@"confidantNo"])//2b-4
@@ -390,14 +387,72 @@ static float CARD_WIDTH;
                 NSLog(@"do nothing but... girl sent email to confidant they said no, Beta 1.01 guy can pay to get a PFRelation");
             }
             else
-            {//2a-3
-                NSLog(@"match hasnt seen this user yet, do nothing");
+            {//2a-3//for unseen
+                if ([[User currentUser].gender isEqualToString:@"female"])
+                {
+                    NSString *email = [User currentUser].confidantEmail;
+                    [self sendEmailForUnseen:potMatch.objectId withEmail:email matchedUser:potMatch];
+                }
             }
         }];
 
         [SVProgressHUD dismiss];//after the MatchRequest is made the progress bar is dismissed
     }];
 }
+//3b-2
+///api/matchgirlverified/:matchRequestId
+//this will include the on YES "girlVerified" on NO: "confidantNo"
+-(void)sendEmailForUnseen:(NSString*)matchId withEmail:(NSString*)confidantEmail matchedUser:(User*)matchedName
+{
+    NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
+    NSString *testText = [NSString stringWithFormat:@"What do you think of %@", matchedName.givenName];
+    PFFile *pf = matchedName.profileImages.firstObject;
+    NSString *altImageDesription = @"Matched profile pic";
+
+    NSString *yesEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/matchgirlverified/%@,%@", matchId, [User currentUser].objectId];
+    NSString *noEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/noaction/%@,%@",matchId,[User currentUser].objectId];
+
+    NSString *html = [NSString stringWithFormat:@"<b>%@</b><br><img src=%@ alt=%@ style=width:70px;height:70px><br><a href=%@ class=btn>YES</a><p style=text-indent: 5em;></p><a href=%@ class=btn>NO</a>", testText, pf.url, altImageDesription, yesEndpoint, noEndpoint];
+
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": testText, @"username": yourName, @"htmlCode": html} block:^(NSString *result, NSError *error) {
+
+        if (error)
+        {
+            NSLog(@"error cloud js code: %@", error);
+        }
+        else
+        {
+            NSLog(@"email sent :%@", result);
+        }
+    }];
+}
+
+//this will include the PFRelation on yes, on NO: condidantKibosh"
+-(void)sendEmailForMatch:(NSString*)matchId withEmail:(NSString*)confidantEmail matchedUser:(User*)matchedName
+{
+    NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
+    NSString *testText = [NSString stringWithFormat:@"What do you think of %@", matchedName.givenName];
+    PFFile *pf = matchedName.profileImages.firstObject;
+    NSString *altImageDesription = @"Matched profile pic";
+
+    NSString *yesEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/yesaction/%@,%@", matchId, [User currentUser].objectId];
+    NSString *noEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/noaction/%@,%@",matchId,[User currentUser].objectId];
+
+    NSString *html = [NSString stringWithFormat:@"<b>%@</b><br><img src=%@ alt=%@ style=width:70px;height:70px><br><a href=%@ class=btn>YES</a><p style=text-indent: 5em;></p><a href=%@ class=btn>NO</a>", testText, pf.url, altImageDesription, yesEndpoint, noEndpoint];
+
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": testText, @"username": yourName, @"htmlCode": html} block:^(NSString *result, NSError *error) {
+
+        if (error)
+        {
+            NSLog(@"error cloud js code: %@", error);
+        }
+        else
+        {
+            NSLog(@"email sent :%@", result);
+        }
+    }];
+}
+
 
 #pragma mark -- USER IMAGES
 -(void)loadMatchAndChatView

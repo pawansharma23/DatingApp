@@ -107,38 +107,38 @@
 
 }
 //dummy creates PFRelation, this will be done in Heroku now
--(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser andMatchRequest:(MatchRequest*)match
-{
-    User *fromUser = match.fromUser;
-
-    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
-    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
-    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : match.objectId} block:^(id object, NSError *error)
-     {
-         if (!error)
-         {
-             //add the from user to the currentUsers friends
-             PFRelation *matchRelation = [[User currentUser] relationForKey:@"match"];
-             [matchRelation addObject:fromUser];
-
-             //save the current user
-             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)    {
-
-                 if (succeeded)
-                 {
-                     NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
-                     //[self.delegate didUpdateMatchRequest:recipientUser];
-                     //send delegate to throw UIView taht says it was a match?
-                 }
-             }];
-         }
-         else
-         {
-             NSLog(@"failed to save final PFrelation");
-             //[self.delegate failedToCreateMatchRequest:error];
-         }
-     }];
-}
+//-(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser andMatchRequest:(MatchRequest*)match
+//{
+//    User *fromUser = match.fromUser;
+//
+//    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
+//    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
+//    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : match.objectId} block:^(id object, NSError *error)
+//     {
+//         if (!error)
+//         {
+//             //add the from user to the currentUsers friends
+//             PFRelation *matchRelation = [[User currentUser] relationForKey:@"match"];
+//             [matchRelation addObject:fromUser];
+//
+//             //save the current user
+//             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)    {
+//
+//                 if (succeeded)
+//                 {
+//                     NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
+//                     //[self.delegate didUpdateMatchRequest:recipientUser];
+//                     //send delegate to throw UIView taht says it was a match?
+//                 }
+//             }];
+//         }
+//         else
+//         {
+//             NSLog(@"failed to save final PFrelation");
+//             //[self.delegate failedToCreateMatchRequest:error];
+//         }
+//     }];
+//}
 
 -(void)changePFRelationToDeniedWithPFCloudFunction:(User*)recipientUser
 {

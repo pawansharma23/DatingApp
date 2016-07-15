@@ -164,12 +164,14 @@ MFMailComposeViewControllerDelegate>
     NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
     //relation info for email
 
-    NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
+    //NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
     //%@", approvedRela];
-    NSString *cssButton = [NSString stringWithFormat:@"button"];
-    NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, @"John", yourName];
+    //NSString *cssButton = [NSString stringWithFormat:@"button"];
+    //NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, @"John", yourName];
 
-    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": testEmail, @"text": @"What do you think of this user for your friend", @"username": yourName, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
+    NSString *noEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/noaction/%@", [User currentUser].objectId];
+    NSString *noButton = [NSString stringWithFormat:@"<a href=%@>No</a>", noEndpoint];
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": testEmail, @"text": @"What do you think of this user for your friend", @"username": yourName, @"htmlCode": noButton} block:^(NSString *result, NSError *error) {
         if (error)
         {
             NSLog(@"error cloud js code: %@", error);
