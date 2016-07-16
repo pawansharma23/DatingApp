@@ -36,36 +36,33 @@ MFMailComposeViewControllerDelegate>
 
         NSLog(@"logged in user: %@ %@", [User currentUser].givenName, [User currentUser].objectId   );
 
-        [self navigationItems];
-
-        //[self currentLocationIdentifier];
-
         DragBackground *drag = [[DragBackground alloc]initWithFrame:self.view.frame];
         [self.view addSubview:drag];
-
         self.automaticallyAdjustsScrollViewInsets = NO;
 
         //*************for testing to original login**********
-        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 70, 50, 20)];
+        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 70, 60, 30)];
         [self.button setTitle:@"Setup" forState:UIControlStateNormal];
         self.button.backgroundColor = [UIColor blackColor];
-        self.button.layer.cornerRadius = 10;
+        self.button.layer.cornerRadius = 15;
         self.button.layer.masksToBounds = YES;
         [self.view addSubview:self.button];
         [self.button addTarget:self action:@selector(segueToNoUser:) forControlEvents:UIControlEventTouchUpInside];
-
-        self.button = [[UIButton alloc]initWithFrame:CGRectMake(10, 95, 50, 20)];
-        [self.button setTitle:@"Email" forState:UIControlStateNormal];
-        self.button.backgroundColor = [UIColor blackColor];
-        self.button.layer.cornerRadius = 10;
-        self.button.layer.masksToBounds = YES;
-        [self.view addSubview:self.button];
-        [self.button addTarget:self action:@selector(sendEmailForTesting:) forControlEvents:UIControlEventTouchUpInside];
     }
     else
     {
         [self performSegueWithIdentifier:@"NoUser" sender:self];
     }
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+
+    [self navigationItems];
+
+    //[self currentLocationIdentifier];
+
 }
 
 #pragma mark -- CLLOCATION
@@ -117,13 +114,13 @@ MFMailComposeViewControllerDelegate>
 
 - (IBAction)onSettingsTapped:(UIBarButtonItem *)sender
 {
-    self.navigationItem.leftBarButtonItem.image = [UIImage imageWithImage:[UIImage imageNamed:@"filledSettings"] scaledToSize:CGSizeMake(30, 30)];
+    self.navigationItem.leftBarButtonItem.image = [UIImage imageWithImage:[UIImage imageNamed:@"noun_355600_cc"] scaledToSize:CGSizeMake(30, 30)];
     [self performSegueWithIdentifier:@"Settings" sender:self];
 }
 - (IBAction)onMessagesTapped:(UIBarButtonItem *)sender
 {
     [SVProgressHUD dismiss];
-    self.navigationItem.rightBarButtonItem.image = [UIImage imageNamed:@"chatFilled2"];
+    self.navigationItem.rightBarButtonItem.image = [UIImage imageWithImage:[UIImage imageNamed:@"noun_40490_cc"] scaledToSize:CGSizeMake(30, 30)];
     [self performSegueWithIdentifier:@"Messaging" sender:self];
 }
 
@@ -140,60 +137,15 @@ MFMailComposeViewControllerDelegate>
 -(void)navigationItems
 {
     self.navigationItem.title = APP_TITLE;
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor mikeGray]}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor blackColor]}];
     self.navigationController.navigationBar.barTintColor = [UIColor yellowGreen];
 
-    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor mikeGray]];
+    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor blackColor]];
     //self.navigationItem.rightBarButtonItem.title = @"Chats";
-    self.navigationItem.rightBarButtonItem.image = [UIImage imageNamed:@"chatEmpty"];
-    self.navigationItem.rightBarButtonItem.tintColor = [UIColor mikeGray];
+    self.navigationItem.rightBarButtonItem.image = [UIImage imageWithImage:[UIImage imageNamed:@"noun_40347_cc"] scaledToSize:CGSizeMake(30, 30)];
+    self.navigationItem.rightBarButtonItem.tintColor = [UIColor blackColor];
 
-    self.navigationItem.leftBarButtonItem.image = [UIImage imageWithImage:[UIImage imageNamed:@"emptySettings"] scaledToSize:CGSizeMake(30, 30)];
-    self.navigationItem.leftBarButtonItem.tintColor = [UIColor mikeGray];
-}
-
--(void)sendEmailForTesting:(UIButton*)sender
-{
-    [self sendingEmailToAlly:@"IhUCoCNLUB"];
-}
-
--(void)sendingEmailToAlly:(NSString*)userIddummied
-{
-    NSString *testEmail = @"michaelsevy@gmail.com";
-    //NSString *confidantEmail = [[User currentUser] objectForKey:@"confidantEmail"];
-    NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
-    //relation info for email
-
-    //NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
-    //%@", approvedRela];
-    //NSString *cssButton = [NSString stringWithFormat:@"button"];
-    //NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, @"John", yourName];
-
-    NSString *noEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/noaction/%@", [User currentUser].objectId];
-    NSString *noButton = [NSString stringWithFormat:@"<a href=%@>No</a>", noEndpoint];
-    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": testEmail, @"text": @"What do you think of this user for your friend", @"username": yourName, @"htmlCode": noButton} block:^(NSString *result, NSError *error) {
-        if (error)
-        {
-            NSLog(@"error cloud js code: %@", error);
-        }
-        else
-        {
-            NSLog(@"result :%@", result);
-        }
-    }];
+    self.navigationItem.leftBarButtonItem.image = [UIImage imageWithImage:[UIImage imageNamed:@"noun_355444_cc"] scaledToSize:CGSizeMake(30, 30)];
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor blackColor];
 }
 @end
-
-//    User *currentMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-//    NSString *firstNameOFMatch = [currentMatchUser objectForKey:@"firstName"];
-//llok up user for first name last i and image for email
-//    [self.userManager queryForUserData:userIddummied withUser:^(User *user, NSError *error) {
-//
-//        NSLog(@"GOT USR DATA: %@", user);
-
-
-//stash old cloud key from Mandrill: vPIT4Hx_NM_rciNztmNOxA
-
-//            PFUser *approvedMatchUser =  [self.objectsArray objectAtIndex:self.matchedUsersCount];
-//          PFRelation *approvedRela = [self.currentUser relationForKey:@"matchNotConfirmed"];
-//          [approvedRela addObject:approvedMatchUser];

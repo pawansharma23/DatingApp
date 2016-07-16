@@ -81,64 +81,95 @@
         }
     }];
 }
-//dummy email from cloud
--(void)sendEmailWithPFCloudFunction:(NSString *)confidantEmail withRelation:(PFRelation *)rela andMatchedUser:(User *)user
+
+//3b-2
+//send email for girlYes and unseen by boy
+//this will include the on YES "girlVerified" on NO: "confidantNo"
+-(void)sendEmailForUnseen:(NSString*)matchId withEmail:(NSString*)confidantEmail matchedUser:(User*)matchedName
 {
-    NSString *testEmail = @"michaelsevy@gmail.com";
-    //NSString *confidantEmail = [[User currentUser] objectForKey:@"confidantEmail"];
     NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
-    //relation info for email
+    NSString *testText = [NSString stringWithFormat:@"What do you think of %@ for %@?", matchedName.givenName, [User currentUser].givenName];
+    PFFile *pf = matchedName.profileImages.firstObject;
+    NSString *altImageDesription = @"Matched profile pic";
 
-    NSString *siteHtml = [NSString stringWithFormat:@"https://api.parse.com/1/classes/"];
-    //%@", approvedRela];
-    NSString *cssButton = [NSString stringWithFormat:@"button"];
-    NSString *htmlString = [NSString stringWithFormat:@"<a href=%@ class=%@>Aprrove %@ for %@</a>", siteHtml, cssButton, @"John", yourName];
+    NSString *yesEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/matchgirlverified/%@", matchId];
+    NSString *noEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/noaction/%@",matchId];
 
-    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": testEmail, @"text": @"What do you think of this user for your friend", @"username": yourName, @"htmlCode": htmlString} block:^(NSString *result, NSError *error) {
+    NSString *html = [NSString stringWithFormat:@"<b>%@</b><br><img src=%@ alt=%@ style=width:70px;height:70px><br><a href=%@ class=btn>YES</a><p style=text-indent: 5em;></p><a href=%@ class=btn>NO</a>", testText, pf.url, altImageDesription, yesEndpoint, noEndpoint];
+
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": testText, @"username": yourName, @"htmlCode": html} block:^(NSString *result, NSError *error) {
+
         if (error)
         {
             NSLog(@"error cloud js code: %@", error);
         }
         else
         {
-            NSLog(@"result :%@", result);
+            NSLog(@"email sent :%@", result);
         }
     }];
-
 }
-//dummy creates PFRelation, this will be done in Heroku now
-//-(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser andMatchRequest:(MatchRequest*)match
-//{
-//    User *fromUser = match.fromUser;
-//
-//    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
-//    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
-//    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : match.objectId} block:^(id object, NSError *error)
-//     {
-//         if (!error)
-//         {
-//             //add the from user to the currentUsers friends
-//             PFRelation *matchRelation = [[User currentUser] relationForKey:@"match"];
-//             [matchRelation addObject:fromUser];
-//
-//             //save the current user
-//             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)    {
-//
-//                 if (succeeded)
-//                 {
-//                     NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
-//                     //[self.delegate didUpdateMatchRequest:recipientUser];
-//                     //send delegate to throw UIView taht says it was a match?
-//                 }
-//             }];
-//         }
-//         else
-//         {
-//             NSLog(@"failed to save final PFrelation");
-//             //[self.delegate failedToCreateMatchRequest:error];
-//         }
-//     }];
-//}
+
+//this will include the PFRelation on yes, on NO: confidantKibosh"
+-(void)sendEmailForMatch:(NSString*)potMatchId withMatchId:(NSString*)matchId withEmail:(NSString*)confidantEmail matchedUser:(User*)matchedName
+{
+    NSString *yourName = [NSString stringWithFormat:@"%@ needs your approval", [User currentUser].givenName];
+    NSString *testText = [NSString stringWithFormat:@"What do you think of %@ for %@?", matchedName.givenName, [User currentUser].givenName];
+    PFFile *pf = matchedName.profileImages.firstObject;
+    NSString *altImageDesription = @"Matched profile pic";
+
+    NSString *yesEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/yesaction/%@,%@", potMatchId, [User currentUser].objectId];
+    NSString *noEndpoint = [NSString stringWithFormat:@"myally.herokuapp.com/api/confidantKibosh/%@",matchId];
+
+    NSString *html = [NSString stringWithFormat:@"<b>%@</b><br><img src=%@ alt=%@ style=width:70px;height:70px><br><a href=%@ class=btn>YES</a><p style=text-indent: 5em;></p><a href=%@ class=btn>NO</a>", testText, pf.url, altImageDesription, yesEndpoint, noEndpoint];
+
+    [PFCloud callFunctionInBackground:@"email" withParameters:@{@"email": confidantEmail, @"text": testText, @"username": yourName, @"htmlCode": html} block:^(NSString *result, NSError *error) {
+
+        if (error)
+        {
+            NSLog(@"error cloud js code: %@", error);
+        }
+        else
+        {
+            NSLog(@"email sent :%@", result);
+        }
+    }];
+}
+
+-(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser andMatchRequest:(MatchRequest*)match withMatchBlock:(resultBlockWithMatch)matchRequest
+{
+    User *fromUser = match.fromUser;
+
+    //call the cloud function addFriendToFriendRelation which adds the current user to the from users friends:
+    //we pass in the object id of the friendRequest as a parameter (you cant pass in objects, so we pass in the id)
+    [PFCloud callFunctionInBackground:@"addMatchToMatchRelation" withParameters:@{@"matchRequest" : match.objectId} block:^(id object, NSError *error)
+     {
+         if (!error)
+         {
+             //add the from user to the currentUsers friends
+             PFRelation *matchRelation = [[User currentUser] relationForKey:@"match"];
+             [matchRelation addObject:fromUser];
+
+             //save the current user
+             [[User currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)    {
+
+                 if (succeeded)
+                 {
+                     NSLog(@"save final pfrelation to parse, between %@ & %@", [User currentUser].givenName, recipientUser.givenName);
+                     matchRequest(match,nil);
+                 }
+                 else
+                 {
+                     NSLog(@"could not save to parse: %@", error);
+                 }
+             }];
+         }
+         else
+         {
+             NSLog(@"failed to save final PFrelation");
+         }
+     }];
+}
 
 -(void)changePFRelationToDeniedWithPFCloudFunction:(User*)recipientUser
 {

@@ -32,14 +32,20 @@ typedef void (^resultBlockWithMatchedUser)(NSArray<User*> *matchedUser, NSError 
 -(void)queryForRelationshipMatch:(User*)matchedUser
                        withBlock:(resultBlockWithMatchedUser)match;
 
-//this method is in MatchViewController now as a dummy email that works
--(void)sendEmailWithPFCloudFunction:(NSString*)confidantEmail
-                       withRelation:(PFRelation*)rela
-                     andMatchedUser:(User*)user;
+-(void)sendEmailForUnseen:(NSString*)matchId
+                withEmail:(NSString*)confidantEmail
+              matchedUser:(User*)matchedName;
 
-//do we need the matchRequest object here?
-//-(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser
-//                           andMatchRequest:(MatchRequest*)match;
+-(void)sendEmailForMatch:(NSString*)potMatchId
+             withMatchId:(NSString*)matchId
+               withEmail:(NSString*)confidantEmail
+             matchedUser:(User*)matchedName;
+
+-(void)createVerifiedPFRelationWithPFCloud:(User*)recipientUser
+                           andMatchRequest:(MatchRequest*)match
+                            withMatchBlock:(resultBlockWithMatch)matchRequest;
+
+
 
 //In Messsage Profile
 //to block or unmatch user with match in profile(when they're already a match)

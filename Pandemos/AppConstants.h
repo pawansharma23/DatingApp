@@ -20,7 +20,7 @@ typedef NS_ENUM(NSInteger, AppLaunchStatus)
     APP_LAUNCH_STATUS_LOGIN_FAILED_REGISTRATION
 };
 
-#define APP_TITLE @"Ally"
+#define APP_TITLE @"MyAlly"
 
 #define STARTCLOCK clock_t start, end; double cpu_time_used; start = clock();
 #define RESETCLOCK start = clock();
@@ -48,8 +48,6 @@ typedef NS_ENUM(NSInteger, AppLaunchStatus)
 #endif
 
 #ifndef AppConstants_h
-
-static NSString *TextViewControllerDomain = @"com.benji.conversationcontroller";
 
 inline static CGRect KeyWindowBounds()
 {

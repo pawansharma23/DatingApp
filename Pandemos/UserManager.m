@@ -206,7 +206,7 @@ static NSString * const kParsePublic                       = @"publicProfile";
 
 -(void)loadAlreadySeenMatches
 {
-    NSArray *alreadySeenStatus = @[@"boyYes",@"girlYes",@"denied"];
+    NSArray *alreadySeenStatus = @[@"boyYes",@"girlYes",@"denied", @"pending", @"girlVerified", @"confidantNo", @"confidantKibosh"];
 
     PFQuery *query = [PFQuery queryWithClassName:@"MatchRequest"];
     [query whereKey:@"fromUser" equalTo:[User currentUser]];
